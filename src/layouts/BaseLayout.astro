@@ -254,6 +254,10 @@ h4, h5, h6 { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; font-wei
   padding-inline: 1.5rem;
 }
 
+@media (max-width: 768px) {
+  .page-container { padding-inline: 1rem; }
+}
+
 /* ============================================================
    ANIMATIONS
 ============================================================ */
@@ -482,6 +486,8 @@ html.dark .ticker-label { background: rgba(245,183,49,0.12); }
 .hero {
   padding-top: 100px;
   padding-bottom: 72px;
+  /* Minimum height ensures the hero has visual presence even with short content */
+  min-height: 560px;
   background: var(--gradient-hero);
   border-bottom: 1px solid var(--border);
   position: relative;
@@ -893,6 +899,8 @@ html.dark .hero::after {
 .social-scroll-container {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  /* Scroll snap so cards click into place on mobile swipe */
+  scroll-snap-type: x mandatory;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
   padding-bottom: 8px;
@@ -915,6 +923,8 @@ html.dark .hero::after {
   padding: 20px 24px;
   width: 320px;
   flex-shrink: 0;
+  /* Snap each card to the scroll container's start edge */
+  scroll-snap-align: start;
   box-shadow: var(--shadow-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
@@ -983,7 +993,13 @@ html.dark .hero::after {
   gap: 20px;
 }
 
-@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+/* Tablet: 2-col so cards don't squeeze too narrow */
+@media (max-width: 1024px) and (min-width: 640px) {
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Mobile: single column */
+@media (max-width: 639px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
 .dash-card {
   background: var(--surface);
@@ -1049,6 +1065,8 @@ html.dark .hero::after {
 
 .spark-bar {
   flex: 1;
+  /* Minimum height so bars remain visible even at very low percentage values */
+  min-height: 4px;
   border-radius: 3px 3px 0 0;
   background: var(--sparkline-bar);
   position: relative;
@@ -1497,17 +1515,40 @@ hr.pulsar-divider {
 /* Icon helpers */
 .icon-sun::before  { content: '☀'; }
 .icon-moon::before { content: '◑'; }
+
+/* Skip to content link — visually hidden until focused */
+.skip-to-content {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--accent-amber);
+  color: #fff;
+  border-radius: 6px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  /* Hidden by default — screen readers still announce it */
+  transform: translateY(-120%);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+  transform: translateY(0);
+  opacity: 1;
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
   </style>
 
   <body>
-    <!-- Skip to content link — accessibility -->
-    <a
-      href="#main-content"
-      class="sr-only"
-      style="position:fixed;top:1rem;left:1rem;z-index:999;padding:0.5rem 1rem;background:var(--accent-amber);color:#fff;border-radius:6px;"
-    >
-      Skip to content
-    </a>
+    <!-- Skip to content link — hidden until keyboard-focused (accessibility) -->
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
 
     <Header />
 

@@ -33,8 +33,9 @@
   --rating-x:      #C94040;
   --rating-x-bg:   rgba(201,64,64,0.12);
   --nav-bg:        rgba(250,250,247,0.92);
-  --shadow-card:   0 2px 12px rgba(26,31,46,0.07), 0 1px 3px rgba(26,31,46,0.05);
-  --shadow-hover:  0 8px 32px rgba(26,31,46,0.12), 0 2px 8px rgba(26,31,46,0.08);
+  --shadow-card:       0 2px 12px rgba(26,31,46,0.07), 0 1px 3px rgba(26,31,46,0.05);
+  --shadow-hover:      0 8px 32px rgba(26,31,46,0.12), 0 2px 8px rgba(26,31,46,0.08);
+  --shadow-card-hover: 0 8px 32px rgba(26,31,46,0.12);
   --shadow-hero:   0 4px 24px rgba(26,31,46,0.08);
   --gradient-hero: linear-gradient(135deg, #F3F1EB 0%, #FAFAF7 60%, #EEF5F6 100%);
   --gradient-report: linear-gradient(135deg, #1A2A3A 0%, #0D1E2C 100%);
@@ -81,8 +82,9 @@ html.dark {
   --rating-x:      #EF5350;
   --rating-x-bg:   rgba(239,83,80,0.10);
   --nav-bg:        rgba(7,11,20,0.92);
-  --shadow-card:   0 2px 16px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
-  --shadow-hover:  0 8px 40px rgba(0,0,0,0.6), 0 2px 12px rgba(62,207,207,0.08);
+  --shadow-card:       0 2px 16px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-hover:      0 8px 40px rgba(0,0,0,0.6), 0 2px 12px rgba(62,207,207,0.08);
+  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.4);
   --shadow-hero:   0 4px 32px rgba(0,0,0,0.5);
   --gradient-hero: linear-gradient(135deg, #070B14 0%, #0A1020 50%, #080E1A 100%);
   --gradient-report: linear-gradient(135deg, #0D1E35 0%, #091524 100%);
@@ -176,6 +178,10 @@ h4, h5, h6 { font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 
   padding-inline: 1.5rem;
 }
 
+@media (max-width: 768px) {
+  .page-container { padding-inline: 1rem; }
+}
+
 /* ============================================================
    ANIMATIONS
 ============================================================ */
@@ -190,6 +196,11 @@ h4, h5, h6 { font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 
 @keyframes pulseGlow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(245,183,49,0); }
   50%       { box-shadow: 0 0 12px 3px rgba(245,183,49,0.18); }
+}
+/* Opacity + scale pulse for the live dot indicator */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
 }
 @keyframes shimmer {
   0%   { background-position: -200% center; }
@@ -404,6 +415,8 @@ html.dark .ticker-label { background: rgba(245,183,49,0.12); }
 .hero {
   padding-top: 100px;
   padding-bottom: 72px;
+  /* Minimum height ensures the hero has visual presence even with short content */
+  min-height: 560px;
   background: var(--gradient-hero);
   border-bottom: 1px solid var(--border);
   position: relative;
@@ -562,6 +575,14 @@ html.dark .hero::after {
   border-color: rgba(239,83,80,0.2);
 }
 
+/* Label text (non-emoji) within a rating badge */
+.rating-badge-label,
+.rating-badge > span:not(:first-child),
+.rating-badge > :not([aria-hidden]) {
+  letter-spacing: 0.04em;
+  font-size: 0.65rem;
+}
+
 /* Aliases used in existing Tailwind components */
 .rating-bolt   { color: var(--rating-flash); }
 
@@ -576,12 +597,12 @@ html.dark .hero::after {
   box-shadow: var(--shadow-hero);
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .hero-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .hero-card-ai  { border-top: 3px solid var(--rating-flash); }
@@ -712,7 +733,7 @@ html.dark .hero::after {
   border-radius: 12px;
   padding: 22px;
   box-shadow: var(--shadow-card);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -721,8 +742,8 @@ html.dark .hero::after {
 }
 
 .pick-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
   border-color: var(--border-subtle);
 }
 
@@ -787,6 +808,28 @@ html.dark .hero::after {
   color: var(--accent-cyan);
 }
 
+/* "→ 閱讀" read link at the bottom of pick cards */
+.pick-read-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--accent-amber);
+  text-decoration: none;
+  padding: 6px 0 0;
+  margin-top: auto;
+  opacity: 0.85;
+  transition: opacity 0.2s, letter-spacing 0.2s;
+}
+
+.pick-read-link:hover {
+  opacity: 1;
+  letter-spacing: 0.1em;
+}
+
 .domain-tag.vla {
   background: var(--rating-wrench-bg);
   color: var(--rating-wrench);
@@ -808,13 +851,23 @@ html.dark .hero::after {
   right: 0;
   width: 80px;
   height: 100%;
-  background: linear-gradient(to right, transparent, var(--bg-alt));
+  /* Fade from transparent on the left to bg-alt on the right, hinting more content to scroll */
+  background: linear-gradient(to left, var(--bg-alt), transparent);
   pointer-events: none;
+  /* Only show on desktop where the strip is scrollable */
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .social-scroll-wrapper::after { display: block; }
 }
 
 .social-scroll-container {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  /* Scroll snap so cards click into place on mobile swipe */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
   padding-bottom: 8px;
@@ -837,6 +890,8 @@ html.dark .hero::after {
   padding: 20px 24px;
   width: 320px;
   flex-shrink: 0;
+  /* Snap each card to the scroll container's start edge */
+  scroll-snap-align: start;
   box-shadow: var(--shadow-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
@@ -846,7 +901,7 @@ html.dark .hero::after {
 
 .social-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: var(--shadow-card-hover);
   border-color: var(--accent-cyan);
 }
 
@@ -905,7 +960,13 @@ html.dark .hero::after {
   gap: 20px;
 }
 
-@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+/* Tablet: 2-col so cards don't squeeze too narrow */
+@media (max-width: 1024px) and (min-width: 640px) {
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Mobile: single column */
+@media (max-width: 639px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
 .dash-card {
   background: var(--surface);
@@ -918,7 +979,7 @@ html.dark .hero::after {
 
 .dash-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .dash-card-header {
@@ -971,6 +1032,8 @@ html.dark .hero::after {
 
 .spark-bar {
   flex: 1;
+  /* Minimum height so bars remain visible even at very low percentage values */
+  min-height: 4px;
   border-radius: 3px 3px 0 0;
   background: var(--sparkline-bar);
   position: relative;
@@ -1221,6 +1284,12 @@ html.dark .btn-amber { color: #07090E; }
 }
 
 .btn-outline:hover { background: var(--accent-cyan-bg); }
+
+/* Explicit focus ring for keyboard users on all button variants */
+.btn:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
 
 /* ============================================================
    SOURCE / MISC TAGS

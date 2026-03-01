@@ -283,6 +283,17 @@ const platformIcon: Record<string, string> = {
                 {item.domain === 'vla' ? 'VLA' : 'AI App'}
               </span>
             </div>
+            {item.url && (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pick-read-link"
+                aria-label={`閱讀：${item.title}`}
+              >
+                → 閱讀
+              </a>
+            )}
           </article>
         ))}
       </div>

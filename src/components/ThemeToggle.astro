@@ -10,30 +10,41 @@
   id="theme-toggle"
   type="button"
   class="theme-toggle"
-  aria-label="切換深色模式"
+  aria-label="切換主題"
   title="Toggle colour theme"
 >
-  <span id="theme-icon">◑</span>
+  <!-- ◐ = dark mode active (half-filled left), ◑ = light mode active (half-filled right) -->
+  <span id="theme-icon" aria-hidden="true">◑</span>
 </button>
+
+<style>
+  /* Explicit focus-visible ring on the theme toggle button */
+  #theme-toggle:focus-visible {
+    outline: 2px solid var(--accent-amber);
+    outline-offset: 2px;
+  }
+</style>
 
 <script is:inline>
   (function() {
     var btn  = document.getElementById('theme-toggle');
     var icon = document.getElementById('theme-icon');
 
-    /* Sync icon with current theme on mount */
+    /* Sync icon and aria-label with current theme on mount.
+       ◐ represents dark mode (click to switch to light).
+       ◑ represents light mode (click to switch to dark). */
     function syncIcon() {
-      if (icon) {
-        icon.textContent = document.documentElement.classList.contains('dark') ? '☀' : '◑';
-      }
+      var dark = document.documentElement.classList.contains('dark');
+      if (icon) icon.textContent = dark ? '◐' : '◑';
+      if (btn)  btn.setAttribute('aria-label', dark ? '切換淺色模式' : '切換深色模式');
     }
     syncIcon();
 
     btn && btn.addEventListener('click', function() {
-      var isDark = document.documentElement.classList.toggle('dark');
+      document.documentElement.classList.toggle('dark');
+      var isDark = document.documentElement.classList.contains('dark');
       localStorage.setItem('pulsar-theme', isDark ? 'dark' : 'light');
       syncIcon();
-      if (btn) btn.setAttribute('aria-label', isDark ? '切換淺色模式' : '切換深色模式');
     });
   })();
 </script>
