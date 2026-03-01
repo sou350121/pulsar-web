@@ -35,16 +35,15 @@ const methodCount   = topMethods.length;
 const driftActive   = driftState?.drift_active ?? false;
 const lastCheck     = driftState?.last_check ?? '—';
 
-const driftHistory: Array<{ date: string; vla: number; ai: number }> = [];
-if (driftMetrics) {
-  for (const [date, vals] of Object.entries(driftMetrics as DriftMetricsFile).sort()) {
-    driftHistory.push({
-      date,
-      vla: vals.vla?.papers_scanned ?? 0,
-      ai:  vals.ai_app?.items_scanned ?? 0,
-    });
-  }
-}
+const driftHistory: Array<{ date: string; vla: number; ai: number }> = (
+  Array.isArray(driftMetrics) ? driftMetrics : []
+)
+  .map((entry: any) => ({
+    date: entry.date ?? '',
+    vla:  entry.vla_papers_scanned  ?? 0,
+    ai:   entry.aiapp_items_scanned ?? 0,
+  }))
+  .sort((a, b) => a.date.localeCompare(b.date));
 const last14 = driftHistory.slice(-14);
 const maxVLA = Math.max(1, ...last14.map(d => d.vla));
 const maxAI  = Math.max(1, ...last14.map(d => d.ai));
@@ -164,7 +163,6 @@ const DOMAIN_ARROW: Record<string, string> = {
       <div class="db-metric">
         <span class="db-metric-num">{entityCount || '—'}</span>
         <span class="db-metric-label">ENTITIES</span>
-        {entityCount > 0 && <span class="db-metric-delta db-delta--up">+12</span>}
       </div>
       <div class="db-metric-sep"></div>
       <div class="db-metric">
@@ -180,7 +178,6 @@ const DOMAIN_ARROW: Record<string, string> = {
       <div class="db-metric db-metric--cyan">
         <span class="db-metric-num">{upstream.length || '—'}</span>
         <span class="db-metric-label">UPSTREAM SIG</span>
-        {upstream.length > 0 && <span class="db-metric-delta db-delta--up">+8%</span>}
       </div>
       <div class="db-metric-sep"></div>
       <div class={`db-metric ${driftActive ? 'db-metric--warn' : 'db-metric--ok'}`}>

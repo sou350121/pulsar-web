@@ -67,6 +67,7 @@ const allCombined = [
 // Split combined library into 7-day cards and older list
 const recentGhLibrary = allCombined.filter(a => a.date >= cutoff);
 const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
@@ -74,6 +75,13 @@ const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
   description="Vision-Language-Action 理論深挖與 SOTA 排行 — VLA-Handbook 庫"
 >
   <div class="vdd-page page-container">
+
+    <!-- ── Breadcrumb ── -->
+    <nav class="dd-breadcrumb" aria-label="麵包屑">
+      <a href={`${base}/`} class="bc-link">首頁</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">VLA 深度追蹤</span>
+    </nav>
 
     <!-- ── Masthead ── -->
     <header class="vdd-masthead">
@@ -889,4 +897,22 @@ const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* ── Breadcrumb ── */
+.dd-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+}
+.bc-link {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.bc-link:hover { color: var(--text-secondary); opacity: 1; }
+.bc-sep { color: var(--text-tertiary); opacity: 0.5; }
+.bc-current { color: var(--text-secondary); }
 </style>
