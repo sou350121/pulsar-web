@@ -304,15 +304,12 @@ const RULE_LABELS: Record<string, string> = {
           <p class="hp-briefing-overline">RESEARCH INTELLIGENCE · <span data-tc>照見系統</span><span data-sc>照见系统</span></p>
           <h2 class="hp-briefing-name">PULSAR · <span class="hp-briefing-zh"><span data-tc>照見</span><span data-sc>照见</span></span></h2>
           <p class="hp-briefing-problem">
-            <span data-tc>研究者每天的困境，不是資訊不足，而是訊噪比太低。</span><span data-sc>研究者每天的困境，不是信息不足，而是信噪比太低。</span>
+            <span data-tc>注意力比訊息更稀缺——照見就是為了保護它而生。</span><span data-sc>注意力比信息更稀缺——照见就是为了保护它而生。</span>
           </p>
           <p class="hp-briefing-body">
-            <span data-tc>照見在兩條研究線上設立多層過濾——<strong>VLA 機器人前沿 × AI 應用趨勢</strong>。大語言模型以 ⚡ 突破 · 🔧 技術 · 📖 觀點 三級評級精煉每日信號，跨域共振偵測、關鍵研究者動態追蹤與雙週預測校準，共同構成一套有自我修正能力的情報系統。</span><span data-sc>照见在两条研究线上设立多层过滤——<strong>VLA 机器人前沿 × AI 应用趋势</strong>。大语言模型以 ⚡ 突破 · 🔧 技术 · 📖 观点 三级评级精炼每日讯号，跨域共振侦测、关键研究者动态追踪与双周预测校准，共同构成一套有自我修正能力的情报系统。</span>
+            <span data-tc>同時追蹤 <strong>VLA 機器人 × AI 應用</strong> 兩條前沿。LLM 以 ⚡ 突破 · 🔧 技術 · 📖 觀點 精煉每日信號；跨域共振偵測捕捉兩條線的技術交叉；雙週校準讓系統對自身預判持續負責。</span><span data-sc>同时追踪 <strong>VLA 机器人 × AI 应用</strong> 两条前沿。LLM 以 ⚡ 突破 · 🔧 技术 · 📖 观点 精炼每日讯号；跨域共振侦测捕捉两条线的技术交叉；双周校准让系统对自身预判持续负责。</span>
           </p>
-          <p class="hp-briefing-cta">
-            <span class="hp-briefing-cta-dot"></span>
-            <span data-tc>北京時間 12:00 後，當日全部資料就緒。定時看一眼，省下搜索注意力。</span><span data-sc>北京时间 12:00 后，当日全部资料就绪。定时看一眼，省下搜索注意力。</span>
-          </p>
+
         </div>
 
         <!-- Right: ready signal -->
@@ -324,7 +321,7 @@ const RULE_LABELS: Record<string, string> = {
               <span data-tc>定時查閱，一覽無遺</span><span data-sc>定时查阅，一览无遗</span>
             </span>
           </div>
-          <p class="hp-briefing-ready-sub">BJ TIME · DAILY UPDATE COMPLETE</p>
+          <p class="hp-briefing-ready-sub">VLA ROBOTICS · AI APPLICATION</p>
         </div>
 
       </div>
@@ -344,7 +341,7 @@ const RULE_LABELS: Record<string, string> = {
       </div>
 
       <div class="hero-headline fade-in-2">
-        <span class="overline">DAILY INTELLIGENCE · <span data-tc>照見系統</span><span data-sc>照见系统</span></span>
+        <span class="overline">DAILY INTELLIGENCE · {displayDate}</span>
         <h1 id="hero-title">今日 <em>AI + VLA</em> 洞察</h1>
       </div>
 
@@ -1011,9 +1008,9 @@ const RULE_LABELS: Record<string, string> = {
   font-weight: 500;
   color: var(--text-primary);
   line-height: 1.7;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   max-width: 420px;
-  opacity: 0.9;
+  opacity: 1;
 }
 :global(html.dark) .hp-briefing-problem {
   color: #C8D4F0;
@@ -1023,40 +1020,8 @@ const RULE_LABELS: Record<string, string> = {
   font-size: 0.92rem;
   color: var(--text-secondary);
   line-height: 1.85;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   max-width: 420px;
-}
-.hp-briefing-cta {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: 0.88rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  line-height: 1.7;
-  padding: 12px 16px;
-  background: var(--accent-amber-bg);
-  border: 1px solid rgba(212,145,10,0.2);
-  border-left: 3px solid var(--accent-amber);
-  border-radius: 0 6px 6px 0;
-}
-:global(html.dark) .hp-briefing-cta {
-  background: rgba(245,183,49,0.06);
-  border-color: rgba(245,183,49,0.15);
-  border-left-color: var(--accent-amber);
-  color: #E8EEFF;
-}
-.hp-briefing-cta-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-amber);
-  flex-shrink: 0;
-  margin-top: 0.5em;
-  animation: pulseGlow 2.5s ease-in-out infinite;
-  box-shadow: 0 0 6px rgba(212,145,10,0.5);
 }
 /* ── Ready signal (right col) ── */
 .hp-briefing-right {
