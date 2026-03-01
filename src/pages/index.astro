@@ -743,7 +743,7 @@ const RULE_LABELS: Record<string, string> = {
 
 .hp-stat-num {
   font-family: "IBM Plex Mono", "Menlo", "Consolas", monospace;
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-size: clamp(1rem, 4vw, 1.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -785,6 +785,12 @@ const RULE_LABELS: Record<string, string> = {
 
 @media (max-width: 900px) {
   .hp-signal-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .hp-signal-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 }
 @media (max-width: 520px) {
   .hp-signal-grid { grid-template-columns: 1fr; }
@@ -1115,6 +1121,9 @@ const RULE_LABELS: Record<string, string> = {
 
   /* Hero subtitle hidden on mobile to reduce clutter */
   .hero-subtitle { display: none; }
+  .hp-stat-label {
+    font-size: max(10px, 0.5rem);
+  }
 }
 
 @media (max-width: 480px) {

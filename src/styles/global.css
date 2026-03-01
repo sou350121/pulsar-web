@@ -695,7 +695,7 @@ html.dark .ticker-label { background: rgba(245,183,49,0.12); }
 }
 
 .section-header h2 {
-  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-size: clamp(1.2rem, 4.5vw, 2rem);
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -1926,6 +1926,27 @@ html, body {
   .digest-block { padding: 12px 0 0; }
 
 } /* end @media (max-width: 767px) */
+
+/* ── Fix: .btn touch target min-height 44px on mobile ── */
+@media (max-width: 767px) {
+  .btn {
+    min-height: 44px;
+    padding: 10px 20px;
+  }
+}
+
+/* ── Fix: .pick-date floor at 11px on narrow mobile ── */
+@media (max-width: 640px) {
+  .pick-date { font-size: max(11px, 0.62rem); }
+}
+
+/* ── Fix: .social-card no overflow on phones < 480px ── */
+@media (max-width: 480px) {
+  .social-card {
+    min-width: calc(100vw - 48px);
+    width: calc(100vw - 48px);
+  }
+}
 
 /* ── Very small phones: < 360px ── */
 @media (max-width: 359px) {
