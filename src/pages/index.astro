@@ -312,35 +312,16 @@ const RULE_LABELS: Record<string, string> = {
           </p>
         </div>
 
-        <!-- Right: pipeline timeline -->
+        <!-- Right: ready signal -->
         <div class="hp-briefing-right">
-          <p class="hp-briefing-tl-label">PIPELINE · <span data-tc>每日更新時序</span><span data-sc>每日更新时序</span></p>
-          <ol class="hp-tl" aria-label="Pipeline 更新時序">
-            <li class="hp-tl-item">
-              <span class="hp-tl-time">06:45</span>
-              <span class="hp-tl-desc"><span data-tc>AI 日報採集</span><span data-sc>AI 日报采集</span></span>
-            </li>
-            <li class="hp-tl-item">
-              <span class="hp-tl-time">09:00</span>
-              <span class="hp-tl-desc"><span data-tc>VLA 論文評級</span><span data-sc>VLA 论文评级</span></span>
-            </li>
-            <li class="hp-tl-item">
-              <span class="hp-tl-time">09:45</span>
-              <span class="hp-tl-desc"><span data-tc>社交情報採集</span><span data-sc>社交情报采集</span></span>
-            </li>
-            <li class="hp-tl-item">
-              <span class="hp-tl-time">10:20</span>
-              <span class="hp-tl-desc"><span data-tc>跨域分析 + 品質監測</span><span data-sc>跨域分析 + 品质监测</span></span>
-            </li>
-            <li class="hp-tl-item">
-              <span class="hp-tl-time">11:15</span>
-              <span class="hp-tl-desc"><span data-tc>語義索引重建完成</span><span data-sc>语义索引重建完成</span></span>
-            </li>
-            <li class="hp-tl-item hp-tl-item--ready">
-              <span class="hp-tl-time hp-tl-time--ready">12:00</span>
-              <span class="hp-tl-desc hp-tl-desc--ready">✓ <span data-tc>定時查閱，一覽無遺</span><span data-sc>定时查阅，一览无遗</span></span>
-            </li>
-          </ol>
+          <div class="hp-briefing-ready">
+            <span class="hp-briefing-ready-time">12:00</span>
+            <span class="hp-briefing-ready-check">✓</span>
+            <span class="hp-briefing-ready-label">
+              <span data-tc>定時查閱，一覽無遺</span><span data-sc>定时查阅，一览无遗</span>
+            </span>
+          </div>
+          <p class="hp-briefing-ready-sub">BJ TIME · DAILY UPDATE COMPLETE</p>
         </div>
 
       </div>
@@ -1060,89 +1041,76 @@ const RULE_LABELS: Record<string, string> = {
   animation: pulseGlow 2.5s ease-in-out infinite;
   box-shadow: 0 0 6px rgba(212,145,10,0.5);
 }
-/* ── Timeline ── */
-.hp-briefing-tl-label {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.hp-tl {
-  list-style: none;
+/* ── Ready signal (right col) ── */
+.hp-briefing-right {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  border-left: 1px solid var(--border);
-  margin-left: 4px;
-}
-:global(html.dark) .hp-tl { border-left-color: #1A2840; }
-.hp-tl-item {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  padding: 9px 0 9px 20px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 24px;
+  border: 1px solid rgba(212,145,10,0.2);
+  border-radius: 16px;
+  background: rgba(212,145,10,0.04);
   position: relative;
+  overflow: hidden;
 }
-.hp-tl-item::before {
+:global(html.dark) .hp-briefing-right {
+  background: rgba(245,183,49,0.04);
+  border-color: rgba(245,183,49,0.15);
+  box-shadow: 0 0 40px rgba(245,183,49,0.04), inset 0 1px 0 rgba(245,183,49,0.08);
+}
+.hp-briefing-right::before {
   content: '';
   position: absolute;
-  left: -4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--border);
-  border: 1px solid var(--border-subtle);
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(212,145,10,0.07) 0%, transparent 70%);
+  pointer-events: none;
 }
-:global(html.dark) .hp-tl-item::before {
-  background: #1A2840;
-  border-color: #1E2D4A;
+:global(html.dark) .hp-briefing-right::before {
+  background: radial-gradient(ellipse at 50% 60%, rgba(245,183,49,0.08) 0%, transparent 70%);
 }
-.hp-tl-item--ready::before {
-  background: var(--accent-amber);
-  border-color: rgba(212,145,10,0.4);
-  box-shadow: 0 0 8px rgba(212,145,10,0.4);
-  width: 9px;
-  height: 9px;
-  left: -5px;
+.hp-briefing-ready {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
 }
-:global(html.dark) .hp-tl-item--ready::before {
-  background: var(--accent-amber);
-  box-shadow: 0 0 10px rgba(245,183,49,0.5);
-}
-.hp-tl-time {
+.hp-briefing-ready-time {
   font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--text-tertiary);
-  width: 2.8rem;
-  flex-shrink: 0;
-}
-.hp-tl-time--ready {
   color: var(--accent-amber);
-  font-size: 0.78rem;
+  line-height: 1;
 }
-:global(html.dark) .hp-tl-time--ready {
-  text-shadow: 0 0 10px rgba(245,183,49,0.4);
+:global(html.dark) .hp-briefing-ready-time {
+  text-shadow: 0 0 40px rgba(245,183,49,0.35), 0 0 80px rgba(245,183,49,0.12);
 }
-.hp-tl-desc {
+.hp-briefing-ready-check {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 1.4rem;
+  color: var(--accent-amber);
+  margin: 8px 0 2px;
+  opacity: 0.85;
+}
+.hp-briefing-ready-label {
   font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  letter-spacing: 0.02em;
-}
-.hp-tl-desc--ready {
-  color: var(--accent-amber);
+  font-size: 1rem;
   font-weight: 600;
-  font-size: 0.86rem;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
 }
-:global(html.dark) .hp-tl-desc--ready {
-  color: var(--accent-amber);
-  text-shadow: 0 0 8px rgba(245,183,49,0.25);
+.hp-briefing-ready-sub {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-top: 18px;
+  opacity: 0.7;
 }
 
 /* ── Cross-domain pulse section ── */
