@@ -1,0 +1,77 @@
+---
+/**
+ * MetricCard.astro
+ * Compact dashboard card showing a single pipeline metric.
+ *
+ * Props:
+ *   label  — metric name
+ *   value  — primary value to display (string for flexibility)
+ *   status — 'ok' | 'warn' | 'error' | 'neutral'
+ *   trend  — optional trend string like '+12%' or '−3'
+ *   unit   — optional unit label (e.g. "papers", "items")
+ */
+interface Props {
+  label:   string;
+  value:   string | number;
+  status?: 'ok' | 'warn' | 'error' | 'neutral';
+  trend?:  string;
+  unit?:   string;
+}
+
+const { label, value, status = 'neutral', trend, unit } = Astro.props;
+
+const statusConfig = {
+  ok:      { dot: 'bg-green-500',  badge: 'text-green-600 dark:text-green-400',  label: '正常' },
+  warn:    { dot: 'bg-amber-500',  badge: 'text-amber-600 dark:text-amber-400',  label: '警告' },
+  error:   { dot: 'bg-red-500',    badge: 'text-red-600   dark:text-red-400',    label: '異常' },
+  neutral: { dot: 'bg-stone-400',  badge: 'text-stone-500 dark:text-stone-400',  label: '—' },
+};
+const sc = statusConfig[status];
+
+// Trend direction for colouring
+const trendPositive = trend?.startsWith('+');
+const trendNegative = trend?.startsWith('−') || trend?.startsWith('-');
+---
+
+<div class="card flex flex-col gap-2 min-w-0">
+  <!-- Label row + status dot -->
+  <div class="flex items-center justify-between gap-2">
+    <span class="text-xs font-ibm-plex-mono uppercase tracking-widest text-pulsar-muted truncate">
+      {label}
+    </span>
+    <span
+      class:list={['w-2 h-2 rounded-full shrink-0', sc.dot]}
+      aria-label={sc.label}
+      title={sc.label}
+    />
+  </div>
+
+  <!-- Value -->
+  <div class="flex items-baseline gap-1.5">
+    <span class="text-2xl font-bold font-ibm-plex-mono text-pulsar-text">
+      {value}
+    </span>
+    {unit && (
+      <span class="text-xs text-pulsar-muted font-ibm-plex-mono">{unit}</span>
+    )}
+  </div>
+
+  <!-- Trend + status -->
+  <div class="flex items-center justify-between text-xs">
+    {trend ? (
+      <span
+        class:list={[
+          'font-ibm-plex-mono font-medium',
+          trendPositive ? 'text-green-600 dark:text-green-400' : '',
+          trendNegative ? 'text-red-600   dark:text-red-400'   : '',
+          !trendPositive && !trendNegative ? 'text-pulsar-muted' : '',
+        ]}
+      >
+        {trend}
+      </span>
+    ) : <span />}
+    <span class:list={['font-ibm-plex-mono', sc.badge]}>
+      {sc.label}
+    </span>
+  </div>
+</div>

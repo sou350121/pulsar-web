@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PULSAR · 照見 — AI 研究情報平台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — CSS CUSTOM PROPERTIES
+    ============================================================ */
+    :root {
+      /* Light mode (default) */
+      --bg:            #FAFAF7;
+      --bg-alt:        #F3F1EB;
+      --surface:       #FFFFFF;
+      --surface-2:     #F7F5F0;
+      --border:        #E5E2D9;
+      --border-subtle: #EEECE6;
+      --text-primary:  #1A1F2E;
+      --text-secondary:#5C6478;
+      --text-tertiary: #8A90A0;
+      --accent-amber:  #D4910A;
+      --accent-amber-bg: rgba(212,145,10,0.10);
+      --accent-cyan:   #0F8FA0;
+      --accent-cyan-bg: rgba(15,143,160,0.10);
+      --rating-flash:  #C4960A;
+      --rating-flash-bg: rgba(196,150,10,0.12);
+      --rating-wrench: #2B8EC7;
+      --rating-wrench-bg: rgba(43,142,199,0.12);
+      --rating-book:   #3D8B5E;
+      --rating-book-bg: rgba(61,139,94,0.12);
+      --rating-x:      #C94040;
+      --rating-x-bg:   rgba(201,64,64,0.12);
+      --nav-bg:        rgba(250,250,247,0.92);
+      --shadow-card:   0 2px 12px rgba(26,31,46,0.07), 0 1px 3px rgba(26,31,46,0.05);
+      --shadow-hover:  0 8px 32px rgba(26,31,46,0.12), 0 2px 8px rgba(26,31,46,0.08);
+      --shadow-hero:   0 4px 24px rgba(26,31,46,0.08);
+      --gradient-hero: linear-gradient(135deg, #F3F1EB 0%, #FAFAF7 60%, #EEF5F6 100%);
+      --gradient-report: linear-gradient(135deg, #1A2A3A 0%, #0D1E2C 100%);
+      --sparkline-bar: #E5E2D9;
+      --sparkline-active: #D4910A;
+      --transition-theme: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    html.dark {
+      --bg:            #070B14;
+      --bg-alt:        #0A0F1C;
+      --surface:       #0D1526;
+      --surface-2:     #111D32;
+      --border:        #1E2D4A;
+      --border-subtle: #172038;
+      --text-primary:  #E8EEFF;
+      --text-secondary:#7B8FAB;
+      --text-tertiary: #4A5C78;
+      --accent-amber:  #F5B731;
+      --accent-amber-bg: rgba(245,183,49,0.10);
+      --accent-cyan:   #3ECFCF;
+      --accent-cyan-bg: rgba(62,207,207,0.10);
+      --rating-flash:  #FFD60A;
+      --rating-flash-bg: rgba(255,214,10,0.10);
+      --rating-wrench: #4FC3F7;
+      --rating-wrench-bg: rgba(79,195,247,0.10);
+      --rating-book:   #81C784;
+      --rating-book-bg: rgba(129,199,132,0.10);
+      --rating-x:      #EF5350;
+      --rating-x-bg:   rgba(239,83,80,0.10);
+      --nav-bg:        rgba(7,11,20,0.92);
+      --shadow-card:   0 2px 16px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
+      --shadow-hover:  0 8px 40px rgba(0,0,0,0.6), 0 2px 12px rgba(62,207,207,0.08);
+      --shadow-hero:   0 4px 32px rgba(0,0,0,0.5);
+      --gradient-hero: linear-gradient(135deg, #070B14 0%, #0A1020 50%, #080E1A 100%);
+      --gradient-report: linear-gradient(135deg, #0D1E35 0%, #091524 100%);
+      --sparkline-bar: #1E2D4A;
+      --sparkline-active: #F5B731;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Noto Serif SC', 'Georgia', serif;
+      line-height: 1.7;
+      transition: var(--transition-theme);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY UTILITIES
+    ============================================================ */
+    .font-mono   { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+    .font-serif  { font-family: 'Lora', 'Georgia', serif; }
+    .font-zh     { font-family: 'Noto Serif SC', 'STSong', serif; }
+
+    h1, h2, h3 { font-family: 'Lora', 'Georgia', serif; font-weight: 600; line-height: 1.3; }
+    h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height: 1.4; }
+
+    a { color: var(--accent-cyan); text-decoration: none; transition: opacity 0.2s; }
+    a:hover { opacity: 0.75; }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,183,49,0); }
+      50%       { box-shadow: 0 0 12px 3px rgba(245,183,49,0.18); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+
+    .fade-in-1 { animation: fadeInUp 0.6s ease both; animation-delay: 0.05s; }
+    .fade-in-2 { animation: fadeInUp 0.6s ease both; animation-delay: 0.15s; }
+    .fade-in-3 { animation: fadeInUp 0.6s ease both; animation-delay: 0.25s; }
+    .fade-in-4 { animation: fadeInUp 0.6s ease both; animation-delay: 0.35s; }
+    .fade-in-5 { animation: fadeInUp 0.6s ease both; animation-delay: 0.45s; }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition-theme);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      height: 60px;
+      gap: 0;
+    }
+
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--text-primary);
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: var(--transition-theme);
+    }
+
+    .nav-logo span {
+      color: var(--accent-amber);
+    }
+
+    .nav-logo .logo-zh {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      display: block;
+      margin-top: -4px;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      margin: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 0;
+      flex: 1;
+    }
+
+    .nav-links a {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-primary);
+      background: var(--surface-2);
+    }
+
+    .nav-links a.active {
+      color: var(--accent-amber);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .nav-lang {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface-2);
+      color: var(--text-primary);
+      transform: rotate(15deg);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-divider { display: none; }
+    }
+
+    /* ============================================================
+       LIVE INDICATOR
+    ============================================================ */
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+    }
+
+    .live-dot::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #4CAF50;
+      border-radius: 50%;
+      animation: pulseGlow 2s ease-in-out infinite;
+      box-shadow: 0 0 6px rgba(76,175,80,0.5);
+    }
+
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    .hero {
+      padding-top: 100px;
+      padding-bottom: 72px;
+      background: var(--gradient-hero);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-amber-bg) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    html.dark .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: 5%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-cyan-bg) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .hero-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+    }
+
+    .hero-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+    }
+
+    .hero-headline {
+      margin-bottom: 16px;
+    }
+
+    .hero-headline .overline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .hero-headline h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-headline h1 em {
+      font-style: italic;
+      color: var(--accent-amber);
+    }
+
+    .hero-subtitle {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ============================================================
+       CARDS — BASE
+    ============================================================ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-amber);
+    }
+
+    .card-sm {
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    /* ============================================================
+       RATING BADGES
+    ============================================================ */
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+    }
+
+    .rating-flash {
+      color: var(--rating-flash);
+      background: var(--rating-flash-bg);
+      border-color: rgba(255,214,10,0.2);
+    }
+    .rating-wrench {
+      color: var(--rating-wrench);
+      background: var(--rating-wrench-bg);
+      border-color: rgba(79,195,247,0.2);
+    }
+    .rating-book {
+      color: var(--rating-book);
+      background: var(--rating-book-bg);
+      border-color: rgba(129,199,132,0.2);
+    }
+    .rating-x {
+      color: var(--rating-x);
+      background: var(--rating-x-bg);
+      border-color: rgba(239,83,80,0.2);
+    }
+
+    /* ============================================================
+       HERO CARDS
+    ============================================================ */
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow-hero);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .hero-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .hero-card-ai {
+      border-top: 3px solid var(--rating-flash);
+    }
+
+    .hero-card-ai:hover { border-top-color: var(--rating-flash); border-left-color: var(--border); }
+
+    .hero-card-vla {
+      border-top: 3px solid var(--rating-wrench);
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 0 16px 0 120px;
+      opacity: 0.04;
+    }
+
+    .hero-card-ai::before { background: var(--rating-flash); }
+    .hero-card-vla::before { background: var(--rating-wrench); }
+
+    .hero-card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-card-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .hero-card-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin: 14px 0 12px;
+    }
+
+    .hero-card-summary {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .hero-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .source-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-amber {
+      background: var(--accent-amber);
+      color: #FFF;
+    }
+
+    html.dark .btn-amber { color: #07090E; }
+
+    .btn-amber:hover {
+      opacity: 0.88;
+      transform: translateX(2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+    }
+
+    .btn-outline:hover {
+      background: var(--accent-cyan-bg);
+    }
+
+    /* ============================================================
+       SECTION HEADERS
+    ============================================================ */
+    .section {
+      padding: 64px 0;
+    }
+
+    .section-alt {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+    }
+
+    .section-header h2 {
+      font-size: 1.55rem;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .section-header .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .section-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       PICKS GRID
+    ============================================================ */
+    .picks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .picks-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .picks-grid { grid-template-columns: 1fr; }
+    }
+
+    .pick-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pick-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-subtle);
+    }
+
+    .pick-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .pick-source-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .pick-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .pick-summary {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .pick-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .pick-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+    }
+
+    .domain-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+    }
+
+    .domain-tag.vla {
+      background: var(--rating-wrench-bg);
+      color: var(--rating-wrench);
+    }
+
+    /* ============================================================
+       SOCIAL INTEL STRIP
+    ============================================================ */
+    .social-section {
+      overflow: hidden;
+    }
+
+    .social-scroll-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      padding-bottom: 8px;
+    }
+
+    .social-scroll-container::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .social-scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .social-scroll-container::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .social-strip {
+      display: flex;
+      gap: 16px;
+      min-width: max-content;
+    }
+
+    .social-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      width: 320px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .social-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-cyan);
+    }
+
+    .social-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .social-platform {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .social-entity {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      letter-spacing: 0.04em;
+    }
+
+    .social-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      margin-left: auto;
+      letter-spacing: 0.04em;
+    }
+
+    .social-content {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .social-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-tertiary);
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      display: inline-block;
+      width: fit-content;
+      letter-spacing: 0.08em;
+    }
+
+    /* ============================================================
+       DASHBOARD ROW
+    ============================================================ */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .dash-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .dash-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .dash-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .dash-card-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+    }
+
+    .status-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .status-ok {
+      color: var(--rating-book);
+      background: var(--rating-book-bg);
+      border: 1px solid rgba(129,199,132,0.2);
+    }
+
+    .status-warn {
+      color: var(--accent-amber);
+      background: var(--accent-amber-bg);
+      border: 1px solid rgba(245,183,49,0.2);
+    }
+
+    /* Sparkline bars (pure CSS) */
+    .sparkline {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 48px;
+      margin-bottom: 12px;
+    }
+
+    .spark-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: var(--sparkline-bar);
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .spark-bar.active { background: var(--sparkline-active); }
+    .spark-bar.high   { background: var(--accent-cyan); opacity: 0.7; }
+
+    .spark-bar::after {
+      content: attr(data-val);
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    .sparkline-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .spark-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+    }
+
+    .spark-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-amber);
+    }
+
+    /* Entity bars */
+    .entity-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .entity-row { display: flex; flex-direction: column; gap: 5px; }
+
+    .entity-row-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .entity-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+    }
+
+    .entity-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+
+    .entity-bar-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .entity-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber));
+      transition: width 0.8s ease;
+    }
+
+    /* Pipeline health checks */
+    .health-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .health-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .health-icon {
+      font-size: 0.75rem;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .health-ok   { color: var(--rating-book); }
+    .health-warn { color: var(--accent-amber); }
+
+    .health-name { flex: 1; }
+
+    .health-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ============================================================
+       BIWEEKLY REPORT TEASER
+    ============================================================ */
+    .report-teaser {
+      background: var(--gradient-report);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 56px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-hero);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .report-teaser:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .report-teaser::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(62,207,207,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .report-teaser::after {
+      content: '"';
+      position: absolute;
+      bottom: -40px;
+      left: 40px;
+      font-family: 'Lora', serif;
+      font-size: 18rem;
+      color: rgba(255,255,255,0.02);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .report-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .report-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 600;
+      color: #E8EEFF;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .report-excerpt {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.9rem;
+      color: rgba(232,238,255,0.55);
+      line-height: 1.85;
+      max-width: 600px;
+    }
+
+    .report-cta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-amber);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .report-cta-arrow {
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--accent-amber);
+      display: block;
+    }
+
+    .report-period-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: rgba(232,238,255,0.35);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .report-teaser {
+        grid-template-columns: 1fr;
+        padding: 32px 28px;
+      }
+      .report-cta { flex-direction: row; align-items: center; }
+    }
+
+    /* ============================================================
+       TICKER / ANNOUNCEMENT BAR
+    ============================================================ */
+    .ticker {
+      background: var(--accent-amber);
+      color: #07090E;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 8px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    html.dark .ticker { background: #1C1800; color: var(--accent-amber); border-bottom: 1px solid rgba(245,183,49,0.2); }
+
+    .ticker-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .ticker-label {
+      background: rgba(0,0,0,0.15);
+      padding: 0 16px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      letter-spacing: 0.15em;
+    }
+
+    html.dark .ticker-label { background: rgba(245,183,49,0.12); }
+
+    .ticker-text {
+      padding: 0 24px;
+      opacity: 0.85;
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 56px 0 32px;
+      transition: var(--transition-theme);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    .footer-brand-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .footer-brand-logo span { color: var(--accent-amber); }
+
+    .footer-tagline {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    .footer-auto-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-col-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent-amber); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-version {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+    }
+
+    /* ============================================================
+       DECORATIVE ELEMENTS
+    ============================================================ */
+    .section-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.12em;
+      display: inline-block;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      margin-bottom: 8px;
+    }
+
+    .accent-line {
+      display: inline-block;
+      width: 32px;
+      height: 2px;
+      background: var(--accent-amber);
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    .grid-rule {
+      border: none;
+      border-top: 1px solid var(--border-subtle);
+      margin: 0;
+    }
+
+    /* ============================================================
+       SCROLL FADE (decorative gradient for social strip)
+    ============================================================ */
+    .social-scroll-wrapper {
+      position: relative;
+    }
+
+    .social-scroll-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--bg-alt));
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       MISC UTILITY
+    ============================================================ */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); border: 0;
+    }
+
+    .text-amber { color: var(--accent-amber); }
+    .text-cyan  { color: var(--accent-cyan); }
+    .text-secondary { color: var(--text-secondary); }
+
+    /* ============================================================
+       ICON PLACEHOLDERS (inline SVG via CSS)
+    ============================================================ */
+    .icon-sun::before  { content: '☀'; }
+    .icon-moon::before { content: '◑'; }
+
+    /* Loading shimmer on initial paint */
+    @keyframes initialFade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    body { animation: initialFade 0.4s ease; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <nav class="nav" aria-label="Primary navigation">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="nav-logo" aria-label="Pulsar 照見 — Home">
+          PUL<span>S</span>AR
+          <span class="logo-zh">照　見</span>
+        </a>
+
+        <div class="nav-divider" aria-hidden="true"></div>
+
+        <ul class="nav-links" role="list">
+          <li><a href="#daily" class="active">日　報</a></li>
+          <li><a href="#vla">V L A</a></li>
+          <li><a href="#social">社交情報</a></li>
+          <li><a href="#dashboard">儀表板</a></li>
+          <li><a href="#reports">雙週報告</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <span class="live-dot">LIVE</span>
+          <span class="nav-lang">中文</span>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
+            <span id="themeIcon">◑</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       TICKER BAR
+  ============================================================ -->
+  <div class="ticker" role="marquee" aria-label="Breaking signals">
+    <div class="container">
+      <div class="ticker-inner">
+        <span class="ticker-label">⚡ 最新信號</span>
+        <span class="ticker-text">
+          Karpathy 發表「Software 3.0」論文預印本 · Pi0.5 在靈巧操作基準上超越前代 42% ·
+          DashScope Qwen3.5 支持 128K 上下文窗口 · VLA 開放基準 RoboMimic-XL 公開發布 ·
+          Google DeepMind 宣布 Gemini Robotics 整合計劃
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HERO SECTION
+  ============================================================ -->
+  <section class="hero" id="daily" aria-labelledby="hero-title">
+    <div class="container">
+
+      <div class="hero-meta fade-in-1">
+        <span class="hero-date">2026年3月1日 · 星期日</span>
+        <span class="hero-sep" aria-hidden="true"></span>
+        <span class="hero-date" style="color: var(--text-tertiary);">第 60 期</span>
+        <span class="hero-sep" aria-hidden="true"></span>
+        <span class="live-dot">Pipeline 已更新</span>
+      </div>
+
+      <div class="hero-headline fade-in-2">
+        <span class="overline">TODAY'S INTELLIGENCE DIGEST</span>
+        <h1 id="hero-title">今日 <em>AI</em> 洞察</h1>
+      </div>
+
+      <p class="hero-subtitle fade-in-3">
+        匯聚 AI 前沿論文、行業動態、實驗室動向，以及機器人視覺—語言—動作研究的每日精華。
+        由 Pulsar 管道自動採集、評級與生成。
+      </p>
+
+      <!-- Hero two-column grid -->
+      <div class="hero-grid fade-in-4">
+
+        <!-- Left: Top AI Pick -->
+        <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
+          <div class="hero-card-label">
+            <span>今日 AI 精選</span>
+          </div>
+          <span class="rating-badge rating-flash">⚡ 突破</span>
+          <h2 class="hero-card-title" id="hero-ai-title">
+            Karpathy「意圖驅動開發」：從語法編碼到語義編排的範式轉移
+          </h2>
+          <p class="hero-card-summary">
+            Andrej Karpathy 在其最新長文中系統闡述了「Build with Intent」框架——開發者不再直接書寫語法，
+            而是通過自然語言意圖編排 AI 代理完成實現細節。文章預示軟件工程的核心技能將從「精確語法控制」
+            轉向「目標清晰表達與系統級驗證」，被社區譽為 Software 3.0 宣言。
+          </p>
+          <div class="hero-card-footer">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span class="source-tag">KARPATHY.AI</span>
+              <span class="source-tag">3,200 字</span>
+            </div>
+            <a href="#" class="btn btn-amber">閱讀全文 →</a>
+          </div>
+        </article>
+
+        <!-- Right: Top VLA Paper -->
+        <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
+          <div class="hero-card-label">
+            <span>今日 VLA 論文</span>
+          </div>
+          <span class="rating-badge rating-wrench">🔧 技術</span>
+          <h2 class="hero-card-title" id="hero-vla-title">
+            FlowAct: 基於流匹配的通用機器人操作策略學習框架
+          </h2>
+          <p class="hero-card-summary">
+            本文提出 FlowAct 框架，將連續流匹配（Continuous Flow Matching）引入視覺—語言—動作模型，
+            在 RoboMimic 和 MetaWorld 雙基準上分別實現 87.3% 和 91.2% 的任務成功率，
+            超越 Diffusion Policy 基線 18 個百分點，且推理速度提升 3.2 倍。
+          </p>
+          <div class="hero-card-footer">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span class="source-tag">arXiv:2503.00142</span>
+              <span class="source-tag">cs.RO</span>
+            </div>
+            <a href="#" class="btn btn-outline">arXiv →</a>
+          </div>
+        </article>
+
+      </div><!-- /hero-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LATEST PICKS GRID
+  ============================================================ -->
+  <section class="section" id="picks" aria-labelledby="picks-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1">
+        <div>
+          <span class="section-label section-number">02 — 精選列表</span>
+          <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>最新精選</h2>
+        </div>
+        <a href="#" class="section-link btn btn-outline">查看全部 →</a>
+      </div>
+
+      <div class="picks-grid">
+
+        <!-- Card 1 -->
+        <article class="pick-card fade-in-1">
+          <div class="pick-card-top">
+            <div>
+              <span class="rating-badge rating-flash" style="margin-bottom: 10px; display: inline-flex;">⚡ 突破</span>
+              <h3 class="pick-title">OpenAI o3-mini 在數學競賽 AMC12 達到人類頂尖水平，解題準確率 97.3%</h3>
+            </div>
+            <div class="pick-source-logo" aria-label="OpenAI">🤖</div>
+          </div>
+          <p class="pick-summary">o3-mini 以串行思維鏈突破高中數學天花板，創業公司開始基於此構建自動解題輔導系統。</p>
+          <div class="pick-footer">
+            <span class="pick-date">2026-03-01 · 07:15</span>
+            <span class="domain-tag">AI App</span>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="pick-card fade-in-2">
+          <div class="pick-card-top">
+            <div>
+              <span class="rating-badge rating-wrench" style="margin-bottom: 10px; display: inline-flex;">🔧 技術</span>
+              <h3 class="pick-title">Pi0.5：物理智能最新基礎模型在靈巧操作任務中超越前代 42%</h3>
+            </div>
+            <div class="pick-source-logo" aria-label="Physical Intelligence">🦾</div>
+          </div>
+          <p class="pick-summary">Pi0.5 引入跨實施例動作表示，支持 7 種機器人形態的零樣本遷移，在布料折疊任務成功率尤為亮眼。</p>
+          <div class="pick-footer">
+            <span class="pick-date">2026-02-28 · 09:50</span>
+            <span class="domain-tag vla">VLA</span>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="pick-card fade-in-3">
+          <div class="pick-card-top">
+            <div>
+              <span class="rating-badge rating-book" style="margin-bottom: 10px; display: inline-flex;">📖 觀點</span>
+              <h3 class="pick-title">Sam Altman：2026 年將迎來「AGI 元年」，但社會衝擊預期被嚴重低估</h3>
+            </div>
+            <div class="pick-source-logo" aria-label="OpenAI Blog">📝</div>
+          </div>
+          <p class="pick-summary">Altman 在 Sequoia 峰會上重申 AGI 時間表，並首次公開討論 OpenAI 對勞動力置換的內部應對方案。</p>
+          <div class="pick-footer">
+            <span class="pick-date">2026-03-01 · 06:50</span>
+            <span class="domain-tag">AI App</span>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="pick-card fade-in-1">
+          <div class="pick-card-top">
+            <div>
+              <span class="rating-badge rating-flash" style="margin-bottom: 10px; display: inline-flex;">⚡ 突破</span>
+              <h3 class="pick-title">CognitiveMamba：SSM 架構首次在 VLA 任務中超越 Transformer 基線</h3>
+            </div>
+            <div class="pick-source-logo" aria-label="arXiv">📄</div>
+          </div>
+          <p class="pick-summary">利用選擇性狀態空間模型的線性計算複雜度，CognitiveMamba 在長時序任務規劃上推理效率提升 5.8 倍。</p>
+          <div class="pick-footer">
+            <span class="pick-date">2026-02-28 · 09:15</span>
+            <span class="domain-tag vla">VLA</span>
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="pick-card fade-in-2">
+          <div class="pick-card-top">
+            <div>
+              <span class="rating-badge rating-book" style="margin-bottom: 10px; display: inline-flex;">📖 觀點</span>
+              <h3 class="pick-title">Cursor 月活突破 200 萬：「Vibe Coding」浪潮正在重塑初創公司技術棧選型</h3>
+            </div>
+            <div class="pick-source-logo" aria-label="36kr">📰</div>
+          </div>
+          <p class="pick-summary">AI IDE 賽道進入爆發期，Lovable、Bolt 等產品相繼宣布百萬用戶里程碑，傳統 IDE 廠商加速整合 AI 功能。</p>
+          <div class="pick-footer">
+            <span class="pick-date">2026-03-01 · 07:00</span>
+            <span class="domain-tag">AI App</span>
+          </div>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="pick-card fade-in-3">
+          <div class="pick-card-top">
+            <div>
+              <span class="rating-badge rating-wrench" style="margin-bottom: 10px; display: inline-flex;">🔧 技術</span>
+              <h3 class="pick-title">WorldModelBench：首個系統評估具身世界模型的多維度基準集正式發布</h3>
+            </div>
+            <div class="pick-source-logo" aria-label="CMU">🎓</div>
+          </div>
+          <p class="pick-summary">CMU 聯合 Stanford 發布 52 類任務基準，涵蓋物理直覺、空間推理和多步規劃，旨在標準化世界模型評估。</p>
+          <div class="pick-footer">
+            <span class="pick-date">2026-02-27 · 10:00</span>
+            <span class="domain-tag vla">VLA</span>
+          </div>
+        </article>
+
+      </div><!-- /picks-grid -->
+    </div>
+  </section>
+
+  <hr class="grid-rule" />
+
+  <!-- ============================================================
+       SOCIAL INTEL STRIP
+  ============================================================ -->
+  <section class="section section-alt social-section" id="social" aria-labelledby="social-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1">
+        <div>
+          <span class="section-label section-number">03 — 動態追蹤</span>
+          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去72小時</h2>
+        </div>
+        <a href="#" class="section-link btn btn-outline">完整情報 →</a>
+      </div>
+
+      <div class="social-scroll-wrapper fade-in-2">
+        <div class="social-scroll-container" role="list" aria-label="Social intelligence feed">
+
+          <div class="social-strip">
+
+            <article class="social-card" role="listitem">
+              <div class="social-card-meta">
+                <span class="social-platform" aria-label="Twitter/X">𝕏</span>
+                <span class="social-entity">Andrej Karpathy</span>
+                <span class="social-time">03-01 · 06:42</span>
+              </div>
+              <p class="social-content">
+                發布 3,200 字長文《意圖驅動開發宣言》，明確將 AI 代理編排定義為下一代軟件工程核心技能，
+                並批評現有 IDE 仍停留在「代碼補全」思維框架中。
+              </p>
+              <span class="social-tag">PARADIGM SHIFT</span>
+            </article>
+
+            <article class="social-card" role="listitem">
+              <div class="social-card-meta">
+                <span class="social-platform" aria-label="News">📰</span>
+                <span class="social-entity">Physical Intelligence</span>
+                <span class="social-time">02-28 · 14:30</span>
+              </div>
+              <p class="social-content">
+                官方博客宣布 Pi0.5 開放 API 訪問，提供 7 種機器人形態的適配接口，
+                並公開了在 23 個操作任務上的標準評測結果及可復現代碼庫。
+              </p>
+              <span class="social-tag">VLA · RELEASE</span>
+            </article>
+
+            <article class="social-card" role="listitem">
+              <div class="social-card-meta">
+                <span class="social-platform" aria-label="Twitter/X">𝕏</span>
+                <span class="social-entity">Yann LeCun</span>
+                <span class="social-time">02-28 · 09:15</span>
+              </div>
+              <p class="social-content">
+                轉發 WorldModelBench 論文並評論：「世界模型評估標準的缺失是當前具身 AI 進展緩慢的根本原因之一，
+                此基準的出現是重要里程碑。」與本系統假設 #7 形成強化信號。
+              </p>
+              <span class="social-tag">WORLD MODEL · ⚡</span>
+            </article>
+
+            <article class="social-card" role="listitem">
+              <div class="social-card-meta">
+                <span class="social-platform" aria-label="News">📰</span>
+                <span class="social-entity">Google DeepMind</span>
+                <span class="social-time">02-27 · 11:00</span>
+              </div>
+              <p class="social-content">
+                官方宣布 Gemini Robotics 整合路線圖：將 Gemini 多模態理解能力與 RT-2 操作框架深度整合，
+                計劃於 Q2 2026 開放合作夥伴早期訪問，覆蓋工業自動化和家庭服務場景。
+              </p>
+              <span class="social-tag">DEEPMIND · VLA</span>
+            </article>
+
+            <article class="social-card" role="listitem">
+              <div class="social-card-meta">
+                <span class="social-platform" aria-label="Twitter/X">𝕏</span>
+                <span class="social-entity">Ilya Sutskever</span>
+                <span class="social-time">02-27 · 08:55</span>
+              </div>
+              <p class="social-content">
+                SSI 官方博客發布技術更新：「安全超智能的關鍵不在於對齊稅，而在於架構設計本身。」
+                暗示 SSI 正在探索與 Transformer 本質不同的新架構路徑。
+              </p>
+              <span class="social-tag">SSI · SAFETY</span>
+            </article>
+
+          </div><!-- /social-strip -->
+        </div>
+      </div><!-- /social-scroll-wrapper -->
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DATA DASHBOARD ROW
+  ============================================================ -->
+  <section class="section" id="dashboard" aria-labelledby="dashboard-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1">
+        <div>
+          <span class="section-label section-number">04 — 系統監控</span>
+          <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span>管道儀表板</h2>
+        </div>
+        <span class="live-dot" style="font-size: 0.7rem;">最後更新 11:15</span>
+      </div>
+
+      <div class="dashboard-grid fade-in-2">
+
+        <!-- Card 1: Quality Drift -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <span class="dash-card-title">質量漂移監測</span>
+            <span class="status-badge status-ok">正常 ✓</span>
+          </div>
+
+          <!-- Sparkline: 7 bars representing 7 days -->
+          <div class="sparkline" aria-label="7-day quality drift sparkline chart" role="img">
+            <div class="spark-bar" style="height: 68%;" data-val="W-6" title="Day -6: 92%"></div>
+            <div class="spark-bar" style="height: 74%;" data-val="W-5" title="Day -5: 95%"></div>
+            <div class="spark-bar active" style="height: 56%;" data-val="W-4" title="Day -4: 81%"></div>
+            <div class="spark-bar" style="height: 82%;" data-val="W-3" title="Day -3: 96%"></div>
+            <div class="spark-bar" style="height: 78%;" data-val="W-2" title="Day -2: 94%"></div>
+            <div class="spark-bar" style="height: 90%;" data-val="昨日" title="Yesterday: 98%"></div>
+            <div class="spark-bar high" style="height: 100%;" data-val="今日" title="Today: 100%"></div>
+          </div>
+
+          <div class="sparkline-meta">
+            <div>
+              <div class="spark-label">7日均值</div>
+              <div class="spark-value">94.2%</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="spark-label">漂移閾值</div>
+              <div class="spark-value" style="color: var(--text-tertiary);">70.0%</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-tertiary); letter-spacing: 0.06em;">
+              VLA · AI App 兩域均無連續3日低於基線的漂移事件
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Entity Activity -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <span class="dash-card-title">實體活躍度</span>
+            <span class="status-badge status-ok">7日追蹤</span>
+          </div>
+
+          <div class="entity-list">
+            <div class="entity-row">
+              <div class="entity-row-meta">
+                <span class="entity-name">FlowMatching</span>
+                <span class="entity-count">12 信號</span>
+              </div>
+              <div class="entity-bar-track">
+                <div class="entity-bar-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div class="entity-row">
+              <div class="entity-row-meta">
+                <span class="entity-name">Pi0 / Pi0.5</span>
+                <span class="entity-count">9 信號</span>
+              </div>
+              <div class="entity-bar-track">
+                <div class="entity-bar-fill" style="width: 75%;"></div>
+              </div>
+            </div>
+            <div class="entity-row">
+              <div class="entity-row-meta">
+                <span class="entity-name">WorldModel</span>
+                <span class="entity-count">7 信號</span>
+              </div>
+              <div class="entity-bar-track">
+                <div class="entity-bar-fill" style="width: 58%;"></div>
+              </div>
+            </div>
+            <div class="entity-row">
+              <div class="entity-row-meta">
+                <span class="entity-name">Mamba / SSM</span>
+                <span class="entity-count">6 信號</span>
+              </div>
+              <div class="entity-bar-track">
+                <div class="entity-bar-fill" style="width: 50%;"></div>
+              </div>
+            </div>
+            <div class="entity-row">
+              <div class="entity-row-meta">
+                <span class="entity-name">DiffusionPolicy</span>
+                <span class="entity-count">5 信號</span>
+              </div>
+              <div class="entity-bar-track">
+                <div class="entity-bar-fill" style="width: 42%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Pipeline Health -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <span class="dash-card-title">管道健康</span>
+            <span class="status-badge status-ok">16/16 ✓</span>
+          </div>
+
+          <div class="health-list">
+            <div class="health-item">
+              <span class="health-icon health-ok">✓</span>
+              <span class="health-name">VLA RSS 採集</span>
+              <span class="health-time">09:00</span>
+            </div>
+            <div class="health-item">
+              <span class="health-icon health-ok">✓</span>
+              <span class="health-name">AI App 日報生成</span>
+              <span class="health-time">07:00</span>
+            </div>
+            <div class="health-item">
+              <span class="health-icon health-ok">✓</span>
+              <span class="health-name">社交情報採集</span>
+              <span class="health-time">09:30</span>
+            </div>
+            <div class="health-item">
+              <span class="health-icon health-ok">✓</span>
+              <span class="health-name">質量漂移檢查</span>
+              <span class="health-time">10:10</span>
+            </div>
+            <div class="health-item">
+              <span class="health-icon health-ok">✓</span>
+              <span class="health-name">語義索引重建</span>
+              <span class="health-time">11:15</span>
+            </div>
+            <div class="health-item">
+              <span class="health-icon health-ok">✓</span>
+              <span class="health-name">跨域規則引擎</span>
+              <span class="health-time">10:20</span>
+            </div>
+            <div class="health-item">
+              <span class="health-icon health-warn">⚠</span>
+              <span class="health-name" style="color: var(--accent-amber);">上游信號監測</span>
+              <span class="health-time" style="color: var(--accent-amber);">周末</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dashboard-grid -->
+    </div>
+  </section>
+
+  <hr class="grid-rule" />
+
+  <!-- ============================================================
+       BIWEEKLY REPORT TEASER
+  ============================================================ -->
+  <section class="section" id="reports" aria-labelledby="report-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1" style="margin-bottom: 24px;">
+        <div>
+          <span class="section-label section-number">05 — 深度分析</span>
+          <h2><span class="accent-line" aria-hidden="true"></span>雙週報告</h2>
+        </div>
+      </div>
+
+      <div class="report-teaser fade-in-2">
+        <div>
+          <span class="report-label">雙週報告 · 2026-02-25 至 2026-03-01 · 第 28 期</span>
+          <h2 class="report-title" id="report-title">
+            VLA 技術演進的範式轉移：<br>從端到端模仿到世界模型驅動的具身推理
+          </h2>
+          <p class="report-excerpt">
+            本期報告系統梳理過去兩週 VLA 領域的六項關鍵技術突破，重點分析流匹配架構、SSM 模型和世界模型三條技術路線的
+            收斂趨勢。結合 Physical Intelligence Pi0.5 和 CognitiveMamba 的實驗數據，我們認為當前
+            VLA 正從「模仿學習的縮放定律」轉向「物理常識的顯式建模」，這一轉變將在 2026 年下半年顯著影響基準設計方向。
+          </p>
+          <div class="report-period-badge" style="margin-top: 16px;">
+            已涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準
+          </div>
+        </div>
+        <a href="#" class="report-cta" aria-label="Read full biweekly report">
+          <span class="report-cta-arrow">→</span>
+          <span>查看完整報告</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer aria-label="Site footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Brand -->
+        <div>
+          <span class="footer-brand-logo">PUL<span>S</span>AR</span>
+          <p class="footer-tagline" style="font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px;">照　見</p>
+          <p class="footer-tagline">
+            AI 研究情報平台。每日自動聚合前沿論文、行業動態
+            與實驗室信號，為研究者和從業者提供結構化洞察。
+          </p>
+          <div class="footer-auto-label">
+            <span style="color: #4CAF50;">●</span>
+            由 AI Pipeline 自動生成 · 每日更新
+          </div>
+        </div>
+
+        <!-- Nav Column 1 -->
+        <div>
+          <h3 class="footer-col-title">內容頻道</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="#daily">AI App 日報</a></li>
+            <li><a href="#vla">VLA 研究日報</a></li>
+            <li><a href="#social">社交情報</a></li>
+            <li><a href="#reports">雙週報告</a></li>
+            <li><a href="#">月度校準</a></li>
+            <li><a href="#">魔鬼辯護報告</a></li>
+          </ul>
+        </div>
+
+        <!-- Nav Column 2 -->
+        <div>
+          <h3 class="footer-col-title">系統工具</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="#dashboard">管道儀表板</a></li>
+            <li><a href="#">實體追蹤器</a></li>
+            <li><a href="#">語義搜索</a></li>
+            <li><a href="#">假設校準庫</a></li>
+            <li><a href="#">跨域規則引擎</a></li>
+            <li><a href="#">MCP 工具接口</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-copy">
+          PULSAR · 照見 · 系統名稱保留
+        </span>
+        <span class="footer-version">
+          Pipeline v6 · Node 22 · Qwen3.5-Plus · 2026-03-01 11:15 更新
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       THEME TOGGLE SCRIPT (no external JS)
+  ============================================================ -->
+  <script>
+    (function() {
+      var html    = document.documentElement;
+      var btn     = document.getElementById('themeToggle');
+      var icon    = document.getElementById('themeIcon');
+
+      // Persist preference
+      var saved = localStorage.getItem('pulsar-theme');
+      if (saved === 'light') {
+        html.classList.remove('dark');
+        icon.textContent = '◑';
+      } else {
+        html.classList.add('dark');
+        icon.textContent = '☀';
+      }
+
+      btn.addEventListener('click', function() {
+        var isDark = html.classList.toggle('dark');
+        icon.textContent = isDark ? '☀' : '◑';
+        localStorage.setItem('pulsar-theme', isDark ? 'dark' : 'light');
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,439 @@
+---
+/**
+ * src/pages/index.astro
+ * ---------------------
+ * Pulsar Homepage
+ * Sections:
+ *   1. Hero — tagline + pipeline status summary
+ *   2. Latest AI Daily Picks — top items from most recent day
+ *   3. Social Intel Strip — most recent social snippets (AI + VLA)
+ *   4. Dashboard Metrics Row — quality drift + entity counts
+ *   5. Biweekly Report Teaser
+ *
+ * Data loading uses mock fallbacks so the page renders even before
+ * the first sync-data run. Real data replaces mocks once src/data/ is
+ * populated by scripts/sync-data.py.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import SocialCard from '../components/SocialCard.astro';
+import MetricCard from '../components/MetricCard.astro';
+import RatingBadge from '../components/RatingBadge.astro';
+import {
+  loadAIDailyPicks,
+  loadDriftMetrics,
+  loadEntityIndex,
+  loadSocialIntel,
+  loadBiweeklyReports,
+  extractMarkdownSummary,
+  type DailyPickDay,
+} from '../utils/data';
+
+// ---------------------------------------------------------------------------
+// Load real data (returns empty/null when src/data/ not yet populated)
+// ---------------------------------------------------------------------------
+const recentPicks   = loadAIDailyPicks(1);   // latest day only for hero
+const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
+const entityIndex   = loadEntityIndex();
+const aiSocial      = loadSocialIntel('ai',  3);
+const vlaSocial     = loadSocialIntel('vla', 2);
+const biweekly      = loadBiweeklyReports(1);
+
+// ---------------------------------------------------------------------------
+// Mock data — used when real data is absent (pre-sync)
+// These match the actual data shapes exactly.
+// ---------------------------------------------------------------------------
+const MOCK_PICKS: DailyPickDay = {
+  date: '2026-03-01',
+  items: [
+    {
+      title: 'Flow Matching for Robot Learning: A Unified Framework',
+      url: 'https://arxiv.org/abs/2501.00001',
+      summary: '本文提出統一的流匹配框架，用於機器人學習中的多模態動作分佈建模。與擴散模型相比，訓練速度提升3倍，推理延遲降低40%。在RLBench上超越當前SOTA。',
+      rating: '⚡',
+      source: 'arxiv',
+      domain: 'vla',
+    },
+    {
+      title: 'Scaling Language Models for Embodied Reasoning',
+      url: 'https://arxiv.org/abs/2501.00002',
+      summary: '探索大型語言模型在具身推理任務中的縮放規律。7B到70B參數範圍的實驗顯示，推理能力在30B+出現湧現，但動作精度仍需視覺-運動訓練。',
+      rating: '🔧',
+      source: 'arxiv',
+      domain: 'vla',
+    },
+    {
+      title: 'Karpathy: Software 3.0 時代的意圖驅動開發',
+      url: 'https://karpathy.ai/blog/software3',
+      summary: 'Karpathy 在最新文章中提出 Software 3.0 框架——開發範式從「寫語法」轉向「編排意圖」。AI coding agent 將成為主要生產力工具，傳統 IDE 面臨根本性變革。',
+      rating: '⚡',
+      source: 'blog',
+      domain: 'ai',
+    },
+    {
+      title: 'DeepSeek-V3 在代碼生成基準測試中的表現分析',
+      url: 'https://ithome.com/0/abc123',
+      summary: '第三方分析顯示 DeepSeek-V3 在 HumanEval 和 MBPP 基準上達到 GPT-4o 水準，但長上下文推理仍有差距。開源成本優勢顯著。',
+      rating: '🔧',
+      source: 'ithome',
+      domain: 'ai',
+    },
+    {
+      title: 'World Models for Long-Horizon Planning in Manipulation',
+      url: 'https://arxiv.org/abs/2501.00003',
+      summary: '介紹基於世界模型的長時域操作規劃方法，在模擬到真實遷移上取得顯著進展。背景閱讀：與 DreamerV3 的比較分析。',
+      rating: '📖',
+      source: 'arxiv',
+      domain: 'vla',
+    },
+  ],
+};
+
+const MOCK_SOCIAL = [
+  {
+    entity: 'Pieter Abbeel',
+    event: '在 Twitter 分享最新 VLA 實驗結果，指出 flow matching 在真實機器人上比 diffusion 推理快5倍，「這不是邊際改進」。',
+    date: '2026-03-01',
+    platform: 'twitter',
+  },
+  {
+    entity: 'Andrej Karpathy',
+    event: '發布 Software 3.0 長文，討論 intent-driven development 取代 syntax-driven 的趨勢，GitHub 獲 12k stars。',
+    date: '2026-03-01',
+    platform: 'blog',
+  },
+  {
+    entity: 'CMU Robotics',
+    event: 'GitHub 更新 VLA benchmark repo，新增 RLBench-Hard subset，包含接觸豐富操作任務20個。',
+    date: '2026-02-28',
+    platform: 'github',
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Resolve: use real data when available, else fall back to mock
+// ---------------------------------------------------------------------------
+const todayPicks  = recentPicks[0] ?? MOCK_PICKS;
+const topItems    = todayPicks.items.slice(0, 4);
+const displayDate = todayPicks.date;
+
+// Social intel: merge real + mock, show 5 total
+const realSocial  = [...aiSocial, ...vlaSocial].map(s => ({
+  entity:   s.filename,
+  event:    extractMarkdownSummary(s.content, 180),
+  date:     s.date,
+  platform: 'blog',
+})).filter(s => s.event.length > 10);
+
+const socialItems = realSocial.length >= 3
+  ? realSocial.slice(0, 5)
+  : MOCK_SOCIAL;
+
+// Drift metrics
+const driftOk     = !driftState?.drift_active;
+const pipelineStatus = driftOk ? 'ok' : 'warn';
+
+// Entity stats
+const entityCount = Object.keys(entityIndex.entities).length;
+const labCount    = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
+const methodCount = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
+
+// Biweekly teaser
+const latestReport = biweekly[0] ?? null;
+const reportSummary = latestReport
+  ? extractMarkdownSummary(latestReport.content, 350)
+  : '本期雙週報告整合 VLA 研究進展、AI 應用趨勢、社交情報與校準分析。涵蓋 flow matching 突破、Karpathy Software 3.0 論述、DeepSeek 開源影響，以及前期預測的驗證。';
+const reportDate = latestReport?.date ?? '2026-03-01';
+---
+
+<BaseLayout
+  title="Pulsar · 照見"
+  description="AI Research Intelligence — VLA pipeline monitoring, daily picks, and biweekly reflections."
+>
+
+  <!-- =====================================================================
+       1. HERO
+       ===================================================================== -->
+  <section class="section bg-gradient-to-b from-pulsar-surface to-pulsar-bg">
+    <div class="page-container">
+      <div class="max-w-2xl">
+        <!-- Eyebrow -->
+        <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-3">
+          AI Research Intelligence · 照見系統
+        </p>
+
+        <!-- Headline -->
+        <h1 class="font-lora text-4xl md:text-5xl font-bold text-pulsar-text leading-tight mb-4">
+          每日洞察，<br/>
+          <span class="text-pulsar-amber">雙週反思</span>
+        </h1>
+
+        <p class="text-pulsar-muted text-lg leading-relaxed mb-8 font-noto-serif-sc">
+          Pulsar 整合 VLA 機器人學習與 AI 應用兩條研究線，自動收集、評分、歸檔，
+          並生成雙週報告和反思。所有數據每日透過 cron pipeline 更新。
+        </p>
+
+        <!-- CTA buttons -->
+        <div class="flex flex-wrap gap-3">
+          <a
+            href="/ai-daily"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-pulsar-amber text-white font-semibold rounded-lg hover:opacity-90 transition-opacity text-sm"
+          >
+            查看 AI 日報
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4"/>
+            </svg>
+          </a>
+          <a
+            href="/dashboard"
+            class="inline-flex items-center gap-2 px-5 py-2.5 border border-pulsar-border text-pulsar-text font-medium rounded-lg hover:bg-pulsar-surface transition-colors text-sm"
+          >
+            數據面板
+          </a>
+        </div>
+      </div>
+
+      <!-- Pipeline health strip -->
+      <div class="mt-10 flex flex-wrap gap-3">
+        {[
+          { label: 'Pipeline',      status: pipelineStatus as 'ok'|'warn',   icon: '◉' },
+          { label: 'VLA RSS',       status: 'ok' as const,                    icon: '◉' },
+          { label: 'AI 日報',       status: 'ok' as const,                    icon: '◉' },
+          { label: 'Entity Tracker',status: entityCount > 0 ? 'ok' as const : 'neutral' as const, icon: '◉' },
+          { label: 'Quality Drift', status: driftOk ? 'ok' as const : 'warn' as const, icon: '◉' },
+        ].map(({ label, status, icon }) => (
+          <span class:list={[
+            'inline-flex items-center gap-1.5 text-xs font-ibm-plex-mono px-2.5 py-1 rounded-full border',
+            status === 'ok'      ? 'border-green-300 dark:border-green-800 text-green-700 dark:text-green-400' : '',
+            status === 'warn'    ? 'border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400' : '',
+            status === 'neutral' ? 'border-pulsar-border text-pulsar-muted' : '',
+          ]}>
+            <span class:list={[
+              'w-1.5 h-1.5 rounded-full',
+              status === 'ok'      ? 'bg-green-500'  : '',
+              status === 'warn'    ? 'bg-amber-500'  : '',
+              status === 'neutral' ? 'bg-stone-400'  : '',
+            ]} aria-hidden="true" />
+            {label}
+          </span>
+        ))}
+        <span class="text-xs font-ibm-plex-mono text-pulsar-muted self-center">
+          更新: {displayDate}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       2. LATEST AI DAILY PICKS
+       ===================================================================== -->
+  <section class="section">
+    <div class="page-container">
+      <div class="flex items-baseline justify-between mb-6">
+        <div>
+          <h2 class="font-lora text-2xl font-bold text-pulsar-text">
+            今日精選
+          </h2>
+          <p class="text-pulsar-muted text-sm mt-0.5 font-ibm-plex-mono">
+            {displayDate} · {todayPicks.items.length} 篇
+          </p>
+        </div>
+        <a
+          href="/ai-daily"
+          class="text-sm text-pulsar-cyan hover:underline font-ibm-plex-mono hidden sm:block"
+        >
+          查看全部 →
+        </a>
+      </div>
+
+      <!-- Rating legend -->
+      <div class="flex flex-wrap gap-2 mb-6">
+        {([['⚡','突破'], ['🔧','實用'], ['📖','背景'], ['❌','低相關']] as const).map(([r, l]) => (
+          <RatingBadge rating={r} label={l} size="sm" />
+        ))}
+      </div>
+
+      <!-- Grid of article cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {topItems.map(item => (
+          <ArticleCard
+            title={item.title}
+            summary={item.summary}
+            rating={item.rating}
+            source={item.source}
+            date={displayDate}
+            domain={item.domain ?? 'ai'}
+            url={item.url}
+          />
+        ))}
+      </div>
+
+      <div class="mt-4 sm:hidden text-center">
+        <a href="/ai-daily" class="text-sm text-pulsar-cyan hover:underline">
+          查看所有日報 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       3. SOCIAL INTEL STRIP
+       ===================================================================== -->
+  <section class="section bg-pulsar-surface/50">
+    <div class="page-container">
+      <div class="flex items-baseline justify-between mb-6">
+        <div>
+          <h2 class="font-lora text-2xl font-bold text-pulsar-text">
+            社交情報
+          </h2>
+          <p class="text-pulsar-muted text-sm mt-0.5">最新研究者動態與社群訊號</p>
+        </div>
+        <a
+          href="/social"
+          class="text-sm text-pulsar-cyan hover:underline font-ibm-plex-mono hidden sm:block"
+        >
+          查看全部 →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {socialItems.slice(0, 3).map(item => (
+          <SocialCard
+            entity={item.entity}
+            event={item.event}
+            date={item.date}
+            platform={item.platform}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       4. DASHBOARD METRICS ROW
+       ===================================================================== -->
+  <section class="section">
+    <div class="page-container">
+      <div class="flex items-baseline justify-between mb-6">
+        <h2 class="font-lora text-2xl font-bold text-pulsar-text">
+          Pipeline 數據
+        </h2>
+        <a
+          href="/dashboard"
+          class="text-sm text-pulsar-cyan hover:underline font-ibm-plex-mono hidden sm:block"
+        >
+          完整面板 →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <MetricCard
+          label="實體追蹤"
+          value={entityCount || 142}
+          unit="entities"
+          status={entityCount > 0 ? 'ok' : 'neutral'}
+          trend="+8"
+        />
+        <MetricCard
+          label="實驗室"
+          value={labCount || 34}
+          unit="labs"
+          status="ok"
+        />
+        <MetricCard
+          label="方法"
+          value={methodCount || 67}
+          unit="methods"
+          status="ok"
+          trend="+3"
+        />
+        <MetricCard
+          label="品質漂移"
+          value={driftOk ? 'OK' : 'WARN'}
+          status={pipelineStatus}
+          trend={driftOk ? '正常' : '需關注'}
+        />
+        <MetricCard
+          label="VLA 論文/日"
+          value="23"
+          unit="papers"
+          status="ok"
+          trend="+12%"
+        />
+        <MetricCard
+          label="AI 新聞/日"
+          value="47"
+          unit="items"
+          status="ok"
+          trend="-3%"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       5. BIWEEKLY REPORT TEASER
+       ===================================================================== -->
+  <section class="section bg-pulsar-surface/50">
+    <div class="page-container">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+        <!-- Teaser text -->
+        <div class="lg:col-span-2">
+          <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-muted mb-2">
+            雙週報告 · {reportDate}
+          </p>
+          <h2 class="font-lora text-2xl font-bold text-pulsar-text mb-4">
+            最新雙週反思
+          </h2>
+          <p class="text-pulsar-muted leading-relaxed font-noto-serif-sc">
+            {reportSummary}
+          </p>
+          <div class="mt-5">
+            <a
+              href={`/reports`}
+              class="inline-flex items-center gap-2 text-sm text-pulsar-amber font-semibold hover:underline"
+            >
+              閱讀完整報告
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M2 7h10M8 3l4 4-4 4"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick links sidebar -->
+        <div class="card">
+          <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-muted mb-4">
+            快速導航
+          </p>
+          <ul class="space-y-3">
+            {[
+              { href: '/ai-daily',  icon: '📰', label: 'AI 日報',     desc: '每日 AI 精選' },
+              { href: '/vla',       icon: '🤖', label: 'VLA 研究',    desc: '機器人學習論文' },
+              { href: '/social',    icon: '💬', label: '社交情報',    desc: '研究者動態追蹤' },
+              { href: '/reports',   icon: '📊', label: '雙週報告',    desc: '深度分析與反思' },
+              { href: '/dashboard', icon: '📈', label: '數據面板',    desc: 'Pipeline 監控' },
+            ].map(({ href, icon, label, desc }) => (
+              <li>
+                <a
+                  href={href}
+                  class="flex items-center gap-3 p-2 rounded-lg hover:bg-pulsar-bg transition-colors group"
+                >
+                  <span class="text-xl" aria-hidden="true">{icon}</span>
+                  <span class="flex-1 min-w-0">
+                    <span class="block text-sm font-semibold text-pulsar-text group-hover:text-pulsar-amber transition-colors font-noto-serif-sc">
+                      {label}
+                    </span>
+                    <span class="block text-xs text-pulsar-muted">{desc}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

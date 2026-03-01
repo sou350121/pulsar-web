@@ -1,0 +1,139 @@
+---
+/**
+ * src/pages/reports/index.astro
+ * Biweekly reports archive — lists reports and reflections.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadBiweeklyReports, extractMarkdownSummary } from '../../utils/data';
+
+const reports     = loadBiweeklyReports(12, false);
+const reflections = loadBiweeklyReports(12, true);
+
+// Pair reports with reflections by date proximity
+interface ReportEntry {
+  date:       string;
+  summary:    string;
+  hasReflection: boolean;
+  reflectionDate?: string;
+}
+
+const entries: ReportEntry[] = reports.map(r => {
+  const reflDate = reflections.find(ref => ref.date >= r.date)?.date;
+  return {
+    date:           r.date,
+    summary:        extractMarkdownSummary(r.content, 250),
+    hasReflection:  !!reflDate,
+    reflectionDate: reflDate,
+  };
+});
+
+// Fallback mock data
+const MOCK_ENTRIES: ReportEntry[] = [
+  {
+    date: '2026-03-01',
+    summary: '本期雙週報告整合 VLA 研究進展、AI 應用趨勢、社交情報與校準分析。涵蓋 flow matching 突破（5篇 ⚡），Karpathy Software 3.0 論述，DeepSeek-V3 開源影響分析，以及前期 8 項預測的驗證（6 ✅ / 1 ❌ / 1 ⏳）。',
+    hasReflection: true,
+    reflectionDate: '2026-03-01',
+  },
+  {
+    date: '2026-02-15',
+    summary: '聚焦世界模型與具身推理的理論突破。JEPA vs autoregressive 路線分歧加深，Meta FAIR 和 DeepMind 各自佔據不同賭注。AI 應用端：Cursor 月活用戶突破100萬，agentic IDE 競爭白熱化。',
+    hasReflection: true,
+    reflectionDate: '2026-02-16',
+  },
+  {
+    date: '2026-02-01',
+    summary: '二月首期雙週：VLA scaling law 實驗結果喜憂參半。30B+ 參數確見推理湧現，但 action precision 仍需視覺-運動訓練。AI 側：DeepSeek-R1 開源衝擊持續，多家公司宣佈基於 R1 的定制化計劃。',
+    hasReflection: false,
+  },
+];
+
+const displayEntries = entries.length > 0 ? entries : MOCK_ENTRIES;
+---
+
+<BaseLayout
+  title="雙週報告"
+  description="Pulsar AI 研究雙週深度報告 — VLA 進展、AI 應用、社交情報與校準分析"
+>
+  <div class="page-container section">
+    <!-- Page header -->
+    <div class="mb-10">
+      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
+        深度分析 · 每兩週更新
+      </p>
+      <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
+        雙週報告
+      </h1>
+      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
+        每兩週由 pipeline 自動生成，涵蓋 VLA 和 AI 應用兩條研究線的深度回顧、
+        前期預測驗證（✅/❌/⏳）、假設校準，以及下期觀察重點。
+      </p>
+    </div>
+
+    <!-- Report list -->
+    <div class="grid grid-cols-1 gap-6">
+      {displayEntries.map((entry, i) => (
+        <article class="card">
+          <!-- Header -->
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                {i === 0 && (
+                  <span class="tag tag-ai text-[10px]">最新</span>
+                )}
+                <time
+                  datetime={entry.date}
+                  class="font-ibm-plex-mono text-sm text-pulsar-muted"
+                >
+                  {entry.date}
+                </time>
+              </div>
+              <h2 class="font-lora text-xl font-bold text-pulsar-text">
+                雙週報告 · {entry.date}
+              </h2>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              {entry.hasReflection && (
+                <span class="tag text-[10px] bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
+                  含反思
+                </span>
+              )}
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <p class="text-pulsar-muted text-sm leading-relaxed font-noto-serif-sc mb-4">
+            {entry.summary}
+          </p>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-4 pt-3 border-t border-pulsar-border text-sm">
+            <a
+              href={`/reports/${entry.date}`}
+              class="text-pulsar-amber font-semibold hover:underline flex items-center gap-1"
+            >
+              閱讀報告
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M2 6h8M6 2l4 4-4 4"/>
+              </svg>
+            </a>
+            {entry.hasReflection && (
+              <a
+                href={`/reports/${entry.reflectionDate}-reflection`}
+                class="text-pulsar-cyan hover:underline flex items-center gap-1"
+              >
+                查看反思
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {displayEntries.length === 0 && (
+      <p class="text-center text-pulsar-muted font-ibm-plex-mono text-sm py-12">
+        尚無雙週報告 — 待 pipeline 生成後同步資料
+      </p>
+    )}
+  </div>
+</BaseLayout>

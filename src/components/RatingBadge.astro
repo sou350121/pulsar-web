@@ -1,0 +1,52 @@
+---
+/**
+ * RatingBadge.astro
+ * Renders the pipeline rating emoji with accessible label and colour.
+ *
+ * Props:
+ *   rating  — '⚡' | '🔧' | '📖' | '❌' | string
+ *   size    — 'sm' | 'md' | 'lg' (default 'md')
+ *   label   — override accessible text label
+ */
+interface Props {
+  rating: string;
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+}
+
+const { rating, size = 'md', label } = Astro.props;
+
+// Map each symbol to display metadata
+const RATING_META: Record<string, { cls: string; defaultLabel: string; bg: string }> = {
+  '⚡': { cls: 'rating-bolt',   defaultLabel: 'Breakthrough',   bg: 'bg-amber-50  dark:bg-amber-950/30  border-amber-200 dark:border-amber-800' },
+  '🔧': { cls: 'rating-wrench', defaultLabel: 'Practical',      bg: 'bg-cyan-50   dark:bg-cyan-950/30   border-cyan-200  dark:border-cyan-800' },
+  '📖': { cls: 'rating-book',   defaultLabel: 'Background',     bg: 'bg-stone-50  dark:bg-stone-800/40  border-stone-200 dark:border-stone-700' },
+  '❌': { cls: 'rating-x',      defaultLabel: 'Low Relevance',  bg: 'bg-red-50    dark:bg-red-950/30    border-red-200   dark:border-red-900' },
+};
+
+const meta = RATING_META[rating] ?? {
+  cls: 'rating-book',
+  defaultLabel: 'Unknown',
+  bg: 'bg-stone-50 dark:bg-stone-800/40 border-stone-200 dark:border-stone-700',
+};
+
+const sizeClasses = {
+  sm: 'text-sm px-1.5 py-0.5 gap-1',
+  md: 'text-base px-2   py-0.5 gap-1.5',
+  lg: 'text-lg  px-2.5 py-1   gap-2',
+};
+---
+
+<span
+  class:list={[
+    'inline-flex items-center font-ibm-plex-mono font-medium rounded-full border',
+    sizeClasses[size],
+    meta.bg,
+    meta.cls,
+  ]}
+  aria-label={label ?? meta.defaultLabel}
+  title={label ?? meta.defaultLabel}
+>
+  <span aria-hidden="true">{rating}</span>
+  <span class="text-xs hidden sm:inline opacity-70">{label ?? meta.defaultLabel}</span>
+</span>

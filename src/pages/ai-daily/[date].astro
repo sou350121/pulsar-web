@@ -1,0 +1,162 @@
+---
+/**
+ * src/pages/ai-daily/[date].astro
+ * Dynamic route — individual day view for AI daily picks.
+ * Generates one page per date found in ai-daily-pick.json.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import RatingBadge from '../../components/RatingBadge.astro';
+import { loadAIDailyPicks } from '../../utils/data';
+
+// getStaticPaths — required for Astro static output
+export async function getStaticPaths() {
+  const picks = loadAIDailyPicks(90);  // generate up to 90 day pages
+  return picks.map(day => ({
+    params: { date: day.date },
+    props:  { day },
+  }));
+}
+
+const { day } = Astro.props;
+const { date, items } = day;
+
+// Group items by rating for the summary bar
+const byRating: Record<string, typeof items> = {};
+for (const item of items) {
+  (byRating[item.rating] ??= []).push(item);
+}
+
+const prevDate = (() => {
+  const d = new Date(date);
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+})();
+const nextDate = (() => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+})();
+---
+
+<BaseLayout
+  title={`AI 日報 ${date}`}
+  description={`${date} AI 每日精選 — ${items.length} 篇，含 VLA、應用、模型最新動態`}
+>
+  <div class="page-container section">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="mb-6 text-sm font-ibm-plex-mono text-pulsar-muted">
+      <a href="/" class="hover:text-pulsar-text">首頁</a>
+      <span class="mx-2">/</span>
+      <a href="/ai-daily" class="hover:text-pulsar-text">AI 日報</a>
+      <span class="mx-2">/</span>
+      <span class="text-pulsar-text">{date}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="mb-8">
+      <time datetime={date} class="font-ibm-plex-mono text-pulsar-muted text-sm">
+        {date}
+      </time>
+      <h1 class="font-lora text-3xl font-bold text-pulsar-text mt-1 mb-4">
+        AI 日報
+      </h1>
+
+      <!-- Rating summary row -->
+      <div class="flex flex-wrap gap-2 items-center">
+        {Object.entries(byRating).map(([rating, rItems]) => (
+          <RatingBadge rating={rating} label={`${rItems.length} 篇`} size="sm" />
+        ))}
+        <span class="text-pulsar-muted text-xs font-ibm-plex-mono ml-2">
+          共 {items.length} 篇
+        </span>
+      </div>
+    </div>
+
+    <!-- ⚡ Breakthroughs first (if any) -->
+    {(byRating['⚡'] ?? []).length > 0 && (
+      <div class="mb-8">
+        <h2 class="font-lora text-xl font-semibold text-pulsar-amber mb-4 flex items-center gap-2">
+          ⚡ 突破
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(byRating['⚡'] ?? []).map(item => (
+            <ArticleCard
+              title={item.title}
+              summary={item.summary}
+              rating={item.rating}
+              source={item.source}
+              date={date}
+              domain={item.domain ?? 'ai'}
+              url={item.url}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- 🔧 Practical -->
+    {(byRating['🔧'] ?? []).length > 0 && (
+      <div class="mb-8">
+        <h2 class="font-lora text-xl font-semibold text-pulsar-cyan mb-4">
+          🔧 實用
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(byRating['🔧'] ?? []).map(item => (
+            <ArticleCard
+              title={item.title}
+              summary={item.summary}
+              rating={item.rating}
+              source={item.source}
+              date={date}
+              domain={item.domain ?? 'ai'}
+              url={item.url}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- 📖 Background -->
+    {(byRating['📖'] ?? []).length > 0 && (
+      <div class="mb-8">
+        <h2 class="font-lora text-xl font-semibold text-pulsar-muted mb-4">
+          📖 背景閱讀
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(byRating['📖'] ?? []).map(item => (
+            <ArticleCard
+              title={item.title}
+              summary={item.summary}
+              rating={item.rating}
+              source={item.source}
+              date={date}
+              domain={item.domain ?? 'ai'}
+              url={item.url}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Pagination -->
+    <hr class="pulsar-divider" />
+    <div class="flex items-center justify-between text-sm font-ibm-plex-mono">
+      <a
+        href={`/ai-daily/${prevDate}`}
+        class="text-pulsar-cyan hover:underline flex items-center gap-1"
+      >
+        ← {prevDate}
+      </a>
+      <a href="/ai-daily" class="text-pulsar-muted hover:text-pulsar-text">
+        全部日報
+      </a>
+      <a
+        href={`/ai-daily/${nextDate}`}
+        class="text-pulsar-cyan hover:underline flex items-center gap-1"
+      >
+        {nextDate} →
+      </a>
+    </div>
+  </div>
+</BaseLayout>

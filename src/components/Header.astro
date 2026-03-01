@@ -1,0 +1,122 @@
+---
+/**
+ * Header.astro
+ * Site-wide navigation bar with logo, nav links, and theme toggle.
+ * Active link detection uses Astro.url.pathname.
+ */
+import ThemeToggle from './ThemeToggle.astro';
+
+const nav = [
+  { href: '/',            label: '首頁',        en: 'Home' },
+  { href: '/ai-daily',    label: 'AI 日報',     en: 'AI Daily' },
+  { href: '/vla',         label: 'VLA 研究',    en: 'VLA Research' },
+  { href: '/social',      label: '社交情報',    en: 'Social Intel' },
+  { href: '/reports',     label: '雙週報告',    en: 'Reports' },
+  { href: '/dashboard',   label: '數據面板',    en: 'Dashboard' },
+];
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  href === '/' ? pathname === '/' : pathname.startsWith(href);
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-pulsar-border bg-pulsar-bg/90 backdrop-blur-sm">
+  <div class="page-container flex h-14 items-center justify-between gap-4">
+
+    <!-- Logo / Brand -->
+    <a href="/" class="flex items-center gap-2 shrink-0" aria-label="Pulsar 首頁">
+      <!-- Inline SVG pulse icon -->
+      <svg
+        width="28" height="28" viewBox="0 0 28 28" fill="none"
+        xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+      >
+        <circle cx="14" cy="14" r="13" stroke="var(--color-amber)" stroke-width="2"/>
+        <polyline
+          points="4,14 9,14 11,8 14,20 17,11 19,14 24,14"
+          stroke="var(--color-amber)" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          fill="none"
+        />
+      </svg>
+      <span class="font-lora font-bold text-lg tracking-tight text-pulsar-text">
+        Pulsar
+        <span class="text-pulsar-muted text-sm font-normal ml-1 hidden sm:inline">照見</span>
+      </span>
+    </a>
+
+    <!-- Primary Navigation (hidden on mobile, shown md+) -->
+    <nav aria-label="主導航" class="hidden md:flex items-center gap-1">
+      {nav.map(({ href, label }) => (
+        <a
+          href={href}
+          class:list={[
+            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+            'font-noto-serif-sc',
+            isActive(href)
+              ? 'bg-pulsar-amber/10 text-pulsar-amber'
+              : 'text-pulsar-muted hover:text-pulsar-text hover:bg-pulsar-surface',
+          ]}
+          aria-current={isActive(href) ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Right side actions -->
+    <div class="flex items-center gap-2">
+      <ThemeToggle />
+
+      <!-- Mobile hamburger (controls mobile-menu below) -->
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        class="md:hidden p-2 rounded-md text-pulsar-muted hover:text-pulsar-text hover:bg-pulsar-surface"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        aria-label="開啟選單"
+      >
+        <!-- Hamburger icon -->
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <rect y="3"  width="20" height="2" rx="1"/>
+          <rect y="9"  width="20" height="2" rx="1"/>
+          <rect y="15" width="20" height="2" rx="1"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Drawer -->
+  <nav
+    id="mobile-menu"
+    aria-label="行動版導航"
+    class="md:hidden hidden border-t border-pulsar-border bg-pulsar-surface px-4 pb-4 pt-2"
+  >
+    {nav.map(({ href, label, en }) => (
+      <a
+        href={href}
+        class:list={[
+          'flex items-center justify-between py-2.5 text-sm border-b border-pulsar-border last:border-0',
+          isActive(href)
+            ? 'text-pulsar-amber font-semibold'
+            : 'text-pulsar-text',
+        ]}
+        aria-current={isActive(href) ? 'page' : undefined}
+      >
+        <span class="font-noto-serif-sc">{label}</span>
+        <span class="text-pulsar-muted text-xs font-ibm-plex-mono">{en}</span>
+      </a>
+    ))}
+  </nav>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const btn  = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
+  });
+</script>

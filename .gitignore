@@ -1,0 +1,44 @@
+# ── Build output ──────────────────────────────────────────────────────────
+dist/
+.astro/
+
+# ── Dependencies ──────────────────────────────────────────────────────────
+node_modules/
+
+# ── pnpm ──────────────────────────────────────────────────────────────────
+# Keep pnpm-lock.yaml committed (reproducible installs)
+.pnpm-store/
+
+# ── Environment / secrets ─────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Pipeline data (synced at build time; do NOT commit real data) ─────────
+# Commit only the empty placeholder or mock files under src/data/.
+# Real data is injected by sync-data.py during CI/CD.
+src/data/*.json
+src/data/*.md
+# Allow the manifest and mock placeholder
+!src/data/.gitkeep
+!src/data/README.md
+
+# ── Editor / OS ───────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/settings.json
+
+# ── Logs ──────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ── TypeScript cache ──────────────────────────────────────────────────────
+*.tsbuildinfo

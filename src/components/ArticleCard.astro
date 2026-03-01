@@ -1,0 +1,84 @@
+---
+/**
+ * ArticleCard.astro
+ * Displays a single research article or daily-pick item.
+ *
+ * Props:
+ *   title   — article title
+ *   summary — short summary text
+ *   rating  — '⚡' | '🔧' | '📖' | '❌'
+ *   source  — source name (e.g. "arxiv", "ithome")
+ *   date    — ISO date string or display string
+ *   domain  — 'vla' | 'ai' — controls tag colour
+ *   url     — href for the "Read more" link
+ */
+import RatingBadge from './RatingBadge.astro';
+
+interface Props {
+  title:   string;
+  summary: string;
+  rating:  string;
+  source:  string;
+  date:    string;
+  domain:  'vla' | 'ai' | string;
+  url:     string;
+}
+
+const { title, summary, rating, source, date, domain, url } = Astro.props;
+
+const domainLabel = domain === 'vla' ? 'VLA' : 'AI App';
+const domainTag   = domain === 'vla' ? 'tag-vla' : 'tag-ai';
+---
+
+<article class="card group flex flex-col gap-3">
+  <!-- Header row: rating + domain tag + date -->
+  <div class="flex items-center gap-2 flex-wrap">
+    <RatingBadge rating={rating} size="sm" />
+    <span class:list={['tag', domainTag]}>{domainLabel}</span>
+    <time
+      datetime={date}
+      class="ml-auto text-xs font-ibm-plex-mono text-pulsar-muted shrink-0"
+    >
+      {date}
+    </time>
+  </div>
+
+  <!-- Title -->
+  <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug">
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hover:text-pulsar-amber transition-colors group-hover:underline"
+    >
+      {title}
+    </a>
+  </h3>
+
+  <!-- Summary -->
+  <p class="text-pulsar-muted text-sm leading-relaxed line-clamp-3 font-noto-serif-sc">
+    {summary}
+  </p>
+
+  <!-- Footer: source + external link -->
+  <div class="flex items-center justify-between mt-auto pt-2 border-t border-pulsar-border">
+    <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
+      {source}
+    </span>
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-xs text-pulsar-cyan hover:underline flex items-center gap-1"
+      aria-label={`閱讀: ${title}`}
+    >
+      閱讀原文
+      <!-- External link icon -->
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+        <path d="M8 1h3v3M11 1L6 6"/>
+      </svg>
+    </a>
+  </div>
+</article>

@@ -1,0 +1,20 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*":    ["src/layouts/*"],
+      "@utils/*":      ["src/utils/*"],
+      "@data/*":       ["src/data/*"]
+    },
+    // Node built-ins used by data.ts at build time
+    "types": ["node"],
+    // Match Astro's default; keep strict
+    "strictNullChecks": true,
+    "noImplicitAny":    true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.astro", "scripts/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

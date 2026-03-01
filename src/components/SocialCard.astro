@@ -1,0 +1,53 @@
+---
+/**
+ * SocialCard.astro
+ * Displays one social intelligence event (entity mention or insight).
+ *
+ * Props:
+ *   entity   — entity name (researcher, lab, project)
+ *   event    — description of what happened / what was said
+ *   date     — ISO or display date string
+ *   platform — 'twitter' | 'github' | 'hn' | 'reddit' | 'blog' | string
+ */
+interface Props {
+  entity:   string;
+  event:    string;
+  date:     string;
+  platform: string;
+}
+
+const { entity, event, date, platform } = Astro.props;
+
+// Map platform to icon + colour
+const PLATFORM_META: Record<string, { icon: string; cls: string }> = {
+  twitter: { icon: '𝕏', cls: 'text-sky-500' },
+  github:  { icon: '⌥', cls: 'text-purple-500' },
+  hn:      { icon: 'Y', cls: 'text-orange-500' },
+  reddit:  { icon: '●', cls: 'text-red-500' },
+  blog:    { icon: '✍', cls: 'text-green-500' },
+};
+const pm = PLATFORM_META[platform.toLowerCase()] ?? { icon: '◈', cls: 'text-pulsar-muted' };
+---
+
+<div class="card flex gap-4">
+  <!-- Platform indicator -->
+  <div class:list={['text-lg font-ibm-plex-mono shrink-0 w-7 text-center mt-0.5', pm.cls]}
+    aria-label={platform}
+    title={platform}
+  >
+    {pm.icon}
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 min-w-0">
+    <div class="flex items-baseline gap-2 mb-1 flex-wrap">
+      <span class="font-semibold text-pulsar-text text-sm font-lora">{entity}</span>
+      <time class="text-xs font-ibm-plex-mono text-pulsar-muted ml-auto shrink-0">
+        {date}
+      </time>
+    </div>
+    <p class="text-sm text-pulsar-muted leading-relaxed font-noto-serif-sc line-clamp-3">
+      {event}
+    </p>
+  </div>
+</div>

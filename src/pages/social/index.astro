@@ -1,0 +1,164 @@
+---
+/**
+ * src/pages/social/index.astro
+ * Social intel archive — AI + VLA social intelligence combined view.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SocialCard from '../../components/SocialCard.astro';
+import { loadSocialIntel, extractMarkdownSummary } from '../../utils/data';
+
+// Load recent social intel from both domains
+const aiSocial  = loadSocialIntel('ai',  10);
+const vlaSocial = loadSocialIntel('vla', 10);
+
+// Parse markdown into structured event snippets
+// Real data: full .md file from the pipeline; split on section headings
+function parseMarkdownToEvents(content: string, domain: string, date: string) {
+  // Extract lines that look like meaningful intel items (numbered lists, headings)
+  const lines = content.split('\n');
+  const events: Array<{ entity: string; event: string; platform: string }> = [];
+
+  let currentEntity = '';
+  for (const line of lines) {
+    // Match numbered list items or bold entity names
+    const entityMatch = line.match(/^\*\*([^*]+)\*\*/);
+    if (entityMatch) currentEntity = entityMatch[1].trim();
+
+    // Match content lines with substance
+    const contentLine = line.replace(/^[-*•]\s*/, '').trim();
+    if (contentLine.length > 40 && currentEntity) {
+      // Guess platform from keywords
+      let platform = 'blog';
+      if (/twitter|tweet|𝕏/i.test(contentLine)) platform = 'twitter';
+      else if (/github|repo|commit/i.test(contentLine)) platform = 'github';
+      else if (/arxiv|paper|論文/i.test(contentLine)) platform = 'blog';
+
+      events.push({
+        entity:   currentEntity || domain.toUpperCase(),
+        event:    contentLine.slice(0, 200),
+        platform,
+      });
+      currentEntity = ''; // reset to avoid duplicating entity for each line
+    }
+  }
+  return events.slice(0, 4);  // max 4 events per file
+}
+
+// Build display items
+interface SocialItem {
+  entity:   string;
+  event:    string;
+  date:     string;
+  platform: string;
+  domain:   string;
+}
+
+const allItems: SocialItem[] = [];
+
+for (const file of aiSocial) {
+  const events = parseMarkdownToEvents(file.content, 'ai', file.date);
+  if (events.length > 0) {
+    allItems.push(...events.map(e => ({ ...e, date: file.date, domain: 'ai' })));
+  } else if (file.content.length > 30) {
+    // Fallback: use summary as single event
+    allItems.push({
+      entity:   'AI 情報',
+      event:    extractMarkdownSummary(file.content, 200),
+      date:     file.date,
+      platform: 'blog',
+      domain:   'ai',
+    });
+  }
+}
+
+for (const file of vlaSocial) {
+  const events = parseMarkdownToEvents(file.content, 'vla', file.date);
+  if (events.length > 0) {
+    allItems.push(...events.map(e => ({ ...e, date: file.date, domain: 'vla' })));
+  } else if (file.content.length > 30) {
+    allItems.push({
+      entity:   'VLA 情報',
+      event:    extractMarkdownSummary(file.content, 200),
+      date:     file.date,
+      platform: 'blog',
+      domain:   'vla',
+    });
+  }
+}
+
+// Sort by date descending
+allItems.sort((a, b) => b.date.localeCompare(a.date));
+
+// Mock fallback
+const MOCK_ITEMS: SocialItem[] = [
+  { entity: 'Pieter Abbeel',    event: '指出 flow matching 在真實機器人推理比 diffusion 快5倍，稱「這不是邊際改進」。', date: '2026-03-01', platform: 'twitter', domain: 'vla' },
+  { entity: 'Andrej Karpathy',  event: '發布 Software 3.0 長文，GitHub 獲 12k stars，預計 intent-driven 開發將取代 syntax 導向。', date: '2026-03-01', platform: 'blog', domain: 'ai' },
+  { entity: 'CMU Robotics',     event: '更新 VLA benchmark repo，新增 RLBench-Hard 20個接觸豐富操作任務。', date: '2026-02-28', platform: 'github', domain: 'vla' },
+  { entity: 'Sam Altman',       event: '在 X 暗示 GPT-5 將對 agentic IDE workflow 做重大優化，「coding is the killer app」。', date: '2026-02-28', platform: 'twitter', domain: 'ai' },
+  { entity: 'DeepMind Robotics', event: 'Gemini Robotics 進入 beta，與 Google DeepMind 合作夥伴共同測試，重點在廚房操作任務。', date: '2026-02-27', platform: 'blog', domain: 'vla' },
+  { entity: 'Yann LeCun',       event: 'Meta FAIR 發布 world model 相關新論文，LeCun 在 LinkedIn 詳述 JEPA 方向 vs autoregressive 路線。', date: '2026-02-27', platform: 'blog', domain: 'ai' },
+];
+
+const displayItems = allItems.length >= 4 ? allItems : MOCK_ITEMS;
+---
+
+<BaseLayout
+  title="社交情報"
+  description="AI 研究社群動態 — 追蹤頂尖研究者、機構與開源項目最新動態"
+>
+  <div class="page-container section">
+    <!-- Page header -->
+    <div class="mb-8">
+      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
+        社交情報監控
+      </p>
+      <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
+        社交情報
+      </h1>
+      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
+        每日追蹤 Karpathy、Altman、Amodei、LeCun、Hassabis 等7位前沿研究者動態，
+        以及 CMU、Google DeepMind、Meta FAIR 等頂級機構的 GitHub、Twitter、部落格更新。
+        搜尋窗口：72小時硬截止，確保時效性。
+      </p>
+    </div>
+
+    <!-- Domain filter tabs (static, enhanced by URL hash if desired later) -->
+    <div class="flex gap-2 mb-6 border-b border-pulsar-border pb-4">
+      {[
+        { label: '全部', count: displayItems.length },
+        { label: 'AI 應用', count: displayItems.filter(i => i.domain === 'ai').length },
+        { label: 'VLA 研究', count: displayItems.filter(i => i.domain === 'vla').length },
+      ].map(({ label, count }) => (
+        <span class="font-ibm-plex-mono text-sm px-3 py-1 rounded-full bg-pulsar-surface border border-pulsar-border text-pulsar-muted">
+          {label} <span class="opacity-60">({count})</span>
+        </span>
+      ))}
+    </div>
+
+    <!-- Items grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {displayItems.map(item => (
+        <div class="relative">
+          <span class:list={[
+            'absolute top-3 right-3 tag text-[10px]',
+            item.domain === 'vla' ? 'tag-vla' : 'tag-ai',
+          ]}>
+            {item.domain === 'vla' ? 'VLA' : 'AI'}
+          </span>
+          <SocialCard
+            entity={item.entity}
+            event={item.event}
+            date={item.date}
+            platform={item.platform}
+          />
+        </div>
+      ))}
+    </div>
+
+    {displayItems.length === 0 && (
+      <p class="text-pulsar-muted font-ibm-plex-mono text-sm text-center py-12">
+        尚無社交情報資料 — 請先執行 pnpm sync-data
+      </p>
+    )}
+  </div>
+</BaseLayout>

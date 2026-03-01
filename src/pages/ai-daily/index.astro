@@ -1,0 +1,97 @@
+---
+/**
+ * src/pages/ai-daily/index.astro
+ * AI 日報 archive list — shows recent days with item counts and top ratings.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RatingBadge from '../../components/RatingBadge.astro';
+import { loadAIDailyPicks } from '../../utils/data';
+
+const picks = loadAIDailyPicks(30);  // last 30 days
+
+// Count ratings per day for quick at-a-glance stats
+const daysWithStats = picks.map(day => {
+  const counts = day.items.reduce<Record<string, number>>((acc, item) => {
+    acc[item.rating] = (acc[item.rating] ?? 0) + 1;
+    return acc;
+  }, {});
+  return { ...day, counts };
+});
+---
+
+<BaseLayout
+  title="AI 日報"
+  description="每日 AI 研究與應用精選 — 評分、摘要與源鏈結"
+>
+  <div class="page-container section">
+    <!-- Page header -->
+    <div class="mb-8">
+      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
+        AI App 線
+      </p>
+      <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
+        AI 日報
+      </h1>
+      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
+        每日自動收集 AI 應用、模型、工程與行業動態，經 qwen3.5-plus 評分分類，
+        涵蓋 ⚡ 突破、🔧 實用、📖 背景、❌ 低相關四個等級。
+      </p>
+    </div>
+
+    <!-- Archive list -->
+    {daysWithStats.length === 0 ? (
+      <p class="text-pulsar-muted font-ibm-plex-mono text-sm">
+        尚無數據 — 請先執行 <code class="bg-pulsar-surface px-1 rounded">pnpm sync-data</code> 同步 pipeline 資料。
+      </p>
+    ) : (
+      <div class="space-y-3">
+        {daysWithStats.map(day => (
+          <a
+            href={`/ai-daily/${day.date}`}
+            class="card flex items-center justify-between gap-4 hover:border-pulsar-amber transition-colors group no-underline"
+          >
+            <!-- Date -->
+            <time
+              datetime={day.date}
+              class="font-ibm-plex-mono font-semibold text-pulsar-text shrink-0 text-sm"
+            >
+              {day.date}
+            </time>
+
+            <!-- Rating breakdown badges -->
+            <div class="flex flex-wrap gap-1.5 flex-1">
+              {[['⚡','bolt'],['🔧','wrench'],['📖','book'],['❌','x']].map(([r]) => (
+                day.counts[r] ? (
+                  <span class:list={[
+                    'font-ibm-plex-mono text-xs px-1.5 py-0.5 rounded',
+                    r === '⚡' ? 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400' : '',
+                    r === '🔧' ? 'bg-cyan-100  dark:bg-cyan-950/30  text-cyan-700  dark:text-cyan-400'  : '',
+                    r === '📖' ? 'bg-stone-100 dark:bg-stone-800    text-stone-600 dark:text-stone-400' : '',
+                    r === '❌' ? 'bg-red-100   dark:bg-red-950/30   text-red-700   dark:text-red-400'   : '',
+                  ]}>
+                    {r} {day.counts[r]}
+                  </span>
+                ) : null
+              ))}
+            </div>
+
+            <!-- Item count + arrow -->
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-pulsar-muted text-xs font-ibm-plex-mono">
+                {day.items.length} 篇
+              </span>
+              <svg
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                stroke="currentColor" stroke-width="2"
+                class="text-pulsar-muted group-hover:text-pulsar-amber transition-colors"
+                aria-hidden="true"
+              >
+                <path d="M2 7h10M8 3l4 4-4 4"/>
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</BaseLayout>
