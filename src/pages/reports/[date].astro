@@ -20,6 +20,13 @@ const { report } = Astro.props;
 const { date, content } = report;
 const base = import.meta.env.BASE_URL;
 
+// Load all reports for prev/next navigation
+const allReports = loadBiweeklyReports(60, false);
+const allDates = [...new Set(allReports.map(r => r.date))].sort();
+const idx = allDates.indexOf(date);
+const prevDate = idx > 0 ? allDates[idx - 1] : null;
+const nextDate = idx < allDates.length - 1 ? allDates[idx + 1] : null;
+
 // Format ISO date as Chinese: "2026年2月25日"
 function formatDateZh(iso: string): string {
   const [year, month, day] = iso.split('-').map(Number);
@@ -83,11 +90,13 @@ function formatPeriod(iso: string): string {
       <hr class="report-rule" />
     </header>
 
-    <!-- ── Domain nav tabs (non-active, display only) ── -->
-    <nav class="domain-nav" aria-label="研究線切換">
-      <button class="domain-tab domain-tab--active" aria-current="true">全部</button>
-      <button class="domain-tab" aria-current="false">AI App線</button>
-      <button class="domain-tab" aria-current="false">VLA線</button>
+    <!-- ── Detail breadcrumb (replaces domain-nav; reports span both domains) ── -->
+    <nav class="detail-breadcrumb" aria-label="麵包屑">
+      <a href={`${base}`} class="bc-link">首頁</a>
+      <span class="bc-sep">›</span>
+      <a href={`${base}reports`} class="bc-link">雙週報告</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">{date}</span>
     </nav>
 
     <!-- ── Report body ── -->
@@ -104,9 +113,24 @@ function formatPeriod(iso: string): string {
       }
     </article>
 
+    <!-- ── Prev / next report pagination ── -->
+    <div class="report-pagination">
+      {prevDate ? (
+        <a href={`${base}reports/${prevDate}`} class="rpag-btn rpag-btn--prev">
+          ← {prevDate}
+        </a>
+      ) : <span />}
+      <a href={`${base}reports`} class="rpag-btn rpag-btn--list">報告列表</a>
+      {nextDate ? (
+        <a href={`${base}reports/${nextDate}`} class="rpag-btn rpag-btn--next">
+          {nextDate} →
+        </a>
+      ) : <span />}
+    </div>
+
     <!-- ── Back link ── -->
     <div class="back-row">
-      <a href={`${base}/reports`} class="back-link">
+      <a href={`${base}reports`} class="back-link">
         <span class="back-arrow">←</span> 返回報告列表
       </a>
     </div>
@@ -257,33 +281,72 @@ function formatPeriod(iso: string): string {
   background: var(--accent-amber);
 }
 
-/* ── Domain nav tabs ── */
-.domain-nav {
+/* ── Detail breadcrumb (replaces domain-nav on report detail pages) ── */
+.detail-breadcrumb {
   display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
   margin-bottom: 32px;
-}
-
-.domain-tab {
   font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 8px 18px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
-  cursor: default;
-  margin-bottom: -1px;
-  transition: color 0.2s, border-color 0.2s;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
 }
 
-.domain-tab--active {
+.bc-link {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.bc-link:hover {
   color: var(--accent-amber);
-  border-bottom-color: var(--accent-amber);
+  opacity: 1;
+}
+
+.bc-sep {
+  color: var(--border);
+  margin: 0 0.2rem;
+}
+
+.bc-current {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ── Prev / next pagination ── */
+.report-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 16px;
+  flex-wrap: wrap;
+}
+
+.rpag-btn {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  background: var(--surface);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.rpag-btn:hover {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+  opacity: 1;
+}
+
+.rpag-btn--list {
+  border-style: dashed;
 }
 
 /* ── Report article ── */
@@ -453,13 +516,13 @@ function formatPeriod(iso: string): string {
     font-size: 0.75rem;
   }
 
-  .domain-nav {
-    overflow-x: auto;
+  .report-pagination {
+    gap: 8px;
   }
 
-  .domain-tab {
-    padding: 8px 12px;
-    white-space: nowrap;
+  .rpag-btn {
+    font-size: 0.63rem;
+    padding: 5px 10px;
   }
 }
 </style>

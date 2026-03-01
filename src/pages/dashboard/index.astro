@@ -162,25 +162,25 @@ const DOMAIN_ARROW: Record<string, string> = {
     <!-- ══ METRIC STRIP ═════════════════════════════════════════════ -->
     <div class="db-metrics">
       <div class="db-metric">
-        <span class="db-metric-num">{entityCount || 142}</span>
+        <span class="db-metric-num">{entityCount || '—'}</span>
         <span class="db-metric-label">ENTITIES</span>
-        <span class="db-metric-delta db-delta--up">+12</span>
+        {entityCount > 0 && <span class="db-metric-delta db-delta--up">+12</span>}
       </div>
       <div class="db-metric-sep"></div>
       <div class="db-metric">
-        <span class="db-metric-num">{labCount || 34}</span>
+        <span class="db-metric-num">{labCount || '—'}</span>
         <span class="db-metric-label">LABS</span>
       </div>
       <div class="db-metric-sep"></div>
       <div class="db-metric">
-        <span class="db-metric-num">{methodCount || 67}</span>
+        <span class="db-metric-num">{methodCount || '—'}</span>
         <span class="db-metric-label">METHODS</span>
       </div>
       <div class="db-metric-sep"></div>
       <div class="db-metric db-metric--cyan">
-        <span class="db-metric-num">{upstream.length || 300}</span>
+        <span class="db-metric-num">{upstream.length || '—'}</span>
         <span class="db-metric-label">UPSTREAM SIG</span>
-        <span class="db-metric-delta db-delta--up">+8%</span>
+        {upstream.length > 0 && <span class="db-metric-delta db-delta--up">+8%</span>}
       </div>
       <div class="db-metric-sep"></div>
       <div class={`db-metric ${driftActive ? 'db-metric--warn' : 'db-metric--ok'}`}>
@@ -235,22 +235,30 @@ const DOMAIN_ARROW: Record<string, string> = {
           <span class="db-panel-title">上游關鍵字</span>
           <span class="db-panel-meta">arxiv · top 10</span>
         </div>
-        <div class="db-kw-list">
-          {(topKeywords.length > 0 ? topKeywords : placeholderKw).map(([kw, count], i) => {
-            const pct = Math.round((Number(count) / (topKeywords.length > 0 ? maxKwCount : 18)) * 100);
-            const rank = i + 1;
-            return (
-              <div class="db-kw-row">
-                <span class="db-kw-rank">{rank}</span>
-                <span class="db-kw-label">{kw}</span>
-                <div class="db-kw-bar-wrap">
-                  <div class="db-kw-bar" style={`width:${pct}%`}></div>
+        {topKeywords.length > 0 ? (
+          <div class="db-kw-list">
+            {topKeywords.map(([kw, count], i) => {
+              const pct = Math.round((Number(count) / maxKwCount) * 100);
+              const rank = i + 1;
+              return (
+                <div class="db-kw-row">
+                  <span class="db-kw-rank">{rank}</span>
+                  <span class="db-kw-label">{kw}</span>
+                  <div class="db-kw-bar-wrap">
+                    <div class="db-kw-bar" style={`width:${pct}%`}></div>
+                  </div>
+                  <span class="db-kw-count">{count}</span>
                 </div>
-                <span class="db-kw-count">{count}</span>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="db-empty-state">
+            <span class="db-empty-icon">📡</span>
+            <p class="db-empty-text">資料待同步</p>
+            <p class="db-empty-sub">上游 arxiv 監測尚未產出資料<br/>預計 08:50 自動更新</p>
+          </div>
+        )}
       </div>
 
       <!-- Top Labs -->
@@ -1275,6 +1283,36 @@ html.dark .db-calib-triggers { border-top-color: #131E30; }
   text-align: center;
   padding: 20px 0;
   opacity: 0.6;
+}
+
+.db-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  gap: 6px;
+}
+.db-empty-icon {
+  font-size: 1.4rem;
+  opacity: 0.5;
+}
+.db-empty-text {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.db-empty-sub {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  opacity: 0.6;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
 }
 
 /* ── Section label ── */

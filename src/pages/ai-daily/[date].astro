@@ -51,6 +51,22 @@ function formatDateDisplay(d: string): string {
   title={`AI 日報 ${date}`}
   description={`${date} AI 每日精選 — ${items.length} 篇，含 VLA、應用、模型最新動態`}
 >
+  <!-- ── Detail breadcrumb ── -->
+  <nav class="detail-breadcrumb page-container" aria-label="麵包屑">
+    <a href={`${base}/daily`} class="bc-link">日報</a>
+    <span class="bc-sep">›</span>
+    <a href={`${base}/ai-daily`} class="bc-link bc-link--ai">AI App 線</a>
+    <span class="bc-sep">›</span>
+    <span class="bc-current">{date}</span>
+  </nav>
+
+  <!-- ── Detail domain bar (cross-link to VLA same day) ── -->
+  <div class="detail-domain-bar page-container">
+    <span class="ddb-label">AI App 線</span>
+    <span class="ddb-sep">·</span>
+    <a href={`${base}/vla/${date}`} class="ddb-cross">查看同日 VLA 報告 →</a>
+  </div>
+
   <!-- Telegram-style digest at top — all items in a dense list -->
   <section class="digest-block" aria-label="今日 AI 情報摘要">
     <div class="container">
@@ -400,6 +416,53 @@ function formatDateDisplay(d: string): string {
   color: var(--text-secondary);
   font-weight: 600;
 }
+
+/* ── Detail breadcrumb ── */
+.detail-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 24px;
+  padding-bottom: 0;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+}
+.bc-link {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.bc-link:hover { color: var(--text-secondary); }
+.bc-link--ai:hover { color: var(--accent-amber); }
+.bc-sep { opacity: 0.4; }
+.bc-current { color: var(--text-secondary); font-weight: 600; }
+
+/* ── Detail domain bar ── */
+.detail-domain-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.65rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 8px;
+}
+.ddb-label {
+  font-weight: 700;
+  color: var(--accent-amber);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ddb-sep { color: var(--text-tertiary); opacity: 0.4; }
+.ddb-cross {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.ddb-cross:hover { color: var(--accent-cyan); }
 
 /* ── Mobile: stack pagination vertically ── */
 @media (max-width: 640px) {
