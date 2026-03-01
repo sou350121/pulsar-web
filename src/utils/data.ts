@@ -34,8 +34,7 @@ export interface DailyPickItem {
   summary: string;
   rating:  '⚡' | '🔧' | '📖' | '❌' | string;
   source:  string;
-  // domain may be absent in older files — treat as 'ai' by default
-  domain?: 'ai' | 'vla' | string;
+  domain:  'ai' | 'vla' | string;
 }
 
 export interface DailyPickDay {
@@ -43,8 +42,34 @@ export interface DailyPickDay {
   items: DailyPickItem[];
 }
 
+// Raw shape from ai-daily-pick.json (pipeline format)
+interface AIDailyPickRaw {
+  title:      string;
+  category:   string;   // "行业" | "工具" | "趋势" | "实验" | "新发布" | "更新" | "观点"
+  source:     string;
+  url:        string;
+  why_picked: string;   // maps to summary
+}
+
 export interface AIDailyPickFile {
-  daily_picks: DailyPickDay[];
+  daily_picks: Array<{ date: string; items: AIDailyPickRaw[] }>;
+}
+
+// Raw shape from vla-daily-rating-out-YYYY-MM-DD.json
+interface VLARatingRaw {
+  title:            string;
+  date:             string;
+  url:              string;
+  source:           string;
+  rating:           '⚡' | '🔧' | '📖' | '❌' | string;
+  reason:           string;   // maps to summary
+  abstract_snippet: string;
+  affiliation:      string;
+}
+
+interface VLARatingFile {
+  ok:      boolean;
+  papers:  VLARatingRaw[];
 }
 
 // Drift metrics — keyed by date string
@@ -130,18 +155,80 @@ function listMdFiles(prefix: string): string[] {
   }
 }
 
+// Category label → display text mapping for AI daily items.
+// Pipeline writes Chinese category names; we surface them as-is.
+const CATEGORY_DISPLAY: Record<string, string> = {
+  '工具':  '🔧 工具',
+  '实验':  '🔧 實驗',
+  '新发布': '⚡ 新發布',
+  '更新':  '🔧 更新',
+  '行业':  '📰 行業',
+  '观点':  '💬 觀點',
+  '趋势':  '📊 趨勢',
+};
+
 // ---------------------------------------------------------------------------
 // loadAIDailyPicks
 // Returns the N most recent daily-pick days from ai-daily-pick.json.
-// Falls back to empty array if the file is missing (pre-first-sync).
+// Maps raw pipeline fields (category, why_picked) to the DailyPickItem shape.
 // ---------------------------------------------------------------------------
 export function loadAIDailyPicks(n: number = 7): DailyPickDay[] {
   const data = readJson<AIDailyPickFile>('ai-daily-pick.json');
   if (!data?.daily_picks) return [];
-  // Sort descending by date and take N
   return [...data.daily_picks]
     .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, n);
+    .slice(0, n)
+    .map(day => ({
+      date: day.date,
+      items: (day.items ?? []).map((raw): DailyPickItem => ({
+        title:   raw.title   ?? '',
+        url:     raw.url     ?? '#',
+        summary: raw.why_picked ?? '',
+        // Keep category display label; falls back to raw value for unknown
+        rating:  CATEGORY_DISPLAY[raw.category] ?? raw.category ?? '',
+        source:  raw.source  ?? '',
+        domain:  'ai',
+      })),
+    }));
+}
+
+// ---------------------------------------------------------------------------
+// loadVLADailyPicks
+// Returns the N most recent VLA daily rating days from
+// vla-daily-rating-out-YYYY-MM-DD.json files synced into src/data/.
+// ---------------------------------------------------------------------------
+export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+      .sort()
+      .reverse()
+      .slice(0, n);
+  } catch {
+    return [];
+  }
+
+  return files.map(filename => {
+    const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
+    const date = dateMatch?.[1] ?? 'unknown';
+    const data = readJson<VLARatingFile>(filename);
+    const papers = data?.papers ?? [];
+    return {
+      date,
+      items: papers
+        .filter(p => p.rating !== '❌')   // skip low-relevance by default
+        .map((raw): DailyPickItem => ({
+          title:   raw.title            ?? '',
+          url:     raw.url              ?? '#',
+          summary: raw.reason           || raw.abstract_snippet || '',
+          rating:  raw.rating           ?? '📖',
+          source:  raw.source           ?? 'arxiv',
+          domain:  'vla',
+        })),
+    };
+  }).filter(day => day.items.length > 0);
 }
 
 // ---------------------------------------------------------------------------

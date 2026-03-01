@@ -1,34 +1,27 @@
 ---
 /**
  * src/pages/vla/index.astro
- * VLA Research archive — shows upstream signals + top VLA entities.
+ * VLA Daily — archive list by date, mirroring ai-daily/index.astro
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ArticleCard from '../../components/ArticleCard.astro';
-import MetricCard from '../../components/MetricCard.astro';
-import { loadAIDailyPicks, loadUpstreamSignals, getTopEntities } from '../../utils/data';
+import { loadVLADailyPicks } from '../../utils/data';
 
-// VLA items come from the shared daily-picks filtered by domain
-const allPicks = loadAIDailyPicks(14);
-const vlaPicks = allPicks.flatMap(day =>
-  day.items
-    .filter(item => item.domain === 'vla' || item.rating === '⚡' || item.rating === '🔧')
-    .map(item => ({ ...item, date: day.date }))
-).slice(0, 12);
+const base = import.meta.env.BASE_URL;
 
-// Upstream arxiv signals (VLA stream)
-const upstream = loadUpstreamSignals(20)
-  .filter(s => s.domain === 'vla')
-  .slice(0, 8);
-
-// Top VLA labs and methods from entity tracker
-const topLabs    = getTopEntities(5, 'lab');
-const topMethods = getTopEntities(5, 'method');
+// Use actual VLA daily rating data
+const allDays = loadVLADailyPicks(60);
+const vlaDays = allDays.map(day => {
+  const counts = day.items.reduce<Record<string, number>>((acc, i) => {
+    acc[i.rating] = (acc[i.rating] ?? 0) + 1;
+    return acc;
+  }, {});
+  return { ...day, counts };
+});
 ---
 
 <BaseLayout
   title="VLA 研究日報"
-  description="VLA 機器人學習研究論文精選、上游 arxiv 訊號與機構追蹤"
+  description="Vision-Language-Action 論文每日精選 — ⚡ 突破 · 🔧 技術 · 📖 觀點"
 >
   <div class="page-container section">
     <!-- Page header -->
@@ -37,123 +30,68 @@ const topMethods = getTopEntities(5, 'method');
         VLA 線 · Vision-Language-Action
       </p>
       <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
-        VLA 研究
+        VLA 研究日報
       </h1>
-      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
-        Vision-Language-Action（VLA）機器人系統 — 結合視覺感知、語言理解與動作執行的具身 AI 核心架構。
-        照見系統整合 cs.RO、cs.AI、cs.LG 三條 arxiv 流，重點追蹤 flow matching、世界模型、
-        具身推理等前沿方向，每日由 Qwen3.5-Plus 自動評級，標記 ⚡ 突破性進展。
+      <p class="text-pulsar-muted max-w-xl">
+        Vision-Language-Action（VLA）機器人系統 — 整合 cs.RO、cs.AI、cs.LG 三條 arxiv 流。
+        重點追蹤 flow matching、世界模型、具身推理等前沿方向，每日 09:00 CST 由 Qwen3.5-Plus 自動評級。
       </p>
     </div>
 
-    <!-- Metrics row -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
-      <MetricCard label="追蹤實驗室" value={topLabs.length || 34}  unit="labs"    status="ok" />
-      <MetricCard label="追蹤方法"   value={topMethods.length || 67} unit="methods" status="ok" />
-      <MetricCard label="上游訊號"   value={upstream.length || 142}  unit="signals" status="ok" trend="+8%" />
-      <MetricCard label="本週論文"   value={vlaPicks.length || 23}  unit="papers"  status="ok" />
-    </div>
+    <!-- Archive list -->
+    {vlaDays.length === 0 ? (
+      <p class="text-pulsar-muted font-ibm-plex-mono text-sm">
+        尚無 VLA 資料 — 請先同步 pipeline 資料。
+      </p>
+    ) : (
+      <div class="space-y-3">
+        {vlaDays.map(day => (
+          <a
+            href={`${base}/vla/${day.date}`}
+            class="card flex items-center justify-between gap-4 hover:border-pulsar-cyan transition-colors group no-underline"
+          >
+            <!-- Date -->
+            <time
+              datetime={day.date}
+              class="font-ibm-plex-mono font-semibold text-pulsar-text shrink-0 text-sm"
+            >
+              {day.date}
+            </time>
 
-    <!-- Two-column layout: picks + sidebar -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-      <!-- Main: recent picks -->
-      <div class="lg:col-span-2">
-        <h2 class="font-lora text-xl font-bold text-pulsar-text mb-4">近期精選論文</h2>
-        {vlaPicks.length > 0 ? (
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {vlaPicks.map(item => (
-              <ArticleCard
-                title={item.title}
-                summary={item.summary}
-                rating={item.rating}
-                source={item.source}
-                date={item.date}
-                domain="vla"
-                url={item.url}
-              />
-            ))}
-          </div>
-        ) : (
-          <div class="card text-center py-12 text-pulsar-muted font-ibm-plex-mono text-sm">
-            尚無 VLA 論文資料 — 請同步 pipeline 資料
-          </div>
-        )}
-      </div>
-
-      <!-- Sidebar -->
-      <div class="space-y-6">
-
-        <!-- Top Labs -->
-        <div class="card">
-          <h3 class="font-lora font-semibold text-pulsar-text mb-4 text-sm">
-            🏛️ 活躍實驗室
-          </h3>
-          {topLabs.length > 0 ? (
-            <ul class="space-y-2">
-              {topLabs.map((lab, i) => (
-                <li class="flex items-center justify-between text-sm">
-                  <span class="text-pulsar-text font-noto-serif-sc">
-                    <span class="font-ibm-plex-mono text-pulsar-muted mr-2 text-xs">{i + 1}</span>
-                    {lab.name}
+            <!-- Rating breakdown badges -->
+            <div class="flex flex-wrap gap-1.5 flex-1">
+              {[['⚡','flash'],['🔧','wrench'],['📖','book'],['❌','x']].map(([r]) => (
+                day.counts[r] ? (
+                  <span class:list={[
+                    'font-ibm-plex-mono text-xs px-1.5 py-0.5 rounded',
+                    r === '⚡' ? 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400' : '',
+                    r === '🔧' ? 'bg-cyan-100  dark:bg-cyan-950/30  text-cyan-700  dark:text-cyan-400'  : '',
+                    r === '📖' ? 'bg-stone-100 dark:bg-stone-800    text-stone-600 dark:text-stone-400' : '',
+                    r === '❌' ? 'bg-red-100   dark:bg-red-950/30   text-red-700   dark:text-red-400'   : '',
+                  ]}>
+                    {r} {day.counts[r]}
                   </span>
-                  <span class="font-ibm-plex-mono text-xs text-pulsar-muted">
-                    {lab.signals.length} 訊號
-                  </span>
-                </li>
+                ) : null
               ))}
-            </ul>
-          ) : (
-            <p class="text-pulsar-muted text-xs font-ibm-plex-mono">待 Entity Tracker 更新</p>
-          )}
-        </div>
+            </div>
 
-        <!-- Top Methods -->
-        <div class="card">
-          <h3 class="font-lora font-semibold text-pulsar-text mb-4 text-sm">
-            🔧 熱門方法
-          </h3>
-          {topMethods.length > 0 ? (
-            <ul class="space-y-2">
-              {topMethods.map((m, i) => (
-                <li class="flex items-center justify-between text-sm">
-                  <span class="font-ibm-plex-mono text-pulsar-text text-xs">{m.name}</span>
-                  <span class="font-ibm-plex-mono text-xs text-pulsar-muted">{m.signals.length}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p class="text-pulsar-muted text-xs font-ibm-plex-mono">待 Entity Tracker 更新</p>
-          )}
-        </div>
-
-        <!-- Upstream Signals -->
-        {upstream.length > 0 && (
-          <div class="card">
-            <h3 class="font-lora font-semibold text-pulsar-text mb-4 text-sm">
-              📡 上游 arxiv 訊號
-            </h3>
-            <ul class="space-y-3">
-              {upstream.slice(0, 5).map(sig => (
-                <li class="text-xs border-b border-pulsar-border pb-2 last:border-0 last:pb-0">
-                  <a
-                    href={sig.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-pulsar-text hover:text-pulsar-cyan transition-colors line-clamp-2"
-                  >
-                    {sig.title}
-                  </a>
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class="font-ibm-plex-mono text-pulsar-muted">{sig.date}</span>
-                    <span class="tag">{sig.keyword}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+            <!-- Item count + arrow -->
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-pulsar-muted text-xs font-ibm-plex-mono">
+                {day.items.length} 篇
+              </span>
+              <svg
+                width="14" height="14" viewBox="0 0 14 14" fill="none"
+                stroke="currentColor" stroke-width="2"
+                class="text-pulsar-muted group-hover:text-pulsar-cyan transition-colors"
+                aria-hidden="true"
+              >
+                <path d="M2 7h10M8 3l4 4-4 4"/>
+              </svg>
+            </div>
+          </a>
+        ))}
       </div>
-    </div>
+    )}
   </div>
 </BaseLayout>

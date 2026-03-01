@@ -36,8 +36,9 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-MEMORY_DIR  = Path("/home/admin/clawd/memory")
-DATA_DIR    = Path(__file__).resolve().parent.parent / "src" / "data"
+MEMORY_DIR     = Path("/home/admin/clawd/memory")
+MEMORY_TMP_DIR = Path("/home/admin/clawd/memory/tmp")
+DATA_DIR       = Path(__file__).resolve().parent.parent / "src" / "data"
 
 # JSON files to copy verbatim
 JSON_FILES = [
@@ -211,7 +212,25 @@ def main():
             else:
                 errors.append(src.name)
 
-    # ── 3. Manifest ────────────────────────────────────────────────────────
+    # ── 3. VLA daily rating files from tmp/ ───────────────────────────────
+    log("\nVLA daily rating files (from memory/tmp/):")
+    if MEMORY_TMP_DIR.exists():
+        vla_rating_files = select_recent_md(MEMORY_TMP_DIR, "vla-daily-rating-out-", 30, MD_MAX_AGE_DAYS)
+        if not vla_rating_files:
+            log("  SKIP (none found): vla-daily-rating-out-*", is_verbose=True, verbose=args.verbose)
+        else:
+            log(f"  vla-daily-rating-out-* — {len(vla_rating_files)} file(s)")
+            for src in vla_rating_files:
+                dst = DATA_DIR / src.name
+                ok = copy_file(src, dst, args.dry_run, args.symlink, args.verbose)
+                if ok:
+                    copied.append(src.name)
+                else:
+                    errors.append(src.name)
+    else:
+        log(f"  SKIP (tmp dir not found): {MEMORY_TMP_DIR}", is_verbose=True, verbose=args.verbose)
+
+    # ── 4. Manifest ────────────────────────────────────────────────────────
     write_manifest(DATA_DIR, copied, args.dry_run)
 
     # ── 4. Summary ─────────────────────────────────────────────────────────

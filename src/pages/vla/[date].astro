@@ -1,0 +1,148 @@
+---
+/**
+ * src/pages/vla/[date].astro
+ * VLA Daily detail — individual day view, VLA items only.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import RatingBadge from '../../components/RatingBadge.astro';
+import { loadVLADailyPicks } from '../../utils/data';
+
+export async function getStaticPaths() {
+  const vlaDays = loadVLADailyPicks(90);
+  return vlaDays.map(day => ({
+    params: { date: day.date },
+    props:  { day },
+  }));
+}
+
+const { day } = Astro.props;
+const { date, items } = day;
+const base = import.meta.env.BASE_URL;
+
+// Group by rating
+const byRating: Record<string, typeof items> = {};
+for (const item of items) {
+  (byRating[item.rating] ??= []).push(item);
+}
+
+// Find prev/next VLA date (may not be consecutive calendar days)
+const vlaDatesSorted = loadVLADailyPicks(90)
+  .map(d => d.date)
+  .sort();
+const idx = vlaDatesSorted.indexOf(date);
+const prevDate = idx > 0 ? vlaDatesSorted[idx - 1] : null;
+const nextDate = idx < vlaDatesSorted.length - 1 ? vlaDatesSorted[idx + 1] : null;
+---
+
+<BaseLayout
+  title={`VLA 日報 ${date}`}
+  description={`${date} VLA 論文精選 — ${items.length} 篇`}
+>
+  <div class="page-container section">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="mb-6 text-sm font-ibm-plex-mono text-pulsar-muted">
+      <a href={base} class="hover:text-pulsar-text">首頁</a>
+      <span class="mx-2">/</span>
+      <a href={`${base}/vla`} class="hover:text-pulsar-text">VLA 日報</a>
+      <span class="mx-2">/</span>
+      <span class="text-pulsar-text">{date}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="mb-8">
+      <time datetime={date} class="font-ibm-plex-mono text-pulsar-muted text-sm">
+        {date}
+      </time>
+      <h1 class="font-lora text-3xl font-bold text-pulsar-text mt-1 mb-4">
+        VLA 研究日報
+      </h1>
+      <div class="flex flex-wrap gap-2 items-center">
+        {Object.entries(byRating).map(([rating, rItems]) => (
+          <RatingBadge rating={rating} label={`${rItems.length} 篇`} size="sm" />
+        ))}
+        <span class="text-pulsar-muted text-xs font-ibm-plex-mono ml-2">
+          共 {items.length} 篇
+        </span>
+      </div>
+    </div>
+
+    <!-- ⚡ Breakthroughs -->
+    {(byRating['⚡'] ?? []).length > 0 && (
+      <div class="mb-8">
+        <h2 class="font-lora text-xl font-semibold text-pulsar-amber mb-4">⚡ 突破</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(byRating['⚡'] ?? []).map(item => (
+            <ArticleCard
+              title={item.title}
+              summary={item.summary}
+              rating={item.rating}
+              source={item.source}
+              date={date}
+              domain="vla"
+              url={item.url}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- 🔧 Technical -->
+    {(byRating['🔧'] ?? []).length > 0 && (
+      <div class="mb-8">
+        <h2 class="font-lora text-xl font-semibold text-pulsar-cyan mb-4">🔧 技術</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(byRating['🔧'] ?? []).map(item => (
+            <ArticleCard
+              title={item.title}
+              summary={item.summary}
+              rating={item.rating}
+              source={item.source}
+              date={date}
+              domain="vla"
+              url={item.url}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- 📖 Reading -->
+    {(byRating['📖'] ?? []).length > 0 && (
+      <div class="mb-8">
+        <h2 class="font-lora text-xl font-semibold text-pulsar-muted mb-4">📖 背景閱讀</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(byRating['📖'] ?? []).map(item => (
+            <ArticleCard
+              title={item.title}
+              summary={item.summary}
+              rating={item.rating}
+              source={item.source}
+              date={date}
+              domain="vla"
+              url={item.url}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Pagination -->
+    <hr class="pulsar-divider" />
+    <div class="flex items-center justify-between text-sm font-ibm-plex-mono">
+      {prevDate ? (
+        <a href={`${base}/vla/${prevDate}`} class="text-pulsar-cyan hover:underline flex items-center gap-1">
+          ← {prevDate}
+        </a>
+      ) : <span />}
+      <a href={`${base}/vla`} class="text-pulsar-muted hover:text-pulsar-text">
+        全部 VLA 日報
+      </a>
+      {nextDate ? (
+        <a href={`${base}/vla/${nextDate}`} class="text-pulsar-cyan hover:underline flex items-center gap-1">
+          {nextDate} →
+        </a>
+      ) : <span />}
+    </div>
+  </div>
+</BaseLayout>

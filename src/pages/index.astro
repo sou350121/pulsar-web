@@ -19,6 +19,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import {
   loadAIDailyPicks,
+  loadVLADailyPicks,
   loadDriftMetrics,
   loadEntityIndex,
   loadSocialIntel,
@@ -31,6 +32,7 @@ import {
 // Load real data (returns empty/null when src/data/ not yet populated)
 // ---------------------------------------------------------------------------
 const recentPicks   = loadAIDailyPicks(1);
+const recentVLA     = loadVLADailyPicks(1);
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
@@ -111,8 +113,14 @@ const displayDate = todayPicks.date;
 // Top 6 items for the picks grid
 const gridItems   = todayPicks.items.slice(0, 6);
 // Top 2 items for the hero featured cards
-const heroAI  = todayPicks.items.find(i => i.domain === 'ai')  ?? todayPicks.items[0];
-const heroVLA = todayPicks.items.find(i => i.domain === 'vla') ?? todayPicks.items[1];
+// AI hero: top item from today's AI picks
+const heroAI  = todayPicks.items[0];
+// VLA hero: top-rated paper from today's VLA rating output (⚡ first, then 🔧)
+const todayVLA   = recentVLA[0];
+const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
+             ?? todayVLA?.items.find(i => i.rating === '🔧')
+             ?? todayVLA?.items[0]
+             ?? todayPicks.items[1];   // fallback to AI item if no VLA data
 
 // Social intel
 const realSocial = [...aiSocial, ...vlaSocial].map(s => ({
@@ -139,7 +147,7 @@ const reportSummary = latestReport
   : 'VLA 技術演進的範式轉移：本期報告系統梳理過去兩週 VLA 領域的六項關鍵技術突破，重點分析流匹配架構、SSM 模型和世界模型三條技術路線的收斂趨勢。結合 Physical Intelligence Pi0.5 和 CognitiveMamba 的實驗數據，我們認為當前 VLA 正從「模仿學習的縮放定律」轉向「物理常識的顯式建模」。';
 const reportDate    = latestReport?.date ?? '2026-03-01';
 
-// Map rating emoji to badge class
+// Map rating to badge class — works for VLA ratings (⚡/🔧/📖) and AI categories
 const ratingClass: Record<string, string> = {
   '⚡': 'rating-badge rating-flash',
   '🔧': 'rating-badge rating-wrench',
@@ -149,6 +157,18 @@ const ratingClass: Record<string, string> = {
 const ratingLabel: Record<string, string> = {
   '⚡': '突破', '🔧': '技術', '📖': '觀點', '❌': '低關聯',
 };
+// For AI items, rating is like "🔧 工具" — extract the label part
+function getRatingClass(r: string): string {
+  const first = r.charAt(0);
+  return ratingClass[first] ?? ratingClass[r] ?? 'rating-badge rating-book';
+}
+function getRatingLabel(r: string): string {
+  const first = r.charAt(0);
+  // If it's a known emoji, use label; if it includes a space, use text after space
+  if (ratingLabel[first]) return ratingLabel[first];
+  if (r.includes(' ')) return r.split(' ').slice(1).join(' ');
+  return ratingLabel[r] ?? r;
+}
 
 // Platform icon mapping
 const platformIcon: Record<string, string> = {
@@ -210,8 +230,8 @@ const platformIcon: Record<string, string> = {
         <!-- Left: Top AI Pick -->
         <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
           <div class="hero-card-label"><span>今日 AI 精選</span></div>
-          <span class={ratingClass[heroAI.rating] ?? 'rating-badge rating-flash'}>
-            {heroAI.rating} {ratingLabel[heroAI.rating] ?? '精選'}
+          <span class={getRatingClass(heroAI.rating)}>
+            {heroAI.rating.charAt(0)} {getRatingLabel(heroAI.rating)}
           </span>
           <h2 class="hero-card-title" id="hero-ai-title">{heroAI.title}</h2>
           <p class="hero-card-summary">{heroAI.summary}</p>
@@ -227,8 +247,8 @@ const platformIcon: Record<string, string> = {
         <!-- Right: Top VLA Pick -->
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
           <div class="hero-card-label"><span>今日 VLA 論文</span></div>
-          <span class={ratingClass[heroVLA.rating] ?? 'rating-badge rating-wrench'}>
-            {heroVLA.rating} {ratingLabel[heroVLA.rating] ?? '技術'}
+          <span class={getRatingClass(heroVLA.rating)}>
+            {heroVLA.rating.charAt(0)} {getRatingLabel(heroVLA.rating)}
           </span>
           <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
           <p class="hero-card-summary">{heroVLA.summary}</p>
