@@ -50,21 +50,23 @@ const base = import.meta.env.BASE_URL;
 
     <!-- ── Breadcrumb ── -->
     <nav class="dd-breadcrumb" aria-label="麵包屑">
-      <a href={`${base}/`} class="bc-link">首頁</a>
+      <a href={`${base}/`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">›</span>
-      <span class="bc-current">AI 深度追蹤</span>
+      <span class="bc-current"><span data-tc>AI 深度追蹤</span><span data-sc>AI 深度追踪</span></span>
     </nav>
 
     <!-- ── Masthead ── -->
     <header class="dd-masthead">
-      <div class="dd-overline">AI APP 線 · DEEP DIVE ARCHIVE</div>
-      <h1 class="dd-title">AI 深度追蹤</h1>
+      <div class="dd-overline"><span data-tc>AI APP 線 · DEEP DIVE ARCHIVE</span><span data-sc>AI APP 线 · DEEP DIVE ARCHIVE</span></div>
+      <h1 class="dd-title"><span data-tc>AI 深度追蹤</span><span data-sc>AI 深度追踪</span></h1>
       <div class="dd-accent-bar dd-accent-bar--amber"></div>
 
       <p class="dd-desc">
-        針對 AI Agent 工具、框架與產品發布的深度技術拆解。
+        <span data-tc>針對 AI Agent 工具、框架與產品發布的深度技術拆解。
         每次有重大發布或社交信號達閾值時，pipeline 自動生成深度分析文章，
-        存入 <strong>Agent-Playbook</strong> 庫並同步至此頁面。
+        存入 </span><span data-sc>针对 AI Agent 工具、框架与产品发布的深度技术拆解。
+        每次有重大发布或社交讯号达阈值时，pipeline 自动生成深度分析文章，
+        存入 </span><strong>Agent-Playbook</strong><span data-tc> 庫並同步至此頁面。</span><span data-sc> 库并同步至此页面。</span>
       </p>
 
       <!-- GitHub link — hero CTA -->
@@ -82,14 +84,14 @@ const base = import.meta.env.BASE_URL;
               .29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
               0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
-          Agent-Playbook 庫
-          <span class="dd-github-sub">deep-dive/ 目錄</span>
+          <span data-tc>Agent-Playbook 庫</span><span data-sc>Agent-Playbook 库</span>
+          <span class="dd-github-sub"><span data-tc>deep-dive/ 目錄</span><span data-sc>deep-dive/ 目录</span></span>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M2 6h8M6 2l4 4-4 4"/>
           </svg>
         </a>
         <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" class="dd-github-secondary">
-          查看全庫 →
+          <span data-tc>查看全庫 →</span><span data-sc>查看全库 →</span>
         </a>
         <div class="dd-count-pill">
           <span class="dd-count-num">{articles.length}</span>
@@ -102,7 +104,7 @@ const base = import.meta.env.BASE_URL;
     {articles.length === 0 && (
       <div class="dd-empty">
         <span class="dd-empty-icon">▣</span>
-        <p>尚無深度追蹤文章 — pipeline 自動生成中</p>
+        <p><span data-tc>尚無深度追蹤文章 — pipeline 自動生成中</span><span data-sc>尚无深度追踪文章 — pipeline 自动生成中</span></p>
       </div>
     )}
 
@@ -112,7 +114,7 @@ const base = import.meta.env.BASE_URL;
     {recentArticles.length > 0 && (
       <div class="dd-section">
         <div class="dd-section-subheader">
-          <span class="dd-section-label">最近 2 週</span>
+          <span class="dd-section-label"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
           <span class="dd-section-count">{recentArticles.length} 篇</span>
         </div>
         <div class="dd-card-grid">
@@ -136,7 +138,7 @@ const base = import.meta.env.BASE_URL;
                 rel="noopener noreferrer"
                 class="dd-card-cta"
               >
-                GitHub 閱讀原文
+                <span data-tc>GitHub 閱讀原文</span><span data-sc>GitHub 阅读原文</span>
                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <path d="M2 6h8M6 2l4 4-4 4"/>
                 </svg>

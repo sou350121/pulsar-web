@@ -61,9 +61,9 @@ function formatPeriod(iso: string): string {
 
     <!-- ── Breadcrumb ── -->
     <nav aria-label="Breadcrumb" class="breadcrumb">
-      <a href={base} class="breadcrumb-link">首頁</a>
+      <a href={base} class="breadcrumb-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="breadcrumb-sep">/</span>
-      <a href={`${base}/reports`} class="breadcrumb-link">雙週報告</a>
+      <a href={`${base}/reports`} class="breadcrumb-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
       <span class="breadcrumb-sep">/</span>
       <span class="breadcrumb-current">{date}</span>
     </nav>
@@ -71,7 +71,7 @@ function formatPeriod(iso: string): string {
     <!-- ── Page header ── -->
     <header class="report-header fade-in-1">
       <div class="report-overline">
-        <span class="overline-badge">雙週報告</span>
+        <span class="overline-badge"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
         <span class="overline-sep">|</span>
         <span class="overline-period">{formatPeriod(date)}</span>
       </div>
@@ -81,10 +81,10 @@ function formatPeriod(iso: string): string {
       </h1>
 
       <div class="report-meta-row">
-        <span class="meta-tag meta-tag--ai">AI App線</span>
-        <span class="meta-tag meta-tag--vla">VLA線</span>
-        <span class="meta-tag meta-tag--default">社交情報</span>
-        <span class="meta-tag meta-tag--default">校準</span>
+        <span class="meta-tag meta-tag--ai"><span data-tc>AI App線</span><span data-sc>AI App线</span></span>
+        <span class="meta-tag meta-tag--vla"><span data-tc>VLA線</span><span data-sc>VLA线</span></span>
+        <span class="meta-tag meta-tag--default"><span data-tc>社交情報</span><span data-sc>社交情报</span></span>
+        <span class="meta-tag meta-tag--default"><span data-tc>校準</span><span data-sc>校准</span></span>
       </div>
 
       <hr class="report-rule" />
@@ -92,9 +92,9 @@ function formatPeriod(iso: string): string {
 
     <!-- ── Detail breadcrumb (replaces domain-nav; reports span both domains) ── -->
     <nav class="detail-breadcrumb" aria-label="麵包屑">
-      <a href={`${base}`} class="bc-link">首頁</a>
+      <a href={`${base}`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">›</span>
-      <a href={`${base}reports`} class="bc-link">雙週報告</a>
+      <a href={`${base}reports`} class="bc-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
       <span class="bc-sep">›</span>
       <span class="bc-current">{date}</span>
     </nav>
@@ -107,7 +107,7 @@ function formatPeriod(iso: string): string {
           <div class="report-empty">
             <span class="empty-icon">▣</span>
             <p class="empty-title">CONTENT PENDING</p>
-            <p class="empty-sub">報告內容尚未同步 — pipeline 自動生成中</p>
+            <p class="empty-sub"><span data-tc>報告內容尚未同步 — pipeline 自動生成中</span><span data-sc>报告内容尚未同步 — pipeline 自动生成中</span></p>
           </div>
         )
       }
@@ -120,7 +120,7 @@ function formatPeriod(iso: string): string {
           ← {prevDate}
         </a>
       ) : <span />}
-      <a href={`${base}reports`} class="rpag-btn rpag-btn--list">報告列表</a>
+      <a href={`${base}reports`} class="rpag-btn rpag-btn--list"><span data-tc>報告列表</span><span data-sc>报告列表</span></a>
       {nextDate ? (
         <a href={`${base}reports/${nextDate}`} class="rpag-btn rpag-btn--next">
           {nextDate} →
@@ -131,7 +131,7 @@ function formatPeriod(iso: string): string {
     <!-- ── Back link ── -->
     <div class="back-row">
       <a href={`${base}reports`} class="back-link">
-        <span class="back-arrow">←</span> 返回報告列表
+        <span class="back-arrow">←</span> <span data-tc>返回報告列表</span><span data-sc>返回报告列表</span>
       </a>
     </div>
 

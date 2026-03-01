@@ -144,7 +144,7 @@ const DOMAIN_ARROW: Record<string, string> = {
           SYS:ONLINE
         </div>
         <h1 class="db-title">MISSION CONTROL</h1>
-        <p class="db-subtitle">照見系統 · Pipeline 監控面板</p>
+        <p class="db-subtitle"><span data-tc>照見系統 · Pipeline 監控面板</span><span data-sc>照见系统 · Pipeline 监控面板</span></p>
       </div>
       <div class="db-header-right">
         <div class="db-status-block">
@@ -197,14 +197,14 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Quality Drift sparkline -->
       <div class="db-panel db-panel--spark">
         <div class="db-panel-header">
-          <span class="db-panel-title">品質趨勢</span>
+          <span class="db-panel-title"><span data-tc>品質趨勢</span><span data-sc>品质趋势</span></span>
           <span class="db-panel-meta">近 14 天</span>
         </div>
         <div class="db-legend">
           <span class="db-legend-dot db-legend-dot--cyan"></span>
-          <span class="db-legend-text">VLA 論文</span>
+          <span class="db-legend-text"><span data-tc>VLA 論文</span><span data-sc>VLA 论文</span></span>
           <span class="db-legend-dot db-legend-dot--amber"></span>
-          <span class="db-legend-text">AI 條目</span>
+          <span class="db-legend-text"><span data-tc>AI 條目</span><span data-sc>AI 条目</span></span>
         </div>
 
         <div class="db-spark">
@@ -229,7 +229,7 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Upstream keyword bars -->
       <div class="db-panel">
         <div class="db-panel-header">
-          <span class="db-panel-title">上游關鍵字</span>
+          <span class="db-panel-title"><span data-tc>上游關鍵字</span><span data-sc>上游关键字</span></span>
           <span class="db-panel-meta">arxiv · top 10</span>
         </div>
         {topKeywords.length > 0 ? (
@@ -252,8 +252,8 @@ const DOMAIN_ARROW: Record<string, string> = {
         ) : (
           <div class="db-empty-state">
             <span class="db-empty-icon">📡</span>
-            <p class="db-empty-text">資料待同步</p>
-            <p class="db-empty-sub">上游 arxiv 監測尚未產出資料<br/>預計 08:50 自動更新</p>
+            <p class="db-empty-text"><span data-tc>資料待同步</span><span data-sc>资料待同步</span></p>
+            <p class="db-empty-sub"><span data-tc>上游 arxiv 監測尚未產出資料</span><span data-sc>上游 arxiv 监测尚未产出资料</span><br/><span data-tc>預計 08:50 自動更新</span><span data-sc>预计 08:50 自动更新</span></p>
           </div>
         )}
       </div>
@@ -261,7 +261,7 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Top Labs -->
       <div class="db-panel db-panel--table">
         <div class="db-panel-header">
-          <span class="db-panel-title">活躍實驗室</span>
+          <span class="db-panel-title"><span data-tc>活躍實驗室</span><span data-sc>活跃实验室</span></span>
           <span class="db-panel-meta">by signal count</span>
         </div>
         <div class="db-rank-list">
@@ -287,7 +287,7 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Top Methods -->
       <div class="db-panel db-panel--table">
         <div class="db-panel-header">
-          <span class="db-panel-title">熱門方法</span>
+          <span class="db-panel-title"><span data-tc>熱門方法</span><span data-sc>热门方法</span></span>
           <span class="db-panel-meta">by frequency</span>
         </div>
         <div class="db-rank-list">
@@ -314,11 +314,11 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Today's VLA Signals -->
       <div class="db-panel db-panel--full">
         <div class="db-panel-header">
-          <span class="db-panel-title">今日 VLA 訊號</span>
+          <span class="db-panel-title"><span data-tc>今日 VLA 訊號</span><span data-sc>今日 VLA 讯号</span></span>
           <span class="db-panel-meta">{vlaDailyPicks[0]?.date ?? '—'} · ⚡🔧 only</span>
         </div>
         {vlatodayItems.length === 0 ? (
-          <p class="db-empty">今日暫無評分訊號</p>
+          <p class="db-empty"><span data-tc>今日暫無評分訊號</span><span data-sc>今日暂无评分讯号</span></p>
         ) : (
           <div class="db-signal-list">
             {vlatodayItems.map(item => (
@@ -337,11 +337,11 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Recent AI Picks -->
       <div class="db-panel">
         <div class="db-panel-header">
-          <span class="db-panel-title">AI 近況精選</span>
+          <span class="db-panel-title"><span data-tc>AI 近況精選</span><span data-sc>AI 近况精选</span></span>
           <span class="db-panel-meta">最近 2 日</span>
         </div>
         {aiRecentItems.length === 0 ? (
-          <p class="db-empty">暫無數據</p>
+          <p class="db-empty"><span data-tc>暫無數據</span><span data-sc>暂无数据</span></p>
         ) : (
           <div class="db-signal-list">
             {aiRecentItems.map(item => (
@@ -363,7 +363,7 @@ const DOMAIN_ARROW: Record<string, string> = {
           <span class="db-panel-meta">per benchmark · latest</span>
         </div>
         {sotaEntries.length === 0 ? (
-          <p class="db-empty">暫無數據</p>
+          <p class="db-empty"><span data-tc>暫無數據</span><span data-sc>暂无数据</span></p>
         ) : (
           <div class="db-sota-list">
             {sotaEntries.map((e, i) => (
@@ -386,21 +386,21 @@ const DOMAIN_ARROW: Record<string, string> = {
       <!-- Calibration Status -->
       <div class={`db-panel ${calibTriggered ? 'db-panel--alert' : ''}`}>
         <div class="db-panel-header">
-          <span class="db-panel-title">假設校準</span>
+          <span class="db-panel-title"><span data-tc>假設校準</span><span data-sc>假设校准</span></span>
           <span class="db-panel-meta">{calibDate}</span>
         </div>
         <div class="db-calib-stats">
           <div class="db-calib-stat">
             <span class="db-calib-num">{calibVLAScanned}</span>
-            <span class="db-calib-label">VLA 假設掃描</span>
+            <span class="db-calib-label"><span data-tc>VLA 假設掃描</span><span data-sc>VLA 假设扫描</span></span>
           </div>
           <div class="db-calib-stat">
             <span class="db-calib-num">{calibAIScanned}</span>
-            <span class="db-calib-label">AI 假設掃描</span>
+            <span class="db-calib-label"><span data-tc>AI 假設掃描</span><span data-sc>AI 假设扫描</span></span>
           </div>
           <div class={`db-calib-stat ${calibTriggered ? 'db-calib-stat--alert' : 'db-calib-stat--ok'}`}>
             <span class="db-calib-num">{calibTriggers.length}</span>
-            <span class="db-calib-label">觸發假設</span>
+            <span class="db-calib-label"><span data-tc>觸發假設</span><span data-sc>触发假设</span></span>
           </div>
         </div>
         {calibTriggers.length > 0 && (
@@ -416,8 +416,8 @@ const DOMAIN_ARROW: Record<string, string> = {
 
     <!-- ══ 前沿判斷力 SECTION ═══════════════════════════════════════ -->
     <div class="db-section-label">
-      <span class="db-section-title">前沿判斷力</span>
-      <span class="db-section-desc">跨域洞察 · 假設挑戰 · 領域脈動</span>
+      <span class="db-section-title"><span data-tc>前沿判斷力</span><span data-sc>前沿判断力</span></span>
+      <span class="db-section-desc"><span data-tc>跨域洞察 · 假設挑戰 · 領域脈動</span><span data-sc>跨域洞察 · 假设挑战 · 领域脉动</span></span>
     </div>
 
     <!-- ── 判斷雷達 (Judgment Radar) strip ── -->
@@ -435,7 +435,7 @@ const DOMAIN_ARROW: Record<string, string> = {
         <div class="db-radar-icon">🔀</div>
         <div class="db-radar-body">
           <span class="db-radar-val db-radar-val--amber">{crossDomain.length || 0}</span>
-          <span class="db-radar-key">跨域訊號</span>
+          <span class="db-radar-key"><span data-tc>跨域訊號</span><span data-sc>跨域讯号</span></span>
           <span class="db-radar-sub">cross-domain rules</span>
         </div>
       </div>
@@ -446,8 +446,8 @@ const DOMAIN_ARROW: Record<string, string> = {
           <span class={`db-radar-val ${calibTriggerLog.length > 0 ? 'db-radar-val--warn' : 'db-radar-val--ok'}`}>
             {calibTriggerLog.length}
           </span>
-          <span class="db-radar-key">假設挑戰</span>
-          <span class="db-radar-sub">近 14 天觸發</span>
+          <span class="db-radar-key"><span data-tc>假設挑戰</span><span data-sc>假设挑战</span></span>
+          <span class="db-radar-sub"><span data-tc>近 14 天觸發</span><span data-sc>近 14 天触发</span></span>
         </div>
       </div>
       <div class="db-radar-sep"></div>
@@ -455,7 +455,7 @@ const DOMAIN_ARROW: Record<string, string> = {
         <div class="db-radar-icon">📊</div>
         <div class="db-radar-body">
           <span class="db-radar-val">{aiCatDist[0]?.category ?? '—'}</span>
-          <span class="db-radar-key">AI 主導類別</span>
+          <span class="db-radar-key"><span data-tc>AI 主導類別</span><span data-sc>AI 主导类别</span></span>
           <span class="db-radar-sub">近 7 天最多</span>
         </div>
       </div>
@@ -470,7 +470,7 @@ const DOMAIN_ARROW: Record<string, string> = {
           <span class="db-panel-meta">VLA ↔ AI App</span>
         </div>
         {crossDomain.length === 0 ? (
-          <p class="db-empty">尚無跨域訊號，系統持續監測中</p>
+          <p class="db-empty"><span data-tc>尚無跨域訊號，系統持續監測中</span><span data-sc>尚无跨域讯号，系统持续监测中</span></p>
         ) : (
           <div class="db-xd-list">
             {crossDomain.slice(0, 5).map(ins => (
@@ -502,7 +502,7 @@ const DOMAIN_ARROW: Record<string, string> = {
         {calibTriggerLog.length === 0 ? (
           <div class="db-calib-ok">
             <span class="db-calib-ok-icon">✓</span>
-            <span class="db-calib-ok-text">假設穩定，近期無觸發</span>
+            <span class="db-calib-ok-text"><span data-tc>假設穩定，近期無觸發</span><span data-sc>假设稳定，近期无触发</span></span>
           </div>
         ) : (
           <div class="db-trigger-list">
@@ -520,12 +520,12 @@ const DOMAIN_ARROW: Record<string, string> = {
       <div class="db-panel db-panel--full">
         <div class="db-panel-header">
           <span class="db-panel-title">領域脈動</span>
-          <span class="db-panel-meta">近 7 天信號分佈</span>
+          <span class="db-panel-meta"><span data-tc>近 7 天信號分佈</span><span data-sc>近 7 天讯号分布</span></span>
         </div>
         <div class="db-pulse-wrap">
           <!-- VLA tag stacked bars -->
           <div class="db-pulse-col">
-            <span class="db-pulse-label">VLA 評分</span>
+            <span class="db-pulse-label"><span data-tc>VLA 評分</span><span data-sc>VLA 评分</span></span>
             <div class="db-pulse-bars">
               {vlaTagDist.map(d => {
                 const total = Math.max(1, d.total);
@@ -545,7 +545,7 @@ const DOMAIN_ARROW: Record<string, string> = {
             <div class="db-pulse-legend">
               <span class="db-pl-dot db-pl-dot--flash"></span><span class="db-pl-text">⚡ 突破</span>
               <span class="db-pl-dot db-pl-dot--wrench"></span><span class="db-pl-text">🔧 工程</span>
-              <span class="db-pl-dot db-pl-dot--book"></span><span class="db-pl-text">📖 參考</span>
+              <span class="db-pl-dot db-pl-dot--book"></span><span class="db-pl-text"><span data-tc>📖 參考</span><span data-sc>📖 参考</span></span>
             </div>
           </div>
 
@@ -553,7 +553,7 @@ const DOMAIN_ARROW: Record<string, string> = {
 
           <!-- AI category breakdown -->
           <div class="db-pulse-col">
-            <span class="db-pulse-label">AI App 類別</span>
+            <span class="db-pulse-label"><span data-tc>AI App 類別</span><span data-sc>AI App 类别</span></span>
             <div class="db-cat-list">
               {aiCatDist.slice(0, 7).map((c, i) => {
                 const pct = Math.round(c.count / (aiCatDist[0]?.count ?? 1) * 100);

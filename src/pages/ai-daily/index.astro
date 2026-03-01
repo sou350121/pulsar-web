@@ -73,30 +73,30 @@ for (const day of daysWithStats) {
       </a>
       <a href={`${base}/ai-daily`} class="domain-tab domain-tab--active" aria-current="page">
         <span class="tab-dot tab-dot--ai" aria-hidden="true"></span>
-        AI App 線
+        <span data-tc>AI App 線</span><span data-sc>AI App 线</span>
       </a>
       <a href={`${base}/vla`} class="domain-tab">
         <span class="tab-dot tab-dot--vla" aria-hidden="true"></span>
-        VLA 線
+        <span data-tc>VLA 線</span><span data-sc>VLA 线</span>
       </a>
     </nav>
 
     <!-- ── Editorial header ── -->
     <header class="archive-header">
       <p class="archive-overline">AI App 線</p>
-      <h1 class="archive-title">AI 研究日報</h1>
+      <h1 class="archive-title"><span data-tc>AI 研究日報</span><span data-sc>AI 研究日报</span></h1>
       <p class="archive-subtitle">DAILY INTELLIGENCE DIGEST · SINCE 2026</p>
       <hr class="archive-rule" />
       <p class="archive-desc font-noto-serif-sc">
-        AI Agent 應用、模型、工具每日精選 — 由 Qwen3.5-Plus 自動評級，人工複核關鍵條目。
-        涵蓋 ⚡ 突破、🔧 實用、📖 背景、❌ 低相關四個等級，每日 07:00 CST 自動更新。
+        <span data-tc>AI Agent 應用、模型、工具每日精選 — 由 Qwen3.5-Plus 自動評級，人工複核關鍵條目</span><span data-sc>AI Agent 应用、模型、工具每日精选 — 由 Qwen3.5-Plus 自动评级，人工复核关键条目</span>。
+        <span data-tc>涵蓋 ⚡ 突破、🔧 實用、📖 背景、❌ 低相關四個等級，每日 07:00 CST 自動更新</span><span data-sc>涵盖 ⚡ 突破、🔧 实用、📖 背景、❌ 低相关四个等级，每日 07:00 CST 自动更新</span>。
       </p>
     </header>
 
     <!-- ── Archive list ── -->
     {daysWithStats.length === 0 ? (
       <p class="font-ibm-plex-mono text-sm" style="color: var(--pulsar-muted, var(--text-secondary));">
-        尚無數據 — 請先執行 <code style="background:var(--surface-2); padding: 0 4px; border-radius:3px;">pnpm sync-data</code> 同步 pipeline 資料。
+        <span data-tc>尚無數據</span><span data-sc>尚无数据</span> — 請先執行 <code style="background:var(--surface-2); padding: 0 4px; border-radius:3px;">pnpm sync-data</code> 同步 pipeline 資料。
       </p>
     ) : (
       <div class="archive-list">

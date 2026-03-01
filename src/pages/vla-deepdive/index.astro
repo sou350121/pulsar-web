@@ -78,21 +78,23 @@ const base = import.meta.env.BASE_URL;
 
     <!-- ── Breadcrumb ── -->
     <nav class="dd-breadcrumb" aria-label="麵包屑">
-      <a href={`${base}/`} class="bc-link">首頁</a>
+      <a href={`${base}/`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">›</span>
-      <span class="bc-current">VLA 深度追蹤</span>
+      <span class="bc-current"><span data-tc>VLA 深度追蹤</span><span data-sc>VLA 深度追踪</span></span>
     </nav>
 
     <!-- ── Masthead ── -->
     <header class="vdd-masthead">
-      <div class="vdd-overline">VLA 線 · DEEP DIVE ARCHIVE</div>
-      <h1 class="vdd-title">VLA 深度追蹤</h1>
+      <div class="vdd-overline"><span data-tc>VLA 線 · DEEP DIVE ARCHIVE</span><span data-sc>VLA 线 · DEEP DIVE ARCHIVE</span></div>
+      <h1 class="vdd-title"><span data-tc>VLA 深度追蹤</span><span data-sc>VLA 深度追踪</span></h1>
       <div class="vdd-accent-bar"></div>
 
       <p class="vdd-desc">
-        Vision-Language-Action 系統的理論深挖與 SOTA 排行追蹤。
-        Theory 文章由 pipeline 解析 arxiv 並存入 <strong>VLA-Handbook</strong> 庫；
-        SOTA 數據從 Evo-SOTA 自動拉取 CALVIN 等標準 Benchmark 的最新記錄。
+        <span data-tc>Vision-Language-Action 系統的理論深挖與 SOTA 排行追蹤。
+        Theory 文章由 pipeline 解析 arxiv 並存入 </span><span data-sc>Vision-Language-Action 系统的理论深挖与 SOTA 排行追踪。
+        Theory 文章由 pipeline 解析 arxiv 并存入 </span><strong>VLA-Handbook</strong><span data-tc> 庫；
+        SOTA 數據從 Evo-SOTA 自動拉取 CALVIN 等標準 Benchmark 的最新記錄。</span><span data-sc> 库；
+        SOTA 数据从 Evo-SOTA 自动拉取 CALVIN 等标准 Benchmark 的最新记录。</span>
       </p>
 
       <!-- GitHub CTA row -->
@@ -110,8 +112,8 @@ const base = import.meta.env.BASE_URL;
               .29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
               0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
-          VLA-Handbook 庫
-          <span class="vdd-github-sub">theory/ 目錄</span>
+          <span data-tc>VLA-Handbook 庫</span><span data-sc>VLA-Handbook 库</span>
+          <span class="vdd-github-sub"><span data-tc>theory/ 目錄</span><span data-sc>theory/ 目录</span></span>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M2 6h8M6 2l4 4-4 4"/>
           </svg>
@@ -122,12 +124,12 @@ const base = import.meta.env.BASE_URL;
         <div class="vdd-stats-row">
           <span class="vdd-stat">
             <span class="vdd-stat-num">{allCombined.length}</span>
-            <span class="vdd-stat-lbl">理論文章</span>
+            <span class="vdd-stat-lbl"><span data-tc>理論文章</span><span data-sc>理论文章</span></span>
           </span>
           <span class="vdd-stat-sep">·</span>
           <span class="vdd-stat">
             <span class="vdd-stat-num vdd-stat-num--cyan">{sota.length}</span>
-            <span class="vdd-stat-lbl">SOTA 記錄</span>
+            <span class="vdd-stat-lbl"><span data-tc>SOTA 記錄</span><span data-sc>SOTA 记录</span></span>
           </span>
         </div>
       </div>
@@ -138,21 +140,21 @@ const base = import.meta.env.BASE_URL;
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="VLA 理論深挖">
       <div class="vdd-section-header">
-        <h2 class="vdd-section-title">📐 理論深挖</h2>
+        <h2 class="vdd-section-title"><span data-tc>📐 理論深挖</span><span data-sc>📐 理论深挖</span></h2>
         <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
-          查看 GitHub 全庫 →
+          <span data-tc>查看 GitHub 全庫</span><span data-sc>查看 GitHub 全库</span> →
         </a>
       </div>
 
       {theory.length === 0 ? (
-        <p class="vdd-empty">尚無理論文章資料</p>
+        <p class="vdd-empty"><span data-tc>尚無理論文章資料</span><span data-sc>尚无理论文章资料</span></p>
       ) : (
         <>
           {/* --- 最近 2 週 card grid --- */}
           {recentTheory.length > 0 && (
             <div class="vdd-subsection">
               <div class="vdd-subsection-label">
-                <span class="vdd-sublabel">最近 2 週</span>
+                <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
                 <span class="vdd-sublabel-count">{recentTheory.length} 篇</span>
               </div>
               <div class="vdd-card-grid">
@@ -173,7 +175,7 @@ const base = import.meta.env.BASE_URL;
                       rel="noopener noreferrer"
                       class="vdd-card-cta"
                     >
-                      GitHub 閱讀原文
+                      <span data-tc>GitHub 閱讀原文</span><span data-sc>GitHub 阅读原文</span>
                       <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M2 6h8M6 2l4 4-4 4"/>
                       </svg>
@@ -234,24 +236,24 @@ const base = import.meta.env.BASE_URL;
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="VLA-Handbook 全庫文章">
       <div class="vdd-section-header">
-        <h2 class="vdd-section-title">📚 VLA-Handbook 全庫文章</h2>
+        <h2 class="vdd-section-title"><span data-tc>📚 VLA-Handbook 全庫文章</span><span data-sc>📚 VLA-Handbook 全库文章</span></h2>
         <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
           GitHub theory/ →
         </a>
       </div>
       <p class="vdd-lib-desc">
-        包含 pipeline 追蹤 + 手動添加的全部理論文章（共 {allCombined.length} 篇，去重後）。
+        <span data-tc>包含 pipeline 追蹤 + 手動添加的全部理論文章（共 </span><span data-sc>包含 pipeline 追踪 + 手动添加的全部理论文章（共 </span>{allCombined.length}<span data-tc> 篇，去重後）</span><span data-sc> 篇，去重后）</span>。
       </p>
 
       {allCombined.length === 0 ? (
-        <p class="vdd-empty">尚無全庫資料</p>
+        <p class="vdd-empty"><span data-tc>尚無全庫資料</span><span data-sc>尚无全库资料</span></p>
       ) : (
         <>
           {/* --- 最近 2 週 cards --- */}
           {recentGhLibrary.length > 0 && (
             <div class="vdd-subsection">
               <div class="vdd-subsection-label">
-                <span class="vdd-sublabel">最近 2 週</span>
+                <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
                 <span class="vdd-sublabel-count">{recentGhLibrary.length} 篇</span>
               </div>
               <div class="vdd-card-grid">
@@ -270,7 +272,7 @@ const base = import.meta.env.BASE_URL;
                       rel="noopener noreferrer"
                       class="vdd-card-cta"
                     >
-                      在 GitHub 閱讀
+                      <span data-tc>在 GitHub 閱讀</span><span data-sc>在 GitHub 阅读</span>
                       <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M2 6h8M6 2l4 4-4 4"/>
                       </svg>
@@ -329,7 +331,7 @@ const base = import.meta.env.BASE_URL;
       </div>
 
       {sota.length === 0 ? (
-        <p class="vdd-empty">尚無 SOTA 數據</p>
+        <p class="vdd-empty"><span data-tc>尚無 SOTA 數據</span><span data-sc>尚无 SOTA 数据</span></p>
       ) : (
         <div class="vdd-sota-groups">
           {benchmarks.map(bench => {

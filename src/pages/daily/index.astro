@@ -105,25 +105,25 @@ let lastMonth = '';
       </a>
       <a href={`${base}/ai-daily`} class="domain-tab">
         <span class="tab-dot tab-dot--ai" aria-hidden="true"></span>
-        AI App 線
+        <span data-tc>AI App 線</span><span data-sc>AI App 线</span>
       </a>
       <a href={`${base}/vla`} class="domain-tab">
         <span class="tab-dot tab-dot--vla" aria-hidden="true"></span>
-        VLA 線
+        <span data-tc>VLA 線</span><span data-sc>VLA 线</span>
       </a>
     </nav>
 
     <!-- ── Masthead ── -->
     <header class="daily-masthead">
       <p class="daily-overline">DAILY INTELLIGENCE · AI APP + VLA</p>
-      <h1 class="daily-title">研究日報</h1>
+      <h1 class="daily-title"><span data-tc>研究日報</span><span data-sc>研究日报</span></h1>
       <div class="daily-rule">
         <span class="daily-rule-ai"></span>
         <span class="daily-rule-vla"></span>
       </div>
       <p class="daily-desc">
-        AI App 精選與 VLA 論文評級的每日合輯。
-        下方匯總近 7 天的信號總覽，歸檔索引可按領域過濾。
+        <span data-tc>AI App 精選與 VLA 論文評級的每日合輯</span><span data-sc>AI App 精选与 VLA 论文评级的每日合辑</span>。
+        <span data-tc>下方匯總近 7 天的信號總覽，歸檔索引可按領域過濾</span><span data-sc>下方汇总近 7 天的信号总览，归档索引可按领域过滤</span>。
       </p>
     </header>
 
@@ -132,7 +132,7 @@ let lastMonth = '';
       <section class="summary-block" aria-label="近7日匯總">
 
         <div class="summary-header">
-          <span class="summary-eyebrow">近 7 日匯總</span>
+          <span class="summary-eyebrow"><span data-tc>近 7 日匯總</span><span data-sc>近 7 日汇总</span></span>
           {dateFrom && dateTo && (
             <span class="summary-range">{dateFrom.slice(5)} → {dateTo.slice(5)}</span>
           )}
@@ -142,11 +142,11 @@ let lastMonth = '';
         <div class="summary-stats">
           <div class="stat-chip stat-chip--ai">
             <span class="stat-num">{aiTotal}</span>
-            <span class="stat-lbl">AI精選</span>
+            <span class="stat-lbl"><span data-tc>AI精選</span><span data-sc>AI精选</span></span>
           </div>
           <div class="stat-chip stat-chip--vla">
             <span class="stat-num">{vlaTotal}</span>
-            <span class="stat-lbl">VLA論文</span>
+            <span class="stat-lbl"><span data-tc>VLA論文</span><span data-sc>VLA论文</span></span>
           </div>
           <div class="stat-chip stat-chip--flash">
             <span class="stat-num">⚡ {flashCount}</span>
@@ -154,18 +154,18 @@ let lastMonth = '';
           </div>
           <div class="stat-chip stat-chip--wrench">
             <span class="stat-num">🔧 {wrenchCount}</span>
-            <span class="stat-lbl">工具/技術</span>
+            <span class="stat-lbl"><span data-tc>工具/技術</span><span data-sc>工具/技术</span></span>
           </div>
           <div class="stat-chip stat-chip--book">
             <span class="stat-num">📖 {bookCount}</span>
-            <span class="stat-lbl">背景/觀點</span>
+            <span class="stat-lbl"><span data-tc>背景/觀點</span><span data-sc>背景/观点</span></span>
           </div>
         </div>
 
         <!-- Top ⚡ signals -->
         {topFlash.length > 0 && (
           <div class="top-flash">
-            <p class="top-flash-eyebrow">⚡ 本週最強信號</p>
+            <p class="top-flash-eyebrow">⚡ <span data-tc>本週最強信號</span><span data-sc>本周最强信号</span></p>
             <ul class="top-flash-list" role="list">
               {topFlash.map(item => (
                 <li>
@@ -212,13 +212,13 @@ let lastMonth = '';
 
     <!-- ── Archive header ── -->
     <div class="archive-header-row">
-      <h2 class="archive-heading">歸檔索引</h2>
+      <h2 class="archive-heading"><span data-tc>歸檔索引</span><span data-sc>归档索引</span></h2>
       <span class="archive-badge">{merged.length} 期</span>
     </div>
 
     <!-- ── Archive list ── -->
     {merged.length === 0 ? (
-      <p class="daily-empty">尚無日報資料</p>
+      <p class="daily-empty"><span data-tc>尚無日報資料</span><span data-sc>尚无日报资料</span></p>
     ) : (
       <div class="daily-list">
         {merged.map(day => {

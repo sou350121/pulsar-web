@@ -47,16 +47,16 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
 >
   <!-- Breadcrumb + domain-switch bar -->
   <nav class="detail-breadcrumb page-container" aria-label="麵包屑">
-    <a href={`${base}/daily`} class="bc-link">日報</a>
+    <a href={`${base}/daily`} class="bc-link"><span data-tc>日報</span><span data-sc>日报</span></a>
     <span class="bc-sep">›</span>
-    <a href={`${base}/vla`} class="bc-link bc-link--vla">VLA 線</a>
+    <a href={`${base}/vla`} class="bc-link bc-link--vla"><span data-tc>VLA 線</span><span data-sc>VLA 线</span></a>
     <span class="bc-sep">›</span>
     <span class="bc-current">{date}</span>
   </nav>
   <div class="detail-domain-bar page-container">
     <span class="ddb-label">VLA 線</span>
     <span class="ddb-sep">·</span>
-    <a href={`${base}/ai-daily/${date}`} class="ddb-cross">查看同日 AI 報告 →</a>
+    <a href={`${base}/ai-daily/${date}`} class="ddb-cross"><span data-tc>查看同日 AI 報告 →</span><span data-sc>查看同日 AI 报告 →</span></a>
   </div>
 
   <!-- Telegram-style digest at top — all VLA items in a dense list -->
@@ -74,9 +74,9 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
   <div class="page-container section">
     <!-- Breadcrumb -->
     <nav aria-label="Breadcrumb" class="breadcrumb">
-      <a href={base} class="breadcrumb-link">首頁</a>
+      <a href={base} class="breadcrumb-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="breadcrumb-sep">/</span>
-      <a href={`${base}/vla`} class="breadcrumb-link">VLA 日報</a>
+      <a href={`${base}/vla`} class="breadcrumb-link"><span data-tc>VLA 日報</span><span data-sc>VLA 日报</span></a>
       <span class="breadcrumb-sep">/</span>
       <span class="breadcrumb-current">{date}</span>
     </nav>
@@ -87,7 +87,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
         {date}
       </time>
       <h1 class="font-lora text-3xl font-bold text-pulsar-text mt-1 mb-4">
-        VLA 研究日報
+        <span data-tc>VLA 研究日報</span><span data-sc>VLA 研究日报</span>
       </h1>
       <div class="flex flex-wrap gap-2 items-center">
         {Object.entries(byRating).map(([rating, rItems]) => (
@@ -122,7 +122,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
     <!-- 🔧 Technical -->
     {(byRating['🔧'] ?? []).length > 0 && (
       <div class="mb-8">
-        <h2 class="font-lora text-xl font-semibold text-pulsar-cyan mb-4">🔧 技術</h2>
+        <h2 class="font-lora text-xl font-semibold text-pulsar-cyan mb-4">🔧 <span data-tc>技術</span><span data-sc>技术</span></h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {(byRating['🔧'] ?? []).map(item => (
             <ArticleCard
@@ -142,7 +142,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
     <!-- 📖 Reading -->
     {(byRating['📖'] ?? []).length > 0 && (
       <div class="mb-8">
-        <h2 class="font-lora text-xl font-semibold text-pulsar-muted mb-4">📖 背景閱讀</h2>
+        <h2 class="font-lora text-xl font-semibold text-pulsar-muted mb-4">📖 <span data-tc>背景閱讀</span><span data-sc>背景阅读</span></h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {(byRating['📖'] ?? []).map(item => (
             <ArticleCard
@@ -184,7 +184,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
       <!-- Center: back to list -->
       <div class="pagination-center">
         <a href={`${base}/vla`} class="pagination-list-btn">
-          返回 VLA 日報
+          <span data-tc>返回 VLA 日報</span><span data-sc>返回 VLA 日报</span>
         </a>
       </div>
 
@@ -209,9 +209,9 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
 
     <!-- Breadcrumb trail below pagination -->
     <div class="pagination-breadcrumb">
-      <a href={base} class="pag-bc-link">首頁</a>
+      <a href={base} class="pag-bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="pag-bc-sep">/</span>
-      <a href={`${base}/vla`} class="pag-bc-link">VLA 日報</a>
+      <a href={`${base}/vla`} class="pag-bc-link"><span data-tc>VLA 日報</span><span data-sc>VLA 日报</span></a>
       <span class="pag-bc-sep">/</span>
       <span class="pag-bc-current">{date}</span>
     </div>

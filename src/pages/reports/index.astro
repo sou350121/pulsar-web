@@ -102,7 +102,7 @@ function formatPeriod(iso: string): string {
         <span class="masthead-cycle">雙週週期 · BIWEEKLY CYCLE</span>
       </div>
 
-      <h1 class="masthead-title">雙週報告</h1>
+      <h1 class="masthead-title"><span data-tc>雙週報告</span><span data-sc>双周报告</span></h1>
 
       <p class="masthead-subtitle">
         PULSAR INTELLIGENCE ARCHIVE &nbsp;·&nbsp; 每兩週深度分析
@@ -111,9 +111,7 @@ function formatPeriod(iso: string): string {
       <hr class="masthead-rule" />
 
       <p class="masthead-desc">
-        每兩週由 pipeline 自動生成，涵蓋 VLA 和 AI 應用兩條研究線的深度回顧、
-        前期預測驗證（✅ / ❌ / ⏳）、假設校準，以及下期觀察重點。
-        每份報告均附反思副本，供後期校準回溯。
+        <span data-tc>每兩週由 pipeline 自動生成，涵蓋 VLA 和 AI 應用兩條研究線的深度回顧、前期預測驗證（✅ / ❌ / ⏳）、假設校準，以及下期觀察重點。每份報告均附反思副本，供後期校準回溯</span><span data-sc>每两周由 pipeline 自动生成，涵盖 VLA 和 AI 应用两条研究线的深度回顾、前期预测验证（✅ / ❌ / ⏳）、假设校准，以及下期观察重点。每份报告均附反思副本，供后期校准回溯</span>。
       </p>
 
       <div class="masthead-stats">
@@ -143,7 +141,7 @@ function formatPeriod(iso: string): string {
         <div class="empty-state">
           <div class="empty-icon">▣</div>
           <p class="empty-title">ARCHIVE PENDING</p>
-          <p class="empty-sub">Pipeline 尚未生成雙週報告 — 待下一個週期後自動同步</p>
+          <p class="empty-sub"><span data-tc>Pipeline 尚未生成雙週報告 — 待下一個週期後自動同步</span><span data-sc>Pipeline 尚未生成双周报告 — 待下一个周期后自动同步</span></p>
           <div class="empty-blinker" aria-hidden="true">_</div>
         </div>
       )}
@@ -165,7 +163,7 @@ function formatPeriod(iso: string): string {
             <!-- Report block -->
             <div class="dispatch-report">
               <div class="dispatch-meta-row">
-                <span class="dispatch-type-badge dispatch-type-report">雙週報告</span>
+                <span class="dispatch-type-badge dispatch-type-report"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
                 <span class="dispatch-period">{formatPeriod(entry.date)}</span>
               </div>
 
@@ -180,13 +178,13 @@ function formatPeriod(iso: string): string {
 
               <div class="dispatch-action-row">
                 <a href={`/reports/${entry.date}`} class="dispatch-read-link">
-                  閱讀全文
+                  <span data-tc>閱讀全文</span><span data-sc>阅读全文</span>
                   <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M2 6h8M6 2l4 4-4 4"/>
                   </svg>
                 </a>
                 <span class="dispatch-coverage">
-                  VLA &nbsp;·&nbsp; AI App &nbsp;·&nbsp; 社交情報 &nbsp;·&nbsp; 校準
+                  VLA &nbsp;·&nbsp; AI App &nbsp;·&nbsp; <span data-tc>社交情報</span><span data-sc>社交情报</span> &nbsp;·&nbsp; <span data-tc>校準</span><span data-sc>校准</span>
                 </span>
               </div>
             </div>
@@ -220,11 +218,10 @@ function formatPeriod(iso: string): string {
     <section class="deep-dive-section" aria-label="AI App 深度追蹤">
       <div class="dd-header">
         <div class="dd-overline">AI APP 線 · DEEP DIVE</div>
-        <h2 class="dd-title">AI 深度追蹤</h2>
+        <h2 class="dd-title"><span data-tc>AI 深度追蹤</span><span data-sc>AI 深度追踪</span></h2>
         <div class="dd-rule dd-rule--amber"></div>
         <p class="dd-desc">
-          針對 AI Agent 工具、框架與產品發布的深度技術拆解。
-          每次有重大發布或社交信號達閾值時，pipeline 自動生成深度分析文章，存入 Agent-Playbook 庫。
+          <span data-tc>針對 AI Agent 工具、框架與產品發布的深度技術拆解。每次有重大發布或社交信號達閾值時，pipeline 自動生成深度分析文章，存入 Agent-Playbook 庫</span><span data-sc>针对 AI Agent 工具、框架与产品发布的深度技术拆解。每次有重大发布或社交讯号达阈值时，pipeline 自动生成深度分析文章，存入 Agent-Playbook 库</span>。
         </p>
         <div class="dd-count-row">
           <span class="dd-count">{aiDeepDives.length}</span>
@@ -233,7 +230,7 @@ function formatPeriod(iso: string): string {
       </div>
 
       {aiDeepDives.length === 0 ? (
-        <p class="dd-empty">尚無 AI 深度追蹤資料 — pipeline 自動生成中</p>
+        <p class="dd-empty"><span data-tc>尚無 AI 深度追蹤資料 — pipeline 自動生成中</span><span data-sc>尚无 AI 深度追踪资料 — pipeline 自动生成中</span></p>
       ) : (
         <div class="dd-list">
           {aiDeepDives.map((article, i) => (
@@ -260,25 +257,24 @@ function formatPeriod(iso: string): string {
     <section class="deep-dive-section" aria-label="VLA 深度追蹤">
       <div class="dd-header">
         <div class="dd-overline">VLA 線 · DEEP DIVE</div>
-        <h2 class="dd-title">VLA 深度追蹤</h2>
+        <h2 class="dd-title"><span data-tc>VLA 深度追蹤</span><span data-sc>VLA 深度追踪</span></h2>
         <div class="dd-rule dd-rule--cyan"></div>
         <p class="dd-desc">
-          VLA 理論深挖與 SOTA 排行追蹤。Theory 文章由 pipeline 解析 VLA-Handbook 理論庫；
-          SOTA 數據從 Evo-SOTA 即時拉取 CALVIN 等標準 Benchmark 的最新記錄。
+          <span data-tc>VLA 理論深挖與 SOTA 排行追蹤。Theory 文章由 pipeline 解析 VLA-Handbook 理論庫；SOTA 數據從 Evo-SOTA 即時拉取 CALVIN 等標準 Benchmark 的最新記錄</span><span data-sc>VLA 理论深挖与 SOTA 排行追踪。Theory 文章由 pipeline 解析 VLA-Handbook 理论库；SOTA 数据从 Evo-SOTA 即时拉取 CALVIN 等标准 Benchmark 的最新记录</span>。
         </p>
         <div class="dd-count-row">
           <span class="dd-count dd-count--cyan">{vlaTheory.length}</span>
-          <span class="dd-count-label">理論文章</span>
+          <span class="dd-count-label"><span data-tc>理論文章</span><span data-sc>理论文章</span></span>
           <span class="dd-count-sep">·</span>
           <span class="dd-count dd-count--cyan">{vlaSOTA.length}</span>
-          <span class="dd-count-label">SOTA 記錄</span>
+          <span class="dd-count-label"><span data-tc>SOTA 記錄</span><span data-sc>SOTA 记录</span></span>
         </div>
       </div>
 
       <!-- Theory articles -->
       {vlaTheory.length > 0 && (
         <div class="dd-sub-section">
-          <h3 class="dd-sub-title">📐 理論深挖</h3>
+          <h3 class="dd-sub-title"><span data-tc>📐 理論深挖</span><span data-sc>📐 理论深挖</span></h3>
           <div class="dd-list">
             {vlaTheory.map((article, i) => (
               <a href={article.html_url ?? article.url} target="_blank" rel="noopener noreferrer"

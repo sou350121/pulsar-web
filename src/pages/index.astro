@@ -233,7 +233,7 @@ const ratingClass: Record<string, string> = {
   '❌': 'rating-badge rating-x',
 };
 const ratingLabel: Record<string, string> = {
-  '⚡': '突破', '🔧': '技術', '📖': '觀點', '❌': '低關聯',
+  '⚡': '突破', '🔧': '<span data-tc>技術</span><span data-sc>技术</span>', '📖': '<span data-tc>觀點</span><span data-sc>观点</span>', '❌': '<span data-tc>低關聯</span><span data-sc>低关联</span>',
 };
 function getRatingClass(r: string): string {
   return ratingClass[[...r][0] ?? r] ?? 'rating-badge rating-book';
@@ -264,14 +264,14 @@ const RULE_LABELS: Record<string, string> = {
   <div class="ticker" role="marquee" aria-label="Breaking signals">
     <div class="container">
       <div class="ticker-inner">
-        <span class="ticker-label">⚡ 照見系統</span>
+        <span class="ticker-label">⚡ <span data-tc>照見系統</span><span data-sc>照见系统</span></span>
         <span class="ticker-text">
           {displayDate} 已更新&ensp;·&ensp;
-          AI 精選 {todayAICount || '?'} 條&ensp;·&ensp;
-          VLA 論文 {todayVLACount || '?'} 篇&ensp;·&ensp;
-          品質漂移 {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
-          追蹤 {entityCount || '—'} 實體 · {labCount || '—'} 機構 · {methodCount || '—'} 方法&ensp;·&ensp;
-          跨域訊號 {crossDomainCount} 條&ensp;·&ensp;
+          AI <span data-tc>精選</span><span data-sc>精选</span> {todayAICount || '?'} 條&ensp;·&ensp;
+          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount || '?'} 篇&ensp;·&ensp;
+          <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
+          <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
+          <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
           Deep Dive 近 3 日 {deepDiveItems.length} 篇&ensp;·&ensp;
         </span>
       </div>
@@ -299,13 +299,13 @@ const RULE_LABELS: Record<string, string> = {
     <div class="container">
 
       <div class="hero-meta fade-in-1">
-        <span class="hero-date">{displayDate} · 照見系統</span>
+        <span class="hero-date">{displayDate} · <span data-tc>照見系統</span><span data-sc>照见系统</span></span>
         <span class="hero-sep" aria-hidden="true"></span>
         <span class="live-dot">Pipeline 已更新</span>
       </div>
 
       <div class="hero-headline fade-in-2">
-        <span class="overline">DAILY INTELLIGENCE · 照見系統</span>
+        <span class="overline">DAILY INTELLIGENCE · <span data-tc>照見系統</span><span data-sc>照见系统</span></span>
         <h1 id="hero-title">今日 <em>AI + VLA</em> 洞察</h1>
       </div>
 
@@ -313,27 +313,27 @@ const RULE_LABELS: Record<string, string> = {
       <div class="hp-stats fade-in-3">
         <div class="hp-stat">
           <span class="hp-stat-num hp-amber">{todayAICount || '—'}</span>
-          <span class="hp-stat-label">AI 精選</span>
+          <span class="hp-stat-label">AI <span data-tc>精選</span><span data-sc>精选</span></span>
         </div>
         <div class="hp-stat-div"></div>
         <div class="hp-stat">
           <span class="hp-stat-num hp-cyan">{todayVLACount || '—'}</span>
-          <span class="hp-stat-label">VLA 論文</span>
+          <span class="hp-stat-label">VLA <span data-tc>論文</span><span data-sc>论文</span></span>
         </div>
         <div class="hp-stat-div"></div>
         <div class="hp-stat">
           <span class="hp-stat-num">{entityCount || '—'}</span>
-          <span class="hp-stat-label">追蹤實體</span>
+          <span class="hp-stat-label"><span data-tc>追蹤</span><span data-sc>追踪</span><span data-tc>實體</span><span data-sc>实体</span></span>
         </div>
         <div class="hp-stat-div"></div>
         <div class="hp-stat">
           <span class={`hp-stat-num ${driftOk ? 'hp-ok' : 'hp-warn'}`}>{driftOk ? '✓ 正常' : '⚠ 注意'}</span>
-          <span class="hp-stat-label">品質漂移</span>
+          <span class="hp-stat-label"><span data-tc>品質漂移</span><span data-sc>品质漂移</span></span>
         </div>
         <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
         <div class="hp-stat hp-stat--hide-mobile">
           <span class="hp-stat-num">{crossDomainCount}</span>
-          <span class="hp-stat-label">跨域訊號</span>
+          <span class="hp-stat-label"><span data-tc>跨域訊號</span><span data-sc>跨域讯号</span></span>
         </div>
         <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
         <div class="hp-stat hp-stat--hide-mobile">
@@ -346,10 +346,8 @@ const RULE_LABELS: Record<string, string> = {
       <div class="hero-grid fade-in-4">
 
         <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
-          <div class="hero-card-label"><span>今日 AI 精選</span></div>
-          <span class={getRatingClass(heroAI.rating)}>
-            {[...heroAI.rating][0]} {getRatingLabel(heroAI.rating)}
-          </span>
+          <div class="hero-card-label"><span><span data-tc>今日 AI 精選</span><span data-sc>今日 AI 精选</span></span></div>
+          <span class={getRatingClass(heroAI.rating)} set:html={`${[...heroAI.rating][0]} ${getRatingLabel(heroAI.rating)}`}></span>
           <h2 class="hero-card-title" id="hero-ai-title">{heroAI.title}</h2>
           <p class="hero-card-summary">{heroAI.summary}</p>
           <div class="hero-card-footer">
@@ -362,10 +360,8 @@ const RULE_LABELS: Record<string, string> = {
         </article>
 
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
-          <div class="hero-card-label"><span>今日 VLA 論文</span></div>
-          <span class={getRatingClass(heroVLA.rating)}>
-            {[...heroVLA.rating][0]} {getRatingLabel(heroVLA.rating)}
-          </span>
+          <div class="hero-card-label"><span><span data-tc>今日 VLA 論文</span><span data-sc>今日 VLA 论文</span></span></div>
+          <span class={getRatingClass(heroVLA.rating)} set:html={`${[...heroVLA.rating][0]} ${getRatingLabel(heroVLA.rating)}`}></span>
           <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
           <p class="hero-card-summary">{heroVLA.summary}</p>
           <div class="hero-card-footer">
@@ -390,7 +386,7 @@ const RULE_LABELS: Record<string, string> = {
       <div class="section-header fade-in-1">
         <div>
           <span class="section-label section-number">03 — 今日訊號</span>
-          <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>精選訊號 · AI + VLA</h2>
+          <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>精選訊號 · AI + VLA</span><span data-sc>精选讯号 · AI + VLA</span></h2>
         </div>
         <a href={`${base}/ai-daily`} class="section-link btn btn-outline">全部 →</a>
       </div>
@@ -404,7 +400,7 @@ const RULE_LABELS: Record<string, string> = {
           return (
             <article class={`hp-signal-card fade-in-${(i % 3) + 1} ${isVla ? 'hp-signal-card--vla' : 'hp-signal-card--ai'}`}>
               <div class="hp-signal-top">
-                <span class={rcls}>{emoji} {rlabel}</span>
+                <span class={rcls} set:html={`${emoji} ${rlabel}`}></span>
                 <span class={`hp-domain-tag ${isVla ? 'hp-domain-tag--vla' : 'hp-domain-tag--ai'}`}>
                   {isVla ? 'VLA' : 'AI'}
                 </span>
@@ -470,8 +466,8 @@ const RULE_LABELS: Record<string, string> = {
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">05 — 動態追蹤</span>
-          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去 72 小時</h2>
+          <span class="section-label section-number">05 — <span data-tc>動態追蹤</span><span data-sc>动态追踪</span></span>
+          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>社交情報 · 過去 72 小時</span><span data-sc>社交情报 · 过去 72 小时</span></h2>
         </div>
         <a href={`${base}/social`} class="section-link btn btn-outline">完整情報 →</a>
       </div>
@@ -510,7 +506,7 @@ const RULE_LABELS: Record<string, string> = {
       <div class="section-header fade-in-1">
         <div>
           <span class="section-label section-number">06 — 系統監控</span>
-          <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span>管道儀表板</h2>
+          <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>管道儀表板</span><span data-sc>管道仪表板</span></h2>
         </div>
         <a href={`${base}/dashboard`} class="section-link btn btn-outline">詳細儀表板 →</a>
       </div>
@@ -520,7 +516,7 @@ const RULE_LABELS: Record<string, string> = {
         <!-- Real quality drift sparkline -->
         <div class="dash-card">
           <div class="dash-card-header">
-            <span class="dash-card-title">質量漂移監測</span>
+            <span class="dash-card-title"><span data-tc>品質漂移監測</span><span data-sc>品质漂移监测</span></span>
             <span class:list={['status-badge', driftOk ? 'status-ok' : 'status-warn']}>
               {driftOk ? '正常 ✓' : '注意 ⚠'}
             </span>
@@ -563,7 +559,7 @@ const RULE_LABELS: Record<string, string> = {
               <div class="spark-value">{spark7.length > 0 ? spark7[spark7.length-1].ai + ' 條' : '—'}</div>
             </div>
             <div style="text-align:right;">
-              <div class="spark-label">漂移狀態</div>
+              <div class="spark-label"><span data-tc>漂移狀態</span><span data-sc>漂移状态</span></div>
               <div class="spark-value" style={driftOk ? 'color:#00C060;' : 'color:var(--accent-amber);'}>
                 {driftOk ? '正常' : '注意'}
               </div>
@@ -574,7 +570,7 @@ const RULE_LABELS: Record<string, string> = {
         <!-- Entity activity (real data) -->
         <div class="dash-card">
           <div class="dash-card-header">
-            <span class="dash-card-title">實體活躍度</span>
+            <span class="dash-card-title"><span data-tc>實體活躍度</span><span data-sc>实体活跃度</span></span>
             <span class="status-badge status-ok">
               {entityCount > 0 ? entityCount + ' 實體' : '7日追蹤'}
             </span>
@@ -635,19 +631,19 @@ const RULE_LABELS: Record<string, string> = {
           </div>
           <div class="health-list">
             {[
-              { name: 'VLA 論文採集',    time: '09:00', ok: true  },
-              { name: 'AI App 日報',     time: '07:00', ok: true  },
-              { name: '社交情報採集',    time: '09:30', ok: true  },
-              { name: '品質漂移檢查',    time: '10:10', ok: driftOk },
-              { name: '語義索引重建',    time: '11:15', ok: true  },
-              { name: '跨域規則引擎',    time: '10:20', ok: true  },
-              { name: '上游 arxiv 監測', time: '08:50', ok: true  },
+              { name: '<span data-tc>VLA 論文採集</span><span data-sc>VLA 论文采集</span>',    time: '09:00', ok: true  },
+              { name: 'AI App <span data-tc>日報</span><span data-sc>日报</span>',     time: '07:00', ok: true  },
+              { name: '<span data-tc>社交情報採集</span><span data-sc>社交情报采集</span>',    time: '09:30', ok: true  },
+              { name: '<span data-tc>品質漂移檢查</span><span data-sc>品质漂移检查</span>',    time: '10:10', ok: driftOk },
+              { name: '<span data-tc>語義索引重建</span><span data-sc>语义索引重建</span>',    time: '11:15', ok: true  },
+              { name: '<span data-tc>跨域規則引擎</span><span data-sc>跨域规则引擎</span>',    time: '10:20', ok: true  },
+              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '08:50', ok: true  },
             ].map(item => (
               <div class="health-item">
                 <span class:list={['health-icon', item.ok ? 'health-ok' : 'health-warn']}>
                   {item.ok ? '✓' : '⚠'}
                 </span>
-                <span class="health-name" style={!item.ok ? 'color:var(--accent-amber);' : ''}>{item.name}</span>
+                <span class="health-name" style={!item.ok ? 'color:var(--accent-amber);' : ''} set:html={item.name}></span>
                 <span class="health-time">{item.time}</span>
               </div>
             ))}
@@ -669,14 +665,14 @@ const RULE_LABELS: Record<string, string> = {
       <div class="section-header fade-in-1" style="margin-bottom:24px;">
         <div>
           <span class="section-label section-number">07 — 深度分析</span>
-          <h2><span class="accent-line" aria-hidden="true"></span>雙週報告</h2>
+          <h2><span class="accent-line" aria-hidden="true"></span><span data-tc>雙週報告</span><span data-sc>双周报告</span></h2>
         </div>
       </div>
 
       <div class="report-teaser fade-in-2">
         <div>
           <span class="report-label">
-            雙週報告 · {reportDate} · 照見系統
+            <span data-tc>雙週報告</span><span data-sc>双周报告</span> · {reportDate} · <span data-tc>照見系統</span><span data-sc>照见系统</span>
           </span>
           <h2 class="report-title" id="report-title">
             {latestReport
@@ -685,12 +681,12 @@ const RULE_LABELS: Record<string, string> = {
           </h2>
           <p class="report-excerpt">{reportSummary}</p>
           <div class="report-period-badge" style="margin-top:16px;">
-            涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準
+            <span data-tc>涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準</span><span data-sc>涵盖 8 个来源：论文 · 推理 · SOTA · Release · 理论 · 社交情报 · 热点 · 校准</span>
           </div>
         </div>
         <a href={`${base}/reports`} class="report-cta" aria-label="查看完整雙週報告">
           <span class="report-cta-arrow">→</span>
-          <span>查看完整報告</span>
+          <span><span data-tc>查看完整報告</span><span data-sc>查看完整报告</span></span>
         </a>
       </div>
 
