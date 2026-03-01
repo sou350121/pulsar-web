@@ -2,18 +2,15 @@
 /**
  * src/pages/index.astro
  * ---------------------
- * Pulsar Homepage — visual design ported from prototype/index.html
+ * Pulsar Homepage — Situation Room
  * Sections:
- *   1. Ticker bar
- *   2. Hero — radial glow + two-column featured cards
- *   3. Latest Picks Grid
- *   4. Social Intel horizontal scroll strip
- *   5. Dashboard Metrics Row
- *   6. Biweekly Report Teaser
- *
- * Data loading uses mock fallbacks so the page renders even before
- * the first sync-data run. Real data replaces mocks once src/data/ is
- * populated by scripts/sync-data.py.
+ *   1. Ticker bar (dynamic)
+ *   2. DigestFeed
+ *   3. Hero — stat strip + two featured cards
+ *   4. Signal Mix — top AI + VLA picks sorted by strength
+ *   5. Cross-Domain Pulse (new)
+ *   6. Social Intel strip
+ *   7. System Status + Biweekly teaser
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RatingBadge from '../components/RatingBadge.astro';
@@ -27,12 +24,14 @@ import {
   loadBiweeklyReports,
   loadAIDeepDive,
   loadVLATheory,
+  loadCrossDomainInsights,
   extractMarkdownSummary,
   type DailyPickDay,
+  type DriftMetricsFile,
 } from '../utils/data';
 
 // ---------------------------------------------------------------------------
-// Load real data (returns empty/null when src/data/ not yet populated)
+// Load data
 // ---------------------------------------------------------------------------
 const recentPicks   = loadAIDailyPicks(1);
 const recentVLA     = loadVLADailyPicks(2);
@@ -41,12 +40,11 @@ const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
 const vlaSocial     = loadSocialIntel('vla', 2);
 const biweekly      = loadBiweeklyReports(1);
+const crossDomain   = loadCrossDomainInsights(6);
 
-// Deep dive — articles added in the last 7 days (AI + VLA theory)
+// Deep dive — recent 7 days
 const DEEP_DIVE_DAYS = 7;
 const deepDiveCutoff = new Date(Date.now() - DEEP_DIVE_DAYS * 86400000).toISOString().slice(0, 10);
-
-// Signal type → emoji for AI deep dives
 const SIGNAL_EMOJI: Record<string, string> = {
   technical_breakthrough: '⚡',
   product_release:        '🔧',
@@ -54,10 +52,8 @@ const SIGNAL_EMOJI: Record<string, string> = {
   research_update:        '📖',
   ecosystem_signal:       '📊',
 };
-
-const aiDeepDiveRaw  = loadAIDeepDive(60).filter(a => a.date >= deepDiveCutoff);
-const vlaTheoryRaw   = loadVLATheory(60).filter(a => a.date >= deepDiveCutoff);
-
+const aiDeepDiveRaw = loadAIDeepDive(60).filter(a => a.date >= deepDiveCutoff);
+const vlaTheoryRaw  = loadVLATheory(60).filter(a => a.date >= deepDiveCutoff);
 const deepDiveItems = [
   ...aiDeepDiveRaw.map(a => ({
     title:   a.title,
@@ -75,10 +71,10 @@ const deepDiveItems = [
     url:     a.html_url ?? a.url,
     domain:  'vla' as const,
   })),
-].sort((a, b) => 0);  // preserve source order (AI first, then VLA)
+];
 
 // ---------------------------------------------------------------------------
-// Mock data — used when real data is absent (pre-sync)
+// Mock fallbacks
 // ---------------------------------------------------------------------------
 const MOCK_PICKS: DailyPickDay = {
   date: '2026-03-01',
@@ -87,105 +83,131 @@ const MOCK_PICKS: DailyPickDay = {
       title: 'Flow Matching for Robot Learning: A Unified Framework',
       url: 'https://arxiv.org/abs/2501.00001',
       summary: '本文提出統一的流匹配框架，用於機器人學習中的多模態動作分佈建模。與擴散模型相比，訓練速度提升3倍，推理延遲降低40%。在RLBench上超越當前SOTA。',
-      rating: '⚡',
-      source: 'arxiv',
-      domain: 'vla',
+      rating: '⚡', source: 'arxiv', domain: 'vla',
     },
     {
       title: 'Scaling Language Models for Embodied Reasoning',
       url: 'https://arxiv.org/abs/2501.00002',
       summary: '探索大型語言模型在具身推理任務中的縮放規律。7B到70B參數範圍的實驗顯示，推理能力在30B+出現湧現，但動作精度仍需視覺-運動訓練。',
-      rating: '🔧',
-      source: 'arxiv',
-      domain: 'vla',
+      rating: '🔧', source: 'arxiv', domain: 'vla',
     },
     {
       title: 'Karpathy: Software 3.0 時代的意圖驅動開發',
       url: 'https://karpathy.ai/blog/software3',
-      summary: 'Karpathy 在最新文章中提出 Software 3.0 框架——開發範式從「寫語法」轉向「編排意圖」。AI coding agent 將成為主要生產力工具，傳統 IDE 面臨根本性變革。',
-      rating: '⚡',
-      source: 'blog',
-      domain: 'ai',
+      summary: 'Karpathy 在最新文章中提出 Software 3.0 框架——開發範式從「寫語法」轉向「編排意圖」。AI coding agent 將成為主要生產力工具。',
+      rating: '⚡', source: 'blog', domain: 'ai',
     },
     {
       title: 'DeepSeek-V3 在代碼生成基準測試中的表現分析',
       url: 'https://ithome.com/0/abc123',
       summary: '第三方分析顯示 DeepSeek-V3 在 HumanEval 和 MBPP 基準上達到 GPT-4o 水準，但長上下文推理仍有差距。開源成本優勢顯著。',
-      rating: '🔧',
-      source: 'ithome',
-      domain: 'ai',
+      rating: '🔧', source: 'ithome', domain: 'ai',
     },
     {
       title: 'World Models for Long-Horizon Planning in Manipulation',
       url: 'https://arxiv.org/abs/2501.00003',
       summary: '介紹基於世界模型的長時域操作規劃方法，在模擬到真實遷移上取得顯著進展。背景閱讀：與 DreamerV3 的比較分析。',
-      rating: '📖',
-      source: 'arxiv',
-      domain: 'vla',
+      rating: '📖', source: 'arxiv', domain: 'vla',
     },
     {
       title: 'Cursor 月活突破 200 萬：Vibe Coding 浪潮重塑技術棧選型',
       url: 'https://36kr.com/placeholder',
       summary: 'AI IDE 賽道進入爆發期，Lovable、Bolt 等產品相繼宣布百萬用戶里程碑，傳統 IDE 廠商加速整合 AI 功能。',
-      rating: '📖',
-      source: '36kr',
-      domain: 'ai',
+      rating: '📖', source: '36kr', domain: 'ai',
     },
   ],
 };
 
 const MOCK_SOCIAL = [
-  { entity: 'Andrej Karpathy',       event: '發布 3,200 字長文《意圖驅動開發宣言》，明確將 AI 代理編排定義為下一代軟件工程核心技能，並批評現有 IDE 仍停留在「代碼補全」思維框架中。', date: '03-01 · 06:42', platform: 'twitter', tag: 'PARADIGM SHIFT' },
-  { entity: 'Physical Intelligence', event: '官方博客宣布 Pi0.5 開放 API 訪問，提供 7 種機器人形態的適配接口，並公開了在 23 個操作任務上的標準評測結果及可復現代碼庫。',              date: '02-28 · 14:30', platform: 'blog',    tag: 'VLA · RELEASE' },
-  { entity: 'Yann LeCun',            event: '轉發 WorldModelBench 論文並評論：「世界模型評估標準的缺失是當前具身 AI 進展緩慢的根本原因之一，此基準的出現是重要里程碑。」',             date: '02-28 · 09:15', platform: 'twitter', tag: 'WORLD MODEL · ⚡' },
-  { entity: 'Google DeepMind',       event: '官方宣布 Gemini Robotics 整合路線圖，計劃於 Q2 2026 開放合作夥伴早期訪問，覆蓋工業自動化和家庭服務場景。',                             date: '02-27 · 11:00', platform: 'blog',    tag: 'DEEPMIND · VLA' },
-  { entity: 'Ilya Sutskever',        event: 'SSI 官方博客：「安全超智能的關鍵不在於對齊稅，而在於架構設計本身。」暗示 SSI 正在探索與 Transformer 本質不同的新架構路徑。',             date: '02-27 · 08:55', platform: 'twitter', tag: 'SSI · SAFETY' },
+  { entity: 'AI App · 03-01', event: 'OpenAI 与美国国防部达成协议，引发 Cancel ChatGPT 运动；Qwen3.5 122B 声称达到 Sonnet 4.5 性能；Gemini CLI 解除 Antigravity 禁令后开源社区热议不断。', date: '2026-03-01', domain: 'ai', tag: 'AI App' },
+  { entity: 'VLA 情報 · 03-01', event: 'Physical Intelligence Pi0.5 开放 API 访问，覆盖 7 种机器人形态；Google DeepMind 公布 Gemini Robotics Q2 路线图；VLA SOTA 基准 Bidex 刷新纪录。', date: '2026-03-01', domain: 'vla', tag: 'VLA' },
+  { entity: 'AI App · 02-28', event: 'Yann LeCun 转发 WorldModelBench 论文：「评估标准缺失是具身 AI 进展缓慢的根本原因」；Ilya Sutskever SSI 博客暗示探索 Transformer 替代架构。', date: '2026-02-28', domain: 'ai', tag: 'AI App' },
 ];
 
 // ---------------------------------------------------------------------------
-// Resolve: use real data when available, else fall back to mock
+// Resolve: real vs mock
 // ---------------------------------------------------------------------------
-const todayPicks  = recentPicks[0] ?? MOCK_PICKS;
+const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 const displayDate = todayPicks.date;
+const todayVLA    = recentVLA[0];
 
-// Top 6 items for the picks grid
-const gridItems   = todayPicks.items.slice(0, 9);
-// Top 2 items for the hero featured cards
-// AI hero: top item from today's AI picks
 const heroAI  = todayPicks.items[0];
-// VLA hero: top-rated paper from today's VLA rating output (⚡ first, then 🔧)
-const todayVLA   = recentVLA[0];
 const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
              ?? todayVLA?.items.find(i => i.rating === '🔧')
              ?? todayVLA?.items[0]
-             ?? todayPicks.items[1];   // fallback to AI item if no VLA data
+             ?? todayPicks.items[1];
 
-// Social intel
-const realSocial = [...aiSocial, ...vlaSocial].map(s => ({
-  entity:   s.filename,
-  event:    extractMarkdownSummary(s.content, 180),
-  date:     s.date,
-  platform: 'blog',
-  tag:      '',
-})).filter(s => s.event.length > 10);
+// Entity stats
+const driftOk     = !driftState?.drift_active;
+const entityCount = Object.keys(entityIndex.entities).length;
+const labCount    = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
+const methodCount = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
+const base        = import.meta.env.BASE_URL;
 
-const socialItems = realSocial.length >= 3 ? realSocial.slice(0, 7) : MOCK_SOCIAL;
+// Today's counts
+const digestAiItems = todayPicks.items
+  .filter(i => i.domain === 'ai')
+  .map(i => ({ ...i, domain: 'ai' as const }));
+const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
+  .map(i => ({ ...i, domain: 'vla' as const }));
 
-// Pipeline health
-const driftOk = !driftState?.drift_active;
-const base = import.meta.env.BASE_URL;
-const entityCount  = Object.keys(entityIndex.entities).length;
-const labCount     = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
-const methodCount  = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
+const todayAICount  = digestAiItems.length;
+const todayVLACount = digestVlaItems.length;
+const crossDomainCount = crossDomain.length;
 
-// Biweekly teaser
+// Mixed signals grid — top AI + VLA sorted by rating strength
+const SIGNAL_ORDER: Record<string, number> = { '⚡': 3, '🔧': 2, '📖': 1, '❌': 0 };
+const mixedSignals = [
+  ...digestAiItems,
+  ...digestVlaItems,
+].sort((a, b) => {
+  const aS = SIGNAL_ORDER[a.rating.charAt(0)] ?? 1;
+  const bS = SIGNAL_ORDER[b.rating.charAt(0)] ?? 1;
+  return bS - aS;
+}).slice(0, 6);
+
+// Real sparkline from drift metrics
+const sparkHistory: Array<{ date: string; vla: number; ai: number }> = [];
+if (driftMetrics) {
+  for (const [date, vals] of Object.entries(driftMetrics as DriftMetricsFile).sort()) {
+    sparkHistory.push({
+      date,
+      vla: vals.vla?.papers_scanned ?? 0,
+      ai:  vals.ai_app?.items_scanned ?? 0,
+    });
+  }
+}
+const spark7      = sparkHistory.slice(-7);
+const sparkMaxVLA = Math.max(1, ...spark7.map(d => d.vla));
+const sparkMaxAI  = Math.max(1, ...spark7.map(d => d.ai));
+
+// Fixed social intel — proper entity names from domain + date
+const realSocial = [
+  ...aiSocial.map(s => ({
+    entity: `AI App · ${s.date.slice(5)}`,
+    event:  extractMarkdownSummary(s.content, 230),
+    date:   s.date,
+    domain: 'ai',
+    tag:    'AI App',
+  })),
+  ...vlaSocial.map(s => ({
+    entity: `VLA 情報 · ${s.date.slice(5)}`,
+    event:  extractMarkdownSummary(s.content, 230),
+    date:   s.date,
+    domain: 'vla',
+    tag:    'VLA',
+  })),
+].filter(s => s.event.length > 20);
+const socialItems = realSocial.length >= 2 ? realSocial.slice(0, 6) : MOCK_SOCIAL;
+
+// Biweekly
 const latestReport  = biweekly[0] ?? null;
 const reportSummary = latestReport
-  ? extractMarkdownSummary(latestReport.content, 350)
-  : 'VLA 技術演進的範式轉移：本期報告系統梳理過去兩週 VLA 領域的六項關鍵技術突破，重點分析流匹配架構、SSM 模型和世界模型三條技術路線的收斂趨勢。結合 Physical Intelligence Pi0.5 和 CognitiveMamba 的實驗數據，我們認為當前 VLA 正從「模仿學習的縮放定律」轉向「物理常識的顯式建模」。';
-const reportDate    = latestReport?.date ?? '2026-03-01';
+  ? extractMarkdownSummary(latestReport.content, 320)
+  : 'VLA 技術演進的範式轉移：本期報告系統梳理過去兩週 VLA 領域的六項關鍵技術突破，重點分析流匹配架構、SSM 模型和世界模型三條技術路線的收斂趨勢。結合 Physical Intelligence 的實驗數據，我們認為當前 VLA 正從「模仿學習的縮放定律」轉向「物理常識的顯式建模」。';
+const reportDate = latestReport?.date ?? displayDate;
 
-// Map rating to badge class — works for VLA ratings (⚡/🔧/📖) and AI categories
+// Rating helpers
 const ratingClass: Record<string, string> = {
   '⚡': 'rating-badge rating-flash',
   '🔧': 'rating-badge rating-wrench',
@@ -195,38 +217,22 @@ const ratingClass: Record<string, string> = {
 const ratingLabel: Record<string, string> = {
   '⚡': '突破', '🔧': '技術', '📖': '觀點', '❌': '低關聯',
 };
-// For AI items, rating is like "🔧 工具" — extract the label part
 function getRatingClass(r: string): string {
-  const first = r.charAt(0);
-  return ratingClass[first] ?? ratingClass[r] ?? 'rating-badge rating-book';
+  return ratingClass[r.charAt(0)] ?? 'rating-badge rating-book';
 }
 function getRatingLabel(r: string): string {
   const first = r.charAt(0);
-  // If it's a known emoji, use label; if it includes a space, use text after space
   if (ratingLabel[first]) return ratingLabel[first];
   if (r.includes(' ')) return r.split(' ').slice(1).join(' ');
   return ratingLabel[r] ?? r;
 }
 
-// Platform icon mapping
-const platformIcon: Record<string, string> = {
-  twitter: '𝕏',
-  blog:    '📰',
-  github:  '⌥',
-  hn:      'Y',
-  reddit:  '●',
+// Cross-domain rule labels
+const RULE_LABELS: Record<string, string> = {
+  R001: 'VLA 技法 → AI',
+  R002: '世界模型 → AI',
+  R003: 'AI Agent → VLA',
 };
-
-// ── DigestFeed data ──
-// Separate AI and VLA items for the unified digest at the top of the page.
-const digestAiItems = todayPicks.items
-  .filter(i => i.domain === 'ai')
-  .map(i => ({ ...i, domain: 'ai' as const }));
-
-// VLA items come from the VLA daily rating output; fall back to VLA-domain items
-// in the AI picks when no dedicated VLA day is available.
-const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
-  .map(i => ({ ...i, domain: 'vla' as const }));
 ---
 
 <BaseLayout
@@ -234,25 +240,29 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
   description="AI Research Intelligence — VLA pipeline monitoring, daily picks, and biweekly reflections."
 >
 
-  <!-- ==========================================================
-       1. TICKER BAR
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       1. TICKER — dynamic real-data feed
+       ═══════════════════════════════════════════════════════════════ -->
   <div class="ticker" role="marquee" aria-label="Breaking signals">
     <div class="container">
       <div class="ticker-inner">
-        <span class="ticker-label">⚡ 最新信號</span>
+        <span class="ticker-label">⚡ 照見系統</span>
         <span class="ticker-text">
-          VLA Pipeline · 16 項檢查全通過 · 今日精選 6 篇 · 語義索引 892 KB ·
-          跨域規則引擎 3 條規則已執行 · 上游 arxiv 監測 36 條訊號 · 上次更新 10:20 CST ·
-          品質漂移：正常 ✓ · 雙週報告已同步 · Entity Tracker 追蹤 142 實體
+          {displayDate} 已更新&ensp;·&ensp;
+          AI 精選 {todayAICount || '?'} 條&ensp;·&ensp;
+          VLA 論文 {todayVLACount || '?'} 篇&ensp;·&ensp;
+          品質漂移 {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
+          追蹤 {entityCount || '—'} 實體 · {labCount || '—'} 機構 · {methodCount || '—'} 方法&ensp;·&ensp;
+          跨域訊號 {crossDomainCount} 條&ensp;·&ensp;
+          Deep Dive 近 7 日 {deepDiveItems.length} 篇&ensp;·&ensp;
         </span>
       </div>
     </div>
   </div>
 
-  <!-- ==========================================================
-       2. DAILY DIGEST BLOCK — telegram-style, all items at a glance
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       2. DAILY DIGEST
+       ═══════════════════════════════════════════════════════════════ -->
   <section class="digest-block" aria-label="今日情報摘要">
     <div class="container">
       <DigestFeed
@@ -264,9 +274,9 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
     </div>
   </section>
 
-  <!-- ==========================================================
-       3. HERO SECTION (was section 2; detailed featured cards)
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       3. HERO — stat strip + two featured cards
+       ═══════════════════════════════════════════════════════════════ -->
   <section class="hero" id="daily" aria-labelledby="hero-title">
     <div class="container">
 
@@ -277,20 +287,46 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
       </div>
 
       <div class="hero-headline fade-in-2">
-        <span class="section-label section-number" style="display:block;margin-bottom:8px;">02 — 今日精選</span>
         <span class="overline">DAILY INTELLIGENCE · 照見系統</span>
-        <h1 id="hero-title">今日 <em>AI</em> 洞察</h1>
+        <h1 id="hero-title">今日 <em>AI + VLA</em> 洞察</h1>
       </div>
 
-      <p class="hero-subtitle fade-in-3">
-        匯聚 VLA 機器人論文、AI 行業動態與前沿社交信號，每日自動生成結構化情報摘要。
-        由照見系統全自動採集、Qwen3.5-Plus 評級，涵蓋 ⚡ 突破 · 🔧 技術 · 📖 觀點三個層級。
-      </p>
+      <!-- Stat strip (real data) -->
+      <div class="hp-stats fade-in-3">
+        <div class="hp-stat">
+          <span class="hp-stat-num hp-amber">{todayAICount || '—'}</span>
+          <span class="hp-stat-label">AI 精選</span>
+        </div>
+        <div class="hp-stat-div"></div>
+        <div class="hp-stat">
+          <span class="hp-stat-num hp-cyan">{todayVLACount || '—'}</span>
+          <span class="hp-stat-label">VLA 論文</span>
+        </div>
+        <div class="hp-stat-div"></div>
+        <div class="hp-stat">
+          <span class="hp-stat-num">{entityCount || '—'}</span>
+          <span class="hp-stat-label">追蹤實體</span>
+        </div>
+        <div class="hp-stat-div"></div>
+        <div class="hp-stat">
+          <span class={`hp-stat-num ${driftOk ? 'hp-ok' : 'hp-warn'}`}>{driftOk ? '✓ 正常' : '⚠ 注意'}</span>
+          <span class="hp-stat-label">品質漂移</span>
+        </div>
+        <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
+        <div class="hp-stat hp-stat--hide-mobile">
+          <span class="hp-stat-num">{crossDomainCount}</span>
+          <span class="hp-stat-label">跨域訊號</span>
+        </div>
+        <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
+        <div class="hp-stat hp-stat--hide-mobile">
+          <span class="hp-stat-num">{deepDiveItems.length}</span>
+          <span class="hp-stat-label">深析新增</span>
+        </div>
+      </div>
 
       <!-- Hero two-column featured cards -->
       <div class="hero-grid fade-in-4">
 
-        <!-- Left: Top AI Pick -->
         <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
           <div class="hero-card-label"><span>今日 AI 精選</span></div>
           <span class={getRatingClass(heroAI.rating)}>
@@ -299,15 +335,14 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
           <h2 class="hero-card-title" id="hero-ai-title">{heroAI.title}</h2>
           <p class="hero-card-summary">{heroAI.summary}</p>
           <div class="hero-card-footer">
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="hero-card-tags">
               <span class="source-tag">{heroAI.source.toUpperCase()}</span>
-              <span class="source-tag">{heroAI.domain === 'ai' ? 'AI App' : 'VLA'}</span>
+              <span class="source-tag">AI App</span>
             </div>
             <a href={heroAI.url} target="_blank" rel="noopener noreferrer" class="btn btn-amber">閱讀全文 →</a>
           </div>
         </article>
 
-        <!-- Right: Top VLA Pick -->
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
           <div class="hero-card-label"><span>今日 VLA 論文</span></div>
           <span class={getRatingClass(heroVLA.rating)}>
@@ -316,7 +351,7 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
           <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
           <p class="hero-card-summary">{heroVLA.summary}</p>
           <div class="hero-card-footer">
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="hero-card-tags">
               <span class="source-tag">{heroVLA.source.toUpperCase()}</span>
               <span class="source-tag">VLA</span>
             </div>
@@ -328,57 +363,45 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
     </div>
   </section>
 
-  <!-- ==========================================================
-       4. PICKS GRID
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       4. SIGNAL MIX — top AI + VLA sorted by rating strength
+       ═══════════════════════════════════════════════════════════════ -->
   <section class="section" id="picks" aria-labelledby="picks-title">
     <div class="container">
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">03 — 精選列表</span>
-          <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>最新精選</h2>
+          <span class="section-label section-number">03 — 今日訊號</span>
+          <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>精選訊號 · AI + VLA</h2>
         </div>
-        <a href={`${base}/ai-daily`} class="section-link btn btn-outline">查看全部 →</a>
+        <a href={`${base}/ai-daily`} class="section-link btn btn-outline">全部 →</a>
       </div>
 
-      <div class="picks-grid">
-        {gridItems.map((item, i) => (
-          <article class={`pick-card fade-in-${(i % 3) + 1}`}>
-            <div class="pick-card-top">
-              <div>
-                <span
-                  class={ratingClass[item.rating] ?? 'rating-badge rating-book'}
-                  style="margin-bottom:10px;display:inline-flex;"
-                >
-                  {item.rating} {ratingLabel[item.rating] ?? ''}
+      <div class="hp-signal-grid">
+        {mixedSignals.map((item, i) => {
+          const emoji  = item.rating.charAt(0);
+          const rcls   = ratingClass[emoji] ?? 'rating-badge rating-book';
+          const rlabel = ratingLabel[emoji] ?? '';
+          const isVla  = item.domain === 'vla';
+          return (
+            <article class={`hp-signal-card fade-in-${(i % 3) + 1} ${isVla ? 'hp-signal-card--vla' : 'hp-signal-card--ai'}`}>
+              <div class="hp-signal-top">
+                <span class={rcls}>{emoji} {rlabel}</span>
+                <span class={`hp-domain-tag ${isVla ? 'hp-domain-tag--vla' : 'hp-domain-tag--ai'}`}>
+                  {isVla ? 'VLA' : 'AI'}
                 </span>
-                <h3 class="pick-title">{item.title}</h3>
               </div>
-              <div class="pick-source-logo" aria-hidden="true">
-                {item.domain === 'vla' ? '🤖' : '📰'}
+              <h3 class="hp-signal-title">{item.title}</h3>
+              <p class="hp-signal-summary">{item.summary.slice(0, 120)}{item.summary.length > 120 ? '…' : ''}</p>
+              <div class="hp-signal-footer">
+                <span class="hp-signal-src">{item.source.toUpperCase().slice(0, 8)}</span>
+                {item.url && (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" class="hp-signal-link">→ 閱讀</a>
+                )}
               </div>
-            </div>
-            <p class="pick-summary">{item.summary}</p>
-            <div class="pick-footer">
-              <span class="pick-date">{item.domain === 'vla' ? displayDate + ' · VLA' : displayDate + ' · AI'}</span>
-              <span class:list={['domain-tag', item.domain === 'vla' ? 'vla' : '']}>
-                {item.domain === 'vla' ? 'VLA' : 'AI App'}
-              </span>
-            </div>
-            {item.url && (
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="pick-read-link"
-                aria-label={`閱讀：${item.title}`}
-              >
-                → 閱讀
-              </a>
-            )}
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
 
     </div>
@@ -386,16 +409,51 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
 
   <hr class="grid-rule" />
 
-  <!-- ==========================================================
-       5. SOCIAL INTEL STRIP
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       5. CROSS-DOMAIN PULSE — new section
+       ═══════════════════════════════════════════════════════════════ -->
+  {crossDomain.length > 0 && (
+    <section class="hp-xd-section" id="crossdomain" aria-labelledby="xd-title">
+      <div class="container">
+        <div class="section-header fade-in-1">
+          <div>
+            <span class="section-label section-number">04 — 跨域洞察</span>
+            <h2 id="xd-title"><span class="accent-line" aria-hidden="true"></span>VLA ↔ AI App 交叉訊號</h2>
+          </div>
+          <a href={`${base}/dashboard`} class="section-link btn btn-outline">儀表板 →</a>
+        </div>
+        <div class="hp-xd-grid fade-in-2">
+          {crossDomain.slice(0, 3).map(ins => (
+            <article class="hp-xd-card">
+              <div class="hp-xd-meta">
+                <span class="hp-xd-rule">{RULE_LABELS[ins.rule_id] ?? ins.label}</span>
+                <span class="hp-xd-date">{ins.date}</span>
+              </div>
+              <a href={ins.url} target="_blank" rel="noopener noreferrer" class="hp-xd-title">
+                {ins.rating} {ins.title}
+              </a>
+              {ins.matched_keywords.length > 0 && (
+                <div class="hp-xd-kws">
+                  {ins.matched_keywords.map(kw => <span class="hp-xd-kw">{kw}</span>)}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       6. SOCIAL INTEL — horizontal scroll strip
+       ═══════════════════════════════════════════════════════════════ -->
   <section class="section section-alt social-section" id="social" aria-labelledby="social-title">
     <div class="container">
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">04 — 動態追蹤</span>
-          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去72小時</h2>
+          <span class="section-label section-number">05 — 動態追蹤</span>
+          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去 72 小時</h2>
         </div>
         <a href={`${base}/social`} class="section-link btn btn-outline">完整情報 →</a>
       </div>
@@ -404,18 +462,18 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
         <div class="social-scroll-container" role="list" aria-label="Social intelligence feed">
           <div class="social-strip">
             {socialItems.map(item => (
-              <article class="social-card" role="listitem">
+              <article class={`social-card hp-social-card ${item.domain === 'vla' ? 'hp-social-card--vla' : 'hp-social-card--ai'}`} role="listitem">
                 <div class="social-card-meta">
-                  <span class="social-platform" aria-label={item.platform}>
-                    {platformIcon[item.platform] ?? '◈'}
+                  <span class={`hp-social-domain ${item.domain === 'vla' ? 'hp-social-domain--vla' : 'hp-social-domain--ai'}`}>
+                    {item.domain === 'vla' ? '🤖' : '🧠'}
                   </span>
                   <span class="social-entity">{item.entity}</span>
-                  <span class="social-time">{item.date}</span>
+                  <span class="social-time">{item.date.slice(5)}</span>
                 </div>
                 <p class="social-content">{item.event}</p>
-                {('tag' in item) && item.tag && (
-                  <span class="social-tag">{item.tag}</span>
-                )}
+                <span class={`social-tag hp-social-tag ${item.domain === 'vla' ? 'hp-social-tag--vla' : 'hp-social-tag--ai'}`}>
+                  {item.tag || (item.domain === 'vla' ? 'VLA' : 'AI App')}
+                </span>
               </article>
             ))}
           </div>
@@ -425,23 +483,23 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
     </div>
   </section>
 
-  <!-- ==========================================================
-       6. DASHBOARD METRICS ROW
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       7. SYSTEM STATUS — real sparkline + entity + pipeline
+       ═══════════════════════════════════════════════════════════════ -->
   <section class="section" id="dashboard" aria-labelledby="dashboard-title">
     <div class="container">
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">05 — 系統監控</span>
+          <span class="section-label section-number">06 — 系統監控</span>
           <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span>管道儀表板</h2>
         </div>
-        <span class="live-dot" style="font-size:0.7rem;">Pipeline 已更新</span>
+        <a href={`${base}/dashboard`} class="section-link btn btn-outline">詳細儀表板 →</a>
       </div>
 
       <div class="dashboard-grid fade-in-2">
 
-        <!-- Quality Drift sparkline -->
+        <!-- Real quality drift sparkline -->
         <div class="dash-card">
           <div class="dash-card-header">
             <span class="dash-card-title">質量漂移監測</span>
@@ -449,33 +507,53 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
               {driftOk ? '正常 ✓' : '注意 ⚠'}
             </span>
           </div>
-          <div class="sparkline" aria-label="7-day quality chart" role="img">
-            <div class="spark-bar" style="height:68%;" data-val="W-6" title="W-6: 68%"></div>
-            <div class="spark-bar" style="height:74%;" data-val="W-5" title="W-5: 74%"></div>
-            <div class="spark-bar active" style="height:56%;" data-val="W-4" title="W-4: 56% (注意)"></div>
-            <div class="spark-bar" style="height:82%;" data-val="W-3" title="W-3: 82%"></div>
-            <div class="spark-bar" style="height:78%;" data-val="W-2" title="W-2: 78%"></div>
-            <div class="spark-bar" style="height:90%;" data-val="昨日" title="昨日: 90%"></div>
-            <div class="spark-bar high" style="height:100%;" data-val="今日" title="今日: 100% (最高)"></div>
-          </div>
+
+          {spark7.length > 0 ? (
+            <div class="hp-spark" aria-label="Quality drift 7-day chart" role="img">
+              {spark7.map((d, i) => {
+                const vlaPct = Math.max(6, Math.round(d.vla / sparkMaxVLA * 100));
+                const aiPct  = Math.max(6, Math.round(d.ai  / sparkMaxAI  * 100));
+                const isLast = i === spark7.length - 1;
+                return (
+                  <div class={`hp-spark-col ${isLast ? 'hp-spark-col--today' : ''}`}>
+                    <div class="hp-spark-bar hp-spark-bar--vla" style={`height:${vlaPct}%`} title={`${d.date} VLA:${d.vla}`}></div>
+                    <div class="hp-spark-bar hp-spark-bar--ai"  style={`height:${aiPct}%`}  title={`${d.date} AI:${d.ai}`}></div>
+                    <span class="hp-spark-date">{d.date.slice(8)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div class="sparkline" aria-label="7-day quality chart" role="img">
+              <div class="spark-bar" style="height:68%;"></div>
+              <div class="spark-bar" style="height:74%;"></div>
+              <div class="spark-bar active" style="height:56%;"></div>
+              <div class="spark-bar" style="height:82%;"></div>
+              <div class="spark-bar" style="height:78%;"></div>
+              <div class="spark-bar" style="height:90%;"></div>
+              <div class="spark-bar high" style="height:100%;"></div>
+            </div>
+          )}
+
           <div class="sparkline-meta">
             <div>
-              <div class="spark-label">7日均值</div>
-              <div class="spark-value">94.2%</div>
+              <div class="spark-label">VLA</div>
+              <div class="spark-value">{spark7.length > 0 ? spark7[spark7.length-1].vla + ' 篇' : '—'}</div>
+            </div>
+            <div>
+              <div class="spark-label">AI App</div>
+              <div class="spark-value">{spark7.length > 0 ? spark7[spark7.length-1].ai + ' 條' : '—'}</div>
             </div>
             <div style="text-align:right;">
-              <div class="spark-label">漂移閾值</div>
-              <div class="spark-value" style="color:var(--text-tertiary);">70.0%</div>
-            </div>
-          </div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-subtle);">
-            <div style="font-family:'Menlo', 'Consolas', monospace;font-size:0.6rem;color:var(--text-tertiary);letter-spacing:0.06em;">
-              VLA · AI App 兩域均無連續3日低於基線的漂移事件
+              <div class="spark-label">漂移狀態</div>
+              <div class="spark-value" style={driftOk ? 'color:#00C060;' : 'color:var(--accent-amber);'}>
+                {driftOk ? '正常' : '注意'}
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Entity Activity bar chart -->
+        <!-- Entity activity (real data) -->
         <div class="dash-card">
           <div class="dash-card-header">
             <span class="dash-card-title">實體活躍度</span>
@@ -485,17 +563,17 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
           </div>
           <div class="entity-list">
             {entityCount > 0
-              ? Object.entries(entityIndex.entities)
-                  .sort(([,a],[,b]) => ((b as any).mentions ?? 0) - ((a as any).mentions ?? 0))
+              ? Object.values(entityIndex.entities)
+                  .sort((a, b) => (b.signals?.length ?? 0) - (a.signals?.length ?? 0))
                   .slice(0, 5)
-                  .map(([key, ent], idx) => {
-                    const name = (ent as any).name ?? key.split(':')[1] ?? key;
-                    const count = (ent as any).mentions ?? (5 - idx);
-                    const pct = Math.max(20, Math.min(100, (count / 12) * 100));
+                  .map((ent, idx) => {
+                    const count = ent.signals?.length ?? 0;
+                    const max   = Object.values(entityIndex.entities).reduce((m, e) => Math.max(m, e.signals?.length ?? 0), 1);
+                    const pct   = Math.max(12, Math.round(count / max * 100));
                     return (
                       <div class="entity-row">
                         <div class="entity-row-meta">
-                          <span class="entity-name">{name}</span>
+                          <span class="entity-name">{ent.name}</span>
                           <span class="entity-count">{count} 信號</span>
                         </div>
                         <div class="entity-bar-track">
@@ -525,7 +603,7 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
           </div>
         </div>
 
-        <!-- Pipeline Health -->
+        <!-- Pipeline health -->
         <div class="dash-card">
           <div class="dash-card-header">
             <span class="dash-card-title">管道健康</span>
@@ -533,24 +611,20 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
           </div>
           <div class="health-list">
             {[
-              { name: 'VLA 論文採集',      time: '09:00', ok: true },
-              { name: 'AI App 日報生成',   time: '07:00', ok: true },
-              { name: '社交情報採集',      time: '09:30', ok: true },
-              { name: '品質漂移檢查',      time: '10:10', ok: driftOk },
-              { name: '語義索引重建',      time: '11:15', ok: true },
-              { name: '跨域規則引擎',      time: '10:20', ok: true },
-              { name: '上游 arxiv 監測',   time: '08:50', ok: false, warn: true },
+              { name: 'VLA 論文採集',    time: '09:00', ok: true  },
+              { name: 'AI App 日報',     time: '07:00', ok: true  },
+              { name: '社交情報採集',    time: '09:30', ok: true  },
+              { name: '品質漂移檢查',    time: '10:10', ok: driftOk },
+              { name: '語義索引重建',    time: '11:15', ok: true  },
+              { name: '跨域規則引擎',    time: '10:20', ok: true  },
+              { name: '上游 arxiv 監測', time: '08:50', ok: true  },
             ].map(item => (
               <div class="health-item">
-                <span class:list={['health-icon', item.warn ? 'health-warn' : (item.ok ? 'health-ok' : 'health-warn')]}>
-                  {item.warn ? '⚠' : (item.ok ? '✓' : '⚠')}
+                <span class:list={['health-icon', item.ok ? 'health-ok' : 'health-warn']}>
+                  {item.ok ? '✓' : '⚠'}
                 </span>
-                <span class:list={['health-name', item.warn ? '' : '']}
-                  style={item.warn ? 'color:var(--accent-amber);' : ''}
-                >{item.name}</span>
-                <span class="health-time" style={item.warn ? 'color:var(--accent-amber);' : ''}>
-                  {item.time}
-                </span>
+                <span class="health-name" style={!item.ok ? 'color:var(--accent-amber);' : ''}>{item.name}</span>
+                <span class="health-time">{item.time}</span>
               </div>
             ))}
           </div>
@@ -562,15 +636,15 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
 
   <hr class="grid-rule" />
 
-  <!-- ==========================================================
-       7. BIWEEKLY REPORT TEASER
-       ========================================================== -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       8. BIWEEKLY REPORT TEASER
+       ═══════════════════════════════════════════════════════════════ -->
   <section class="section" id="reports" aria-labelledby="report-title">
     <div class="container">
 
       <div class="section-header fade-in-1" style="margin-bottom:24px;">
         <div>
-          <span class="section-label section-number">06 — 深度分析</span>
+          <span class="section-label section-number">07 — 深度分析</span>
           <h2><span class="accent-line" aria-hidden="true"></span>雙週報告</h2>
         </div>
       </div>
@@ -581,11 +655,13 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
             雙週報告 · {reportDate} · 照見系統
           </span>
           <h2 class="report-title" id="report-title">
-            VLA 技術演進的範式轉移：<br/>從端到端模仿到世界模型驅動的具身推理
+            {latestReport
+              ? reportSummary.split('：')[0].slice(0, 40) + '…'
+              : 'VLA 技術演進的範式轉移：從端到端模仿到世界模型驅動的具身推理'}
           </h2>
           <p class="report-excerpt">{reportSummary}</p>
           <div class="report-period-badge" style="margin-top:16px;">
-            已涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準
+            涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準
           </div>
         </div>
         <a href={`${base}/reports`} class="report-cta" aria-label="查看完整雙週報告">
@@ -598,3 +674,411 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
   </section>
 
 </BaseLayout>
+
+<style>
+/* ================================================================
+   Homepage-specific styles (scoped to this page)
+   Extend/override BaseLayout globals where needed.
+================================================================ */
+
+/* ── Stat strip ── */
+.hp-stats {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0 28px;
+  background: var(--surface);
+}
+
+:global(html.dark) .hp-stats {
+  background: #070B14;
+  border-color: #1A2840;
+  box-shadow: 0 0 0 1px rgba(245,183,49,0.04), 0 4px 20px rgba(0,0,0,0.35);
+}
+
+.hp-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 10px 12px;
+  gap: 4px;
+}
+
+.hp-stat-div {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+:global(html.dark) .hp-stat-div { background: #1A2840; }
+
+.hp-stat-num {
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", monospace;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.hp-stat-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.18em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.hp-amber { color: var(--accent-amber); }
+.hp-cyan  { color: var(--accent-cyan);  }
+.hp-ok    { color: #00C060; }
+.hp-warn  { color: var(--accent-amber); }
+
+:global(html.dark) .hp-amber { text-shadow: 0 0 12px rgba(245,183,49,0.45); }
+:global(html.dark) .hp-cyan  { text-shadow: 0 0 12px rgba(62,207,207,0.45); }
+:global(html.dark) .hp-ok    { color: #00FF88; text-shadow: 0 0 12px rgba(0,255,136,0.4); }
+
+/* ── Hero card footer tags ── */
+.hero-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Signal mix grid ── */
+.hp-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .hp-signal-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .hp-signal-grid { grid-template-columns: 1fr; }
+}
+
+.hp-signal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-signal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 10px 10px 0 0;
+}
+
+.hp-signal-card--ai::before  { background: var(--accent-amber); }
+.hp-signal-card--vla::before { background: var(--accent-cyan); }
+
+:global(html.dark) .hp-signal-card {
+  background: #080D18;
+  border-color: #1A2840;
+}
+
+.hp-signal-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent-amber);
+}
+:global(html.dark) .hp-signal-card:hover {
+  border-color: rgba(245,183,49,0.35);
+  box-shadow: 0 0 0 1px rgba(245,183,49,0.12), 0 8px 28px rgba(0,0,0,0.4);
+}
+
+.hp-signal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hp-domain-tag {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.hp-domain-tag--ai  {
+  color: var(--accent-amber);
+  background: rgba(212,145,10,0.1);
+  border: 1px solid rgba(212,145,10,0.25);
+}
+.hp-domain-tag--vla {
+  color: var(--accent-cyan);
+  background: rgba(15,143,160,0.1);
+  border: 1px solid rgba(15,143,160,0.25);
+}
+:global(html.dark) .hp-domain-tag--ai  {
+  color: var(--accent-amber);
+  background: rgba(245,183,49,0.08);
+  border-color: rgba(245,183,49,0.2);
+}
+:global(html.dark) .hp-domain-tag--vla {
+  color: var(--accent-cyan);
+  background: rgba(62,207,207,0.08);
+  border-color: rgba(62,207,207,0.2);
+}
+
+.hp-signal-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hp-signal-summary {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hp-signal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+}
+:global(html.dark) .hp-signal-footer { border-top-color: #0F1A2A; }
+
+.hp-signal-src {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+.hp-signal-link {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.62rem;
+  color: var(--accent-amber);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.hp-signal-link:hover { color: var(--accent-cyan); }
+
+/* ── Cross-domain pulse section ── */
+.hp-xd-section {
+  padding: 40px 0;
+}
+
+:global(html.dark) .hp-xd-section {
+  background: #070B14;
+  border-top: 1px solid #1A2840;
+  border-bottom: 1px solid #1A2840;
+}
+
+.hp-xd-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) { .hp-xd-grid { grid-template-columns: 1fr; } }
+
+.hp-xd-card {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 3px solid var(--accent-amber);
+}
+
+:global(html.dark) .hp-xd-card {
+  background: #080D18;
+  border-color: #1A2840;
+  border-left-color: var(--accent-amber);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.hp-xd-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hp-xd-rule {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+:global(html.dark) .hp-xd-rule { text-shadow: 0 0 8px rgba(245,183,49,0.4); }
+
+.hp-xd-date {
+  font-size: 0.5rem;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+.hp-xd-title {
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.15s;
+}
+.hp-xd-title:hover { color: var(--accent-cyan); }
+
+.hp-xd-kws {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.hp-xd-kw {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.48rem;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(62,207,207,0.08);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(62,207,207,0.18);
+}
+
+/* ── Social card domain accents ── */
+.hp-social-card--vla {
+  border-left: 3px solid var(--accent-cyan) !important;
+}
+.hp-social-card--ai {
+  border-left: 3px solid var(--accent-amber) !important;
+}
+
+.hp-social-domain {
+  font-size: 0.9rem;
+}
+
+.hp-social-tag--ai  {
+  background: rgba(212,145,10,0.12) !important;
+  color: var(--accent-amber) !important;
+  border-color: rgba(212,145,10,0.25) !important;
+}
+.hp-social-tag--vla {
+  background: rgba(15,143,160,0.12) !important;
+  color: var(--accent-cyan) !important;
+  border-color: rgba(15,143,160,0.25) !important;
+}
+
+:global(html.dark) .hp-social-tag--ai {
+  background: rgba(245,183,49,0.08) !important;
+  border-color: rgba(245,183,49,0.2) !important;
+}
+:global(html.dark) .hp-social-tag--vla {
+  background: rgba(62,207,207,0.08) !important;
+  border-color: rgba(62,207,207,0.2) !important;
+}
+
+/* ── Real sparkline ── */
+.hp-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 80px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.hp-spark-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.hp-spark-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  opacity: 0.7;
+  min-height: 3px;
+  transition: opacity 0.15s;
+}
+
+.hp-spark-col--today .hp-spark-bar { opacity: 1; }
+.hp-spark-col:hover .hp-spark-bar  { opacity: 1; }
+
+.hp-spark-bar--vla { background: var(--accent-cyan); }
+.hp-spark-bar--ai  { background: var(--accent-amber); }
+
+:global(html.dark) .hp-spark-bar--vla { box-shadow: 0 0 4px rgba(62,207,207,0.35); }
+:global(html.dark) .hp-spark-bar--ai  { box-shadow: 0 0 4px rgba(245,183,49,0.35); }
+
+.hp-spark-date {
+  font-size: 0.44rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  opacity: 0.6;
+}
+
+/* ── Mobile tweaks ── */
+.hp-stat--hide-mobile { display: flex; }
+.hp-stat-div--hide-mobile { display: block; }
+
+@media (max-width: 640px) {
+  .hp-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 8px;
+  }
+  .hp-stat-div { display: none; }
+  .hp-stat { border-bottom: 1px solid var(--border); padding: 12px 8px; }
+  :global(html.dark) .hp-stat { border-bottom-color: #1A2840; }
+  .hp-stat--hide-mobile { display: none; }
+  .hp-stat-div--hide-mobile { display: none; }
+
+  /* Hero subtitle hidden on mobile to reduce clutter */
+  .hero-subtitle { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hp-signal-grid { gap: 10px; }
+  .hp-signal-card { padding: 12px; }
+  .hp-signal-title { font-size: 0.78rem; }
+}
+</style>
