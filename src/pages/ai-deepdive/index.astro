@@ -2,6 +2,7 @@
 /**
  * src/pages/ai-deepdive/index.astro
  * AI Agent Deep Dive — 深度追蹤文章庫，鏈接 Agent-Playbook GitHub 倉庫。
+ * Articles from the last 7 days render as visual cards; older ones as list rows.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadAIDeepDive } from '../../utils/data';
@@ -11,9 +12,14 @@ const articles = loadAIDeepDive(50);
 const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
 const GITHUB_DEEPDIVE_PATH = `${GITHUB_REPO}/tree/main/blog/deep-dive`;
 
-// Group by month
-const byMonth: Record<string, typeof articles> = {};
-for (const a of articles) {
+// 7-day cutoff
+const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+const recentArticles = articles.filter(a => a.date >= cutoff);
+const olderArticles  = articles.filter(a => a.date < cutoff);
+
+// Group older articles by month
+const byMonth: Record<string, typeof olderArticles> = {};
+for (const a of olderArticles) {
   const [y, m] = a.date.split('-');
   const key = `${y}-${m}`;
   (byMonth[key] ??= []).push(a);
@@ -84,60 +90,112 @@ const SIGNAL_LABELS: Record<string, string> = {
       </div>
     </header>
 
-    <!-- ── Article list by month ── -->
-    {articles.length === 0 ? (
+    <!-- ── Empty state ── -->
+    {articles.length === 0 && (
       <div class="dd-empty">
         <span class="dd-empty-icon">▣</span>
         <p>尚無深度追蹤文章 — pipeline 自動生成中</p>
       </div>
-    ) : (
-      <div class="dd-archive">
-        {months.map(monthKey => {
-          const [y, m] = monthKey.split('-');
-          return (
-            <div class="dd-month-group">
-              <div class="dd-month-label">
-                {y} 年 {parseInt(m)} 月 &nbsp;·&nbsp; {byMonth[monthKey].length} 篇
-              </div>
-              <div class="dd-article-list">
-                {byMonth[monthKey].map((article, i) => (
-                  <a
-                    href={article.html_url ?? article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="dd-article-row"
-                    style={`animation-delay:${i * 0.035}s`}
-                  >
-                    <!-- Left: date -->
-                    <time class="dd-art-date">{dotDate(article.date)}</time>
+    )}
 
-                    <!-- Mid: title + tags -->
-                    <div class="dd-art-body">
-                      <span class="dd-art-title">{article.title}</span>
-                      <div class="dd-art-tags">
-                        <span class="dd-tag dd-tag--amber">
-                          {SIGNAL_LABELS[article.signal_type] ?? article.signal_type}
-                        </span>
-                        {article.source && (
-                          <span class="dd-tag">{article.source}</span>
-                        )}
+    <!-- ══════════════════════════════════════════
+         SECTION: 最近 7 天 (card grid)
+    ══════════════════════════════════════════ -->
+    {recentArticles.length > 0 && (
+      <div class="dd-section">
+        <div class="dd-section-subheader">
+          <span class="dd-section-label">最近 7 天</span>
+          <span class="dd-section-count">{recentArticles.length} 篇</span>
+        </div>
+        <div class="dd-card-grid">
+          {recentArticles.map((article) => (
+            <article class="dd-card">
+              <div class="dd-card-top">
+                <time class="dd-card-date">{dotDate(article.date)}</time>
+                <span class="dd-card-tag dd-card-tag--amber">
+                  {SIGNAL_LABELS[article.signal_type] ?? article.signal_type}
+                </span>
+              </div>
+              <h3 class="dd-card-title">{article.title}</h3>
+              {article.source && (
+                <div class="dd-card-tags">
+                  <span class="dd-card-tag dd-card-tag--neutral">{article.source}</span>
+                </div>
+              )}
+              <a
+                href={article.html_url ?? article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="dd-card-cta"
+              >
+                GitHub 閱讀原文
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M2 6h8M6 2l4 4-4 4"/>
+                </svg>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- ══════════════════════════════════════════
+         SECTION: 更多文章 (list rows)
+    ══════════════════════════════════════════ -->
+    {olderArticles.length > 0 && (
+      <div class="dd-section">
+        <div class="dd-section-subheader">
+          <span class="dd-section-label">更多文章 · 全部在 GitHub</span>
+          <span class="dd-section-count">{olderArticles.length} 篇</span>
+        </div>
+        <div class="dd-archive">
+          {months.map(monthKey => {
+            const [y, m] = monthKey.split('-');
+            return (
+              <div class="dd-month-group">
+                <div class="dd-month-label">
+                  {y} 年 {parseInt(m)} 月 &nbsp;·&nbsp; {byMonth[monthKey].length} 篇
+                </div>
+                <div class="dd-article-list">
+                  {byMonth[monthKey].map((article, i) => (
+                    <a
+                      href={article.html_url ?? article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="dd-article-row"
+                      style={`animation-delay:${i * 0.035}s`}
+                    >
+                      <!-- Left: date -->
+                      <time class="dd-art-date">{dotDate(article.date)}</time>
+
+                      <!-- Mid: title + tags -->
+                      <div class="dd-art-body">
+                        <span class="dd-art-title">{article.title}</span>
+                        <div class="dd-art-tags">
+                          <span class="dd-tag dd-tag--amber">
+                            {SIGNAL_LABELS[article.signal_type] ?? article.signal_type}
+                          </span>
+                          {article.source && (
+                            <span class="dd-tag">{article.source}</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
 
-                    <!-- Right: GitHub icon -->
-                    <span class="dd-art-ext" aria-label="在 GitHub 閱讀">
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
-                        <path d="M8 1h3v3M11 1L6 6"/>
-                      </svg>
-                    </span>
-                  </a>
-                ))}
+                      <!-- Right: GitHub icon -->
+                      <span class="dd-art-ext" aria-label="在 GitHub 閱讀">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                          <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+                          <path d="M8 1h3v3M11 1L6 6"/>
+                        </svg>
+                      </span>
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     )}
 
@@ -259,7 +317,146 @@ const SIGNAL_LABELS: Record<string, string> = {
   text-transform: uppercase;
 }
 
-/* ── Archive ── */
+/* ── Empty state ── */
+.dd-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 0;
+  font-family: 'Menlo', monospace;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+}
+
+.dd-empty-icon { font-size: 1.4rem; }
+
+/* ── Sections ── */
+.dd-section { margin-bottom: 48px; }
+
+.dd-section-subheader {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dd-section-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+
+.dd-section-count {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+/* ── Card grid ── */
+.dd-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.dd-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent-amber);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dd-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover, 0 8px 24px rgba(0,0,0,0.12));
+  border-color: var(--accent-amber);
+}
+
+.dd-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dd-card-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.dd-card-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+.dd-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.dd-card-tag {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.dd-card-tag--amber {
+  background: var(--accent-amber-bg, rgba(212,145,10,0.12));
+  color: var(--accent-amber);
+  border: 1px solid rgba(212,145,10,0.25);
+}
+
+.dd-card-tag--neutral {
+  background: var(--surface-2, rgba(0,0,0,0.04));
+  color: var(--text-tertiary);
+  border: 1px solid var(--border);
+}
+
+.dd-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: var(--accent-amber);
+  color: var(--bg, #fff);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.dd-card-cta:hover { opacity: 0.88; transform: translateX(2px); }
+
+/* ── Archive (older list rows) ── */
 .dd-archive { display: flex; flex-direction: column; gap: 40px; }
 
 .dd-month-group {}
@@ -276,18 +473,6 @@ const SIGNAL_LABELS: Record<string, string> = {
 }
 
 .dd-article-list { display: flex; flex-direction: column; }
-
-.dd-empty {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 48px 0;
-  font-family: 'Menlo', monospace;
-  font-size: 0.82rem;
-  color: var(--text-tertiary);
-}
-
-.dd-empty-icon { font-size: 1.4rem; }
 
 /* ── Article rows ── */
 .dd-article-row {
@@ -391,6 +576,10 @@ const SIGNAL_LABELS: Record<string, string> = {
 
 /* ── Mobile ── */
 @media (max-width: 640px) {
+  .dd-card-grid {
+    grid-template-columns: 1fr;
+  }
+
   .dd-article-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
@@ -416,5 +605,11 @@ const SIGNAL_LABELS: Record<string, string> = {
   .dd-count-pill { margin-left: 0; }
 
   .dd-cta-row { gap: 10px; }
+}
+
+@media (max-width: 900px) and (min-width: 641px) {
+  .dd-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>

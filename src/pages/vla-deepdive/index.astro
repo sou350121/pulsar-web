@@ -1,21 +1,30 @@
 ---
 /**
  * src/pages/vla-deepdive/index.astro
- * VLA Deep Dive — 理論深挖文章庫 + SOTA 排行，鏈接 VLA-Handbook GitHub 倉庫。
+ * VLA Deep Dive — 理論深挖文章庫 + SOTA 排行 + VLA-Handbook 全庫。
+ * Articles from the last 7 days render as visual cards; older ones as list rows.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadVLASOTA, loadVLATheory } from '../../utils/data';
+import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles } from '../../utils/data';
 
-const theory = loadVLATheory(50);
-const sota   = loadVLASOTA(30);
+const theory   = loadVLATheory(50);
+const sota     = loadVLASOTA(30);
+const ghAll    = loadVLAGitHubArticles(100);
 
 const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
 const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
 const GITHUB_SOTA_PATH    = 'https://sota.evomind-tech.com';
 
-// Group theory by target_dir (topic)
-const byTopic: Record<string, typeof theory> = {};
-for (const a of theory) {
+// 7-day cutoff
+const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+
+// Theory split
+const recentTheory = theory.filter(a => a.date >= cutoff);
+const olderTheory  = theory.filter(a => a.date < cutoff);
+
+// Group older theory by topic
+const byTopic: Record<string, typeof olderTheory> = {};
+for (const a of olderTheory) {
   const topic = a.target_dir?.replace('theory/', '') ?? 'general';
   (byTopic[topic] ??= []).push(a);
 }
@@ -32,6 +41,32 @@ for (const s of sota) {
   (sotaByBenchmark[s.benchmark] ??= []).push(s);
 }
 const benchmarks = Object.keys(sotaByBenchmark).sort();
+
+// Deduplicate GitHub articles against theory articles (by title, case-insensitive)
+const theoryTitles = new Set(theory.map(a => a.title.toLowerCase().trim()));
+const dedupedGh = ghAll.filter(a => !theoryTitles.has(a.title.toLowerCase().trim()));
+
+// Combine: theory items + deduplicated github items, deduplicated by title
+const allCombined = [
+  ...theory.map(a => ({
+    title:    a.title,
+    date:     a.date,
+    html_url: a.html_url ?? a.url,
+    topic:    a.target_dir?.replace('theory/', '') ?? 'general',
+    source:   'pipeline',
+  })),
+  ...dedupedGh.map(a => ({
+    title:    a.title,
+    date:     a.date,
+    html_url: a.html_url,
+    topic:    a.topic,
+    source:   'github',
+  })),
+].sort((a, b) => b.date.localeCompare(a.date));
+
+// Split combined library into 7-day cards and older list
+const recentGhLibrary = allCombined.filter(a => a.date >= cutoff);
+const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
 ---
 
 <BaseLayout
@@ -78,7 +113,7 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
         </a>
         <div class="vdd-stats-row">
           <span class="vdd-stat">
-            <span class="vdd-stat-num">{theory.length}</span>
+            <span class="vdd-stat-num">{allCombined.length}</span>
             <span class="vdd-stat-lbl">理論文章</span>
           </span>
           <span class="vdd-stat-sep">·</span>
@@ -91,7 +126,7 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
     </header>
 
     <!-- ══════════════════════════════════════════
-         SECTION 1: Theory Articles (by topic)
+         SECTION 1: Theory Articles (pipeline-tracked)
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="VLA 理論深挖">
       <div class="vdd-section-header">
@@ -104,24 +139,161 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
       {theory.length === 0 ? (
         <p class="vdd-empty">尚無理論文章資料</p>
       ) : (
-        <div class="vdd-topics">
-          {topics.map(topic => (
-            <div class="vdd-topic-group">
-              <div class="vdd-topic-label">
-                {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopic[topic].length} 篇
+        <>
+          {/* --- 最近 7 天 card grid --- */}
+          {recentTheory.length > 0 && (
+            <div class="vdd-subsection">
+              <div class="vdd-subsection-label">
+                <span class="vdd-sublabel">最近 7 天</span>
+                <span class="vdd-sublabel-count">{recentTheory.length} 篇</span>
               </div>
+              <div class="vdd-card-grid">
+                {recentTheory.map((article) => (
+                  <article class="vdd-card">
+                    <div class="vdd-card-top">
+                      <time class="vdd-card-date">{dotDate(article.date)}</time>
+                      {article.target_dir && (
+                        <span class="vdd-card-tag vdd-card-tag--cyan">
+                          {article.target_dir.replace('theory/', '').replace(/-/g, ' ')}
+                        </span>
+                      )}
+                    </div>
+                    <h3 class="vdd-card-title">{article.title}</h3>
+                    <a
+                      href={article.html_url ?? article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="vdd-card-cta"
+                    >
+                      GitHub 閱讀原文
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M2 6h8M6 2l4 4-4 4"/>
+                      </svg>
+                    </a>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* --- 更多文章 list rows --- */}
+          {olderTheory.length > 0 && (
+            <div class="vdd-subsection">
+              {recentTheory.length > 0 && (
+                <div class="vdd-subsection-label">
+                  <span class="vdd-sublabel">更多文章 · 全部在 GitHub</span>
+                  <span class="vdd-sublabel-count">{olderTheory.length} 篇</span>
+                </div>
+              )}
+              <div class="vdd-topics">
+                {topics.map(topic => (
+                  <div class="vdd-topic-group">
+                    <div class="vdd-topic-label">
+                      {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopic[topic].length} 篇
+                    </div>
+                    <div class="vdd-art-list">
+                      {byTopic[topic].map((article, i) => (
+                        <a
+                          href={article.html_url ?? article.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="vdd-art-row"
+                          style={`animation-delay:${i * 0.03}s`}
+                        >
+                          <time class="vdd-art-date">{dotDate(article.date)}</time>
+                          <span class="vdd-art-title">{article.title}</span>
+                          <span class="vdd-art-ext" aria-label="在 GitHub 閱讀">
+                            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                              <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+                              <path d="M8 1h3v3M11 1L6 6"/>
+                            </svg>
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 2: VLA-Handbook 全庫文章
+    ══════════════════════════════════════════ -->
+    <section class="vdd-section" aria-label="VLA-Handbook 全庫文章">
+      <div class="vdd-section-header">
+        <h2 class="vdd-section-title">📚 VLA-Handbook 全庫文章</h2>
+        <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
+          GitHub theory/ →
+        </a>
+      </div>
+      <p class="vdd-lib-desc">
+        包含 pipeline 追蹤 + 手動添加的全部理論文章（共 {allCombined.length} 篇，去重後）。
+      </p>
+
+      {allCombined.length === 0 ? (
+        <p class="vdd-empty">尚無全庫資料</p>
+      ) : (
+        <>
+          {/* --- 最近 7 天 cards --- */}
+          {recentGhLibrary.length > 0 && (
+            <div class="vdd-subsection">
+              <div class="vdd-subsection-label">
+                <span class="vdd-sublabel">最近 7 天</span>
+                <span class="vdd-sublabel-count">{recentGhLibrary.length} 篇</span>
+              </div>
+              <div class="vdd-card-grid">
+                {recentGhLibrary.map((article) => (
+                  <article class="vdd-card">
+                    <div class="vdd-card-top">
+                      <time class="vdd-card-date">{dotDate(article.date)}</time>
+                      <span class="vdd-card-tag vdd-card-tag--cyan">
+                        {article.topic.replace(/-/g, ' ')}
+                      </span>
+                    </div>
+                    <h3 class="vdd-card-title">{article.title}</h3>
+                    <a
+                      href={article.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="vdd-card-cta"
+                    >
+                      在 GitHub 閱讀
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M2 6h8M6 2l4 4-4 4"/>
+                      </svg>
+                    </a>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* --- 更多文章 list rows --- */}
+          {olderGhLibrary.length > 0 && (
+            <div class="vdd-subsection">
+              {recentGhLibrary.length > 0 && (
+                <div class="vdd-subsection-label">
+                  <span class="vdd-sublabel">更多文章 · 全部在 GitHub</span>
+                  <span class="vdd-sublabel-count">{olderGhLibrary.length} 篇</span>
+                </div>
+              )}
               <div class="vdd-art-list">
-                {byTopic[topic].map((article, i) => (
+                {olderGhLibrary.map((article, i) => (
                   <a
-                    href={article.html_url ?? article.url}
+                    href={article.html_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="vdd-art-row"
-                    style={`animation-delay:${i * 0.03}s`}
+                    style={`animation-delay:${i * 0.02}s`}
                   >
                     <time class="vdd-art-date">{dotDate(article.date)}</time>
                     <span class="vdd-art-title">{article.title}</span>
-                    <span class="vdd-art-ext" aria-label="GitHub">
+                    <span class="vdd-art-ext" aria-label="在 GitHub 閱讀">
                       <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round">
                         <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
@@ -132,13 +304,13 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
                 ))}
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 2: SOTA Leaderboard
+         SECTION 3: SOTA Leaderboard
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="SOTA 排行">
       <div class="vdd-section-header">
@@ -368,12 +540,133 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
 
 .vdd-section-link:hover { opacity: 1; }
 
+.vdd-lib-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: -12px 0 20px;
+  line-height: 1.6;
+}
+
 .vdd-empty {
   font-family: 'Menlo', monospace;
   font-size: 0.8rem;
   color: var(--text-tertiary);
   padding: 24px 0;
 }
+
+/* ── Subsections (within a section) ── */
+.vdd-subsection { margin-bottom: 32px; }
+
+.vdd-subsection-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.vdd-sublabel {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+.vdd-sublabel-count {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+/* ── Card grid ── */
+.vdd-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.vdd-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent-cyan);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.vdd-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover, 0 8px 24px rgba(0,0,0,0.12));
+  border-color: var(--accent-cyan);
+}
+
+.vdd-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vdd-card-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.vdd-card-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+.vdd-card-tag {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.vdd-card-tag--cyan {
+  background: var(--accent-cyan-bg, rgba(6,182,212,0.1));
+  color: var(--accent-cyan);
+  border: 1px solid rgba(6,182,212,0.25);
+}
+
+.vdd-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: var(--accent-cyan);
+  color: var(--bg, #fff);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.vdd-card-cta:hover { opacity: 0.88; transform: translateX(2px); }
 
 /* ── Theory topics ── */
 .vdd-topics { display: flex; flex-direction: column; gap: 32px; }
@@ -573,6 +866,10 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
 
 /* ── Mobile ── */
 @media (max-width: 640px) {
+  .vdd-card-grid {
+    grid-template-columns: 1fr;
+  }
+
   .vdd-art-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
@@ -585,5 +882,11 @@ const benchmarks = Object.keys(sotaByBenchmark).sort();
 
   .vdd-stats-row { margin-left: 0; }
   .vdd-cta-row { gap: 10px; }
+}
+
+@media (max-width: 900px) and (min-width: 641px) {
+  .vdd-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>

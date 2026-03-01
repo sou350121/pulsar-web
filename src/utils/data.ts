@@ -175,6 +175,21 @@ interface VLATheoryFile {
   theory_articles: VLATheoryArticle[];
 }
 
+// VLA GitHub full theory library (fetched by fetch-vla-github.py)
+export interface VLAGitHubArticle {
+  path:     string;
+  title:    string;
+  url:      string;
+  html_url: string;
+  date:     string;
+  topic:    string;
+}
+
+interface VLAGitHubFile {
+  fetched_at: string;
+  articles:   VLAGitHubArticle[];
+}
+
 // ---------------------------------------------------------------------------
 // Helper: safe JSON read — returns null on any error (missing file, parse fail)
 // ---------------------------------------------------------------------------
@@ -411,6 +426,19 @@ export function loadVLATheory(n: number = 20): VLATheoryArticle[] {
   const data = readJson<VLATheoryFile>('vla-theory-articles.json');
   if (!data?.theory_articles) return [];
   return [...data.theory_articles]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
+// loadVLAGitHubArticles
+// Returns up to N VLA theory articles fetched from GitHub (all theory/ files).
+// Sorted by date descending.
+// ---------------------------------------------------------------------------
+export function loadVLAGitHubArticles(n: number = 100): VLAGitHubArticle[] {
+  const data = readJson<VLAGitHubFile>('vla-github-theory.json');
+  if (!data?.articles) return [];
+  return [...data.articles]
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, n);
 }
