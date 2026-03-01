@@ -1,0 +1,420 @@
+---
+/**
+ * src/pages/ai-deepdive/index.astro
+ * AI Agent Deep Dive — 深度追蹤文章庫，鏈接 Agent-Playbook GitHub 倉庫。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadAIDeepDive } from '../../utils/data';
+
+const articles = loadAIDeepDive(50);
+
+const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
+const GITHUB_DEEPDIVE_PATH = `${GITHUB_REPO}/tree/main/blog/deep-dive`;
+
+// Group by month
+const byMonth: Record<string, typeof articles> = {};
+for (const a of articles) {
+  const [y, m] = a.date.split('-');
+  const key = `${y}-${m}`;
+  (byMonth[key] ??= []).push(a);
+}
+const months = Object.keys(byMonth).sort().reverse();
+
+function dotDate(iso: string) {
+  const [y, m, d] = iso.split('-');
+  return `${y}.${m}.${d}`;
+}
+
+const SIGNAL_LABELS: Record<string, string> = {
+  product_release: '產品發布',
+  open_source:     '開源',
+  research:        '研究',
+  update:          '更新',
+  framework:       '框架',
+  tool:            '工具',
+};
+---
+
+<BaseLayout
+  title="AI 深度追蹤"
+  description="AI Agent 工具、框架與產品發布的深度技術拆解 — Agent-Playbook 庫"
+>
+  <div class="dd-page page-container">
+
+    <!-- ── Masthead ── -->
+    <header class="dd-masthead">
+      <div class="dd-overline">AI APP 線 · DEEP DIVE ARCHIVE</div>
+      <h1 class="dd-title">AI 深度追蹤</h1>
+      <div class="dd-accent-bar dd-accent-bar--amber"></div>
+
+      <p class="dd-desc">
+        針對 AI Agent 工具、框架與產品發布的深度技術拆解。
+        每次有重大發布或社交信號達閾值時，pipeline 自動生成深度分析文章，
+        存入 <strong>Agent-Playbook</strong> 庫並同步至此頁面。
+      </p>
+
+      <!-- GitHub link — hero CTA -->
+      <div class="dd-cta-row">
+        <a href={GITHUB_DEEPDIVE_PATH} target="_blank" rel="noopener noreferrer" class="dd-github-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87
+              2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+              0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12
+              0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27
+              1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95
+              .29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
+              0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          Agent-Playbook 庫
+          <span class="dd-github-sub">deep-dive/ 目錄</span>
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M2 6h8M6 2l4 4-4 4"/>
+          </svg>
+        </a>
+        <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" class="dd-github-secondary">
+          查看全庫 →
+        </a>
+        <div class="dd-count-pill">
+          <span class="dd-count-num">{articles.length}</span>
+          <span class="dd-count-lbl">篇深度文章</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Article list by month ── -->
+    {articles.length === 0 ? (
+      <div class="dd-empty">
+        <span class="dd-empty-icon">▣</span>
+        <p>尚無深度追蹤文章 — pipeline 自動生成中</p>
+      </div>
+    ) : (
+      <div class="dd-archive">
+        {months.map(monthKey => {
+          const [y, m] = monthKey.split('-');
+          return (
+            <div class="dd-month-group">
+              <div class="dd-month-label">
+                {y} 年 {parseInt(m)} 月 &nbsp;·&nbsp; {byMonth[monthKey].length} 篇
+              </div>
+              <div class="dd-article-list">
+                {byMonth[monthKey].map((article, i) => (
+                  <a
+                    href={article.html_url ?? article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="dd-article-row"
+                    style={`animation-delay:${i * 0.035}s`}
+                  >
+                    <!-- Left: date -->
+                    <time class="dd-art-date">{dotDate(article.date)}</time>
+
+                    <!-- Mid: title + tags -->
+                    <div class="dd-art-body">
+                      <span class="dd-art-title">{article.title}</span>
+                      <div class="dd-art-tags">
+                        <span class="dd-tag dd-tag--amber">
+                          {SIGNAL_LABELS[article.signal_type] ?? article.signal_type}
+                        </span>
+                        {article.source && (
+                          <span class="dd-tag">{article.source}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <!-- Right: GitHub icon -->
+                    <span class="dd-art-ext" aria-label="在 GitHub 閱讀">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+                        <path d="M8 1h3v3M11 1L6 6"/>
+                      </svg>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+  </div>
+</BaseLayout>
+
+<style>
+.dd-page {
+  padding-top: 56px;
+  padding-bottom: 80px;
+}
+
+/* ── Masthead ── */
+.dd-masthead { margin-bottom: 48px; }
+
+.dd-overline {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.dd-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+  line-height: 1.1;
+}
+
+.dd-accent-bar {
+  height: 3px;
+  width: 80px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+}
+
+.dd-accent-bar--amber { background: var(--accent-amber); }
+
+.dd-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  max-width: 680px;
+  margin: 0 0 28px;
+}
+
+.dd-desc strong { color: var(--text-primary); }
+
+/* ── GitHub CTA ── */
+.dd-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.dd-github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--text-primary);
+  color: var(--bg);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+  opacity: 1;
+  position: relative;
+}
+
+.dd-github-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.dd-github-sub {
+  font-size: 0.6rem;
+  opacity: 0.6;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.dd-github-secondary {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.72rem;
+  color: var(--accent-amber);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+.dd-github-secondary:hover { opacity: 1; }
+
+.dd-count-pill {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  margin-left: auto;
+}
+
+.dd-count-num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  line-height: 1;
+}
+
+.dd-count-lbl {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+/* ── Archive ── */
+.dd-archive { display: flex; flex-direction: column; gap: 40px; }
+
+.dd-month-group {}
+
+.dd-month-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.dd-article-list { display: flex; flex-direction: column; }
+
+.dd-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 0;
+  font-family: 'Menlo', monospace;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+}
+
+.dd-empty-icon { font-size: 1.4rem; }
+
+/* ── Article rows ── */
+.dd-article-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr auto;
+  gap: 16px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: background 0.15s, padding-left 0.15s;
+  animation: artFade 0.35s ease both;
+}
+
+@keyframes artFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.dd-article-row::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--accent-amber);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.2s ease;
+}
+
+.dd-article-row:hover {
+  background: var(--surface-2, rgba(0,0,0,0.02));
+  padding-left: 6px;
+}
+
+.dd-article-row:hover::before { transform: scaleY(1); }
+
+.dd-art-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  padding-top: 2px;
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+
+.dd-article-row:hover .dd-art-date { color: var(--accent-amber); }
+
+.dd-art-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.dd-art-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.dd-art-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.dd-tag {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+}
+
+.dd-tag--amber {
+  border-color: rgba(212,145,10,0.3);
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+}
+
+.dd-art-ext {
+  color: var(--text-tertiary);
+  padding-top: 3px;
+  transition: color 0.18s, transform 0.18s;
+  flex-shrink: 0;
+}
+
+.dd-article-row:hover .dd-art-ext {
+  color: var(--accent-amber);
+  transform: translate(2px, -2px);
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .dd-article-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 4px 8px;
+  }
+
+  .dd-art-date {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .dd-art-ext {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .dd-art-body {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .dd-count-pill { margin-left: 0; }
+
+  .dd-cta-row { gap: 10px; }
+}
+</style>

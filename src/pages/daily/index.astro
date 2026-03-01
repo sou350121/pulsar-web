@@ -1,0 +1,386 @@
+---
+/**
+ * src/pages/daily/index.astro
+ * Combined AI App + VLA daily archive — single merged page.
+ * Most recent entries first; colour-coded by domain.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadAIDailyPicks, loadVLADailyPicks } from '../../utils/data';
+
+const base = import.meta.env.BASE_URL;
+
+const aiDays  = loadAIDailyPicks(60);
+const vlaDays = loadVLADailyPicks(60);
+
+// Merge and sort descending by date
+type DomainDay = { date: string; domain: 'ai' | 'vla'; count: number; firstTitle: string; counts: Record<string, number> };
+
+const merged: DomainDay[] = [
+  ...aiDays.map(d => ({
+    date: d.date, domain: 'ai' as const,
+    count: d.items.length,
+    firstTitle: d.items[0]?.title ?? '',
+    counts: d.items.reduce<Record<string, number>>((a, i) => { a[i.rating] = (a[i.rating] ?? 0) + 1; return a; }, {}),
+  })),
+  ...vlaDays.map(d => ({
+    date: d.date, domain: 'vla' as const,
+    count: d.items.length,
+    firstTitle: d.items[0]?.title ?? '',
+    counts: d.items.reduce<Record<string, number>>((a, i) => { a[i.rating] = (a[i.rating] ?? 0) + 1; return a; }, {}),
+  })),
+].sort((a, b) => b.date.localeCompare(a.date) || (a.domain === 'ai' ? -1 : 1));
+
+const today = new Date().toISOString().slice(0, 10);
+const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+const dayBefore  = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
+
+function recencyLabel(date: string): string | null {
+  if (date === today)     return '最新';
+  if (date === yesterday) return '昨日';
+  if (date === dayBefore) return '2日前';
+  return null;
+}
+
+function dotDate(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return `${y} · ${m} · ${d}`;
+}
+
+// Group by month for separators
+let lastMonth = '';
+---
+
+<BaseLayout
+  title="日報 — AI & VLA"
+  description="AI App 與 VLA 每日精選合輯 — 合併歸檔"
+>
+  <div class="daily-page page-container">
+
+    <header class="daily-masthead">
+      <p class="daily-overline">DAILY INTELLIGENCE · AI APP + VLA</p>
+      <h1 class="daily-title">研究日報</h1>
+      <div class="daily-rule">
+        <span class="daily-rule-ai"></span>
+        <span class="daily-rule-vla"></span>
+      </div>
+      <p class="daily-desc">
+        AI App 精選與 VLA 論文評級的每日合輯。
+        時效性強 — 重點看最近 3–7 天；更早的僅作參考。
+      </p>
+      <div class="daily-legend">
+        <span class="legend-dot legend-dot--ai"></span><span class="legend-label">AI App 日報</span>
+        <span class="legend-dot legend-dot--vla"></span><span class="legend-label">VLA 研究日報</span>
+      </div>
+    </header>
+
+    {merged.length === 0 ? (
+      <p class="daily-empty">尚無日報資料</p>
+    ) : (
+      <div class="daily-list">
+        {merged.map(day => {
+          const [y, m] = day.date.split('-');
+          const monthKey = `${y}-${m}`;
+          const showSep = monthKey !== lastMonth;
+          lastMonth = monthKey;
+          const recency = recencyLabel(day.date);
+          const href = day.domain === 'ai'
+            ? `${base}/ai-daily/${day.date}`
+            : `${base}/vla/${day.date}`;
+          return (
+            <>
+              {showSep && (
+                <div class="month-sep">— {y} 年 {parseInt(m)} 月 —</div>
+              )}
+              <a href={href} class:list={['day-row', `day-row--${day.domain}`]}>
+                <div class="day-left">
+                  <span class:list={['domain-pill', `domain-pill--${day.domain}`]}>
+                    {day.domain === 'ai' ? 'AI' : 'VLA'}
+                  </span>
+                  <time class="day-date">{dotDate(day.date)}</time>
+                  {recency && <span class="recency-tag">{recency}</span>}
+                </div>
+                <div class="day-mid">
+                  <span class="day-ratings">
+                    {[['⚡','flash'],['🔧','wrench'],['📖','book'],['❌','x']].map(([r]) =>
+                      day.counts[r] ? (
+                        <span class:list={['rating-chip', `rating-chip--${r === '⚡' ? 'flash' : r === '🔧' ? 'wrench' : r === '📖' ? 'book' : 'x'}`]}>
+                          {r} {day.counts[r]}
+                        </span>
+                      ) : null
+                    )}
+                  </span>
+                  {day.firstTitle && (
+                    <span class="day-teaser">{day.firstTitle}</span>
+                  )}
+                </div>
+                <div class="day-right">
+                  <span class="day-count">{day.count} 篇</span>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                    stroke="currentColor" stroke-width="2" class="day-arrow" aria-hidden="true">
+                    <path d="M2 7h10M8 3l4 4-4 4"/>
+                  </svg>
+                </div>
+              </a>
+            </>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.daily-page {
+  padding-top: 56px;
+  padding-bottom: 80px;
+}
+
+/* ── Masthead ── */
+.daily-masthead {
+  margin-bottom: 40px;
+}
+
+.daily-overline {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.daily-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  line-height: 1.1;
+}
+
+.daily-rule {
+  display: flex;
+  height: 3px;
+  width: 120px;
+  margin-bottom: 16px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.daily-rule-ai  { flex: 3; background: var(--accent-amber); }
+.daily-rule-vla { flex: 2; background: var(--accent-cyan); }
+
+.daily-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 0 16px;
+}
+
+.daily-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-dot--ai  { background: var(--accent-amber); }
+.legend-dot--vla { background: var(--accent-cyan); }
+
+.legend-label { margin-right: 14px; }
+
+/* ── Month separator ── */
+.month-sep {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 16px 0 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0;
+}
+
+/* ── Day rows ── */
+.daily-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.daily-empty {
+  font-family: 'Menlo', monospace;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  padding: 32px 0;
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 14rem 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: background 0.15s, padding-left 0.15s;
+}
+
+.day-row::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0; bottom: 0;
+  width: 2px;
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.day-row--ai::before  { background: var(--accent-amber); }
+.day-row--vla::before { background: var(--accent-cyan); }
+
+.day-row:hover {
+  background: var(--surface-2, rgba(0,0,0,0.02));
+  padding-left: 6px;
+}
+
+.day-row:hover::before { transform: scaleY(1); }
+
+/* ── Left: domain pill + date + recency ── */
+.day-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.domain-pill {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.domain-pill--ai  { background: var(--accent-amber-bg); color: var(--accent-amber); }
+.domain-pill--vla { background: var(--accent-cyan-bg);  color: var(--accent-cyan); }
+
+.day-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.day-row--ai:hover  .day-date { color: var(--accent-amber); }
+.day-row--vla:hover .day-date { color: var(--accent-cyan); }
+
+.recency-tag {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--rating-book-bg);
+  color: var(--rating-book);
+  border: 1px solid rgba(61,139,94,0.2);
+  white-space: nowrap;
+}
+
+/* ── Middle: rating chips + teaser ── */
+.day-mid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.day-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rating-chip {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.rating-chip--flash  { background: var(--rating-flash-bg);  color: var(--rating-flash); }
+.rating-chip--wrench { background: var(--rating-wrench-bg); color: var(--rating-wrench); }
+.rating-chip--book   { background: var(--rating-book-bg);   color: var(--rating-book); }
+.rating-chip--x      { background: var(--rating-x-bg);      color: var(--rating-x); }
+
+.day-teaser {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Right: count + arrow ── */
+.day-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.day-count {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.day-arrow {
+  color: var(--text-tertiary);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.day-row--ai:hover  .day-arrow { color: var(--accent-amber); transform: translateX(3px); }
+.day-row--vla:hover .day-arrow { color: var(--accent-cyan);  transform: translateX(3px); }
+
+/* ── Mobile: stack date info above teaser ── */
+@media (max-width: 640px) {
+  .day-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 6px 8px;
+  }
+
+  .day-left  { grid-column: 1; grid-row: 1; flex-wrap: wrap; }
+  .day-right { grid-column: 2; grid-row: 1; align-self: start; }
+  .day-mid   { grid-column: 1 / -1; grid-row: 2; }
+
+  .day-teaser {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+  }
+}
+</style>

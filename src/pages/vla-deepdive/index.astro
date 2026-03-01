@@ -1,0 +1,589 @@
+---
+/**
+ * src/pages/vla-deepdive/index.astro
+ * VLA Deep Dive — 理論深挖文章庫 + SOTA 排行，鏈接 VLA-Handbook GitHub 倉庫。
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadVLASOTA, loadVLATheory } from '../../utils/data';
+
+const theory = loadVLATheory(50);
+const sota   = loadVLASOTA(30);
+
+const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
+const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
+const GITHUB_SOTA_PATH    = 'https://sota.evomind-tech.com';
+
+// Group theory by target_dir (topic)
+const byTopic: Record<string, typeof theory> = {};
+for (const a of theory) {
+  const topic = a.target_dir?.replace('theory/', '') ?? 'general';
+  (byTopic[topic] ??= []).push(a);
+}
+const topics = Object.keys(byTopic).sort();
+
+function dotDate(iso: string) {
+  const [y, m, d] = iso.split('-');
+  return `${y}.${m}.${d}`;
+}
+
+// Group SOTA by benchmark
+const sotaByBenchmark: Record<string, typeof sota> = {};
+for (const s of sota) {
+  (sotaByBenchmark[s.benchmark] ??= []).push(s);
+}
+const benchmarks = Object.keys(sotaByBenchmark).sort();
+---
+
+<BaseLayout
+  title="VLA 深度追蹤"
+  description="Vision-Language-Action 理論深挖與 SOTA 排行 — VLA-Handbook 庫"
+>
+  <div class="vdd-page page-container">
+
+    <!-- ── Masthead ── -->
+    <header class="vdd-masthead">
+      <div class="vdd-overline">VLA 線 · DEEP DIVE ARCHIVE</div>
+      <h1 class="vdd-title">VLA 深度追蹤</h1>
+      <div class="vdd-accent-bar"></div>
+
+      <p class="vdd-desc">
+        Vision-Language-Action 系統的理論深挖與 SOTA 排行追蹤。
+        Theory 文章由 pipeline 解析 arxiv 並存入 <strong>VLA-Handbook</strong> 庫；
+        SOTA 數據從 Evo-SOTA 自動拉取 CALVIN 等標準 Benchmark 的最新記錄。
+      </p>
+
+      <!-- GitHub CTA row -->
+      <div class="vdd-cta-row">
+        <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-github-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87
+              2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+              0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12
+              0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27
+              1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95
+              .29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
+              0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          VLA-Handbook 庫
+          <span class="vdd-github-sub">theory/ 目錄</span>
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M2 6h8M6 2l4 4-4 4"/>
+          </svg>
+        </a>
+        <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-github-secondary">
+          Evo-SOTA 排行榜 →
+        </a>
+        <div class="vdd-stats-row">
+          <span class="vdd-stat">
+            <span class="vdd-stat-num">{theory.length}</span>
+            <span class="vdd-stat-lbl">理論文章</span>
+          </span>
+          <span class="vdd-stat-sep">·</span>
+          <span class="vdd-stat">
+            <span class="vdd-stat-num vdd-stat-num--cyan">{sota.length}</span>
+            <span class="vdd-stat-lbl">SOTA 記錄</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 1: Theory Articles (by topic)
+    ══════════════════════════════════════════ -->
+    <section class="vdd-section" aria-label="VLA 理論深挖">
+      <div class="vdd-section-header">
+        <h2 class="vdd-section-title">📐 理論深挖</h2>
+        <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
+          查看 GitHub 全庫 →
+        </a>
+      </div>
+
+      {theory.length === 0 ? (
+        <p class="vdd-empty">尚無理論文章資料</p>
+      ) : (
+        <div class="vdd-topics">
+          {topics.map(topic => (
+            <div class="vdd-topic-group">
+              <div class="vdd-topic-label">
+                {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopic[topic].length} 篇
+              </div>
+              <div class="vdd-art-list">
+                {byTopic[topic].map((article, i) => (
+                  <a
+                    href={article.html_url ?? article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="vdd-art-row"
+                    style={`animation-delay:${i * 0.03}s`}
+                  >
+                    <time class="vdd-art-date">{dotDate(article.date)}</time>
+                    <span class="vdd-art-title">{article.title}</span>
+                    <span class="vdd-art-ext" aria-label="GitHub">
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+                        <path d="M8 1h3v3M11 1L6 6"/>
+                      </svg>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 2: SOTA Leaderboard
+    ══════════════════════════════════════════ -->
+    <section class="vdd-section" aria-label="SOTA 排行">
+      <div class="vdd-section-header">
+        <h2 class="vdd-section-title">🏆 SOTA 排行</h2>
+        <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
+          Evo-SOTA 完整榜 →
+        </a>
+      </div>
+
+      {sota.length === 0 ? (
+        <p class="vdd-empty">尚無 SOTA 數據</p>
+      ) : (
+        <div class="vdd-sota-groups">
+          {benchmarks.map(bench => {
+            const entries = sotaByBenchmark[bench].sort((a, b) => b.value - a.value);
+            const top = entries[0];
+            return (
+              <div class="sota-bench-block">
+                <!-- Benchmark header -->
+                <div class="sota-bench-header">
+                  <div class="sota-bench-left">
+                    <span class="sota-bench-name">
+                      {top.leaderboard_url
+                        ? <a href={top.leaderboard_url} target="_blank" rel="noopener noreferrer">{bench}</a>
+                        : bench
+                      }
+                    </span>
+                    {top.split && <span class="sota-bench-split">{top.split}</span>}
+                  </div>
+                  <span class="sota-bench-metric">{top.metric}</span>
+                </div>
+
+                <!-- Entries table -->
+                <div class="sota-table-wrap">
+                  <table class="sota-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Model</th>
+                        <th>Score</th>
+                        <th>vs Prev</th>
+                        <th>Date</th>
+                        <th>Paper</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map((e, rank) => (
+                        <tr class:list={['sota-row', rank === 0 && 'sota-row--top']}>
+                          <td class="sota-rank">{rank + 1}</td>
+                          <td class="sota-model">{e.model}</td>
+                          <td class="sota-score">{e.value}</td>
+                          <td class="sota-baseline">{e.baseline ?? '—'}</td>
+                          <td class="sota-date">{e.date}</td>
+                          <td class="sota-paper">
+                            {e.paper_url
+                              ? <a href={e.paper_url} target="_blank" rel="noopener noreferrer">arxiv →</a>
+                              : '—'
+                            }
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+.vdd-page {
+  padding-top: 56px;
+  padding-bottom: 80px;
+}
+
+/* ── Masthead ── */
+.vdd-masthead { margin-bottom: 48px; }
+
+.vdd-overline {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.vdd-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+  line-height: 1.1;
+}
+
+.vdd-accent-bar {
+  height: 3px;
+  width: 80px;
+  background: var(--accent-cyan);
+  border-radius: 2px;
+  margin-bottom: 18px;
+}
+
+.vdd-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  max-width: 680px;
+  margin: 0 0 28px;
+}
+
+.vdd-desc strong { color: var(--text-primary); }
+
+/* ── CTA row ── */
+.vdd-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.vdd-github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--text-primary);
+  color: var(--bg);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+  opacity: 1;
+}
+
+.vdd-github-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.vdd-github-sub {
+  font-size: 0.6rem;
+  opacity: 0.6;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.vdd-github-secondary {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+.vdd-github-secondary:hover { opacity: 1; }
+
+.vdd-stats-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  margin-left: auto;
+}
+
+.vdd-stat { display: flex; align-items: baseline; gap: 4px; }
+
+.vdd-stat-num {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  line-height: 1;
+}
+
+.vdd-stat-num--cyan { color: var(--accent-cyan); }
+
+.vdd-stat-lbl {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.vdd-stat-sep { color: var(--border); font-size: 1rem; }
+
+/* ── Sections ── */
+.vdd-section {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+
+.vdd-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.vdd-section-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.vdd-section-link {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.vdd-section-link:hover { opacity: 1; }
+
+.vdd-empty {
+  font-family: 'Menlo', monospace;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  padding: 24px 0;
+}
+
+/* ── Theory topics ── */
+.vdd-topics { display: flex; flex-direction: column; gap: 32px; }
+
+.vdd-topic-group {}
+
+.vdd-topic-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.vdd-art-list { display: flex; flex-direction: column; }
+
+.vdd-art-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr auto;
+  gap: 14px;
+  align-items: start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: background 0.14s, padding-left 0.14s;
+  animation: artFadeIn 0.3s ease both;
+}
+
+@keyframes artFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.vdd-art-row::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--accent-cyan);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.18s ease;
+}
+
+.vdd-art-row:hover { background: var(--surface-2, rgba(0,0,0,0.02)); padding-left: 6px; }
+.vdd-art-row:hover::before { transform: scaleY(1); }
+
+.vdd-art-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.67rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  padding-top: 2px;
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+
+.vdd-art-row:hover .vdd-art-date { color: var(--accent-cyan); }
+
+.vdd-art-title {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.vdd-art-ext {
+  color: var(--text-tertiary);
+  padding-top: 3px;
+  flex-shrink: 0;
+  transition: color 0.16s, transform 0.16s;
+}
+
+.vdd-art-row:hover .vdd-art-ext { color: var(--accent-cyan); transform: translate(2px, -2px); }
+
+/* ── SOTA groups ── */
+.vdd-sota-groups { display: flex; flex-direction: column; gap: 36px; }
+
+.sota-bench-block {}
+
+.sota-bench-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 2px solid var(--accent-cyan);
+  margin-bottom: 0;
+}
+
+.sota-bench-left { display: flex; align-items: baseline; gap: 10px; }
+
+.sota-bench-name {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sota-bench-name a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border);
+}
+
+.sota-bench-name a:hover { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); }
+
+.sota-bench-split {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.sota-bench-metric {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* ── SOTA table ── */
+.sota-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sota-table {
+  width: 100%;
+  min-width: 440px;
+  border-collapse: collapse;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.72rem;
+}
+
+.sota-table th {
+  text-align: left;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.sota-row {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.13s;
+}
+
+.sota-row:hover { background: var(--surface-2, rgba(0,0,0,0.025)); }
+
+.sota-row--top { background: var(--accent-cyan-bg); }
+
+.sota-table td {
+  padding: 10px 12px 10px 0;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.sota-rank {
+  color: var(--text-tertiary);
+  font-size: 0.62rem;
+  width: 1.5rem;
+}
+
+.sota-row--top .sota-rank { color: var(--accent-cyan); font-weight: 700; }
+
+.sota-model { color: var(--accent-cyan); font-weight: 600; }
+
+.sota-score {
+  font-weight: 700;
+  color: var(--accent-amber);
+  font-size: 0.84rem;
+}
+
+.sota-baseline, .sota-date { color: var(--text-tertiary); }
+
+.sota-paper a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.sota-paper a:hover { opacity: 1; }
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .vdd-art-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 4px 8px;
+  }
+
+  .vdd-art-date  { grid-column: 1; grid-row: 1; }
+  .vdd-art-ext   { grid-column: 2; grid-row: 1; align-self: center; }
+  .vdd-art-title { grid-column: 1 / -1; grid-row: 2; }
+
+  .vdd-stats-row { margin-left: 0; }
+  .vdd-cta-row { gap: 10px; }
+}
+</style>
