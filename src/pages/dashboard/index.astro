@@ -128,16 +128,16 @@ const maxKwCount = Math.max(1, ...topKeywords.map(([, c]) => c));
           <div class="flex items-end gap-1 h-32">
             {last14.map(d => (
               <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
-                <!-- VLA bar -->
+                <!-- VLA bar: min-height 4px so zero-value days still render -->
                 <div
                   class="w-full bg-pulsar-cyan/50 rounded-t"
-                  style={`height: ${Math.round((d.vla / maxVLA) * 100)}%`}
+                  style={`height: ${Math.round((d.vla / maxVLA) * 100)}%; min-height: 4px;`}
                   title={`${d.date}: VLA ${d.vla}`}
                 />
-                <!-- AI bar -->
+                <!-- AI bar: min-height 4px so zero-value days still render -->
                 <div
                   class="w-full bg-pulsar-amber/50 rounded-t"
-                  style={`height: ${Math.round((d.ai / maxAI) * 100)}%`}
+                  style={`height: ${Math.round((d.ai / maxAI) * 100)}%; min-height: 4px;`}
                   title={`${d.date}: AI ${d.ai}`}
                 />
               </div>
@@ -148,8 +148,8 @@ const maxKwCount = Math.max(1, ...topKeywords.map(([, c]) => c));
           <div class="flex items-end gap-1 h-32">
             {[65,70,68,72,60,75,80,78,82,71,68,74,77,79].map((pct, i) => (
               <div class="flex flex-col items-center gap-0.5 flex-1">
-                <div class="w-full bg-pulsar-cyan/40 rounded-t" style={`height: ${pct}%`} />
-                <div class="w-full bg-pulsar-amber/40 rounded-t" style={`height: ${Math.round(pct * 0.6)}%`} />
+                <div class="w-full bg-pulsar-cyan/40 rounded-t" style={`height: ${pct}%; min-height: 4px;`} />
+                <div class="w-full bg-pulsar-amber/40 rounded-t" style={`height: ${Math.round(pct * 0.6)}%; min-height: 4px;`} />
               </div>
             ))}
           </div>

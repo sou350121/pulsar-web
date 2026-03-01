@@ -49,6 +49,25 @@ const MOCK_ENTRIES: ReportEntry[] = [
 ];
 
 const displayEntries = entries.length > 0 ? entries : MOCK_ENTRIES;
+
+// Format ISO date as Chinese: "2026年2月12日"
+function formatDateZh(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return `${year}年${month}月${day}日`;
+}
+
+// Compute a biweekly period label: e.g. "2026年2月16日–3月1日"
+function formatPeriodZh(iso: string): string {
+  const end = new Date(iso);
+  const start = new Date(end);
+  start.setDate(start.getDate() - 13);
+  const sy = start.getFullYear();
+  const sm = start.getMonth() + 1;
+  const sd = start.getDate();
+  const em = end.getMonth() + 1;
+  const ed = end.getDate();
+  return `${sy}年${sm}月${sd}日–${em}月${ed}日`;
+}
 ---
 
 <BaseLayout
@@ -77,19 +96,21 @@ const displayEntries = entries.length > 0 ? entries : MOCK_ENTRIES;
           <!-- Header -->
           <div class="flex items-start justify-between gap-4 mb-4">
             <div>
-              <div class="flex items-center gap-2 mb-1">
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
                 {i === 0 && (
                   <span class="tag tag-ai text-[10px]">最新</span>
                 )}
+                <span class="tag tag-vla text-[10px]">VLA</span>
+                <span class="tag tag-ai text-[10px]">AI App</span>
                 <time
                   datetime={entry.date}
-                  class="font-ibm-plex-mono text-sm text-pulsar-muted"
+                  class="font-ibm-plex-mono text-xs text-pulsar-muted"
                 >
-                  {entry.date}
+                  {formatDateZh(entry.date)}
                 </time>
               </div>
               <h2 class="font-lora text-xl font-bold text-pulsar-text">
-                雙週報告 · {entry.date}
+                雙週報告 · {formatPeriodZh(entry.date)}
               </h2>
             </div>
             <div class="flex gap-2 shrink-0">

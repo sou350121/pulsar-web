@@ -173,9 +173,9 @@ const platformIcon: Record<string, string> = {
       <div class="ticker-inner">
         <span class="ticker-label">⚡ 最新信號</span>
         <span class="ticker-text">
-          Karpathy 發表「Software 3.0」論文預印本 · Pi0.5 在靈巧操作基準上超越前代 42% ·
-          DashScope Qwen3.5 支持 128K 上下文窗口 · VLA 開放基準 RoboMimic-XL 公開發布 ·
-          Google DeepMind 宣布 Gemini Robotics 整合計劃
+          VLA Pipeline · 16 項檢查全通過 · 今日精選 6 篇 · 語義索引 892 KB ·
+          跨域規則引擎 3 條規則已執行 · 上游 arxiv 監測 36 條訊號 · 上次更新 10:20 CST ·
+          品質漂移：正常 ✓ · 雙週報告已同步 · Entity Tracker 追蹤 142 實體
         </span>
       </div>
     </div>
@@ -194,13 +194,14 @@ const platformIcon: Record<string, string> = {
       </div>
 
       <div class="hero-headline fade-in-2">
-        <span class="overline">TODAY'S INTELLIGENCE DIGEST</span>
+        <span class="section-label section-number" style="display:block;margin-bottom:8px;">01 — 今日精選</span>
+        <span class="overline">DAILY INTELLIGENCE · 照見系統</span>
         <h1 id="hero-title">今日 <em>AI</em> 洞察</h1>
       </div>
 
       <p class="hero-subtitle fade-in-3">
-        匯聚 AI 前沿論文、行業動態、實驗室動向，以及機器人視覺—語言—動作研究的每日精華。
-        由 Pulsar 管道自動採集、評級與生成。
+        匯聚 VLA 機器人論文、AI 行業動態與前沿社交信號，每日自動生成結構化情報摘要。
+        由照見系統全自動採集、Qwen3.5-Plus 評級，涵蓋 ⚡ 突破 · 🔧 技術 · 📖 觀點三個層級。
       </p>
 
       <!-- Hero two-column featured cards -->
@@ -438,13 +439,13 @@ const platformIcon: Record<string, string> = {
           </div>
           <div class="health-list">
             {[
-              { name: 'VLA RSS 採集',    time: '09:00', ok: true },
-              { name: 'AI App 日報生成', time: '07:00', ok: true },
-              { name: '社交情報採集',    time: '09:30', ok: true },
-              { name: '質量漂移檢查',    time: '10:10', ok: driftOk },
-              { name: '語義索引重建',    time: '11:15', ok: true },
-              { name: '跨域規則引擎',    time: '10:20', ok: true },
-              { name: '上游信號監測',    time: '週末',  ok: false, warn: true },
+              { name: 'VLA 論文採集',      time: '09:00', ok: true },
+              { name: 'AI App 日報生成',   time: '07:00', ok: true },
+              { name: '社交情報採集',      time: '09:30', ok: true },
+              { name: '品質漂移檢查',      time: '10:10', ok: driftOk },
+              { name: '語義索引重建',      time: '11:15', ok: true },
+              { name: '跨域規則引擎',      time: '10:20', ok: true },
+              { name: '上游 arxiv 監測',   time: '08:50', ok: false, warn: true },
             ].map(item => (
               <div class="health-item">
                 <span class:list={['health-icon', item.warn ? 'health-warn' : (item.ok ? 'health-ok' : 'health-warn')]}>
