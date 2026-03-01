@@ -11,6 +11,7 @@
  *   vlaItems  — VLA paper items (Qwen3.5-Plus rated)
  *   showLinks — Wrap rows in <a> tags (default true)
  *   maxItems  — Max items per section (default 12)
+ *   title     — Override header wordmark text (optional)
  */
 
 import './DigestFeed.css';
@@ -31,6 +32,7 @@ interface Props {
   vlaItems:   DigestItem[];
   showLinks?: boolean;
   maxItems?:  number;
+  title?:     string;
 }
 
 const {
@@ -39,19 +41,23 @@ const {
   vlaItems,
   showLinks = true,
   maxItems  = 12,
+  title,
 } = Astro.props;
 
-/** Extract just the leading emoji from a rating string like '🔧 工具' */
+/**
+ * Extract the leading emoji from a rating string like '🔧 工具'.
+ * Uses Unicode regex so multi-byte emoji (⚡, 🔧, 📖) are captured correctly.
+ * Falls back to the first Unicode code point via spread iterator.
+ */
 function ratingEmoji(rating: string): string {
-  // Match the first emoji (Unicode Extended Pictographic range) or the
-  // first non-ASCII character in case of simple single-char ratings.
   const m = rating.match(/(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u);
-  return m ? m[0] : rating.slice(0, 2).trim();
+  if (m) return m[0];
+  // Spread to get the first Unicode codepoint (handles multi-byte correctly)
+  return [...rating][0] ?? rating.slice(0, 1);
 }
 
 /**
  * Map a rating to the BEM modifier that drives left-border colour on hover.
- * We only care about the leading emoji character.
  */
 function ratingModifier(rating: string): string {
   const emoji = ratingEmoji(rating);
@@ -61,17 +67,18 @@ function ratingModifier(rating: string): string {
   return 'digest-item--neutral';
 }
 
-/** Normalise a source string to ALLCAPS, max 6 chars for the tag column. */
+/** Normalise a source string to ALLCAPS, max 8 chars for the tag column. */
 function sourceTag(src: string): string {
-  return src.toUpperCase().slice(0, 8);
+  return (src ?? 'SRC').toUpperCase().slice(0, 8);
 }
 
 const aiSlice  = aiItems.slice(0, maxItems);
 const vlaSlice = vlaItems.slice(0, maxItems);
 
-/** True when we have at least one section to render */
 const hasAi  = aiSlice.length  > 0;
 const hasVla = vlaSlice.length > 0;
+
+const wordmark = title ?? 'PULSAR DIGEST';
 ---
 
 <div class="digest-feed" role="feed" aria-label={`Pulsar Digest — ${date}`}>
@@ -80,8 +87,8 @@ const hasVla = vlaSlice.length > 0;
   <header class="digest-header" aria-label="Digest header">
     <time class="digest-header-date" datetime={date}>{date}</time>
 
-    <div class="digest-header-wordmark" aria-label="Pulsar Digest">
-      PULSAR DIGEST
+    <div class="digest-header-wordmark" aria-label={wordmark}>
+      {wordmark}
       <span class="digest-header-zh">照見系統</span>
     </div>
 
@@ -96,10 +103,10 @@ const hasVla = vlaSlice.length > 0;
     <section aria-labelledby="digest-section-ai">
       <div class="digest-section-header digest-section--ai">
         <span class="digest-section-label" id="digest-section-ai">
-          AI APP 線 &middot; 行業 · 工具 · 趨勢
+          AI APP 線&nbsp;&middot;&nbsp;行業&nbsp;·&nbsp;工具&nbsp;·&nbsp;趨勢
         </span>
         <span class="digest-section-meta" aria-hidden="true">
-          {aiSlice.length} 條
+          {aiSlice.length}&thinsp;條
         </span>
       </div>
 
@@ -132,7 +139,6 @@ const hasVla = vlaSlice.length > 0;
                   </span>
                 </a>
               ) : (
-                /* No-link variant: same grid layout, div instead of <a> */
                 <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
                   <span class="digest-rating" aria-hidden="true">{emoji}</span>
                   <span class="digest-content">
@@ -163,10 +169,10 @@ const hasVla = vlaSlice.length > 0;
     <section aria-labelledby="digest-section-vla">
       <div class="digest-section-header digest-section--vla">
         <span class="digest-section-label" id="digest-section-vla">
-          VLA 線 &middot; cs.RO · cs.AI · cs.LG
+          VLA 線&nbsp;&middot;&nbsp;cs.RO&nbsp;·&nbsp;cs.AI&nbsp;·&nbsp;cs.LG
         </span>
         <span class="digest-section-meta" aria-hidden="true">
-          Qwen3.5-Plus 評級 · {vlaSlice.length} 條
+          Qwen3.5-Plus&nbsp;·&nbsp;{vlaSlice.length}&thinsp;篇
         </span>
       </div>
 

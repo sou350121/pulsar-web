@@ -7,6 +7,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
+import DigestFeed from '../../components/DigestFeed.astro';
 import { loadAIDailyPicks } from '../../utils/data';
 
 // getStaticPaths — required for Astro static output
@@ -47,27 +48,12 @@ const nextDate = (() => {
   <!-- Telegram-style digest at top — all items in a dense list -->
   <section class="digest-block" aria-label="今日 AI 情報摘要">
     <div class="container">
-      <div class="digest-feed">
-        <div class="digest-header">
-          <span class="digest-date">{date}</span>
-          <span class="digest-title-main">AI APP 日報 · PULSAR DIGEST</span>
-          <span class="digest-live">● {items.length} 條</span>
-        </div>
-        <div class="digest-section-label digest-label-ai">
-          AI APP 線 · {items.length} 條精選
-        </div>
-        {items.map(item => (
-          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-ai">
-            <span class="digest-rating">{item.rating.charAt(0)}</span>
-            <span class="digest-text">
-              <span class="digest-item-title">{item.title}</span>
-              <span class="digest-dash">—</span>
-              <span class="digest-item-summary">{item.summary}</span>
-            </span>
-            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
-          </a>
-        ))}
-      </div>
+      <DigestFeed
+        date={date}
+        title="AI APP 日報"
+        aiItems={items.map(i => ({ ...i, domain: 'ai' as const }))}
+        vlaItems={[]}
+      />
     </div>
   </section>
 

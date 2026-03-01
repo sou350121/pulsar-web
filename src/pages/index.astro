@@ -17,6 +17,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RatingBadge from '../components/RatingBadge.astro';
+import DigestFeed from '../components/DigestFeed.astro';
 import {
   loadAIDailyPicks,
   loadVLADailyPicks,
@@ -178,6 +179,17 @@ const platformIcon: Record<string, string> = {
   hn:      'Y',
   reddit:  '●',
 };
+
+// ── DigestFeed data ──
+// Separate AI and VLA items for the unified digest at the top of the page.
+const digestAiItems = todayPicks.items
+  .filter(i => i.domain === 'ai')
+  .map(i => ({ ...i, domain: 'ai' as const }));
+
+// VLA items come from the VLA daily rating output; fall back to VLA-domain items
+// in the AI picks when no dedicated VLA day is available.
+const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
+  .map(i => ({ ...i, domain: 'vla' as const }));
 ---
 
 <BaseLayout
@@ -206,46 +218,11 @@ const platformIcon: Record<string, string> = {
        ========================================================== -->
   <section class="digest-block" aria-label="今日情報摘要">
     <div class="container">
-      <div class="digest-feed">
-        <!-- Header -->
-        <div class="digest-header">
-          <span class="digest-date">{displayDate}</span>
-          <span class="digest-title-main">PULSAR DIGEST · 照見系統</span>
-          <span class="digest-live">● LIVE</span>
-        </div>
-
-        <!-- AI section -->
-        <div class="digest-section-label digest-label-ai">
-          AI APP 線 · {todayPicks.items.length} 條精選
-        </div>
-        {todayPicks.items.map(item => (
-          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-ai">
-            <span class="digest-rating">{item.rating.charAt(0)}</span>
-            <span class="digest-text">
-              <span class="digest-item-title">{item.title}</span>
-              <span class="digest-dash">—</span>
-              <span class="digest-item-summary">{item.summary}</span>
-            </span>
-            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
-          </a>
-        ))}
-
-        <!-- VLA section -->
-        <div class="digest-section-label digest-label-vla">
-          VLA 線 · {todayVLA?.items.length ?? 0} 篇論文
-        </div>
-        {(todayVLA?.items ?? []).map(item => (
-          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-vla">
-            <span class="digest-rating">{item.rating.charAt(0)}</span>
-            <span class="digest-text">
-              <span class="digest-item-title">{item.title}</span>
-              <span class="digest-dash">—</span>
-              <span class="digest-item-summary">{item.summary}</span>
-            </span>
-            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
-          </a>
-        ))}
-      </div>
+      <DigestFeed
+        date={displayDate}
+        aiItems={digestAiItems}
+        vlaItems={digestVlaItems}
+      />
     </div>
   </section>
 

@@ -6,6 +6,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
+import DigestFeed from '../../components/DigestFeed.astro';
 import { loadVLADailyPicks } from '../../utils/data';
 
 export async function getStaticPaths() {
@@ -42,27 +43,12 @@ const nextDate = idx < vlaDatesSorted.length - 1 ? vlaDatesSorted[idx + 1] : nul
   <!-- Telegram-style digest at top — all VLA items in a dense list -->
   <section class="digest-block" aria-label="今日 VLA 情報摘要">
     <div class="container">
-      <div class="digest-feed">
-        <div class="digest-header">
-          <span class="digest-date">{date}</span>
-          <span class="digest-title-main">VLA 研究日報 · PULSAR DIGEST</span>
-          <span class="digest-live">● {items.length} 篇</span>
-        </div>
-        <div class="digest-section-label digest-label-vla">
-          VLA 線 · {items.length} 篇論文
-        </div>
-        {items.map(item => (
-          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-vla">
-            <span class="digest-rating">{item.rating.charAt(0)}</span>
-            <span class="digest-text">
-              <span class="digest-item-title">{item.title}</span>
-              <span class="digest-dash">—</span>
-              <span class="digest-item-summary">{item.summary}</span>
-            </span>
-            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
-          </a>
-        ))}
-      </div>
+      <DigestFeed
+        date={date}
+        title="VLA 研究日報"
+        aiItems={[]}
+        vlaItems={items.map(i => ({ ...i, domain: 'vla' as const }))}
+      />
     </div>
   </section>
 
