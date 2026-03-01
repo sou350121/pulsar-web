@@ -371,32 +371,42 @@ html.dark .digest-item-link:hover {
 
 /* ============================================================
    MOBILE — < 768px
-   Collapse to: rating + title + source tag only.
-   Summary and separator hide. Title expands to fill available width.
+   Show title + summary (clamped) + source. Rating stays.
    ============================================================ */
 @media (max-width: 767px) {
-  .digest-summary,
+  /* summary visible on mobile — smaller, clamped to 2 lines */
+  .digest-summary {
+    font-size: 0.72rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    opacity: 0.82;
+  }
+
+  /* separator stays but is smaller */
   .digest-sep {
-    display: none;
+    display: inline;
+    font-size: 0.72rem;
   }
 
   .digest-title {
     max-width: none;
     flex-shrink: 1;
+    font-size: 0.78rem;
   }
 
   .digest-item-link {
-    padding: 7px 10px 7px 8px;
+    padding: 8px 10px 8px 8px;
     grid-template-columns: 1.5rem 1fr auto;
-  }
-
-  .digest-title {
-    font-size: 0.78rem;
+    align-items: start;
   }
 
   .digest-source {
     font-size: 0.54rem;
     min-width: 2.2rem;
+    margin-top: 2px;
   }
 
   .digest-header-zh {

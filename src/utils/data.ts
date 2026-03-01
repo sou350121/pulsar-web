@@ -126,6 +126,55 @@ export interface UpstreamSignalsFile {
   signals: UpstreamSignal[];
 }
 
+// AI Deep Dive articles
+export interface AIDeepDiveArticle {
+  date:        string;
+  title:       string;
+  url:         string;
+  slug:        string;
+  html_url?:   string;
+  source:      string;
+  signal_type: string;
+}
+
+interface AIDeepDiveFile {
+  deep_dive_articles: AIDeepDiveArticle[];
+}
+
+// VLA SOTA tracker
+export interface VLASOTAEntry {
+  benchmark:      string;
+  split?:         string;
+  metric:         string;
+  value:          number;
+  model:          string;
+  paper_id?:      string;
+  baseline?:      string;
+  date:           string;
+  source?:        string;
+  leaderboard_url?: string;
+  paper_url?:     string;
+}
+
+interface VLASOTAFile {
+  'vla-sota-tracker': VLASOTAEntry[];
+  last_checked?: string;
+}
+
+// VLA Theory articles
+export interface VLATheoryArticle {
+  date:       string;
+  slug:       string;
+  title:      string;
+  url:        string;
+  target_dir?: string;
+  html_url?:  string;
+}
+
+interface VLATheoryFile {
+  theory_articles: VLATheoryArticle[];
+}
+
 // ---------------------------------------------------------------------------
 // Helper: safe JSON read — returns null on any error (missing file, parse fail)
 // ---------------------------------------------------------------------------
@@ -326,6 +375,42 @@ export function loadUpstreamSignals(n: number = 20): UpstreamSignal[] {
   const data = readJson<UpstreamSignalsFile>('upstream-signals.json');
   if (!data?.signals) return [];
   return [...data.signals]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
+// loadAIDeepDive
+// Returns the N most recent AI deep dive articles.
+// ---------------------------------------------------------------------------
+export function loadAIDeepDive(n: number = 20): AIDeepDiveArticle[] {
+  const data = readJson<AIDeepDiveFile>('ai-app-deep-dive-articles.json');
+  if (!data?.deep_dive_articles) return [];
+  return [...data.deep_dive_articles]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
+// loadVLASOTA
+// Returns all VLA SOTA tracker entries, sorted by date desc.
+// ---------------------------------------------------------------------------
+export function loadVLASOTA(n: number = 20): VLASOTAEntry[] {
+  const data = readJson<VLASOTAFile>('vla-sota-tracker.json');
+  if (!data?.['vla-sota-tracker']) return [];
+  return [...data['vla-sota-tracker']]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
+// loadVLATheory
+// Returns the N most recent VLA theory articles.
+// ---------------------------------------------------------------------------
+export function loadVLATheory(n: number = 20): VLATheoryArticle[] {
+  const data = readJson<VLATheoryFile>('vla-theory-articles.json');
+  if (!data?.theory_articles) return [];
+  return [...data.theory_articles]
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, n);
 }

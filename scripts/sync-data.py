@@ -50,6 +50,10 @@ JSON_FILES = [
     "vla-social-intel.json",
     # Cross-domain insight (optional, may not exist)
     "cross-domain-insight.json",
+    # Deep dive content
+    "ai-app-deep-dive-articles.json",
+    "vla-sota-tracker.json",
+    "vla-theory-articles.json",
 ]
 
 # Markdown file patterns — (prefix, how_many_recent_to_copy)

@@ -5,10 +5,15 @@
  * Heavy vertical rhythm, serif typography, dramatic date display.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadBiweeklyReports, extractMarkdownSummary } from '../../utils/data';
+import { loadBiweeklyReports, extractMarkdownSummary, loadAIDeepDive, loadVLASOTA, loadVLATheory } from '../../utils/data';
 
 const reports     = loadBiweeklyReports(12, false);
 const reflections = loadBiweeklyReports(12, true);
+
+// Deep dive content
+const aiDeepDives = loadAIDeepDive(12);
+const vlaSOTA     = loadVLASOTA(10);
+const vlaTheory   = loadVLATheory(12);
 
 // Pair reports with reflections by date proximity
 interface ReportEntry {
@@ -206,6 +211,134 @@ function formatPeriod(iso: string): string {
 
         </article>
       ))}
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         AI APP DEEP DIVE
+    ══════════════════════════════════════════════════════ -->
+    <section class="deep-dive-section" aria-label="AI App 深度追蹤">
+      <div class="dd-header">
+        <div class="dd-overline">AI APP 線 · DEEP DIVE</div>
+        <h2 class="dd-title">AI 深度追蹤</h2>
+        <div class="dd-rule dd-rule--amber"></div>
+        <p class="dd-desc">
+          針對 AI Agent 工具、框架與產品發布的深度技術拆解。
+          每次有重大發布或社交信號達閾值時，pipeline 自動生成深度分析文章，存入 Agent-Playbook 庫。
+        </p>
+        <div class="dd-count-row">
+          <span class="dd-count">{aiDeepDives.length}</span>
+          <span class="dd-count-label">篇深度文章</span>
+        </div>
+      </div>
+
+      {aiDeepDives.length === 0 ? (
+        <p class="dd-empty">尚無 AI 深度追蹤資料 — pipeline 自動生成中</p>
+      ) : (
+        <div class="dd-list">
+          {aiDeepDives.map((article, i) => (
+            <a href={article.html_url ?? article.url} target="_blank" rel="noopener noreferrer"
+               class="dd-row dd-row--ai" style={`animation-delay:${i*0.04}s`}>
+              <time class="dd-row-date">{formatDateNumeric(article.date)}</time>
+              <div class="dd-row-body">
+                <span class="dd-row-title">{article.title}</span>
+                <span class="dd-row-tags">
+                  <span class="dd-tag dd-tag--amber">{article.signal_type.replace('_', ' ')}</span>
+                  <span class="dd-tag">{article.source}</span>
+                </span>
+              </div>
+              <span class="dd-row-arrow">→</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         VLA DEEP DIVE — Theory + SOTA
+    ══════════════════════════════════════════════════════ -->
+    <section class="deep-dive-section" aria-label="VLA 深度追蹤">
+      <div class="dd-header">
+        <div class="dd-overline">VLA 線 · DEEP DIVE</div>
+        <h2 class="dd-title">VLA 深度追蹤</h2>
+        <div class="dd-rule dd-rule--cyan"></div>
+        <p class="dd-desc">
+          VLA 理論深挖與 SOTA 排行追蹤。Theory 文章由 pipeline 解析 VLA-Handbook 理論庫；
+          SOTA 數據從 Evo-SOTA 即時拉取 CALVIN 等標準 Benchmark 的最新記錄。
+        </p>
+        <div class="dd-count-row">
+          <span class="dd-count dd-count--cyan">{vlaTheory.length}</span>
+          <span class="dd-count-label">理論文章</span>
+          <span class="dd-count-sep">·</span>
+          <span class="dd-count dd-count--cyan">{vlaSOTA.length}</span>
+          <span class="dd-count-label">SOTA 記錄</span>
+        </div>
+      </div>
+
+      <!-- Theory articles -->
+      {vlaTheory.length > 0 && (
+        <div class="dd-sub-section">
+          <h3 class="dd-sub-title">📐 理論深挖</h3>
+          <div class="dd-list">
+            {vlaTheory.map((article, i) => (
+              <a href={article.html_url ?? article.url} target="_blank" rel="noopener noreferrer"
+                 class="dd-row dd-row--vla" style={`animation-delay:${i*0.04}s`}>
+                <time class="dd-row-date">{formatDateNumeric(article.date)}</time>
+                <div class="dd-row-body">
+                  <span class="dd-row-title">{article.title}</span>
+                  {article.target_dir && (
+                    <span class="dd-row-tags">
+                      <span class="dd-tag dd-tag--cyan">{article.target_dir}</span>
+                    </span>
+                  )}
+                </div>
+                <span class="dd-row-arrow">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- SOTA table -->
+      {vlaSOTA.length > 0 && (
+        <div class="dd-sub-section">
+          <h3 class="dd-sub-title">🏆 SOTA 排行</h3>
+          <div class="sota-table-wrap">
+            <table class="sota-table">
+              <thead>
+                <tr>
+                  <th>Benchmark</th>
+                  <th>Model</th>
+                  <th>Score</th>
+                  <th>vs Baseline</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vlaSOTA.map(entry => (
+                  <tr class="sota-row">
+                    <td class="sota-benchmark">
+                      {entry.leaderboard_url
+                        ? <a href={entry.leaderboard_url} target="_blank" rel="noopener noreferrer">{entry.benchmark}{entry.split ? ` · ${entry.split}` : ''}</a>
+                        : <span>{entry.benchmark}{entry.split ? ` · ${entry.split}` : ''}</span>
+                      }
+                    </td>
+                    <td class="sota-model">
+                      {entry.paper_url
+                        ? <a href={entry.paper_url} target="_blank" rel="noopener noreferrer">{entry.model}</a>
+                        : entry.model
+                      }
+                    </td>
+                    <td class="sota-score">{entry.value}</td>
+                    <td class="sota-baseline">{entry.baseline ?? '—'}</td>
+                    <td class="sota-date">{entry.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
     </section>
 
@@ -708,6 +841,322 @@ function formatPeriod(iso: string): string {
   .masthead-stats {
     flex-wrap: wrap;
     gap: 12px;
+  }
+}
+
+/* ============================================================
+   DEEP DIVE SECTIONS
+   ============================================================ */
+
+.deep-dive-section {
+  margin-top: 72px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Section header ── */
+.dd-header {
+  margin-bottom: 32px;
+}
+
+.dd-overline {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.dd-title {
+  font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+
+.dd-rule {
+  height: 2px;
+  background: var(--border);
+  margin: 14px 0 16px;
+  position: relative;
+}
+
+.dd-rule::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  width: 60px;
+}
+
+.dd-rule--amber::before { background: var(--accent-amber); }
+.dd-rule--cyan::before  { background: var(--accent-cyan); }
+
+.dd-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 680px;
+  margin: 0 0 14px;
+}
+
+.dd-count-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+}
+
+.dd-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  line-height: 1;
+}
+
+.dd-count--cyan { color: var(--accent-cyan); }
+
+.dd-count-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.dd-count-sep {
+  color: var(--border);
+  margin: 0 4px;
+}
+
+/* ── Article rows ── */
+.dd-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+
+.dd-empty {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  padding: 24px 0;
+}
+
+.dd-row {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr auto;
+  gap: 16px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: background 0.18s, padding-left 0.18s;
+  padding-left: 0;
+  animation: ddFadeIn 0.4s ease both;
+}
+
+@keyframes ddFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.dd-row::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0; bottom: 0;
+  width: 2px;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.22s ease;
+}
+
+.dd-row--ai::before  { background: var(--accent-amber); }
+.dd-row--vla::before { background: var(--accent-cyan); }
+
+.dd-row:hover {
+  background: var(--surface-2, rgba(0,0,0,0.02));
+  padding-left: 6px;
+}
+
+.dd-row:hover::before { transform: scaleY(1); }
+
+.dd-row-date {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  padding-top: 2px;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.dd-row--ai:hover  .dd-row-date { color: var(--accent-amber); }
+.dd-row--vla:hover .dd-row-date { color: var(--accent-cyan); }
+
+.dd-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.dd-row-title {
+  font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.dd-row-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.dd-tag {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+}
+
+.dd-tag--amber {
+  border-color: rgba(212,145,10,0.3);
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+}
+
+.dd-tag--cyan {
+  border-color: rgba(14,165,179,0.3);
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+}
+
+.dd-row-arrow {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  padding-top: 2px;
+  transition: transform 0.18s, color 0.18s;
+}
+
+.dd-row--ai:hover  .dd-row-arrow { color: var(--accent-amber); transform: translateX(3px); }
+.dd-row--vla:hover .dd-row-arrow { color: var(--accent-cyan);  transform: translateX(3px); }
+
+/* ── Sub-sections (Theory / SOTA) ── */
+.dd-sub-section {
+  margin-top: 28px;
+}
+
+.dd-sub-title {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── SOTA table ── */
+.sota-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sota-table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.72rem;
+}
+
+.sota-table th {
+  text-align: left;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.sota-row {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.sota-row:hover { background: var(--surface-2, rgba(0,0,0,0.025)); }
+
+.sota-table td {
+  padding: 10px 12px 10px 0;
+  vertical-align: top;
+  line-height: 1.4;
+}
+
+.sota-benchmark {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.sota-benchmark a, .sota-model a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border);
+}
+
+.sota-benchmark a:hover, .sota-model a:hover {
+  color: var(--accent-cyan);
+  border-bottom-color: var(--accent-cyan);
+}
+
+.sota-model { color: var(--accent-cyan); }
+
+.sota-score {
+  font-weight: 700;
+  color: var(--accent-amber);
+}
+
+.sota-baseline { color: var(--text-tertiary); }
+
+.sota-date {
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* ── Mobile: stack date above title ── */
+@media (max-width: 640px) {
+  .dd-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+  }
+
+  .dd-row-date {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .dd-row-arrow {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .dd-row-body {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 }
 </style>
