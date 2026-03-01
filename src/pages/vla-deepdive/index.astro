@@ -15,8 +15,8 @@ const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
 const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
 const GITHUB_SOTA_PATH    = 'https://sota.evomind-tech.com';
 
-// 7-day cutoff
-const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+// 14-day (2-week) cutoff
+const cutoff = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
 
 // Theory split
 const recentTheory = theory.filter(a => a.date >= cutoff);
@@ -140,11 +140,11 @@ const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
         <p class="vdd-empty">尚無理論文章資料</p>
       ) : (
         <>
-          {/* --- 最近 7 天 card grid --- */}
+          {/* --- 最近 2 週 card grid --- */}
           {recentTheory.length > 0 && (
             <div class="vdd-subsection">
               <div class="vdd-subsection-label">
-                <span class="vdd-sublabel">最近 7 天</span>
+                <span class="vdd-sublabel">最近 2 週</span>
                 <span class="vdd-sublabel-count">{recentTheory.length} 篇</span>
               </div>
               <div class="vdd-card-grid">
@@ -239,11 +239,11 @@ const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
         <p class="vdd-empty">尚無全庫資料</p>
       ) : (
         <>
-          {/* --- 最近 7 天 cards --- */}
+          {/* --- 最近 2 週 cards --- */}
           {recentGhLibrary.length > 0 && (
             <div class="vdd-subsection">
               <div class="vdd-subsection-label">
-                <span class="vdd-sublabel">最近 7 天</span>
+                <span class="vdd-sublabel">最近 2 週</span>
                 <span class="vdd-sublabel-count">{recentGhLibrary.length} 篇</span>
               </div>
               <div class="vdd-card-grid">

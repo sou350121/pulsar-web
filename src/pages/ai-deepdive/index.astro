@@ -12,8 +12,8 @@ const articles = loadAIDeepDive(50);
 const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
 const GITHUB_DEEPDIVE_PATH = `${GITHUB_REPO}/tree/main/blog/deep-dive`;
 
-// 7-day cutoff
-const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+// 14-day (2-week) cutoff
+const cutoff = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
 const recentArticles = articles.filter(a => a.date >= cutoff);
 const olderArticles  = articles.filter(a => a.date < cutoff);
 
@@ -99,12 +99,12 @@ const SIGNAL_LABELS: Record<string, string> = {
     )}
 
     <!-- ══════════════════════════════════════════
-         SECTION: 最近 7 天 (card grid)
+         SECTION: 最近 2 週 (card grid)
     ══════════════════════════════════════════ -->
     {recentArticles.length > 0 && (
       <div class="dd-section">
         <div class="dd-section-subheader">
-          <span class="dd-section-label">最近 7 天</span>
+          <span class="dd-section-label">最近 2 週</span>
           <span class="dd-section-count">{recentArticles.length} 篇</span>
         </div>
         <div class="dd-card-grid">
