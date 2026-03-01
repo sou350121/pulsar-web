@@ -24,6 +24,7 @@ import {
   loadBiweeklyReports,
   loadAIDeepDive,
   loadVLATheory,
+  loadVLAGitHubArticles,
   loadCrossDomainInsights,
   extractMarkdownSummary,
   type DailyPickDay,
@@ -42,8 +43,8 @@ const vlaSocial     = loadSocialIntel('vla', 2);
 const biweekly      = loadBiweeklyReports(1);
 const crossDomain   = loadCrossDomainInsights(6);
 
-// Deep dive — recent 7 days
-const DEEP_DIVE_DAYS = 7;
+// Deep dive — recent 2 days
+const DEEP_DIVE_DAYS = 2;
 const deepDiveCutoff = new Date(Date.now() - DEEP_DIVE_DAYS * 86400000).toISOString().slice(0, 10);
 const SIGNAL_EMOJI: Record<string, string> = {
   technical_breakthrough: '⚡',
@@ -53,7 +54,14 @@ const SIGNAL_EMOJI: Record<string, string> = {
   ecosystem_signal:       '📊',
 };
 const aiDeepDiveRaw = loadAIDeepDive(60).filter(a => a.date >= deepDiveCutoff);
-const vlaTheoryRaw  = loadVLATheory(60).filter(a => a.date >= deepDiveCutoff);
+
+// VLA: merge pipeline-tracked theory + manually added GitHub articles,
+// deduplicated by URL, filtered to the 2-day cutoff.
+const vlaTheoryRaw   = loadVLATheory(200).filter(a => a.date >= deepDiveCutoff);
+const vlaGitHubRaw   = loadVLAGitHubArticles(300).filter(a => a.date >= deepDiveCutoff);
+const seenVlaUrls    = new Set(vlaTheoryRaw.map(a => a.html_url ?? a.url));
+const vlaGitHubExtra = vlaGitHubRaw.filter(a => !seenVlaUrls.has(a.html_url ?? a.url));
+
 const deepDiveItems = [
   ...aiDeepDiveRaw.map(a => ({
     title:   a.title,
@@ -63,11 +71,21 @@ const deepDiveItems = [
     url:     a.html_url ?? a.url,
     domain:  'ai' as const,
   })),
+  // Pipeline-tracked VLA theory articles
   ...vlaTheoryRaw.map(a => ({
     title:   a.title,
     summary: a.target_dir?.replace('theory/', '') ?? 'theory',
     rating:  '📐',
     source:  'VLA-THEORY',
+    url:     a.html_url ?? a.url,
+    domain:  'vla' as const,
+  })),
+  // Manually added VLA GitHub articles not already in pipeline list
+  ...vlaGitHubExtra.map(a => ({
+    title:   a.title,
+    summary: a.topic ?? 'theory',
+    rating:  '📐',
+    source:  'VLA-GITHUB',
     url:     a.html_url ?? a.url,
     domain:  'vla' as const,
   })),
