@@ -11,9 +11,18 @@ import fs   from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Resolve the src/data directory relative to this file
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR  = path.resolve(__dirname, '../data');
+// Resolve src/data — try import.meta.url first, fall back to process.cwd()
+// (Astro SSG build may run utils from a temp location where import.meta.url differs)
+function resolveDataDir(): string {
+  try {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const candidate = path.resolve(__dirname, '../data');
+    if (fs.existsSync(candidate)) return candidate;
+  } catch { /* ignore */ }
+  // Fallback: project root / src/data
+  return path.resolve(process.cwd(), 'src/data');
+}
+const DATA_DIR = resolveDataDir();
 
 // ---------------------------------------------------------------------------
 // Type definitions matching the pipeline's JSON schemas
