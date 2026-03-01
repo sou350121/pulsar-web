@@ -1,0 +1,75 @@
+# .github/workflows/deploy.yml
+name: Deploy Pulsar to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages:    write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Sync pipeline data via SSH
+        if: ${{ secrets.DEPLOY_SSH_KEY != '' }}
+        env:
+          SSH_KEY:  ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh -i ~/.ssh/deploy_key "$SSH_USER@$SSH_HOST" \
+            "sudo python3.11
+          /home/claudeuser/pulsar-web/scripts/sync-data.py --verbose 2>&1"
+                    rsync -avz \
+                      -e "ssh -i ~/.ssh/deploy_key" \
+                      "$SSH_USER@$SSH_HOST:/home/claudeuser/pulsar-web/src/data/" \
+                      "./src/data/"
+          
+                - name: Install dependencies
+                  run: pnpm install --frozen-lockfile
+          
+                - name: Type-check
+                  run: pnpm exec astro check
+                  continue-on-error: true
+          
+                - name: Build Astro site
+                  run: pnpm build
+          
+                - name: Upload Pages artifact
+                  uses: actions/upload-pages-artifact@v3
+                  with:
+                    path: dist/
+          
+                - name: Deploy to GitHub Pages
+                  id: deployment
+                  uses: actions/deploy-pages@v4
