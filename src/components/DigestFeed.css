@@ -1,0 +1,411 @@
+/* ==========================================================================
+   DigestFeed.css — Bloomberg Terminal meets Telegram channel
+   Dense, scannable, every item visible. No cards. Pure information.
+   All tokens inherited from global.css via CSS custom properties.
+   ========================================================================== */
+
+/* ============================================================
+   CONTAINER
+   ============================================================ */
+.digest-feed {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 1px 4px rgba(26, 31, 46, 0.05), 0 4px 16px rgba(26, 31, 46, 0.04);
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  /* Contain the stacking context so left-border highlights don't bleed */
+  contain: layout style;
+}
+
+html.dark .digest-feed {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================
+   HEADER ROW — date / wordmark / live indicator
+   ============================================================ */
+.digest-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  min-height: 38px;
+}
+
+.digest-header-date {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.digest-header-wordmark {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-align: center;
+  flex: 1;
+  /* Subtle amber tint so it reads as a brand mark, not just meta text */
+  background: linear-gradient(
+    90deg,
+    var(--text-secondary) 0%,
+    var(--accent-amber) 50%,
+    var(--text-secondary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Static on load — only animate if user allows motion */
+  animation: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .digest-header-wordmark {
+    animation: wordmark-shimmer 8s linear infinite;
+  }
+}
+
+@keyframes wordmark-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Subline: Chinese name beneath the wordmark */
+.digest-header-zh {
+  display: block;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  color: var(--text-tertiary);
+  -webkit-text-fill-color: var(--text-tertiary);
+  margin-top: 2px;
+  text-align: center;
+  font-weight: 400;
+  /* Override gradient clip from parent */
+  background: none;
+  background-clip: unset;
+}
+
+.digest-header-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.digest-live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4CAF50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.55);
+  animation: digest-pulse 2.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes digest-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* ============================================================
+   SECTION HEADER — AI LINE / VLA LINE
+   ============================================================ */
+.digest-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 16px 4px;
+  background: var(--surface-2);
+  /* Top accent border: 2px solid, colour set per-variant via inline var override */
+  border-top: 2px solid var(--digest-section-accent, var(--border));
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 10px;
+}
+
+.digest-section-label {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.digest-section-meta {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* AI line: amber top border */
+.digest-section--ai {
+  --digest-section-accent: var(--accent-amber);
+}
+
+/* VLA line: cyan top border */
+.digest-section--vla {
+  --digest-section-accent: var(--accent-cyan);
+}
+
+/* ============================================================
+   ITEM LIST
+   ============================================================ */
+.digest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================================
+   ITEM ROW — the heart of the density design
+   ============================================================ */
+.digest-item {
+  /* Position context for the left-border highlight pseudo-element */
+  position: relative;
+  /* Remove last item's bottom border so it doesn't double with a
+     section header's top border or the container's border-radius */
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.digest-item:last-child {
+  border-bottom: none;
+}
+
+/* The clickable anchor — stretches to fill the full row */
+.digest-item-link {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr auto;
+  align-items: center;
+  padding: 5px 12px 5px 10px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+  /* Smooth hover transition */
+  transition: background 0.12s ease;
+  /* Hairline left border slot — invisible by default, revealed on hover */
+  border-left: 3px solid transparent;
+}
+
+.digest-item-link:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: -2px;
+}
+
+/* ── Hover state ── */
+.digest-item-link:hover {
+  background: var(--bg-alt);
+}
+
+/* ── Per-rating hover border colours ── */
+.digest-item--flash .digest-item-link:hover {
+  border-left-color: var(--rating-flash);
+}
+
+.digest-item--wrench .digest-item-link:hover {
+  border-left-color: var(--rating-wrench);
+}
+
+/* 📖 neutral: soft amber to match section accent */
+.digest-item--book .digest-item-link:hover {
+  border-left-color: var(--border);
+}
+
+/* VLA section items: cyan accent on all ratings */
+.digest-item--vla.digest-item--flash .digest-item-link:hover {
+  border-left-color: var(--rating-flash);
+}
+
+.digest-item--vla.digest-item--wrench .digest-item-link:hover {
+  border-left-color: var(--rating-wrench);
+}
+
+.digest-item--vla.digest-item--book .digest-item-link:hover {
+  border-left-color: var(--accent-cyan);
+}
+
+/* ── Column 1: rating emoji ── */
+.digest-rating {
+  font-size: 0.85rem;
+  line-height: 1;
+  text-align: center;
+  /* Prevent emoji from contributing to overflow */
+  overflow: hidden;
+  flex-shrink: 0;
+  /* Vertically centre even on tall rows */
+  align-self: center;
+  /* Slight right nudge so the emoji sits in the visual centre of its column */
+  padding-right: 2px;
+}
+
+/* ── Column 2: content (title + sep + summary) ── */
+.digest-content {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.digest-title {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  /* Cap at 45% so summary always gets space. On narrow viewports this
+     shrinks naturally because flex-shrink: 0 only applies to the parent flex
+     overflowing — the ellipsis handles truncation. */
+  max-width: 45%;
+  /* Underline reveal on hover — transparent by default */
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.digest-item-link:hover .digest-title {
+  text-decoration-color: var(--accent-amber);
+}
+
+.digest-sep {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  /* em-dash already has natural spacing; tighten it a touch */
+  letter-spacing: -0.02em;
+  opacity: 0.6;
+  user-select: none;
+}
+
+.digest-summary {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.77rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* ── Column 3: source tag ── */
+.digest-source {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 3rem;
+  text-align: right;
+  flex-shrink: 0;
+  /* Visual micro-tag feel */
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+  /* Transition in sync with row hover */
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+/* On hover, the source tag lifts slightly in contrast */
+.digest-item-link:hover .digest-source {
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.digest-empty {
+  padding: 20px 16px;
+  text-align: center;
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   MOBILE — < 768px
+   Collapse to rating + title + source only; summary hidden.
+   Keeps the feed functional on a phone at a glance.
+   ============================================================ */
+@media (max-width: 767px) {
+  .digest-summary,
+  .digest-sep {
+    display: none;
+  }
+
+  /* Allow title to use the full available width when summary is gone */
+  .digest-title {
+    max-width: none;
+    flex-shrink: 1;
+  }
+
+  /* Tighten row padding on mobile */
+  .digest-item-link {
+    padding: 6px 10px 6px 8px;
+    grid-template-columns: 1.6rem 1fr auto;
+  }
+
+  .digest-title {
+    font-size: 0.8rem;
+  }
+
+  .digest-source {
+    font-size: 0.56rem;
+    min-width: 2.4rem;
+  }
+
+  /* Header: hide Chinese subline to save vertical space */
+  .digest-header-zh {
+    display: none;
+  }
+
+  .digest-header {
+    padding: 8px 12px;
+  }
+
+  .digest-header-wordmark {
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+  }
+}
+
+/* ── Tiny phones (< 375px) ── */
+@media (max-width: 374px) {
+  .digest-item-link {
+    padding: 5px 8px;
+    grid-template-columns: 1.4rem 1fr auto;
+  }
+
+  .digest-source {
+    display: none;
+  }
+}

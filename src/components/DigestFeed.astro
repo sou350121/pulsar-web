@@ -1,0 +1,227 @@
+---
+/**
+ * DigestFeed.astro
+ *
+ * Bloomberg Terminal meets Telegram channel — a dense, scannable unified
+ * briefing feed that renders AI picks and VLA papers as a flat list of rows.
+ *
+ * Props:
+ *   date      — Display date string, e.g. "2026-03-01"
+ *   aiItems   — Daily AI pick items
+ *   vlaItems  — VLA paper items (Qwen3.5-Plus rated)
+ *   showLinks — Wrap rows in <a> tags (default true)
+ *   maxItems  — Max items per section (default 12)
+ */
+
+import './DigestFeed.css';
+
+interface DigestItem {
+  title:   string;
+  summary: string;
+  /** '⚡' | '🔧' | '📖' | '❌' or longer form like '🔧 工具' */
+  rating:  string;
+  source:  string;
+  url:     string;
+  domain:  'ai' | 'vla';
+}
+
+interface Props {
+  date:       string;
+  aiItems:    DigestItem[];
+  vlaItems:   DigestItem[];
+  showLinks?: boolean;
+  maxItems?:  number;
+}
+
+const {
+  date,
+  aiItems,
+  vlaItems,
+  showLinks = true,
+  maxItems  = 12,
+} = Astro.props;
+
+/** Extract just the leading emoji from a rating string like '🔧 工具' */
+function ratingEmoji(rating: string): string {
+  // Match the first emoji (Unicode Extended Pictographic range) or the
+  // first non-ASCII character in case of simple single-char ratings.
+  const m = rating.match(/(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u);
+  return m ? m[0] : rating.slice(0, 2).trim();
+}
+
+/**
+ * Map a rating to the BEM modifier that drives left-border colour on hover.
+ * We only care about the leading emoji character.
+ */
+function ratingModifier(rating: string): string {
+  const emoji = ratingEmoji(rating);
+  if (emoji === '⚡') return 'digest-item--flash';
+  if (emoji === '🔧') return 'digest-item--wrench';
+  if (emoji === '📖') return 'digest-item--book';
+  return 'digest-item--neutral';
+}
+
+/** Normalise a source string to ALLCAPS, max 6 chars for the tag column. */
+function sourceTag(src: string): string {
+  return src.toUpperCase().slice(0, 8);
+}
+
+const aiSlice  = aiItems.slice(0, maxItems);
+const vlaSlice = vlaItems.slice(0, maxItems);
+
+/** True when we have at least one section to render */
+const hasAi  = aiSlice.length  > 0;
+const hasVla = vlaSlice.length > 0;
+---
+
+<div class="digest-feed" role="feed" aria-label={`Pulsar Digest — ${date}`}>
+
+  <!-- ── HEADER ── -->
+  <header class="digest-header" aria-label="Digest header">
+    <time class="digest-header-date" datetime={date}>{date}</time>
+
+    <div class="digest-header-wordmark" aria-label="Pulsar Digest">
+      PULSAR DIGEST
+      <span class="digest-header-zh">照見系統</span>
+    </div>
+
+    <span class="digest-header-live" aria-label="Live feed">
+      <span class="digest-live-dot" aria-hidden="true"></span>
+      LIVE
+    </span>
+  </header>
+
+  <!-- ── AI LINE ── -->
+  {hasAi && (
+    <section aria-labelledby="digest-section-ai">
+      <div class="digest-section-header digest-section--ai">
+        <span class="digest-section-label" id="digest-section-ai">
+          AI APP 線 &middot; 行業 · 工具 · 趨勢
+        </span>
+        <span class="digest-section-meta" aria-hidden="true">
+          {aiSlice.length} 條
+        </span>
+      </div>
+
+      <ul class="digest-list" role="list">
+        {aiSlice.map((item) => {
+          const emoji    = ratingEmoji(item.rating);
+          const modifier = ratingModifier(item.rating);
+          const tag      = sourceTag(item.source);
+          const rowClass = `digest-item digest-item--ai ${modifier}`;
+
+          return (
+            <li class={rowClass}>
+              {showLinks ? (
+                <a
+                  class="digest-item-link"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={item.title}
+                  aria-label={`${emoji} ${item.title} — ${item.summary}`}
+                >
+                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                  <span class="digest-content">
+                    <span class="digest-title">{item.title}</span>
+                    <span class="digest-sep" aria-hidden="true">—</span>
+                    <span class="digest-summary">{item.summary}</span>
+                  </span>
+                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                    {tag}
+                  </span>
+                </a>
+              ) : (
+                /* No-link variant: same grid layout, div instead of <a> */
+                <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
+                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                  <span class="digest-content">
+                    <span class="digest-title">{item.title}</span>
+                    <span class="digest-sep" aria-hidden="true">—</span>
+                    <span class="digest-summary">{item.summary}</span>
+                  </span>
+                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                    {tag}
+                  </span>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {!hasAi && (
+    <div class="digest-empty" role="status">
+      — AI 線今日無資料 —
+    </div>
+  )}
+
+  <!-- ── VLA LINE ── -->
+  {hasVla && (
+    <section aria-labelledby="digest-section-vla">
+      <div class="digest-section-header digest-section--vla">
+        <span class="digest-section-label" id="digest-section-vla">
+          VLA 線 &middot; cs.RO · cs.AI · cs.LG
+        </span>
+        <span class="digest-section-meta" aria-hidden="true">
+          Qwen3.5-Plus 評級 · {vlaSlice.length} 條
+        </span>
+      </div>
+
+      <ul class="digest-list" role="list">
+        {vlaSlice.map((item) => {
+          const emoji    = ratingEmoji(item.rating);
+          const modifier = ratingModifier(item.rating);
+          const tag      = sourceTag(item.source);
+          const rowClass = `digest-item digest-item--vla ${modifier}`;
+
+          return (
+            <li class={rowClass}>
+              {showLinks ? (
+                <a
+                  class="digest-item-link"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={item.title}
+                  aria-label={`${emoji} ${item.title} — ${item.summary}`}
+                >
+                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                  <span class="digest-content">
+                    <span class="digest-title">{item.title}</span>
+                    <span class="digest-sep" aria-hidden="true">—</span>
+                    <span class="digest-summary">{item.summary}</span>
+                  </span>
+                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                    {tag}
+                  </span>
+                </a>
+              ) : (
+                <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
+                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                  <span class="digest-content">
+                    <span class="digest-title">{item.title}</span>
+                    <span class="digest-sep" aria-hidden="true">—</span>
+                    <span class="digest-summary">{item.summary}</span>
+                  </span>
+                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                    {tag}
+                  </span>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {!hasVla && (
+    <div class="digest-empty" role="status">
+      — VLA 線今日無資料 —
+    </div>
+  )}
+
+</div>
