@@ -74,6 +74,15 @@ const base = import.meta.env.BASE_URL;
         // Default: light mode (no class needed)
       })();
     </script>
+
+    <!-- Lang initialisation — must run before first paint to avoid FOUC. -->
+    <script is:inline>
+      (function() {
+        if (localStorage.getItem('pulsar-lang') === 'sc') {
+          document.documentElement.classList.add('lang-sc');
+        }
+      })();
+    </script>
   </head>
 
   <style is:global>

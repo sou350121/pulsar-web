@@ -1,0 +1,91 @@
+---
+/**
+ * LangToggle.astro
+ * Toggles between Traditional Chinese (繁體, tc) and Simplified Chinese (简体, sc).
+ * Stores preference in localStorage under 'pulsar-lang'.
+ * Applies/removes 'lang-sc' class on <html>.
+ */
+---
+
+<button
+  id="lang-toggle"
+  type="button"
+  class="lang-toggle"
+  aria-label="切換語言 / 切换语言"
+  title="繁體中文 ↔ 简体中文"
+>
+  <span id="lang-label-tc" class="lang-lbl">繁</span>
+  <span class="lang-sep" aria-hidden="true">·</span>
+  <span id="lang-label-sc" class="lang-lbl">简</span>
+</button>
+
+<style>
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.lang-toggle:hover {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+.lang-toggle:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
+.lang-sep {
+  color: var(--border);
+  font-size: 0.6rem;
+  line-height: 1;
+}
+.lang-lbl {
+  transition: color 0.15s;
+  line-height: 1;
+}
+.lang-lbl.is-active {
+  color: var(--accent-amber);
+  font-weight: 700;
+}
+</style>
+
+<script>
+(function () {
+  const btn = document.getElementById('lang-toggle');
+  const lblTC = document.getElementById('lang-label-tc');
+  const lblSC = document.getElementById('lang-label-sc');
+
+  function applyLang(sc: boolean) {
+    if (sc) {
+      document.documentElement.classList.add('lang-sc');
+      lblTC?.classList.remove('is-active');
+      lblSC?.classList.add('is-active');
+    } else {
+      document.documentElement.classList.remove('lang-sc');
+      lblTC?.classList.add('is-active');
+      lblSC?.classList.remove('is-active');
+    }
+  }
+
+  // Initialise from storage
+  applyLang(localStorage.getItem('pulsar-lang') === 'sc');
+
+  btn?.addEventListener('click', () => {
+    const nowSC = !document.documentElement.classList.contains('lang-sc');
+    applyLang(nowSC);
+    localStorage.setItem('pulsar-lang', nowSC ? 'sc' : 'tc');
+  });
+})();
+</script>
