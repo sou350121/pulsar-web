@@ -2,22 +2,20 @@
 /**
  * src/pages/index.astro
  * ---------------------
- * Pulsar Homepage
+ * Pulsar Homepage — visual design ported from prototype/index.html
  * Sections:
- *   1. Hero — tagline + pipeline status summary
- *   2. Latest AI Daily Picks — top items from most recent day
- *   3. Social Intel Strip — most recent social snippets (AI + VLA)
- *   4. Dashboard Metrics Row — quality drift + entity counts
- *   5. Biweekly Report Teaser
+ *   1. Ticker bar
+ *   2. Hero — radial glow + two-column featured cards
+ *   3. Latest Picks Grid
+ *   4. Social Intel horizontal scroll strip
+ *   5. Dashboard Metrics Row
+ *   6. Biweekly Report Teaser
  *
  * Data loading uses mock fallbacks so the page renders even before
  * the first sync-data run. Real data replaces mocks once src/data/ is
  * populated by scripts/sync-data.py.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ArticleCard from '../components/ArticleCard.astro';
-import SocialCard from '../components/SocialCard.astro';
-import MetricCard from '../components/MetricCard.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import {
   loadAIDailyPicks,
@@ -32,7 +30,7 @@ import {
 // ---------------------------------------------------------------------------
 // Load real data (returns empty/null when src/data/ not yet populated)
 // ---------------------------------------------------------------------------
-const recentPicks   = loadAIDailyPicks(1);   // latest day only for hero
+const recentPicks   = loadAIDailyPicks(1);
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
@@ -41,7 +39,6 @@ const biweekly      = loadBiweeklyReports(1);
 
 // ---------------------------------------------------------------------------
 // Mock data — used when real data is absent (pre-sync)
-// These match the actual data shapes exactly.
 // ---------------------------------------------------------------------------
 const MOCK_PICKS: DailyPickDay = {
   date: '2026-03-01',
@@ -86,353 +83,421 @@ const MOCK_PICKS: DailyPickDay = {
       source: 'arxiv',
       domain: 'vla',
     },
+    {
+      title: 'Cursor 月活突破 200 萬：Vibe Coding 浪潮重塑技術棧選型',
+      url: 'https://36kr.com/placeholder',
+      summary: 'AI IDE 賽道進入爆發期，Lovable、Bolt 等產品相繼宣布百萬用戶里程碑，傳統 IDE 廠商加速整合 AI 功能。',
+      rating: '📖',
+      source: '36kr',
+      domain: 'ai',
+    },
   ],
 };
 
 const MOCK_SOCIAL = [
-  {
-    entity: 'Pieter Abbeel',
-    event: '在 Twitter 分享最新 VLA 實驗結果，指出 flow matching 在真實機器人上比 diffusion 推理快5倍，「這不是邊際改進」。',
-    date: '2026-03-01',
-    platform: 'twitter',
-  },
-  {
-    entity: 'Andrej Karpathy',
-    event: '發布 Software 3.0 長文，討論 intent-driven development 取代 syntax-driven 的趨勢，GitHub 獲 12k stars。',
-    date: '2026-03-01',
-    platform: 'blog',
-  },
-  {
-    entity: 'CMU Robotics',
-    event: 'GitHub 更新 VLA benchmark repo，新增 RLBench-Hard subset，包含接觸豐富操作任務20個。',
-    date: '2026-02-28',
-    platform: 'github',
-  },
+  { entity: 'Andrej Karpathy',       event: '發布 3,200 字長文《意圖驅動開發宣言》，明確將 AI 代理編排定義為下一代軟件工程核心技能，並批評現有 IDE 仍停留在「代碼補全」思維框架中。', date: '03-01 · 06:42', platform: 'twitter', tag: 'PARADIGM SHIFT' },
+  { entity: 'Physical Intelligence', event: '官方博客宣布 Pi0.5 開放 API 訪問，提供 7 種機器人形態的適配接口，並公開了在 23 個操作任務上的標準評測結果及可復現代碼庫。',              date: '02-28 · 14:30', platform: 'blog',    tag: 'VLA · RELEASE' },
+  { entity: 'Yann LeCun',            event: '轉發 WorldModelBench 論文並評論：「世界模型評估標準的缺失是當前具身 AI 進展緩慢的根本原因之一，此基準的出現是重要里程碑。」',             date: '02-28 · 09:15', platform: 'twitter', tag: 'WORLD MODEL · ⚡' },
+  { entity: 'Google DeepMind',       event: '官方宣布 Gemini Robotics 整合路線圖，計劃於 Q2 2026 開放合作夥伴早期訪問，覆蓋工業自動化和家庭服務場景。',                             date: '02-27 · 11:00', platform: 'blog',    tag: 'DEEPMIND · VLA' },
+  { entity: 'Ilya Sutskever',        event: 'SSI 官方博客：「安全超智能的關鍵不在於對齊稅，而在於架構設計本身。」暗示 SSI 正在探索與 Transformer 本質不同的新架構路徑。',             date: '02-27 · 08:55', platform: 'twitter', tag: 'SSI · SAFETY' },
 ];
 
 // ---------------------------------------------------------------------------
 // Resolve: use real data when available, else fall back to mock
 // ---------------------------------------------------------------------------
 const todayPicks  = recentPicks[0] ?? MOCK_PICKS;
-const topItems    = todayPicks.items.slice(0, 4);
 const displayDate = todayPicks.date;
 
-// Social intel: merge real + mock, show 5 total
-const realSocial  = [...aiSocial, ...vlaSocial].map(s => ({
+// Top 6 items for the picks grid
+const gridItems   = todayPicks.items.slice(0, 6);
+// Top 2 items for the hero featured cards
+const heroAI  = todayPicks.items.find(i => i.domain === 'ai')  ?? todayPicks.items[0];
+const heroVLA = todayPicks.items.find(i => i.domain === 'vla') ?? todayPicks.items[1];
+
+// Social intel
+const realSocial = [...aiSocial, ...vlaSocial].map(s => ({
   entity:   s.filename,
   event:    extractMarkdownSummary(s.content, 180),
   date:     s.date,
   platform: 'blog',
+  tag:      '',
 })).filter(s => s.event.length > 10);
 
-const socialItems = realSocial.length >= 3
-  ? realSocial.slice(0, 5)
-  : MOCK_SOCIAL;
+const socialItems = realSocial.length >= 3 ? realSocial.slice(0, 5) : MOCK_SOCIAL;
 
-// Drift metrics
-const driftOk     = !driftState?.drift_active;
-const pipelineStatus = driftOk ? 'ok' : 'warn';
-
-// Entity stats
-const entityCount = Object.keys(entityIndex.entities).length;
-const labCount    = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
-const methodCount = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
+// Pipeline health
+const driftOk = !driftState?.drift_active;
+const entityCount  = Object.keys(entityIndex.entities).length;
+const labCount     = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
+const methodCount  = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
 
 // Biweekly teaser
-const latestReport = biweekly[0] ?? null;
+const latestReport  = biweekly[0] ?? null;
 const reportSummary = latestReport
   ? extractMarkdownSummary(latestReport.content, 350)
-  : '本期雙週報告整合 VLA 研究進展、AI 應用趨勢、社交情報與校準分析。涵蓋 flow matching 突破、Karpathy Software 3.0 論述、DeepSeek 開源影響，以及前期預測的驗證。';
-const reportDate = latestReport?.date ?? '2026-03-01';
+  : 'VLA 技術演進的範式轉移：本期報告系統梳理過去兩週 VLA 領域的六項關鍵技術突破，重點分析流匹配架構、SSM 模型和世界模型三條技術路線的收斂趨勢。結合 Physical Intelligence Pi0.5 和 CognitiveMamba 的實驗數據，我們認為當前 VLA 正從「模仿學習的縮放定律」轉向「物理常識的顯式建模」。';
+const reportDate    = latestReport?.date ?? '2026-03-01';
+
+// Map rating emoji to badge class
+const ratingClass: Record<string, string> = {
+  '⚡': 'rating-badge rating-flash',
+  '🔧': 'rating-badge rating-wrench',
+  '📖': 'rating-badge rating-book',
+  '❌': 'rating-badge rating-x',
+};
+const ratingLabel: Record<string, string> = {
+  '⚡': '突破', '🔧': '技術', '📖': '觀點', '❌': '低關聯',
+};
+
+// Platform icon mapping
+const platformIcon: Record<string, string> = {
+  twitter: '𝕏',
+  blog:    '📰',
+  github:  '⌥',
+  hn:      'Y',
+  reddit:  '●',
+};
 ---
 
 <BaseLayout
-  title="Pulsar · 照見"
+  title="PULSAR · 照見"
   description="AI Research Intelligence — VLA pipeline monitoring, daily picks, and biweekly reflections."
 >
 
-  <!-- =====================================================================
-       1. HERO
-       ===================================================================== -->
-  <section class="section bg-gradient-to-b from-pulsar-surface to-pulsar-bg">
-    <div class="page-container">
-      <div class="max-w-2xl">
-        <!-- Eyebrow -->
-        <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-3">
-          AI Research Intelligence · 照見系統
-        </p>
-
-        <!-- Headline -->
-        <h1 class="font-lora text-4xl md:text-5xl font-bold text-pulsar-text leading-tight mb-4">
-          每日洞察，<br/>
-          <span class="text-pulsar-amber">雙週反思</span>
-        </h1>
-
-        <p class="text-pulsar-muted text-lg leading-relaxed mb-8 font-noto-serif-sc">
-          Pulsar 整合 VLA 機器人學習與 AI 應用兩條研究線，自動收集、評分、歸檔，
-          並生成雙週報告和反思。所有數據每日透過 cron pipeline 更新。
-        </p>
-
-        <!-- CTA buttons -->
-        <div class="flex flex-wrap gap-3">
-          <a
-            href="/ai-daily"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-pulsar-amber text-white font-semibold rounded-lg hover:opacity-90 transition-opacity text-sm"
-          >
-            查看 AI 日報
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M2 7h10M8 3l4 4-4 4"/>
-            </svg>
-          </a>
-          <a
-            href="/dashboard"
-            class="inline-flex items-center gap-2 px-5 py-2.5 border border-pulsar-border text-pulsar-text font-medium rounded-lg hover:bg-pulsar-surface transition-colors text-sm"
-          >
-            數據面板
-          </a>
-        </div>
-      </div>
-
-      <!-- Pipeline health strip -->
-      <div class="mt-10 flex flex-wrap gap-3">
-        {[
-          { label: 'Pipeline',      status: pipelineStatus as 'ok'|'warn',   icon: '◉' },
-          { label: 'VLA RSS',       status: 'ok' as const,                    icon: '◉' },
-          { label: 'AI 日報',       status: 'ok' as const,                    icon: '◉' },
-          { label: 'Entity Tracker',status: entityCount > 0 ? 'ok' as const : 'neutral' as const, icon: '◉' },
-          { label: 'Quality Drift', status: driftOk ? 'ok' as const : 'warn' as const, icon: '◉' },
-        ].map(({ label, status, icon }) => (
-          <span class:list={[
-            'inline-flex items-center gap-1.5 text-xs font-ibm-plex-mono px-2.5 py-1 rounded-full border',
-            status === 'ok'      ? 'border-green-300 dark:border-green-800 text-green-700 dark:text-green-400' : '',
-            status === 'warn'    ? 'border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400' : '',
-            status === 'neutral' ? 'border-pulsar-border text-pulsar-muted' : '',
-          ]}>
-            <span class:list={[
-              'w-1.5 h-1.5 rounded-full',
-              status === 'ok'      ? 'bg-green-500'  : '',
-              status === 'warn'    ? 'bg-amber-500'  : '',
-              status === 'neutral' ? 'bg-stone-400'  : '',
-            ]} aria-hidden="true" />
-            {label}
-          </span>
-        ))}
-        <span class="text-xs font-ibm-plex-mono text-pulsar-muted self-center">
-          更新: {displayDate}
+  <!-- ==========================================================
+       1. TICKER BAR
+       ========================================================== -->
+  <div class="ticker" role="marquee" aria-label="Breaking signals">
+    <div class="container">
+      <div class="ticker-inner">
+        <span class="ticker-label">⚡ 最新信號</span>
+        <span class="ticker-text">
+          Karpathy 發表「Software 3.0」論文預印本 · Pi0.5 在靈巧操作基準上超越前代 42% ·
+          DashScope Qwen3.5 支持 128K 上下文窗口 · VLA 開放基準 RoboMimic-XL 公開發布 ·
+          Google DeepMind 宣布 Gemini Robotics 整合計劃
         </span>
       </div>
     </div>
+  </div>
+
+  <!-- ==========================================================
+       2. HERO SECTION
+       ========================================================== -->
+  <section class="hero" id="daily" aria-labelledby="hero-title">
+    <div class="container">
+
+      <div class="hero-meta fade-in-1">
+        <span class="hero-date">{displayDate} · 照見系統</span>
+        <span class="hero-sep" aria-hidden="true"></span>
+        <span class="live-dot">Pipeline 已更新</span>
+      </div>
+
+      <div class="hero-headline fade-in-2">
+        <span class="overline">TODAY'S INTELLIGENCE DIGEST</span>
+        <h1 id="hero-title">今日 <em>AI</em> 洞察</h1>
+      </div>
+
+      <p class="hero-subtitle fade-in-3">
+        匯聚 AI 前沿論文、行業動態、實驗室動向，以及機器人視覺—語言—動作研究的每日精華。
+        由 Pulsar 管道自動採集、評級與生成。
+      </p>
+
+      <!-- Hero two-column featured cards -->
+      <div class="hero-grid fade-in-4">
+
+        <!-- Left: Top AI Pick -->
+        <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
+          <div class="hero-card-label"><span>今日 AI 精選</span></div>
+          <span class={ratingClass[heroAI.rating] ?? 'rating-badge rating-flash'}>
+            {heroAI.rating} {ratingLabel[heroAI.rating] ?? '精選'}
+          </span>
+          <h2 class="hero-card-title" id="hero-ai-title">{heroAI.title}</h2>
+          <p class="hero-card-summary">{heroAI.summary}</p>
+          <div class="hero-card-footer">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span class="source-tag">{heroAI.source.toUpperCase()}</span>
+              <span class="source-tag">{heroAI.domain === 'ai' ? 'AI App' : 'VLA'}</span>
+            </div>
+            <a href={heroAI.url} target="_blank" rel="noopener noreferrer" class="btn btn-amber">閱讀全文 →</a>
+          </div>
+        </article>
+
+        <!-- Right: Top VLA Pick -->
+        <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
+          <div class="hero-card-label"><span>今日 VLA 論文</span></div>
+          <span class={ratingClass[heroVLA.rating] ?? 'rating-badge rating-wrench'}>
+            {heroVLA.rating} {ratingLabel[heroVLA.rating] ?? '技術'}
+          </span>
+          <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
+          <p class="hero-card-summary">{heroVLA.summary}</p>
+          <div class="hero-card-footer">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span class="source-tag">{heroVLA.source.toUpperCase()}</span>
+              <span class="source-tag">VLA</span>
+            </div>
+            <a href={heroVLA.url} target="_blank" rel="noopener noreferrer" class="btn btn-outline">閱讀 →</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
   </section>
 
-  <!-- =====================================================================
-       2. LATEST AI DAILY PICKS
-       ===================================================================== -->
-  <section class="section">
-    <div class="page-container">
-      <div class="flex items-baseline justify-between mb-6">
+  <!-- ==========================================================
+       3. PICKS GRID
+       ========================================================== -->
+  <section class="section" id="picks" aria-labelledby="picks-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1">
         <div>
-          <h2 class="font-lora text-2xl font-bold text-pulsar-text">
-            今日精選
-          </h2>
-          <p class="text-pulsar-muted text-sm mt-0.5 font-ibm-plex-mono">
-            {displayDate} · {todayPicks.items.length} 篇
-          </p>
+          <span class="section-label section-number">02 — 精選列表</span>
+          <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>最新精選</h2>
         </div>
-        <a
-          href="/ai-daily"
-          class="text-sm text-pulsar-cyan hover:underline font-ibm-plex-mono hidden sm:block"
-        >
-          查看全部 →
-        </a>
+        <a href="/ai-daily" class="section-link btn btn-outline">查看全部 →</a>
       </div>
 
-      <!-- Rating legend -->
-      <div class="flex flex-wrap gap-2 mb-6">
-        {([['⚡','突破'], ['🔧','實用'], ['📖','背景'], ['❌','低相關']] as const).map(([r, l]) => (
-          <RatingBadge rating={r} label={l} size="sm" />
+      <div class="picks-grid">
+        {gridItems.map((item, i) => (
+          <article class={`pick-card fade-in-${(i % 3) + 1}`}>
+            <div class="pick-card-top">
+              <div>
+                <span
+                  class={ratingClass[item.rating] ?? 'rating-badge rating-book'}
+                  style="margin-bottom:10px;display:inline-flex;"
+                >
+                  {item.rating} {ratingLabel[item.rating] ?? ''}
+                </span>
+                <h3 class="pick-title">{item.title}</h3>
+              </div>
+              <div class="pick-source-logo" aria-hidden="true">
+                {item.domain === 'vla' ? '🤖' : '📰'}
+              </div>
+            </div>
+            <p class="pick-summary">{item.summary}</p>
+            <div class="pick-footer">
+              <span class="pick-date">{item.domain === 'vla' ? displayDate + ' · VLA' : displayDate + ' · AI'}</span>
+              <span class:list={['domain-tag', item.domain === 'vla' ? 'vla' : '']}>
+                {item.domain === 'vla' ? 'VLA' : 'AI App'}
+              </span>
+            </div>
+          </article>
         ))}
       </div>
 
-      <!-- Grid of article cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {topItems.map(item => (
-          <ArticleCard
-            title={item.title}
-            summary={item.summary}
-            rating={item.rating}
-            source={item.source}
-            date={displayDate}
-            domain={item.domain ?? 'ai'}
-            url={item.url}
-          />
-        ))}
-      </div>
-
-      <div class="mt-4 sm:hidden text-center">
-        <a href="/ai-daily" class="text-sm text-pulsar-cyan hover:underline">
-          查看所有日報 →
-        </a>
-      </div>
     </div>
   </section>
 
-  <!-- =====================================================================
-       3. SOCIAL INTEL STRIP
-       ===================================================================== -->
-  <section class="section bg-pulsar-surface/50">
-    <div class="page-container">
-      <div class="flex items-baseline justify-between mb-6">
+  <hr class="grid-rule" />
+
+  <!-- ==========================================================
+       4. SOCIAL INTEL STRIP
+       ========================================================== -->
+  <section class="section section-alt social-section" id="social" aria-labelledby="social-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1">
         <div>
-          <h2 class="font-lora text-2xl font-bold text-pulsar-text">
-            社交情報
-          </h2>
-          <p class="text-pulsar-muted text-sm mt-0.5">最新研究者動態與社群訊號</p>
+          <span class="section-label section-number">03 — 動態追蹤</span>
+          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去72小時</h2>
         </div>
-        <a
-          href="/social"
-          class="text-sm text-pulsar-cyan hover:underline font-ibm-plex-mono hidden sm:block"
-        >
-          查看全部 →
-        </a>
+        <a href="/social" class="section-link btn btn-outline">完整情報 →</a>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {socialItems.slice(0, 3).map(item => (
-          <SocialCard
-            entity={item.entity}
-            event={item.event}
-            date={item.date}
-            platform={item.platform}
-          />
-        ))}
+      <div class="social-scroll-wrapper fade-in-2">
+        <div class="social-scroll-container" role="list" aria-label="Social intelligence feed">
+          <div class="social-strip">
+            {socialItems.map(item => (
+              <article class="social-card" role="listitem">
+                <div class="social-card-meta">
+                  <span class="social-platform" aria-label={item.platform}>
+                    {platformIcon[item.platform] ?? '◈'}
+                  </span>
+                  <span class="social-entity">{item.entity}</span>
+                  <span class="social-time">{item.date}</span>
+                </div>
+                <p class="social-content">{item.event}</p>
+                {('tag' in item) && item.tag && (
+                  <span class="social-tag">{item.tag}</span>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
       </div>
+
     </div>
   </section>
 
-  <!-- =====================================================================
-       4. DASHBOARD METRICS ROW
-       ===================================================================== -->
-  <section class="section">
-    <div class="page-container">
-      <div class="flex items-baseline justify-between mb-6">
-        <h2 class="font-lora text-2xl font-bold text-pulsar-text">
-          Pipeline 數據
-        </h2>
-        <a
-          href="/dashboard"
-          class="text-sm text-pulsar-cyan hover:underline font-ibm-plex-mono hidden sm:block"
-        >
-          完整面板 →
-        </a>
+  <!-- ==========================================================
+       5. DASHBOARD METRICS ROW
+       ========================================================== -->
+  <section class="section" id="dashboard" aria-labelledby="dashboard-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1">
+        <div>
+          <span class="section-label section-number">04 — 系統監控</span>
+          <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span>管道儀表板</h2>
+        </div>
+        <span class="live-dot" style="font-size:0.7rem;">Pipeline 已更新</span>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <MetricCard
-          label="實體追蹤"
-          value={entityCount || 142}
-          unit="entities"
-          status={entityCount > 0 ? 'ok' : 'neutral'}
-          trend="+8"
-        />
-        <MetricCard
-          label="實驗室"
-          value={labCount || 34}
-          unit="labs"
-          status="ok"
-        />
-        <MetricCard
-          label="方法"
-          value={methodCount || 67}
-          unit="methods"
-          status="ok"
-          trend="+3"
-        />
-        <MetricCard
-          label="品質漂移"
-          value={driftOk ? 'OK' : 'WARN'}
-          status={pipelineStatus}
-          trend={driftOk ? '正常' : '需關注'}
-        />
-        <MetricCard
-          label="VLA 論文/日"
-          value="23"
-          unit="papers"
-          status="ok"
-          trend="+12%"
-        />
-        <MetricCard
-          label="AI 新聞/日"
-          value="47"
-          unit="items"
-          status="ok"
-          trend="-3%"
-        />
-      </div>
-    </div>
-  </section>
+      <div class="dashboard-grid fade-in-2">
 
-  <!-- =====================================================================
-       5. BIWEEKLY REPORT TEASER
-       ===================================================================== -->
-  <section class="section bg-pulsar-surface/50">
-    <div class="page-container">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
-        <!-- Teaser text -->
-        <div class="lg:col-span-2">
-          <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-muted mb-2">
-            雙週報告 · {reportDate}
-          </p>
-          <h2 class="font-lora text-2xl font-bold text-pulsar-text mb-4">
-            最新雙週反思
-          </h2>
-          <p class="text-pulsar-muted leading-relaxed font-noto-serif-sc">
-            {reportSummary}
-          </p>
-          <div class="mt-5">
-            <a
-              href={`/reports`}
-              class="inline-flex items-center gap-2 text-sm text-pulsar-amber font-semibold hover:underline"
-            >
-              閱讀完整報告
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M2 7h10M8 3l4 4-4 4"/>
-              </svg>
-            </a>
+        <!-- Quality Drift sparkline -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <span class="dash-card-title">質量漂移監測</span>
+            <span class:list={['status-badge', driftOk ? 'status-ok' : 'status-warn']}>
+              {driftOk ? '正常 ✓' : '注意 ⚠'}
+            </span>
+          </div>
+          <div class="sparkline" aria-label="7-day quality chart" role="img">
+            <div class="spark-bar" style="height:68%;" data-val="W-6"></div>
+            <div class="spark-bar" style="height:74%;" data-val="W-5"></div>
+            <div class="spark-bar active" style="height:56%;" data-val="W-4"></div>
+            <div class="spark-bar" style="height:82%;" data-val="W-3"></div>
+            <div class="spark-bar" style="height:78%;" data-val="W-2"></div>
+            <div class="spark-bar" style="height:90%;" data-val="昨日"></div>
+            <div class="spark-bar high" style="height:100%;" data-val="今日"></div>
+          </div>
+          <div class="sparkline-meta">
+            <div>
+              <div class="spark-label">7日均值</div>
+              <div class="spark-value">94.2%</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="spark-label">漂移閾值</div>
+              <div class="spark-value" style="color:var(--text-tertiary);">70.0%</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-subtle);">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--text-tertiary);letter-spacing:0.06em;">
+              VLA · AI App 兩域均無連續3日低於基線的漂移事件
+            </div>
           </div>
         </div>
 
-        <!-- Quick links sidebar -->
-        <div class="card">
-          <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-muted mb-4">
-            快速導航
-          </p>
-          <ul class="space-y-3">
+        <!-- Entity Activity bar chart -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <span class="dash-card-title">實體活躍度</span>
+            <span class="status-badge status-ok">
+              {entityCount > 0 ? entityCount + ' 實體' : '7日追蹤'}
+            </span>
+          </div>
+          <div class="entity-list">
+            {entityCount > 0
+              ? Object.entries(entityIndex.entities)
+                  .sort(([,a],[,b]) => ((b as any).mentions ?? 0) - ((a as any).mentions ?? 0))
+                  .slice(0, 5)
+                  .map(([key, ent], idx) => {
+                    const name = (ent as any).name ?? key.split(':')[1] ?? key;
+                    const count = (ent as any).mentions ?? (5 - idx);
+                    const pct = Math.max(20, Math.min(100, (count / 12) * 100));
+                    return (
+                      <div class="entity-row">
+                        <div class="entity-row-meta">
+                          <span class="entity-name">{name}</span>
+                          <span class="entity-count">{count} 信號</span>
+                        </div>
+                        <div class="entity-bar-track">
+                          <div class="entity-bar-fill" style={`width:${pct}%;`}></div>
+                        </div>
+                      </div>
+                    );
+                  })
+              : [
+                  ['FlowMatching', 12, 100],
+                  ['Pi0 / Pi0.5',  9,  75],
+                  ['WorldModel',   7,  58],
+                  ['Mamba / SSM',  6,  50],
+                  ['DiffusionPolicy', 5, 42],
+                ].map(([name, count, pct]) => (
+                  <div class="entity-row">
+                    <div class="entity-row-meta">
+                      <span class="entity-name">{name}</span>
+                      <span class="entity-count">{count} 信號</span>
+                    </div>
+                    <div class="entity-bar-track">
+                      <div class="entity-bar-fill" style={`width:${pct}%;`}></div>
+                    </div>
+                  </div>
+                ))
+            }
+          </div>
+        </div>
+
+        <!-- Pipeline Health -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <span class="dash-card-title">管道健康</span>
+            <span class="status-badge status-ok">16/16 ✓</span>
+          </div>
+          <div class="health-list">
             {[
-              { href: '/ai-daily',  icon: '📰', label: 'AI 日報',     desc: '每日 AI 精選' },
-              { href: '/vla',       icon: '🤖', label: 'VLA 研究',    desc: '機器人學習論文' },
-              { href: '/social',    icon: '💬', label: '社交情報',    desc: '研究者動態追蹤' },
-              { href: '/reports',   icon: '📊', label: '雙週報告',    desc: '深度分析與反思' },
-              { href: '/dashboard', icon: '📈', label: '數據面板',    desc: 'Pipeline 監控' },
-            ].map(({ href, icon, label, desc }) => (
-              <li>
-                <a
-                  href={href}
-                  class="flex items-center gap-3 p-2 rounded-lg hover:bg-pulsar-bg transition-colors group"
-                >
-                  <span class="text-xl" aria-hidden="true">{icon}</span>
-                  <span class="flex-1 min-w-0">
-                    <span class="block text-sm font-semibold text-pulsar-text group-hover:text-pulsar-amber transition-colors font-noto-serif-sc">
-                      {label}
-                    </span>
-                    <span class="block text-xs text-pulsar-muted">{desc}</span>
-                  </span>
-                </a>
-              </li>
+              { name: 'VLA RSS 採集',    time: '09:00', ok: true },
+              { name: 'AI App 日報生成', time: '07:00', ok: true },
+              { name: '社交情報採集',    time: '09:30', ok: true },
+              { name: '質量漂移檢查',    time: '10:10', ok: driftOk },
+              { name: '語義索引重建',    time: '11:15', ok: true },
+              { name: '跨域規則引擎',    time: '10:20', ok: true },
+              { name: '上游信號監測',    time: '週末',  ok: false, warn: true },
+            ].map(item => (
+              <div class="health-item">
+                <span class:list={['health-icon', item.warn ? 'health-warn' : (item.ok ? 'health-ok' : 'health-warn')]}>
+                  {item.warn ? '⚠' : (item.ok ? '✓' : '⚠')}
+                </span>
+                <span class:list={['health-name', item.warn ? '' : '']}
+                  style={item.warn ? 'color:var(--accent-amber);' : ''}
+                >{item.name}</span>
+                <span class="health-time" style={item.warn ? 'color:var(--accent-amber);' : ''}>
+                  {item.time}
+                </span>
+              </div>
             ))}
-          </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="grid-rule" />
+
+  <!-- ==========================================================
+       6. BIWEEKLY REPORT TEASER
+       ========================================================== -->
+  <section class="section" id="reports" aria-labelledby="report-title">
+    <div class="container">
+
+      <div class="section-header fade-in-1" style="margin-bottom:24px;">
+        <div>
+          <span class="section-label section-number">05 — 深度分析</span>
+          <h2><span class="accent-line" aria-hidden="true"></span>雙週報告</h2>
         </div>
       </div>
+
+      <div class="report-teaser fade-in-2">
+        <div>
+          <span class="report-label">
+            雙週報告 · {reportDate} · 照見系統
+          </span>
+          <h2 class="report-title" id="report-title">
+            VLA 技術演進的範式轉移：<br/>從端到端模仿到世界模型驅動的具身推理
+          </h2>
+          <p class="report-excerpt">{reportSummary}</p>
+          <div class="report-period-badge" style="margin-top:16px;">
+            已涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準
+          </div>
+        </div>
+        <a href="/reports" class="report-cta" aria-label="查看完整雙週報告">
+          <span class="report-cta-arrow">→</span>
+          <span>查看完整報告</span>
+        </a>
+      </div>
+
     </div>
   </section>
 

@@ -32,7 +32,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://pulsar.s
 ---
 
 <!doctype html>
-<html lang="zh-TW" class="light">
+<html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -62,30 +62,34 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://pulsar.s
     <!--
       Theme initialisation — must run BEFORE first paint to avoid flash.
       Reads localStorage and applies the 'dark' class to <html> synchronously.
+      Defaults to dark if no preference is stored.
     -->
     <script is:inline>
-      (function () {
-        const stored = localStorage.getItem('pulsar-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const useDark = stored === 'dark' || (!stored && prefersDark);
-        document.documentElement.classList.toggle('dark', useDark);
-        document.documentElement.classList.toggle('light', !useDark);
+      (function() {
+        var saved = localStorage.getItem('pulsar-theme');
+        if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else {
+          /* dark by default — matches prototype behaviour */
+          document.documentElement.classList.add('dark');
+        }
       })();
     </script>
   </head>
 
-  <body class="min-h-screen flex flex-col bg-pulsar-bg text-pulsar-text">
+  <body>
     <!-- Skip to content link — accessibility -->
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-pulsar-amber focus:text-white focus:rounded"
+      class="sr-only"
+      style="position:fixed;top:1rem;left:1rem;z-index:999;padding:0.5rem 1rem;background:var(--accent-amber);color:#fff;border-radius:6px;"
     >
       Skip to content
     </a>
 
     <Header />
 
-    <main id="main-content" class="flex-1">
+    <main id="main-content">
       <slot />
     </main>
 

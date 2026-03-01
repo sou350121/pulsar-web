@@ -1,75 +1,62 @@
 ---
 /**
  * Footer.astro
- * Site footer with tagline, quick links, and build info.
+ * Site footer — styled using the Pulsar design system from global.css.
  */
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-pulsar-border bg-pulsar-surface mt-auto">
-  <div class="page-container py-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<footer aria-label="Site footer">
+  <div class="container">
+    <div class="footer-grid">
 
-      <!-- Brand / Tagline -->
+      <!-- Brand -->
       <div>
-        <p class="font-lora font-bold text-pulsar-text mb-1">Pulsar · 照見</p>
-        <p class="text-pulsar-muted text-sm leading-relaxed">
-          AI Research Intelligence — VLA pipeline monitoring,<br/>
-          daily picks, and biweekly reflections.
+        <span class="footer-brand-logo">PUL<span>S</span>AR</span>
+        <p class="footer-tagline" style="font-size:1.1rem;font-weight:500;margin-bottom:6px;">照　見</p>
+        <p class="footer-tagline">
+          AI 研究情報平台。每日自動聚合前沿論文、行業動態
+          與實驗室信號，為研究者和從業者提供結構化洞察。
         </p>
-        <p class="text-pulsar-muted text-xs mt-3 font-ibm-plex-mono">
-          Powered by Moltbot + DashScope
-        </p>
+        <div class="footer-auto-label">
+          <span style="color:#4CAF50;">●</span>
+          由 AI Pipeline 自動生成 · 每日更新
+        </div>
       </div>
 
-      <!-- Quick Links -->
+      <!-- Nav Column 1 -->
       <div>
-        <p class="text-xs font-ibm-plex-mono uppercase tracking-widest text-pulsar-muted mb-3">
-          Quick Links
-        </p>
-        <ul class="space-y-1.5 text-sm">
-          {[
-            ['/ai-daily', 'AI 日報'],
-            ['/vla',      'VLA 研究'],
-            ['/social',   '社交情報'],
-            ['/reports',  '雙週報告'],
-            ['/dashboard','數據面板'],
-          ].map(([href, label]) => (
-            <li>
-              <a
-                href={href}
-                class="text-pulsar-muted hover:text-pulsar-cyan transition-colors font-noto-serif-sc"
-              >
-                {label}
-              </a>
-            </li>
-          ))}
+        <h3 class="footer-col-title">內容頻道</h3>
+        <ul class="footer-links" role="list">
+          <li><a href="/ai-daily">AI App 日報</a></li>
+          <li><a href="/vla">VLA 研究日報</a></li>
+          <li><a href="/social">社交情報</a></li>
+          <li><a href="/reports">雙週報告</a></li>
+          <li><a href="/dashboard">數據面板</a></li>
         </ul>
       </div>
 
-      <!-- Pipeline Status / Info -->
+      <!-- Nav Column 2 -->
       <div>
-        <p class="text-xs font-ibm-plex-mono uppercase tracking-widest text-pulsar-muted mb-3">
-          Pipeline
-        </p>
-        <ul class="space-y-1 text-xs font-ibm-plex-mono text-pulsar-muted">
-          <li><span class="text-green-500">●</span> VLA RSS — daily 09:00</li>
-          <li><span class="text-green-500">●</span> AI Daily — daily 07:00</li>
-          <li><span class="text-green-500">●</span> Entity Tracker — 09:55</li>
-          <li><span class="text-green-500">●</span> Quality Drift — 10:10</li>
-          <li><span class="text-green-500">●</span> Semantic Index — 11:15</li>
+        <h3 class="footer-col-title">系統工具</h3>
+        <ul class="footer-links" role="list">
+          <li><a href="/dashboard">管道儀表板</a></li>
+          <li><a href="#">實體追蹤器</a></li>
+          <li><a href="#">語義搜索</a></li>
+          <li><a href="#">假設校準庫</a></li>
+          <li><a href="#">跨域規則引擎</a></li>
         </ul>
       </div>
+
     </div>
 
-    <!-- Bottom bar -->
-    <div class="mt-8 pt-4 border-t border-pulsar-border flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p class="text-pulsar-muted text-xs font-ibm-plex-mono">
-        &copy; {year} Pulsar · 照見系統
-      </p>
-      <p class="text-pulsar-muted text-xs">
-        Data refreshed daily via cron pipeline
-      </p>
+    <div class="footer-bottom">
+      <span class="footer-copy">
+        PULSAR · 照見 &copy; {year}
+      </span>
+      <span class="footer-version">
+        Pipeline v6 · Qwen3.5-Plus · 每日更新
+      </span>
     </div>
   </div>
 </footer>
