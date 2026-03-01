@@ -36,11 +36,12 @@ jobs:
           version: latest
 
       - name: Sync pipeline data via SSH
-        if: ${{ secrets.DEPLOY_SSH_KEY != '' }}
         env:
           SSH_KEY:  ${{ secrets.DEPLOY_SSH_KEY }}
           SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
           SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+        # Only runs if the SSH_KEY secret is configured
+        if: ${{ env.SSH_KEY != '' }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/deploy_key
