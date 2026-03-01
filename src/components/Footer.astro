@@ -4,6 +4,7 @@
  * Site footer — styled using the Pulsar design system from global.css.
  */
 const year = new Date().getFullYear();
+const base = import.meta.env.BASE_URL;
 ---
 
 <footer aria-label="Site footer">
@@ -28,11 +29,11 @@ const year = new Date().getFullYear();
       <div>
         <h3 class="footer-col-title">內容頻道</h3>
         <ul class="footer-links" role="list">
-          <li><a href="/ai-daily">AI App 日報</a></li>
-          <li><a href="/vla">VLA 研究日報</a></li>
-          <li><a href="/social">社交情報</a></li>
-          <li><a href="/reports">雙週報告</a></li>
-          <li><a href="/dashboard">數據面板</a></li>
+          <li><a href={`${base}/ai-daily`}>AI App 日報</a></li>
+          <li><a href={`${base}/vla`}>VLA 研究日報</a></li>
+          <li><a href={`${base}/social`}>社交情報</a></li>
+          <li><a href={`${base}/reports`}>雙週報告</a></li>
+          <li><a href={`${base}/dashboard`}>數據面板</a></li>
         </ul>
       </div>
 
@@ -40,7 +41,7 @@ const year = new Date().getFullYear();
       <div>
         <h3 class="footer-col-title">系統工具</h3>
         <ul class="footer-links" role="list">
-          <li><a href="/dashboard">管道儀表板</a></li>
+          <li><a href={`${base}/dashboard`}>管道儀表板</a></li>
           <li><a href="#">實體追蹤器</a></li>
           <li><a href="#">語義搜索</a></li>
           <li><a href="#">假設校準庫</a></li>

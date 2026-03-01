@@ -20,6 +20,7 @@ export async function getStaticPaths() {
 
 const { day } = Astro.props;
 const { date, items } = day;
+const base = import.meta.env.BASE_URL;
 
 // Group items by rating for the summary bar
 const byRating: Record<string, typeof items> = {};
@@ -46,9 +47,9 @@ const nextDate = (() => {
   <div class="page-container section">
     <!-- Breadcrumb -->
     <nav aria-label="Breadcrumb" class="mb-6 text-sm font-ibm-plex-mono text-pulsar-muted">
-      <a href="/" class="hover:text-pulsar-text">首頁</a>
+      <a href={base} class="hover:text-pulsar-text">首頁</a>
       <span class="mx-2">/</span>
-      <a href="/ai-daily" class="hover:text-pulsar-text">AI 日報</a>
+      <a href={`${base}/ai-daily`} class="hover:text-pulsar-text">AI 日報</a>
       <span class="mx-2">/</span>
       <span class="text-pulsar-text">{date}</span>
     </nav>
@@ -143,16 +144,16 @@ const nextDate = (() => {
     <hr class="pulsar-divider" />
     <div class="flex items-center justify-between text-sm font-ibm-plex-mono">
       <a
-        href={`/ai-daily/${prevDate}`}
+        href={`${base}/ai-daily/${prevDate}`}
         class="text-pulsar-cyan hover:underline flex items-center gap-1"
       >
         ← {prevDate}
       </a>
-      <a href="/ai-daily" class="text-pulsar-muted hover:text-pulsar-text">
+      <a href={`${base}/ai-daily`} class="text-pulsar-muted hover:text-pulsar-text">
         全部日報
       </a>
       <a
-        href={`/ai-daily/${nextDate}`}
+        href={`${base}/ai-daily/${nextDate}`}
         class="text-pulsar-cyan hover:underline flex items-center gap-1"
       >
         {nextDate} →

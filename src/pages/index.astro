@@ -127,6 +127,7 @@ const socialItems = realSocial.length >= 3 ? realSocial.slice(0, 5) : MOCK_SOCIA
 
 // Pipeline health
 const driftOk = !driftState?.drift_active;
+const base = import.meta.env.BASE_URL;
 const entityCount  = Object.keys(entityIndex.entities).length;
 const labCount     = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
 const methodCount  = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
@@ -160,7 +161,7 @@ const platformIcon: Record<string, string> = {
 ---
 
 <BaseLayout
-  title="PULSAR · 照見"
+  title="總覽 Overview"
   description="AI Research Intelligence — VLA pipeline monitoring, daily picks, and biweekly reflections."
 >
 
@@ -254,7 +255,7 @@ const platformIcon: Record<string, string> = {
           <span class="section-label section-number">02 — 精選列表</span>
           <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>最新精選</h2>
         </div>
-        <a href="/ai-daily" class="section-link btn btn-outline">查看全部 →</a>
+        <a href={`${base}/ai-daily`} class="section-link btn btn-outline">查看全部 →</a>
       </div>
 
       <div class="picks-grid">
@@ -301,7 +302,7 @@ const platformIcon: Record<string, string> = {
           <span class="section-label section-number">03 — 動態追蹤</span>
           <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去72小時</h2>
         </div>
-        <a href="/social" class="section-link btn btn-outline">完整情報 →</a>
+        <a href={`${base}/social`} class="section-link btn btn-outline">完整情報 →</a>
       </div>
 
       <div class="social-scroll-wrapper fade-in-2">
@@ -373,7 +374,7 @@ const platformIcon: Record<string, string> = {
             </div>
           </div>
           <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-subtle);">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--text-tertiary);letter-spacing:0.06em;">
+            <div style="font-family:'Menlo', 'Consolas', monospace;font-size:0.6rem;color:var(--text-tertiary);letter-spacing:0.06em;">
               VLA · AI App 兩域均無連續3日低於基線的漂移事件
             </div>
           </div>
@@ -492,7 +493,7 @@ const platformIcon: Record<string, string> = {
             已涵蓋 8 個來源：論文 · 推理 · SOTA · Release · 理論 · 社交情報 · 熱點 · 校準
           </div>
         </div>
-        <a href="/reports" class="report-cta" aria-label="查看完整雙週報告">
+        <a href={`${base}/reports`} class="report-cta" aria-label="查看完整雙週報告">
           <span class="report-cta-arrow">→</span>
           <span>查看完整報告</span>
         </a>

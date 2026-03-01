@@ -29,6 +29,7 @@ const {
 const siteName = 'Pulsar';
 const fullTitle = title === 'Pulsar' ? siteName : `${title} | ${siteName}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://pulsar.sou350121.github.io');
+const base = import.meta.env.BASE_URL;
 ---
 
 <!doctype html>
@@ -41,7 +42,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://pulsar.s
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Favicon (placeholder — replace with actual asset) -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
 
     <!-- Open Graph -->
     <meta property="og:type"        content="website" />
@@ -76,7 +77,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://pulsar.s
   </head>
 
   <style is:global>
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap');
 
 /* ==========================================================================
    Pulsar — Global CSS
@@ -194,7 +194,7 @@ html {
 body {
   background-color: var(--bg);
   color: var(--text-primary);
-  font-family: 'Noto Serif SC', 'Georgia', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   line-height: 1.7;
   transition: var(--transition-theme);
   min-height: 100vh;
@@ -205,7 +205,7 @@ body {
 
 /* Monospace elements */
 code, kbd, pre, samp {
-  font-family: 'IBM Plex Mono', 'Fira Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.875em;
 }
 
@@ -227,12 +227,12 @@ a:hover { opacity: 0.75; }
 /* ============================================================
    TYPOGRAPHY UTILITIES
 ============================================================ */
-.font-mono   { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
-.font-serif  { font-family: 'Lora', 'Georgia', serif; }
-.font-zh     { font-family: 'Noto Serif SC', 'STSong', serif; }
+.font-mono   { font-family: 'Menlo', 'Consolas', 'Courier New', monospace; }
+.font-serif  { font-family: 'Georgia', 'Songti SC', 'SimSun', serif; }
+.font-zh     { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
 
-h1, h2, h3 { font-family: 'Lora', 'Georgia', serif; font-weight: 600; line-height: 1.3; }
-h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height: 1.4; }
+h1, h2, h3 { font-family: 'Georgia', 'Songti SC', 'SimSun', serif; font-weight: 600; line-height: 1.3; }
+h4, h5, h6 { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; font-weight: 500; line-height: 1.4; }
 
 /* ============================================================
    LAYOUT
@@ -308,7 +308,7 @@ h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height:
 }
 
 .nav-logo {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.18em;
@@ -321,7 +321,7 @@ h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height:
 .nav-logo span { color: var(--accent-amber); }
 
 .nav-logo .logo-zh {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.7rem;
   font-weight: 300;
   letter-spacing: 0.12em;
@@ -346,7 +346,7 @@ h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height:
 }
 
 .nav-links a {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.82rem;
   font-weight: 400;
   color: var(--text-secondary);
@@ -373,7 +373,7 @@ h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height:
 }
 
 .nav-lang {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.7rem;
   color: var(--text-tertiary);
   letter-spacing: 0.08em;
@@ -415,7 +415,7 @@ h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height:
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.65rem;
   color: var(--text-tertiary);
   letter-spacing: 0.08em;
@@ -438,7 +438,7 @@ h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 500; line-height:
 .ticker {
   background: var(--accent-amber);
   color: #07090E;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -520,7 +520,7 @@ html.dark .hero::after {
 }
 
 .hero-date {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -537,7 +537,7 @@ html.dark .hero::after {
 .hero-headline { margin-bottom: 16px; }
 
 .hero-headline .overline {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.68rem;
   letter-spacing: 0.2em;
   color: var(--text-tertiary);
@@ -560,7 +560,7 @@ html.dark .hero::after {
 }
 
 .hero-subtitle {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.95rem;
   color: var(--text-secondary);
   margin-bottom: 40px;
@@ -610,7 +610,7 @@ html.dark .hero::after {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -680,7 +680,7 @@ html.dark .hero::after {
 .hero-card-vla::before { background: var(--rating-wrench); }
 
 .hero-card-label {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   color: var(--text-tertiary);
@@ -699,7 +699,7 @@ html.dark .hero::after {
 }
 
 .hero-card-title {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -754,7 +754,7 @@ html.dark .hero::after {
 }
 
 .section-header .section-label {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   color: var(--text-tertiary);
@@ -764,7 +764,7 @@ html.dark .hero::after {
 }
 
 .section-link {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.7rem;
   color: var(--accent-cyan);
   letter-spacing: 0.06em;
@@ -825,7 +825,7 @@ html.dark .hero::after {
 }
 
 .pick-title {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.92rem;
   font-weight: 500;
   color: var(--text-primary);
@@ -849,14 +849,14 @@ html.dark .hero::after {
 }
 
 .pick-date {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   color: var(--text-tertiary);
   letter-spacing: 0.05em;
 }
 
 .domain-tag {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   padding: 2px 8px;
@@ -940,7 +940,7 @@ html.dark .hero::after {
 }
 
 .social-entity {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.7rem;
   font-weight: 600;
   color: var(--accent-cyan);
@@ -948,7 +948,7 @@ html.dark .hero::after {
 }
 
 .social-time {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   color: var(--text-tertiary);
   margin-left: auto;
@@ -956,14 +956,14 @@ html.dark .hero::after {
 }
 
 .social-content {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.84rem;
   color: var(--text-secondary);
   line-height: 1.75;
 }
 
 .social-tag {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.6rem;
   color: var(--text-tertiary);
   padding: 2px 8px;
@@ -1008,7 +1008,7 @@ html.dark .hero::after {
 }
 
 .dash-card-title {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -1017,7 +1017,7 @@ html.dark .hero::after {
 }
 
 .status-badge {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -1064,7 +1064,7 @@ html.dark .hero::after {
   bottom: -16px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.55rem;
   color: var(--text-tertiary);
   white-space: nowrap;
@@ -1077,14 +1077,14 @@ html.dark .hero::after {
 }
 
 .spark-label {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.6rem;
   color: var(--text-tertiary);
   letter-spacing: 0.05em;
 }
 
 .spark-value {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--accent-amber);
@@ -1101,14 +1101,14 @@ html.dark .hero::after {
 }
 
 .entity-name {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
   letter-spacing: 0.04em;
 }
 
 .entity-count {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.65rem;
   font-weight: 600;
   color: var(--accent-cyan);
@@ -1135,7 +1135,7 @@ html.dark .hero::after {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.8rem;
   color: var(--text-secondary);
 }
@@ -1146,7 +1146,7 @@ html.dark .hero::after {
 .health-name { flex: 1; }
 
 .health-time {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.6rem;
   color: var(--text-tertiary);
 }
@@ -1191,7 +1191,7 @@ html.dark .hero::after {
   position: absolute;
   bottom: -40px;
   left: 40px;
-  font-family: 'Lora', serif;
+  font-family: 'Georgia', serif;
   font-size: 18rem;
   color: rgba(255,255,255,0.02);
   line-height: 1;
@@ -1199,7 +1199,7 @@ html.dark .hero::after {
 }
 
 .report-label {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   color: var(--accent-cyan);
@@ -1209,7 +1209,7 @@ html.dark .hero::after {
 }
 
 .report-title {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: clamp(1.4rem, 3vw, 2rem);
   font-weight: 600;
   color: #E8EEFF;
@@ -1218,7 +1218,7 @@ html.dark .hero::after {
 }
 
 .report-excerpt {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.9rem;
   color: rgba(232,238,255,0.55);
   line-height: 1.85;
@@ -1226,7 +1226,7 @@ html.dark .hero::after {
 }
 
 .report-cta {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -1249,7 +1249,7 @@ html.dark .hero::after {
 }
 
 .report-period-badge {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   color: rgba(232,238,255,0.35);
   margin-top: 4px;
@@ -1264,7 +1264,7 @@ html.dark .hero::after {
    BUTTONS
 ============================================================ */
 .btn {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -1304,7 +1304,7 @@ html.dark .btn-amber { color: #07090E; }
    SOURCE / MISC TAGS
 ============================================================ */
 .source-tag {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.65rem;
   letter-spacing: 0.08em;
   color: var(--text-tertiary);
@@ -1320,7 +1320,7 @@ html.dark .btn-amber { color: #07090E; }
   gap: 0.25rem;
   padding: 0.15rem 0.6rem;
   border-radius: 9999px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -1336,7 +1336,7 @@ html.dark .btn-amber { color: #07090E; }
    DECORATIVE ELEMENTS
 ============================================================ */
 .section-number {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.6rem;
   color: var(--text-tertiary);
   letter-spacing: 0.12em;
@@ -1383,7 +1383,7 @@ footer {
 @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
 
 .footer-brand-logo {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 1.3rem;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -1395,7 +1395,7 @@ footer {
 .footer-brand-logo span { color: var(--accent-amber); }
 
 .footer-tagline {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.85rem;
   color: var(--text-secondary);
   margin-bottom: 16px;
@@ -1403,7 +1403,7 @@ footer {
 }
 
 .footer-auto-label {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   color: var(--text-tertiary);
   letter-spacing: 0.1em;
@@ -1413,7 +1413,7 @@ footer {
 }
 
 .footer-col-title {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -1430,7 +1430,7 @@ footer {
 }
 
 .footer-links a {
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 0.84rem;
   color: var(--text-secondary);
   text-decoration: none;
@@ -1452,7 +1452,7 @@ footer {
 
 .footer-copy,
 .footer-version {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.62rem;
   color: var(--text-tertiary);
   letter-spacing: 0.08em;
@@ -1468,7 +1468,7 @@ footer {
 .prose-pulsar h1,
 .prose-pulsar h2,
 .prose-pulsar h3 {
-  font-family: 'Lora', Georgia, serif;
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
   font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 0.75rem;

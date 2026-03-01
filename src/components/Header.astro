@@ -6,17 +6,21 @@
  */
 import ThemeToggle from './ThemeToggle.astro';
 
+const base = import.meta.env.BASE_URL; // e.g. '/pulsar-web/'
 const nav = [
-  { href: '/',            label: '日　報' },
-  { href: '/vla',         label: 'V L A' },
-  { href: '/social',      label: '社交情報' },
-  { href: '/dashboard',   label: '儀表板' },
-  { href: '/reports',     label: '雙週報告' },
+  { href: base,                   label: '日　報' },
+  { href: `${base}/vla`,           label: 'V L A' },
+  { href: `${base}/social`,        label: '社交情報' },
+  { href: `${base}/dashboard`,     label: '儀表板' },
+  { href: `${base}/reports`,       label: '雙週報告' },
 ];
 
-const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
-const isActive = (href: string) =>
-  href === '/' ? pathname === '/' : pathname.startsWith(href);
+const rootPath = base.replace(/\/$/, '') || '/';
+const pathname = Astro.url.pathname.replace(/\/$/, '') || rootPath;
+const isActive = (href: string) => {
+  const h = href.replace(/\/$/, '') || rootPath;
+  return h === rootPath ? pathname === rootPath : pathname.startsWith(h);
+};
 ---
 
 <nav class="nav" aria-label="Primary navigation">
@@ -24,7 +28,7 @@ const isActive = (href: string) =>
     <div class="nav-inner">
 
       <!-- Logo / Brand -->
-      <a href="/" class="nav-logo" aria-label="PULSAR 照見 — Home">
+      <a href={base} class="nav-logo" aria-label="PULSAR 照見 — Home">
         PUL<span>S</span>AR
         <span class="logo-zh">照　見</span>
       </a>
