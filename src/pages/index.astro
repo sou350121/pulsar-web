@@ -293,6 +293,61 @@ const RULE_LABELS: Record<string, string> = {
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════
+       2.5. SYSTEM BRIEFING — intro + update schedule
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="hp-briefing" aria-label="系統簡介">
+    <div class="container">
+      <div class="hp-briefing-grid">
+
+        <!-- Left: system intro -->
+        <div class="hp-briefing-left">
+          <p class="hp-briefing-overline">SYSTEM BRIEFING · <span data-tc>照見系統</span><span data-sc>照见系统</span></p>
+          <h2 class="hp-briefing-name">PULSAR · <span class="hp-briefing-zh"><span data-tc>照見</span><span data-sc>照见</span></span></h2>
+          <p class="hp-briefing-body">
+            <span data-tc>全自動化 AI + VLA 研究情報系統。每天清晨，Pipeline 自動採集 arxiv 前沿論文、科技媒體動態與研究者社交信號——由大語言模型評級篩選，生成結構化每日情報。</span><span data-sc>全自动化 AI + VLA 研究情报系统。每天清晨，Pipeline 自动采集 arxiv 前沿论文、科技媒体动态与研究者社交讯号——由大语言模型评级筛选，生成结构化每日情报。</span>
+          </p>
+          <p class="hp-briefing-cta">
+            <span class="hp-briefing-cta-dot"></span>
+            <span data-tc>北京時間 12:00 後，當日全部資料就緒。定時看一眼，省下搜索注意力。</span><span data-sc>北京时间 12:00 后，当日全部资料就绪。定时看一眼，省下搜索注意力。</span>
+          </p>
+        </div>
+
+        <!-- Right: pipeline timeline -->
+        <div class="hp-briefing-right">
+          <p class="hp-briefing-tl-label">PIPELINE · <span data-tc>每日更新時序</span><span data-sc>每日更新时序</span></p>
+          <ol class="hp-tl" aria-label="Pipeline 更新時序">
+            <li class="hp-tl-item">
+              <span class="hp-tl-time">06:45</span>
+              <span class="hp-tl-desc"><span data-tc>AI 日報採集</span><span data-sc>AI 日报采集</span></span>
+            </li>
+            <li class="hp-tl-item">
+              <span class="hp-tl-time">09:00</span>
+              <span class="hp-tl-desc"><span data-tc>VLA 論文評級</span><span data-sc>VLA 论文评级</span></span>
+            </li>
+            <li class="hp-tl-item">
+              <span class="hp-tl-time">09:45</span>
+              <span class="hp-tl-desc"><span data-tc>社交情報採集</span><span data-sc>社交情报采集</span></span>
+            </li>
+            <li class="hp-tl-item">
+              <span class="hp-tl-time">10:20</span>
+              <span class="hp-tl-desc"><span data-tc>跨域分析 + 品質監測</span><span data-sc>跨域分析 + 品质监测</span></span>
+            </li>
+            <li class="hp-tl-item">
+              <span class="hp-tl-time">11:15</span>
+              <span class="hp-tl-desc"><span data-tc>語義索引重建完成</span><span data-sc>语义索引重建完成</span></span>
+            </li>
+            <li class="hp-tl-item hp-tl-item--ready">
+              <span class="hp-tl-time hp-tl-time--ready">12:00</span>
+              <span class="hp-tl-desc hp-tl-desc--ready">✓ <span data-tc>定時查閱，一覽無遺</span><span data-sc>定时查阅，一览无遗</span></span>
+            </li>
+          </ol>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
        3. HERO — stat strip + two featured cards
        ═══════════════════════════════════════════════════════════════ -->
   <section class="hero" id="daily" aria-labelledby="hero-title">
@@ -916,6 +971,179 @@ const RULE_LABELS: Record<string, string> = {
   transition: color 0.15s;
 }
 .hp-signal-link:hover { color: var(--accent-cyan); }
+
+/* ── System Briefing ── */
+.hp-briefing {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 48px 0;
+}
+:global(html.dark) .hp-briefing {
+  background: linear-gradient(180deg, #080D18 0%, #070B14 100%);
+  border-color: #1A2840;
+}
+.hp-briefing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .hp-briefing-grid { grid-template-columns: 1fr; gap: 32px; }
+  .hp-briefing { padding: 36px 0; }
+}
+.hp-briefing-overline {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hp-briefing-name {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+  line-height: 1.2;
+}
+.hp-briefing-zh {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--accent-amber);
+}
+:global(html.dark) .hp-briefing-zh {
+  text-shadow: 0 0 16px rgba(245,183,49,0.3);
+}
+.hp-briefing-body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  margin-bottom: 20px;
+  max-width: 420px;
+}
+.hp-briefing-cta {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.7;
+  padding: 12px 16px;
+  background: var(--accent-amber-bg);
+  border: 1px solid rgba(212,145,10,0.2);
+  border-left: 3px solid var(--accent-amber);
+  border-radius: 0 6px 6px 0;
+}
+:global(html.dark) .hp-briefing-cta {
+  background: rgba(245,183,49,0.06);
+  border-color: rgba(245,183,49,0.15);
+  border-left-color: var(--accent-amber);
+  color: #E8EEFF;
+}
+.hp-briefing-cta-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  flex-shrink: 0;
+  margin-top: 0.5em;
+  animation: pulseGlow 2.5s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(212,145,10,0.5);
+}
+/* ── Timeline ── */
+.hp-briefing-tl-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hp-tl {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 1px solid var(--border);
+  margin-left: 4px;
+}
+:global(html.dark) .hp-tl { border-left-color: #1A2840; }
+.hp-tl-item {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 9px 0 9px 20px;
+  position: relative;
+}
+.hp-tl-item::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 1px solid var(--border-subtle);
+}
+:global(html.dark) .hp-tl-item::before {
+  background: #1A2840;
+  border-color: #1E2D4A;
+}
+.hp-tl-item--ready::before {
+  background: var(--accent-amber);
+  border-color: rgba(212,145,10,0.4);
+  box-shadow: 0 0 8px rgba(212,145,10,0.4);
+  width: 9px;
+  height: 9px;
+  left: -5px;
+}
+:global(html.dark) .hp-tl-item--ready::before {
+  background: var(--accent-amber);
+  box-shadow: 0 0 10px rgba(245,183,49,0.5);
+}
+.hp-tl-time {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  width: 2.8rem;
+  flex-shrink: 0;
+}
+.hp-tl-time--ready {
+  color: var(--accent-amber);
+  font-size: 0.78rem;
+}
+:global(html.dark) .hp-tl-time--ready {
+  text-shadow: 0 0 10px rgba(245,183,49,0.4);
+}
+.hp-tl-desc {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+.hp-tl-desc--ready {
+  color: var(--accent-amber);
+  font-weight: 600;
+  font-size: 0.86rem;
+}
+:global(html.dark) .hp-tl-desc--ready {
+  color: var(--accent-amber);
+  text-shadow: 0 0 8px rgba(245,183,49,0.25);
+}
 
 /* ── Cross-domain pulse section ── */
 .hp-xd-section {
