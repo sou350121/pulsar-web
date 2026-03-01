@@ -457,3 +457,34 @@ export function extractMarkdownSummary(content: string, maxLen: number = 300): s
     .slice(0, maxLen)
     .concat(content.length > maxLen ? '…' : '');
 }
+
+// ---------------------------------------------------------------------------
+// CalibrationCheck — shape of calibration-check-YYYY-MM-DD.json
+// ---------------------------------------------------------------------------
+export interface CalibrationCheck {
+  triggered: boolean;
+  triggers: string[];          // triggered assumption descriptions
+  vla_assumptions_scanned: number;
+  ai_assumptions_scanned: number;
+  executed_at: string;
+}
+
+// ---------------------------------------------------------------------------
+// loadLatestCalibration
+// Reads the newest calibration-check-YYYY-MM-DD.json from src/data/.
+// ---------------------------------------------------------------------------
+export function loadLatestCalibration(): CalibrationCheck | null {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('calibration-check-') && f.endsWith('.json'))
+      .sort()
+      .reverse();
+  } catch {
+    return null;
+  }
+  if (files.length === 0) return null;
+  const data = readJson<CalibrationCheck>(files[0]);
+  return data ?? null;
+}

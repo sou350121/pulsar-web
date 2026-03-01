@@ -9,7 +9,14 @@ import {
   loadEntityIndex,
   loadUpstreamSignals,
   getTopEntities,
+  loadVLADailyPicks,
+  loadAIDailyPicks,
+  loadVLASOTA,
+  loadLatestCalibration,
   type DriftMetricsFile,
+  type VLASOTAEntry,
+  type DailyPickDay,
+  type CalibrationCheck,
 } from '../../utils/data';
 
 const { metrics: driftMetrics, state: driftState } = loadDriftMetrics();
@@ -62,6 +69,36 @@ const placeholderMethods = [
   ['FlowMatching',18],['DiffusionPolicy',14],['DreamerV3',10],
   ['JEPA',8],['ACT',7],['RT-2',6],['GR00T',5],['Pi0',5],['RDT',4],['OpenVLA',4],
 ] as [string, number][];
+
+// ── New panel data ────────────────────────────────────────────────
+const vlaDailyPicks = loadVLADailyPicks(3);   // last 3 days
+const aiDailyPicks  = loadAIDailyPicks(2);    // last 2 days
+const vlaSota       = loadVLASOTA(10);
+const calibration   = loadLatestCalibration();
+
+// VLA today's signals — most recent day, ⚡/🔧 rated only
+const vlatodayItems = (vlaDailyPicks[0]?.items ?? []).filter(
+  it => it.rating === '⚡' || it.rating === '🔧'
+).slice(0, 6);
+
+// AI recent picks — last 2 days, max 6 items total
+const aiRecentItems = aiDailyPicks.flatMap(d => d.items).slice(0, 6);
+
+// VLA SOTA grouped by benchmark — take best entry per benchmark
+const sotaByBenchmark = new Map<string, VLASOTAEntry>();
+for (const e of vlaSota) {
+  if (!sotaByBenchmark.has(e.benchmark)) {
+    sotaByBenchmark.set(e.benchmark, e);
+  }
+}
+const sotaEntries = [...sotaByBenchmark.values()].slice(0, 8);
+
+// Calibration data
+const calibTriggered  = calibration?.triggered ?? false;
+const calibTriggers   = calibration?.triggers  ?? [];
+const calibVLAScanned = calibration?.vla_assumptions_scanned ?? 0;
+const calibAIScanned  = calibration?.ai_assumptions_scanned  ?? 0;
+const calibDate       = calibration?.executed_at?.slice(0, 10) ?? '—';
 ---
 
 <BaseLayout
@@ -237,6 +274,107 @@ const placeholderMethods = [
             );
           })}
         </div>
+      </div>
+
+      <!-- Today's VLA Signals -->
+      <div class="db-panel db-panel--full">
+        <div class="db-panel-header">
+          <span class="db-panel-title">今日 VLA 訊號</span>
+          <span class="db-panel-meta">{vlaDailyPicks[0]?.date ?? '—'} · ⚡🔧 only</span>
+        </div>
+        {vlatodayItems.length === 0 ? (
+          <p class="db-empty">今日暫無評分訊號</p>
+        ) : (
+          <div class="db-signal-list">
+            {vlatodayItems.map(item => (
+              <div class="db-signal-row">
+                <span class="db-signal-tag" data-rating={item.rating}>{item.rating}</span>
+                <div class="db-signal-body">
+                  <a href={item.url} target="_blank" rel="noopener" class="db-signal-title">{item.title}</a>
+                  {item.summary && <p class="db-signal-reason">{item.summary.slice(0, 120)}{item.summary.length > 120 ? '…' : ''}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Recent AI Picks -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title">AI 近況精選</span>
+          <span class="db-panel-meta">最近 2 日</span>
+        </div>
+        {aiRecentItems.length === 0 ? (
+          <p class="db-empty">暫無數據</p>
+        ) : (
+          <div class="db-signal-list">
+            {aiRecentItems.map(item => (
+              <div class="db-signal-row">
+                <span class="db-ai-tag">{(item.rating as string).slice(0, 2)}</span>
+                <div class="db-signal-body">
+                  <a href={item.url} target="_blank" rel="noopener" class="db-signal-title">{item.title}</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- VLA SOTA Leaderboard -->
+      <div class="db-panel db-panel--table">
+        <div class="db-panel-header">
+          <span class="db-panel-title">VLA SOTA</span>
+          <span class="db-panel-meta">per benchmark · latest</span>
+        </div>
+        {sotaEntries.length === 0 ? (
+          <p class="db-empty">暫無數據</p>
+        ) : (
+          <div class="db-sota-list">
+            {sotaEntries.map((e, i) => (
+              <div class="db-sota-row">
+                <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
+                <div class="db-sota-info">
+                  <span class="db-sota-bench">{e.benchmark}{e.split ? ` (${e.split})` : ''}</span>
+                  <span class="db-sota-model">{e.model}</span>
+                </div>
+                <div class="db-sota-value">
+                  <span class="db-sota-num">{typeof e.value === 'number' ? e.value.toFixed(1) : e.value}</span>
+                  <span class="db-sota-metric">{e.metric}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Calibration Status -->
+      <div class={`db-panel ${calibTriggered ? 'db-panel--alert' : ''}`}>
+        <div class="db-panel-header">
+          <span class="db-panel-title">假設校準</span>
+          <span class="db-panel-meta">{calibDate}</span>
+        </div>
+        <div class="db-calib-stats">
+          <div class="db-calib-stat">
+            <span class="db-calib-num">{calibVLAScanned}</span>
+            <span class="db-calib-label">VLA 假設掃描</span>
+          </div>
+          <div class="db-calib-stat">
+            <span class="db-calib-num">{calibAIScanned}</span>
+            <span class="db-calib-label">AI 假設掃描</span>
+          </div>
+          <div class={`db-calib-stat ${calibTriggered ? 'db-calib-stat--alert' : 'db-calib-stat--ok'}`}>
+            <span class="db-calib-num">{calibTriggers.length}</span>
+            <span class="db-calib-label">觸發假設</span>
+          </div>
+        </div>
+        {calibTriggers.length > 0 && (
+          <div class="db-calib-triggers">
+            {calibTriggers.slice(0, 3).map(t => (
+              <div class="db-calib-trigger">⚠ {t.slice(0, 80)}{t.length > 80 ? '…' : ''}</div>
+            ))}
+          </div>
+        )}
       </div>
 
     </div>
@@ -729,5 +867,223 @@ html.dark .db-rank-bar--amber { box-shadow: 0 0 4px rgba(245,183,49,0.5); }
   }
 
   .db-rank-bar-wrap { width: 40px; }
+}
+
+/* ── Full-width panel ── */
+.db-panel--full {
+  grid-column: 1 / -1;
+}
+
+/* ── Alert panel ── */
+html.dark .db-panel--alert {
+  border-color: rgba(245,183,49,0.35);
+  box-shadow: 0 0 0 1px rgba(245,183,49,0.08), 0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* ── Signal list ── */
+.db-signal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.db-signal-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.db-signal-tag {
+  font-size: 1rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+  filter: drop-shadow(0 0 4px rgba(255,200,0,0.3));
+}
+
+.db-signal-tag[data-rating="⚡"] { filter: drop-shadow(0 0 5px rgba(255,215,0,0.5)); }
+.db-signal-tag[data-rating="🔧"] { filter: drop-shadow(0 0 5px rgba(62,207,207,0.4)); }
+
+.db-ai-tag {
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  opacity: 0.8;
+  padding-top: 1px;
+  width: 1.5rem;
+  text-align: center;
+}
+
+.db-signal-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.db-signal-title {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.db-signal-title:hover {
+  color: var(--accent-cyan);
+}
+
+html.dark .db-signal-title:hover {
+  text-shadow: 0 0 8px rgba(62,207,207,0.4);
+}
+
+.db-signal-reason {
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+/* ── VLA SOTA ── */
+.db-sota-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.db-sota-row {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+html.dark .db-sota-row { border-bottom-color: #0F1A2A; }
+.db-sota-row:last-child { border-bottom: none; }
+
+.db-sota-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.db-sota-bench {
+  font-size: 0.68rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-sota-model {
+  font-size: 0.58rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.db-sota-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.db-sota-num {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  letter-spacing: -0.02em;
+}
+
+html.dark .db-sota-num {
+  text-shadow: 0 0 8px rgba(62,207,207,0.4);
+}
+
+.db-sota-metric {
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+/* ── Calibration ── */
+.db-calib-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.db-calib-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 6px;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-subtle);
+}
+
+html.dark .db-calib-stat {
+  background: #0A1020;
+  border-color: #131E30;
+}
+
+.db-calib-num {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.db-calib-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.db-calib-stat--ok .db-calib-num  { color: #00C060; }
+.db-calib-stat--alert .db-calib-num { color: var(--accent-amber); }
+
+html.dark .db-calib-stat--ok .db-calib-num    { color: #00FF88; text-shadow: 0 0 10px rgba(0,255,136,0.4); }
+html.dark .db-calib-stat--alert .db-calib-num { color: var(--accent-amber); text-shadow: 0 0 10px rgba(245,183,49,0.4); }
+
+.db-calib-triggers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+html.dark .db-calib-triggers { border-top-color: #131E30; }
+
+.db-calib-trigger {
+  font-size: 0.62rem;
+  color: var(--accent-amber);
+  line-height: 1.5;
+  padding: 4px 8px;
+  border-left: 2px solid rgba(245,183,49,0.4);
+  background: rgba(245,183,49,0.04);
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Empty state ── */
+.db-empty {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 20px 0;
+  opacity: 0.6;
 }
 </style>
