@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Deploy Pulsar to GitHub Pages
 
 on:
@@ -48,28 +47,27 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
           ssh -i ~/.ssh/deploy_key "$SSH_USER@$SSH_HOST" \
-            "sudo python3.11
-          /home/claudeuser/pulsar-web/scripts/sync-data.py --verbose 2>&1"
-                    rsync -avz \
-                      -e "ssh -i ~/.ssh/deploy_key" \
-                      "$SSH_USER@$SSH_HOST:/home/claudeuser/pulsar-web/src/data/" \
-                      "./src/data/"
-          
-                - name: Install dependencies
-                  run: pnpm install --frozen-lockfile
-          
-                - name: Type-check
-                  run: pnpm exec astro check
-                  continue-on-error: true
-          
-                - name: Build Astro site
-                  run: pnpm build
-          
-                - name: Upload Pages artifact
-                  uses: actions/upload-pages-artifact@v3
-                  with:
-                    path: dist/
-          
-                - name: Deploy to GitHub Pages
-                  id: deployment
-                  uses: actions/deploy-pages@v4
+            "sudo python3.11 /home/claudeuser/pulsar-web/scripts/sync-data.py --verbose 2>&1"
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            "$SSH_USER@$SSH_HOST:/home/claudeuser/pulsar-web/src/data/" \
+            "./src/data/"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm exec astro check
+        continue-on-error: true
+
+      - name: Build Astro site
+        run: pnpm build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
