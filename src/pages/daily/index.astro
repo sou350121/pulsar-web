@@ -43,6 +43,14 @@ const summaryDates = [
 const dateFrom = summaryDates[0] ?? '';
 const dateTo   = summaryDates[summaryDates.length - 1] ?? '';
 
+// ── 3-day content feed ────────────────────────────────────────────────────────
+const threeAI  = aiDays.slice(0, 3);
+const threeVLA = vlaDays.slice(0, 3);
+const threeDayDates = [...new Set([
+  ...threeAI.map(d => d.date),
+  ...threeVLA.map(d => d.date),
+])].sort().reverse().slice(0, 3);
+
 function srcTag(s: string): string {
   return (s ?? 'SRC').toUpperCase().slice(0, 8);
 }
@@ -206,6 +214,60 @@ let lastMonth = '';
             </a>
           )}
         </div>
+
+      </section>
+    )}
+
+    <!-- ── 3-Day Content Feed ── -->
+    {threeDayDates.length > 0 && (
+      <section class="recent-block" aria-label="近3天內容">
+
+        <div class="recent-header">
+          <span class="recent-eyebrow"><span data-tc>近 3 天內容</span><span data-sc>近 3 天内容</span></span>
+          <span class="recent-range">{threeDayDates[threeDayDates.length - 1]?.slice(5)} → {threeDayDates[0]?.slice(5)}</span>
+        </div>
+
+        {threeDayDates.map(date => {
+          const aiDay  = threeAI.find(d => d.date === date);
+          const vlaDay = threeVLA.find(d => d.date === date);
+          const recency = recencyLabel(date);
+          const allItems = [
+            ...(aiDay?.items  ?? []).map(i => ({ ...i, domain: 'ai'  as const })),
+            ...(vlaDay?.items ?? []).map(i => ({ ...i, domain: 'vla' as const })),
+          ];
+          if (allItems.length === 0) return null;
+          return (
+            <div class="recent-day">
+              <div class="recent-day-hd">
+                <span class="recent-day-date">{date}</span>
+                {recency && <span class="recency-tag">{recency}</span>}
+                <span class="recent-day-count">{allItems.length} <span data-tc>條</span><span data-sc>条</span></span>
+              </div>
+              <div class="recent-items">
+                {allItems.map(item => {
+                  const emoji = [...item.rating][0] ?? item.rating;
+                  const href  = item.domain === 'ai'
+                    ? `${base}/ai-daily/${date}`
+                    : `${base}/vla/${date}`;
+                  return (
+                    <a
+                      href={item.url ?? href}
+                      target={item.url ? '_blank' : undefined}
+                      rel={item.url ? 'noopener noreferrer' : undefined}
+                      class:list={['recent-item', `recent-item--${item.domain}`]}
+                    >
+                      <span class="recent-emoji" aria-hidden="true">{emoji}</span>
+                      <span class="recent-title">{item.title}</span>
+                      <span class:list={['recent-domain', `recent-domain--${item.domain}`]}>
+                        {item.domain === 'ai' ? 'AI' : 'VLA'}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
 
       </section>
     )}
@@ -573,6 +635,142 @@ let lastMonth = '';
 
 .qj-link--ai:hover  { border-color: var(--accent-amber); color: var(--accent-amber); background: var(--accent-amber-bg); }
 .qj-link--vla:hover { border-color: var(--accent-cyan);  color: var(--accent-cyan);  background: var(--accent-cyan-bg); }
+
+/* ── 3-day content feed ── */
+.recent-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 24px 18px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.recent-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan) 0%, var(--accent-amber) 100%);
+}
+
+.recent-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.recent-eyebrow {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.recent-range {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+.recent-day {
+  margin-bottom: 20px;
+}
+.recent-day:last-child { margin-bottom: 0; }
+
+.recent-day-hd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.recent-day-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.recent-day-count {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.58rem;
+  color: var(--text-tertiary);
+  margin-left: auto;
+  opacity: 0.75;
+}
+
+.recent-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recent-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+}
+.recent-item:hover {
+  background: var(--surface-2);
+}
+
+.recent-item--ai:hover  .recent-title { color: var(--accent-amber); }
+.recent-item--vla:hover .recent-title { color: var(--accent-cyan); }
+
+.recent-emoji {
+  font-size: 0.72rem;
+  flex-shrink: 0;
+  width: 1.2em;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.recent-title {
+  flex: 1;
+  font-size: 0.82rem;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  transition: color 0.12s;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recent-domain {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.recent-domain--ai  { color: var(--accent-amber); background: var(--accent-amber-bg); }
+.recent-domain--vla { color: var(--accent-cyan);  background: var(--accent-cyan-bg); }
+
+@media (max-width: 640px) {
+  .recent-block { padding: 16px; }
+  .recent-title { font-size: 0.78rem; }
+}
 
 /* ── Archive header row ── */
 .archive-header-row {
