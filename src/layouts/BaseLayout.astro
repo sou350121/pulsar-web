@@ -63,15 +63,15 @@ const base = import.meta.env.BASE_URL;
     <!--
       Theme initialisation — must run BEFORE first paint to avoid flash.
       Reads localStorage and applies the 'dark' class to <html> synchronously.
-      Defaults to LIGHT mode (no class needed for light; dark adds class).
+      Defaults to DARK mode (adds class unless user explicitly chose light).
     -->
     <script is:inline>
       (function() {
         var saved = localStorage.getItem('pulsar-theme');
-        if (saved === 'dark') {
+        if (saved !== 'light') {
           document.documentElement.classList.add('dark');
         }
-        // Default: light mode (no class needed)
+        // Default: dark mode
       })();
     </script>
 
