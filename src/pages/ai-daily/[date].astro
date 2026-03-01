@@ -29,16 +29,22 @@ for (const item of items) {
   (byRating[item.rating] ??= []).push(item);
 }
 
-const prevDate = (() => {
-  const d = new Date(date);
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
-})();
-const nextDate = (() => {
-  const d = new Date(date);
-  d.setDate(d.getDate() + 1);
-  return d.toISOString().slice(0, 10);
-})();
+// Load all days to find actual prev/next dates and their counts
+const allDays = loadAIDailyPicks(90);
+const allDates = allDays.map(d => d.date).sort();
+const idx = allDates.indexOf(date);
+const prevDate = idx > 0 ? allDates[idx - 1] : null;
+const nextDate = idx < allDates.length - 1 ? allDates[idx + 1] : null;
+
+// Count articles for prev/next nav boxes
+const prevCount = prevDate ? (allDays.find(d => d.date === prevDate)?.items.length ?? 0) : 0;
+const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.length ?? 0) : 0;
+
+// Format date for breadcrumb display
+function formatDateDisplay(d: string): string {
+  const [y, m, day] = d.split('-');
+  return `${y} 年 ${parseInt(m, 10)} 月 ${parseInt(day, 10)} 日`;
+}
 ---
 
 <BaseLayout
@@ -59,12 +65,12 @@ const nextDate = (() => {
 
   <div class="page-container section">
     <!-- Breadcrumb -->
-    <nav aria-label="Breadcrumb" class="mb-6 text-sm font-ibm-plex-mono text-pulsar-muted">
-      <a href={base} class="hover:text-pulsar-text">首頁</a>
-      <span class="mx-2">/</span>
-      <a href={`${base}/ai-daily`} class="hover:text-pulsar-text">AI 日報</a>
-      <span class="mx-2">/</span>
-      <span class="text-pulsar-text">{date}</span>
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href={base} class="breadcrumb-link">首頁</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href={`${base}/ai-daily`} class="breadcrumb-link">AI 日報</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">{date}</span>
     </nav>
 
     <!-- Header -->
@@ -153,24 +159,276 @@ const nextDate = (() => {
       </div>
     )}
 
-    <!-- Pagination -->
+    <!-- ── Pagination ── -->
     <hr class="pulsar-divider" />
-    <div class="flex items-center justify-between text-sm font-ibm-plex-mono">
-      <a
-        href={`${base}/ai-daily/${prevDate}`}
-        class="text-pulsar-cyan hover:underline flex items-center gap-1"
-      >
-        ← {prevDate}
-      </a>
-      <a href={`${base}/ai-daily`} class="text-pulsar-muted hover:text-pulsar-text">
-        全部日報
-      </a>
-      <a
-        href={`${base}/ai-daily/${nextDate}`}
-        class="text-pulsar-cyan hover:underline flex items-center gap-1"
-      >
-        {nextDate} →
-      </a>
+
+    <nav class="pagination-nav" aria-label="日報導航">
+      <!-- Prev box -->
+      <div class="pagination-prev-slot">
+        {prevDate ? (
+          <a href={`${base}/ai-daily/${prevDate}`} class="pagination-box pagination-box-prev">
+            <span class="pagination-dir">← 前一天</span>
+            <span class="pagination-date">{prevDate}</span>
+            {prevCount > 0 && (
+              <span class="pagination-count">{prevCount} 篇</span>
+            )}
+          </a>
+        ) : (
+          <div class="pagination-box pagination-box-disabled" aria-hidden="true">
+            <span class="pagination-dir">← 前一天</span>
+            <span class="pagination-date">—</span>
+          </div>
+        )}
+      </div>
+
+      <!-- Center: back to list -->
+      <div class="pagination-center">
+        <a href={`${base}/ai-daily`} class="pagination-list-btn">
+          返回日報列表
+        </a>
+      </div>
+
+      <!-- Next box -->
+      <div class="pagination-next-slot">
+        {nextDate ? (
+          <a href={`${base}/ai-daily/${nextDate}`} class="pagination-box pagination-box-next">
+            <span class="pagination-dir">下一天 →</span>
+            <span class="pagination-date">{nextDate}</span>
+            {nextCount > 0 && (
+              <span class="pagination-count">{nextCount} 篇</span>
+            )}
+          </a>
+        ) : (
+          <div class="pagination-box pagination-box-disabled" aria-hidden="true">
+            <span class="pagination-dir">下一天 →</span>
+            <span class="pagination-date">—</span>
+          </div>
+        )}
+      </div>
+    </nav>
+
+    <!-- Breadcrumb trail below pagination -->
+    <div class="pagination-breadcrumb">
+      <a href={base} class="pag-bc-link">首頁</a>
+      <span class="pag-bc-sep">/</span>
+      <a href={`${base}/ai-daily`} class="pag-bc-link">AI 日報</a>
+      <span class="pag-bc-sep">/</span>
+      <span class="pag-bc-current">{date}</span>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+/* ── Breadcrumb (top) ── */
+.breadcrumb {
+  margin-bottom: 1.5rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.breadcrumb-link:hover {
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+.breadcrumb-sep {
+  color: var(--border);
+  margin: 0 0.2rem;
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── Pagination nav ── */
+.pagination-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.pagination-prev-slot { display: flex; justify-content: flex-start; }
+.pagination-next-slot { display: flex; justify-content: flex-end; }
+.pagination-center    { display: flex; justify-content: center; }
+
+/* Shared box style */
+.pagination-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  min-width: 130px;
+  max-width: 200px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Prev: amber accent on left edge */
+.pagination-box-prev {
+  border-left: 3px solid var(--accent-amber);
+}
+.pagination-box-prev:hover {
+  background: var(--surface-2);
+  box-shadow: var(--shadow-card);
+  transform: translateX(-2px);
+}
+.pagination-box-prev:hover .pagination-date {
+  color: var(--accent-amber);
+}
+
+/* Next: amber accent on right edge */
+.pagination-box-next {
+  border-right: 3px solid var(--accent-amber);
+  text-align: right;
+  align-items: flex-end;
+}
+.pagination-box-next:hover {
+  background: var(--surface-2);
+  box-shadow: var(--shadow-card);
+  transform: translateX(2px);
+}
+.pagination-box-next:hover .pagination-date {
+  color: var(--accent-amber);
+}
+
+/* Disabled (no prev/next) */
+.pagination-box-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.pagination-dir {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.pagination-date {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+
+.pagination-count {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--accent-amber);
+  font-weight: 600;
+  background: var(--accent-amber-bg);
+  padding: 1px 6px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+/* Center pill button */
+.pagination-list-btn {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 0.5rem 1.1rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pagination-list-btn:hover {
+  background: var(--accent-amber-bg);
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+  opacity: 1;
+}
+
+/* Bottom breadcrumb trail */
+.pagination-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+.pag-bc-link {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.pag-bc-link:hover {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+
+.pag-bc-sep {
+  color: var(--border);
+  margin: 0 0.2rem;
+}
+
+.pag-bc-current {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ── Mobile: stack pagination vertically ── */
+@media (max-width: 640px) {
+  .pagination-nav {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .pagination-prev-slot,
+  .pagination-next-slot,
+  .pagination-center {
+    justify-content: stretch;
+  }
+
+  .pagination-center {
+    order: 2;
+  }
+
+  .pagination-prev-slot { order: 1; }
+  .pagination-next-slot { order: 3; }
+
+  .pagination-box {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .pagination-box-next {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+</style>

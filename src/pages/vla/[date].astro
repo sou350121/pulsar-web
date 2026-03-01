@@ -2,6 +2,8 @@
 /**
  * src/pages/vla/[date].astro
  * VLA Daily detail — individual day view, VLA items only.
+ * Features upgraded pagination with styled prev/next boxes, pill list button,
+ * and breadcrumb trail. Uses cyan accent for VLA brand distinction.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
@@ -27,13 +29,16 @@ for (const item of items) {
   (byRating[item.rating] ??= []).push(item);
 }
 
-// Find prev/next VLA date (may not be consecutive calendar days)
-const vlaDatesSorted = loadVLADailyPicks(90)
-  .map(d => d.date)
-  .sort();
+// Load all VLA days for correct prev/next (non-consecutive calendar days)
+const allDays = loadVLADailyPicks(90);
+const vlaDatesSorted = allDays.map(d => d.date).sort();
 const idx = vlaDatesSorted.indexOf(date);
 const prevDate = idx > 0 ? vlaDatesSorted[idx - 1] : null;
 const nextDate = idx < vlaDatesSorted.length - 1 ? vlaDatesSorted[idx + 1] : null;
+
+// Count articles for prev/next nav boxes
+const prevCount = prevDate ? (allDays.find(d => d.date === prevDate)?.items.length ?? 0) : 0;
+const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.length ?? 0) : 0;
 ---
 
 <BaseLayout
@@ -54,12 +59,12 @@ const nextDate = idx < vlaDatesSorted.length - 1 ? vlaDatesSorted[idx + 1] : nul
 
   <div class="page-container section">
     <!-- Breadcrumb -->
-    <nav aria-label="Breadcrumb" class="mb-6 text-sm font-ibm-plex-mono text-pulsar-muted">
-      <a href={base} class="hover:text-pulsar-text">首頁</a>
-      <span class="mx-2">/</span>
-      <a href={`${base}/vla`} class="hover:text-pulsar-text">VLA 日報</a>
-      <span class="mx-2">/</span>
-      <span class="text-pulsar-text">{date}</span>
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href={base} class="breadcrumb-link">首頁</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href={`${base}/vla`} class="breadcrumb-link">VLA 日報</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">{date}</span>
     </nav>
 
     <!-- Header -->
@@ -140,22 +145,277 @@ const nextDate = idx < vlaDatesSorted.length - 1 ? vlaDatesSorted[idx + 1] : nul
       </div>
     )}
 
-    <!-- Pagination -->
+    <!-- ── Pagination ── -->
     <hr class="pulsar-divider" />
-    <div class="flex items-center justify-between text-sm font-ibm-plex-mono">
-      {prevDate ? (
-        <a href={`${base}/vla/${prevDate}`} class="text-pulsar-cyan hover:underline flex items-center gap-1">
-          ← {prevDate}
+
+    <nav class="pagination-nav" aria-label="VLA 日報導航">
+      <!-- Prev box -->
+      <div class="pagination-prev-slot">
+        {prevDate ? (
+          <a href={`${base}/vla/${prevDate}`} class="pagination-box pagination-box-prev">
+            <span class="pagination-dir">← 前一期</span>
+            <span class="pagination-date">{prevDate}</span>
+            {prevCount > 0 && (
+              <span class="pagination-count">{prevCount} 篇</span>
+            )}
+          </a>
+        ) : (
+          <div class="pagination-box pagination-box-disabled" aria-hidden="true">
+            <span class="pagination-dir">← 前一期</span>
+            <span class="pagination-date">—</span>
+          </div>
+        )}
+      </div>
+
+      <!-- Center: back to list -->
+      <div class="pagination-center">
+        <a href={`${base}/vla`} class="pagination-list-btn">
+          返回 VLA 日報
         </a>
-      ) : <span />}
-      <a href={`${base}/vla`} class="text-pulsar-muted hover:text-pulsar-text">
-        全部 VLA 日報
-      </a>
-      {nextDate ? (
-        <a href={`${base}/vla/${nextDate}`} class="text-pulsar-cyan hover:underline flex items-center gap-1">
-          {nextDate} →
-        </a>
-      ) : <span />}
+      </div>
+
+      <!-- Next box -->
+      <div class="pagination-next-slot">
+        {nextDate ? (
+          <a href={`${base}/vla/${nextDate}`} class="pagination-box pagination-box-next">
+            <span class="pagination-dir">下一期 →</span>
+            <span class="pagination-date">{nextDate}</span>
+            {nextCount > 0 && (
+              <span class="pagination-count">{nextCount} 篇</span>
+            )}
+          </a>
+        ) : (
+          <div class="pagination-box pagination-box-disabled" aria-hidden="true">
+            <span class="pagination-dir">下一期 →</span>
+            <span class="pagination-date">—</span>
+          </div>
+        )}
+      </div>
+    </nav>
+
+    <!-- Breadcrumb trail below pagination -->
+    <div class="pagination-breadcrumb">
+      <a href={base} class="pag-bc-link">首頁</a>
+      <span class="pag-bc-sep">/</span>
+      <a href={`${base}/vla`} class="pag-bc-link">VLA 日報</a>
+      <span class="pag-bc-sep">/</span>
+      <span class="pag-bc-current">{date}</span>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+/* ── Breadcrumb (top) ── */
+.breadcrumb {
+  margin-bottom: 1.5rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.breadcrumb-link:hover {
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+.breadcrumb-sep {
+  color: var(--border);
+  margin: 0 0.2rem;
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ── Pagination nav ── */
+.pagination-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.pagination-prev-slot { display: flex; justify-content: flex-start; }
+.pagination-next-slot { display: flex; justify-content: flex-end; }
+.pagination-center    { display: flex; justify-content: center; }
+
+/* Shared box style */
+.pagination-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  min-width: 130px;
+  max-width: 200px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Prev: cyan accent on left edge for VLA */
+.pagination-box-prev {
+  border-left: 3px solid var(--accent-cyan);
+}
+.pagination-box-prev:hover {
+  background: var(--surface-2);
+  box-shadow: var(--shadow-card);
+  transform: translateX(-2px);
+}
+.pagination-box-prev:hover .pagination-date {
+  color: var(--accent-cyan);
+}
+
+/* Next: cyan accent on right edge for VLA */
+.pagination-box-next {
+  border-right: 3px solid var(--accent-cyan);
+  text-align: right;
+  align-items: flex-end;
+}
+.pagination-box-next:hover {
+  background: var(--surface-2);
+  box-shadow: var(--shadow-card);
+  transform: translateX(2px);
+}
+.pagination-box-next:hover .pagination-date {
+  color: var(--accent-cyan);
+}
+
+/* Disabled (no prev/next) */
+.pagination-box-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.pagination-dir {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.pagination-date {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+
+/* Cyan count pill for VLA */
+.pagination-count {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--accent-cyan);
+  font-weight: 600;
+  background: var(--accent-cyan-bg);
+  padding: 1px 6px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+/* Center pill button — cyan tint for VLA */
+.pagination-list-btn {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 0.5rem 1.1rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pagination-list-btn:hover {
+  background: var(--accent-cyan-bg);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  opacity: 1;
+}
+
+/* Bottom breadcrumb trail */
+.pagination-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+.pag-bc-link {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.pag-bc-link:hover {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+
+.pag-bc-sep {
+  color: var(--border);
+  margin: 0 0.2rem;
+}
+
+.pag-bc-current {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ── Mobile: stack pagination vertically ── */
+@media (max-width: 640px) {
+  .pagination-nav {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .pagination-prev-slot,
+  .pagination-next-slot,
+  .pagination-center {
+    justify-content: stretch;
+  }
+
+  .pagination-center {
+    order: 2;
+  }
+
+  .pagination-prev-slot { order: 1; }
+  .pagination-next-slot { order: 3; }
+
+  .pagination-box {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .pagination-box-next {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+</style>

@@ -1,22 +1,61 @@
 ---
 /**
  * src/pages/ai-daily/index.astro
- * AI 日報 archive list — shows recent days with item counts and top ratings.
+ * AI 日報 archive list — newspaper-edition style with month grouping,
+ * relative time indicators, and bold editorial header.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import RatingBadge from '../../components/RatingBadge.astro';
 import { loadAIDailyPicks } from '../../utils/data';
 
-const picks = loadAIDailyPicks(30);  // last 30 days
+const picks = loadAIDailyPicks(60);  // last 60 days
 
-// Count ratings per day for quick at-a-glance stats
+// Compute rating counts + first article title per day
 const daysWithStats = picks.map(day => {
   const counts = day.items.reduce<Record<string, number>>((acc, item) => {
     acc[item.rating] = (acc[item.rating] ?? 0) + 1;
     return acc;
   }, {});
-  return { ...day, counts };
+  const firstTitle = day.items[0]?.title ?? '';
+  return { ...day, counts, firstTitle };
 });
+
+// Format date: "2026 · 03 · 01"
+function formatDateDots(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-');
+  return `${y} · ${m} · ${d}`;
+}
+
+// Relative time label for recent entries
+function relativeLabel(dateStr: string, index: number): string | null {
+  if (index === 0) return '最新';
+  if (index === 1) return '昨日';
+  if (index === 2) return '2日前';
+  return null;
+}
+
+// Extract YYYY-MM for grouping
+function monthKey(dateStr: string): string {
+  return dateStr.slice(0, 7); // "YYYY-MM"
+}
+
+function formatMonthHeader(key: string): string {
+  const [y, m] = key.split('-');
+  return `${y} 年 ${parseInt(m, 10)} 月`;
+}
+
+// Group days by month, preserving order
+const grouped: Array<{ month: string; days: typeof daysWithStats }> = [];
+let currentMonth = '';
+for (const day of daysWithStats) {
+  const mk = monthKey(day.date);
+  if (mk !== currentMonth) {
+    currentMonth = mk;
+    grouped.push({ month: mk, days: [] });
+  }
+  grouped[grouped.length - 1].days.push(day);
+}
+
+// Flat index for relative labels
 ---
 
 <BaseLayout
@@ -24,74 +63,363 @@ const daysWithStats = picks.map(day => {
   description="每日 AI 研究與應用精選 — 評分、摘要與源鏈結"
 >
   <div class="page-container section">
-    <!-- Page header -->
-    <div class="mb-8">
-      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
-        AI App 線
-      </p>
-      <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
-        AI 日報
-      </h1>
-      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
+
+    <!-- ── Editorial header ── -->
+    <header class="archive-header">
+      <p class="archive-overline">AI App 線</p>
+      <h1 class="archive-title">AI 研究日報</h1>
+      <p class="archive-subtitle">DAILY INTELLIGENCE DIGEST · SINCE 2026</p>
+      <hr class="archive-rule" />
+      <p class="archive-desc font-noto-serif-sc">
         AI Agent 應用、模型、工具每日精選 — 由 Qwen3.5-Plus 自動評級，人工複核關鍵條目。
         涵蓋 ⚡ 突破、🔧 實用、📖 背景、❌ 低相關四個等級，每日 07:00 CST 自動更新。
       </p>
-    </div>
+    </header>
 
-    <!-- Archive list -->
+    <!-- ── Archive list ── -->
     {daysWithStats.length === 0 ? (
-      <p class="text-pulsar-muted font-ibm-plex-mono text-sm">
-        尚無數據 — 請先執行 <code class="bg-pulsar-surface px-1 rounded">pnpm sync-data</code> 同步 pipeline 資料。
+      <p class="font-ibm-plex-mono text-sm" style="color: var(--pulsar-muted, var(--text-secondary));">
+        尚無數據 — 請先執行 <code style="background:var(--surface-2); padding: 0 4px; border-radius:3px;">pnpm sync-data</code> 同步 pipeline 資料。
       </p>
     ) : (
-      <div class="space-y-3">
-        {daysWithStats.map(day => (
-          <a
-            href={`/ai-daily/${day.date}`}
-            class="card flex items-center justify-between gap-4 hover:border-pulsar-amber transition-colors group no-underline"
-          >
-            <!-- Date -->
-            <time
-              datetime={day.date}
-              class="font-ibm-plex-mono font-semibold text-pulsar-text shrink-0 text-sm"
-            >
-              {day.date}
-            </time>
+      <div class="archive-list">
+        {grouped.map((group, gi) => {
+          // Count flat index offset for relative labels
+          const offset = grouped.slice(0, gi).reduce((s, g) => s + g.days.length, 0);
+          return (
+            <div>
+              <!-- Month separator (only if there are multiple months) -->
+              {grouped.length > 1 && (
+                <div class="month-separator">
+                  <span class="month-separator-label">— {formatMonthHeader(group.month)} —</span>
+                </div>
+              )}
 
-            <!-- Rating breakdown badges -->
-            <div class="flex flex-wrap gap-1.5 flex-1">
-              {[['⚡','bolt'],['🔧','wrench'],['📖','book'],['❌','x']].map(([r]) => (
-                day.counts[r] ? (
-                  <span class:list={[
-                    'font-ibm-plex-mono text-xs px-1.5 py-0.5 rounded',
-                    r === '⚡' ? 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400' : '',
-                    r === '🔧' ? 'bg-cyan-100  dark:bg-cyan-950/30  text-cyan-700  dark:text-cyan-400'  : '',
-                    r === '📖' ? 'bg-stone-100 dark:bg-stone-800    text-stone-600 dark:text-stone-400' : '',
-                    r === '❌' ? 'bg-red-100   dark:bg-red-950/30   text-red-700   dark:text-red-400'   : '',
-                  ]}>
-                    {r} {day.counts[r]}
-                  </span>
-                ) : null
-              ))}
-            </div>
+              {group.days.map((day, di) => {
+                const flatIdx = offset + di;
+                const relLabel = relativeLabel(day.date, flatIdx);
+                return (
+                  <a
+                    href={`/ai-daily/${day.date}`}
+                    class="edition-row"
+                    aria-label={`AI 日報 ${day.date} — 共 ${day.items.length} 篇`}
+                  >
+                    <!-- Left: formatted date + relative tag -->
+                    <div class="edition-date-col">
+                      <time datetime={day.date} class="edition-date">
+                        {formatDateDots(day.date)}
+                      </time>
+                      {relLabel && (
+                        <span class="edition-recency">{relLabel}</span>
+                      )}
+                    </div>
 
-            <!-- Item count + arrow -->
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="text-pulsar-muted text-xs font-ibm-plex-mono">
-                {day.items.length} 篇
-              </span>
-              <svg
-                width="14" height="14" viewBox="0 0 14 14" fill="none"
-                stroke="currentColor" stroke-width="2"
-                class="text-pulsar-muted group-hover:text-pulsar-amber transition-colors"
-                aria-hidden="true"
-              >
-                <path d="M2 7h10M8 3l4 4-4 4"/>
-              </svg>
+                    <!-- Middle: rating breakdown -->
+                    <div class="edition-middle">
+                      <div class="edition-ratings">
+                        {[['⚡', 'flash'], ['🔧', 'wrench'], ['📖', 'book'], ['❌', 'x']].map(([r]) => (
+                          day.counts[r] ? (
+                            <span class={`edition-badge edition-badge-${r === '⚡' ? 'flash' : r === '🔧' ? 'wrench' : r === '📖' ? 'book' : 'x'}`}>
+                              {r} {day.counts[r]}
+                            </span>
+                          ) : null
+                        ))}
+                      </div>
+                      {day.firstTitle && (
+                        <p class="edition-headline">{day.firstTitle}</p>
+                      )}
+                    </div>
+
+                    <!-- Right: count + arrow -->
+                    <div class="edition-right">
+                      <span class="edition-count">{day.items.length} 篇</span>
+                      <svg
+                        width="14" height="14" viewBox="0 0 14 14" fill="none"
+                        stroke="currentColor" stroke-width="2"
+                        class="edition-arrow"
+                        aria-hidden="true"
+                      >
+                        <path d="M2 7h10M8 3l4 4-4 4"/>
+                      </svg>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
-          </a>
-        ))}
+          );
+        })}
       </div>
     )}
   </div>
 </BaseLayout>
+
+<style>
+/* ── Archive header ── */
+.archive-header {
+  margin-bottom: 2.5rem;
+}
+
+.archive-overline {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  margin-bottom: 0.5rem;
+}
+
+.archive-title {
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+
+.archive-subtitle {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.archive-rule {
+  border: none;
+  border-top: 2px solid var(--border);
+  margin-bottom: 1.25rem;
+  /* thin amber accent overlay */
+  position: relative;
+}
+
+.archive-rule::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: var(--accent-amber);
+  position: absolute;
+  top: -2px;
+  left: 0;
+}
+
+.archive-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  max-width: 620px;
+  line-height: 1.85;
+}
+
+/* ── Month separator ── */
+.month-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0 0.75rem;
+}
+
+.month-separator-label {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+/* ── Edition row (archive item) ── */
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.edition-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+  /* Left accent bar — initially transparent */
+  border-left: 3px solid transparent;
+}
+
+.edition-row:hover {
+  border-left-color: var(--accent-amber);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateX(2px);
+}
+
+.edition-row:hover .edition-date {
+  color: var(--accent-amber);
+}
+
+.edition-row:hover .edition-arrow {
+  color: var(--accent-amber);
+  transform: translateX(3px);
+}
+
+/* ── Date column ── */
+.edition-date-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  min-width: 130px;
+}
+
+.edition-date {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.edition-recency {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid rgba(212, 145, 10, 0.2);
+}
+
+/* ── Middle column ── */
+.edition-middle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.edition-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.edition-badge {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.edition-badge-flash  {
+  background: var(--rating-flash-bg);
+  color: var(--rating-flash);
+  border: 1px solid rgba(212, 145, 10, 0.2);
+}
+.edition-badge-wrench {
+  background: var(--rating-wrench-bg);
+  color: var(--rating-wrench);
+  border: 1px solid rgba(43, 142, 199, 0.2);
+}
+.edition-badge-book   {
+  background: var(--rating-book-bg);
+  color: var(--rating-book);
+  border: 1px solid rgba(61, 139, 94, 0.2);
+}
+.edition-badge-x      {
+  background: var(--rating-x-bg);
+  color: var(--rating-x);
+  border: 1px solid rgba(201, 64, 64, 0.2);
+}
+
+.edition-headline {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+}
+
+/* ── Right column ── */
+.edition-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.edition-count {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.edition-arrow {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .edition-row {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .edition-date-col {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: unset;
+    width: 100%;
+  }
+
+  .edition-middle {
+    width: 100%;
+    order: 3;
+  }
+
+  .edition-right {
+    margin-left: auto;
+  }
+
+  .edition-headline {
+    font-size: 0.78rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}
+</style>
