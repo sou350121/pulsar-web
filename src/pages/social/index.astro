@@ -1,164 +1,635 @@
 ---
 /**
  * src/pages/social/index.astro
- * Social intel archive — AI + VLA social intelligence combined view.
+ * Social intel archive — dense intelligence feed, two-column domain split.
+ * Design: classified briefing aesthetic with amber (AI) / cyan (VLA) channels.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SocialCard from '../../components/SocialCard.astro';
 import { loadSocialIntel, extractMarkdownSummary } from '../../utils/data';
 
 // Load recent social intel from both domains
 const aiSocial  = loadSocialIntel('ai',  10);
 const vlaSocial = loadSocialIntel('vla', 10);
 
-// Parse markdown into structured event snippets
-// Real data: full .md file from the pipeline; split on section headings
-function parseMarkdownToEvents(content: string, domain: string, date: string) {
-  // Extract lines that look like meaningful intel items (numbered lists, headings)
+// Map platform to icon + label
+const PLATFORM_META: Record<string, { icon: string; label: string }> = {
+  twitter: { icon: '𝕏', label: 'Twitter/X' },
+  github:  { icon: '⌥', label: 'GitHub' },
+  hn:      { icon: 'Y', label: 'HN' },
+  reddit:  { icon: '●', label: 'Reddit' },
+  blog:    { icon: '✍', label: 'Blog' },
+};
+
+// Parse markdown content into structured event items
+function parseMarkdownToEvents(content: string): Array<{ entity: string; event: string; platform: string }> {
   const lines = content.split('\n');
   const events: Array<{ entity: string; event: string; platform: string }> = [];
 
   let currentEntity = '';
   for (const line of lines) {
-    // Match numbered list items or bold entity names
     const entityMatch = line.match(/^\*\*([^*]+)\*\*/);
-    if (entityMatch) currentEntity = entityMatch[1].trim();
+    if (entityMatch) {
+      currentEntity = entityMatch[1].trim();
+    }
 
-    // Match content lines with substance
     const contentLine = line.replace(/^[-*•]\s*/, '').trim();
     if (contentLine.length > 40 && currentEntity) {
-      // Guess platform from keywords
       let platform = 'blog';
       if (/twitter|tweet|𝕏/i.test(contentLine)) platform = 'twitter';
       else if (/github|repo|commit/i.test(contentLine)) platform = 'github';
-      else if (/arxiv|paper|論文/i.test(contentLine)) platform = 'blog';
 
       events.push({
-        entity:   currentEntity || domain.toUpperCase(),
-        event:    contentLine.slice(0, 200),
+        entity:   currentEntity,
+        event:    contentLine.slice(0, 220),
         platform,
       });
-      currentEntity = ''; // reset to avoid duplicating entity for each line
+      currentEntity = '';
     }
   }
-  return events.slice(0, 4);  // max 4 events per file
+  return events.slice(0, 5);
 }
 
-// Build display items
+// Build domain-split item arrays
 interface SocialItem {
   entity:   string;
   event:    string;
   date:     string;
   platform: string;
-  domain:   string;
 }
 
-const allItems: SocialItem[] = [];
+const aiItems: SocialItem[]  = [];
+const vlaItems: SocialItem[] = [];
 
 for (const file of aiSocial) {
-  const events = parseMarkdownToEvents(file.content, 'ai', file.date);
+  const events = parseMarkdownToEvents(file.content);
   if (events.length > 0) {
-    allItems.push(...events.map(e => ({ ...e, date: file.date, domain: 'ai' })));
+    aiItems.push(...events.map(e => ({ ...e, date: file.date })));
   } else if (file.content.length > 30) {
-    // Fallback: use summary as single event
-    allItems.push({
+    aiItems.push({
       entity:   'AI 情報',
       event:    extractMarkdownSummary(file.content, 200),
       date:     file.date,
       platform: 'blog',
-      domain:   'ai',
     });
   }
 }
 
 for (const file of vlaSocial) {
-  const events = parseMarkdownToEvents(file.content, 'vla', file.date);
+  const events = parseMarkdownToEvents(file.content);
   if (events.length > 0) {
-    allItems.push(...events.map(e => ({ ...e, date: file.date, domain: 'vla' })));
+    vlaItems.push(...events.map(e => ({ ...e, date: file.date })));
   } else if (file.content.length > 30) {
-    allItems.push({
+    vlaItems.push({
       entity:   'VLA 情報',
       event:    extractMarkdownSummary(file.content, 200),
       date:     file.date,
       platform: 'blog',
-      domain:   'vla',
     });
   }
 }
 
-// Sort by date descending
-allItems.sort((a, b) => b.date.localeCompare(a.date));
-
 // Mock fallback
-const MOCK_ITEMS: SocialItem[] = [
-  { entity: 'Pieter Abbeel',    event: '指出 flow matching 在真實機器人推理比 diffusion 快5倍，稱「這不是邊際改進」。', date: '2026-03-01', platform: 'twitter', domain: 'vla' },
-  { entity: 'Andrej Karpathy',  event: '發布 Software 3.0 長文，GitHub 獲 12k stars，預計 intent-driven 開發將取代 syntax 導向。', date: '2026-03-01', platform: 'blog', domain: 'ai' },
-  { entity: 'CMU Robotics',     event: '更新 VLA benchmark repo，新增 RLBench-Hard 20個接觸豐富操作任務。', date: '2026-02-28', platform: 'github', domain: 'vla' },
-  { entity: 'Sam Altman',       event: '在 X 暗示 GPT-5 將對 agentic IDE workflow 做重大優化，「coding is the killer app」。', date: '2026-02-28', platform: 'twitter', domain: 'ai' },
-  { entity: 'DeepMind Robotics', event: 'Gemini Robotics 進入 beta，與 Google DeepMind 合作夥伴共同測試，重點在廚房操作任務。', date: '2026-02-27', platform: 'blog', domain: 'vla' },
-  { entity: 'Yann LeCun',       event: 'Meta FAIR 發布 world model 相關新論文，LeCun 在 LinkedIn 詳述 JEPA 方向 vs autoregressive 路線。', date: '2026-02-27', platform: 'blog', domain: 'ai' },
+const MOCK_AI: SocialItem[] = [
+  { entity: 'Andrej Karpathy',  event: '發布 Software 3.0 長文，GitHub 獲 12k stars，預計 intent-driven 開發將取代 syntax 導向。從「寫程式」到「編排意圖」的根本轉變。', date: '2026-03-01', platform: 'blog' },
+  { entity: 'Sam Altman',       event: '在 X 暗示 GPT-5 將對 agentic IDE workflow 做重大優化，「coding is the killer app」，預計 Q2 發布。', date: '2026-03-01', platform: 'twitter' },
+  { entity: 'Yann LeCun',       event: 'Meta FAIR 發布 world model 新論文，LeCun 詳述 JEPA 方向 vs autoregressive 路線的根本差異，堅持非自回歸立場。', date: '2026-02-27', platform: 'blog' },
+  { entity: 'Dario Amodei',     event: '在 podcast 討論 Claude 4 安全框架，強調 constitutional AI 下一步是可解釋性 + 行為預測。', date: '2026-02-26', platform: 'blog' },
 ];
 
-const displayItems = allItems.length >= 4 ? allItems : MOCK_ITEMS;
+const MOCK_VLA: SocialItem[] = [
+  { entity: 'Pieter Abbeel',    event: '指出 flow matching 在真實機器人推理比 diffusion 快5倍，稱「這不是邊際改進，是架構級別的跳躍」。', date: '2026-03-01', platform: 'twitter' },
+  { entity: 'CMU Robotics',     event: '更新 VLA benchmark repo，新增 RLBench-Hard 20個接觸豐富操作任務，首批結果顯示最強基線僅過 34%。', date: '2026-02-28', platform: 'github' },
+  { entity: 'DeepMind Robotics', event: 'Gemini Robotics 進入 beta，重點在廚房操作任務，與合作夥伴測試視覺-語言-動作對齊。', date: '2026-02-27', platform: 'blog' },
+  { entity: 'Stanford IRIS',    event: '發布 R+X 數據集更新，包含 2400 個新操作示範，覆蓋精細抓取和雙臂協調場景。', date: '2026-02-25', platform: 'github' },
+];
+
+const displayAI  = aiItems.length  >= 2 ? aiItems  : MOCK_AI;
+const displayVLA = vlaItems.length >= 2 ? vlaItems : MOCK_VLA;
+
+// Format date as compact: "03.01"
+function formatCompact(iso: string): string {
+  const parts = iso.split('-');
+  if (parts.length < 3) return iso;
+  return `${parts[1]}.${parts[2]}`;
+}
 ---
 
 <BaseLayout
   title="社交情報 Social Intel"
   description="AI 研究社群動態 — 追蹤頂尖研究者、機構與開源項目最新動態"
 >
-  <div class="page-container section">
-    <!-- Page header -->
-    <div class="mb-8">
-      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
-        社交情報監控
-      </p>
-      <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
-        社交情報
-      </h1>
-      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
-        每日追蹤 Karpathy、Altman、Amodei、LeCun、Hassabis 等7位前沿研究者動態，
-        以及 CMU、Google DeepMind、Meta FAIR 等頂級機構的 GitHub、Twitter、部落格更新。
-        搜尋窗口：72小時硬截止，確保時效性。
-      </p>
-    </div>
+  <div class="social-page page-container">
 
-    <!-- Domain filter tabs (static, enhanced by URL hash if desired later) -->
-    <div class="flex gap-2 mb-6 border-b border-pulsar-border pb-4">
-      {[
-        { label: '全部', count: displayItems.length },
-        { label: 'AI 應用', count: displayItems.filter(i => i.domain === 'ai').length },
-        { label: 'VLA 研究', count: displayItems.filter(i => i.domain === 'vla').length },
-      ].map(({ label, count }) => (
-        <span class="font-ibm-plex-mono text-sm px-3 py-1 rounded-full bg-pulsar-surface border border-pulsar-border text-pulsar-muted">
-          {label} <span class="opacity-60">({count})</span>
-        </span>
-      ))}
-    </div>
+    <!-- ═══════════════════════════════════════════════════
+         PAGE MASTHEAD
+    ══════════════════════════════════════════════════════ -->
+    <header class="social-masthead fade-in-1">
+      <p class="social-overline">
+        SIGNAL MONITORING · 72H WINDOW · AUTO-COLLECTED
+      </p>
+      <h1 class="social-page-title">社交情報</h1>
+      <p class="social-page-subtitle">SOCIAL INTELLIGENCE FEED</p>
+      <hr class="social-rule" />
+      <p class="social-desc">
+        每日追蹤 Karpathy · Altman · Amodei · LeCun · Sutskever · Hassabis · 李飛飛
+        及頂級機構動態。搜尋窗口：72小時硬截止，確保時效性。
+        AI App 走向與 VLA 研究前沿分域呈現。
+      </p>
+    </header>
 
-    <!-- Items grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {displayItems.map(item => (
-        <div class="relative">
-          <span class:list={[
-            'absolute top-3 right-3 tag text-[10px]',
-            item.domain === 'vla' ? 'tag-vla' : 'tag-ai',
-          ]}>
-            {item.domain === 'vla' ? 'VLA' : 'AI'}
-          </span>
-          <SocialCard
-            entity={item.entity}
-            event={item.event}
-            date={item.date}
-            platform={item.platform}
-          />
+    <!-- ═══════════════════════════════════════════════════
+         TWO-COLUMN FEED
+    ══════════════════════════════════════════════════════ -->
+    <div class="dual-feed fade-in-2">
+
+      <!-- AI App channel -->
+      <section class="feed-channel feed-channel--ai" aria-label="AI 應用情報">
+        <header class="channel-header">
+          <div class="channel-header-top">
+            <div class="channel-dot channel-dot--ai"></div>
+            <h2 class="channel-title">AI 應用情報</h2>
+            <span class="channel-count">{displayAI.length}</span>
+          </div>
+          <p class="channel-subtitle">
+            前沿研究者觀點 · 產品動態 · 範式轉換信號
+          </p>
+          <div class="channel-accent-line channel-accent-line--ai"></div>
+        </header>
+
+        <div class="feed-list" role="list">
+          {displayAI.map((item, i) => {
+            const pm = PLATFORM_META[item.platform.toLowerCase()] ?? { icon: '◈', label: item.platform };
+            return (
+              <article class="feed-item feed-item--ai" style={`animation-delay: ${0.05 * i}s`} role="listitem">
+                <div class="feed-item-inner">
+                  <!-- Left accent bar is CSS ::before -->
+                  <div class="feed-item-top">
+                    <span class="feed-entity">{item.entity}</span>
+                    <div class="feed-item-right">
+                      <span class="feed-platform-badge" title={pm.label}>{pm.icon}</span>
+                      <time class="feed-date" datetime={item.date}>{formatCompact(item.date)}</time>
+                    </div>
+                  </div>
+                  <p class="feed-event">{item.event}</p>
+                  <div class="feed-footer">
+                    <span class="feed-source-tag">AI APP INTEL</span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
-      ))}
+
+        {displayAI.length === 0 && (
+          <p class="feed-empty">尚無 AI 情報資料</p>
+        )}
+      </section>
+
+      <!-- Vertical divider -->
+      <div class="feed-divider" aria-hidden="true">
+        <div class="feed-divider-line"></div>
+      </div>
+
+      <!-- VLA Research channel -->
+      <section class="feed-channel feed-channel--vla" aria-label="VLA 研究情報">
+        <header class="channel-header">
+          <div class="channel-header-top">
+            <div class="channel-dot channel-dot--vla"></div>
+            <h2 class="channel-title">VLA 研究情報</h2>
+            <span class="channel-count">{displayVLA.length}</span>
+          </div>
+          <p class="channel-subtitle">
+            機器人學習 · Benchmark 更新 · 實驗室動態
+          </p>
+          <div class="channel-accent-line channel-accent-line--vla"></div>
+        </header>
+
+        <div class="feed-list" role="list">
+          {displayVLA.map((item, i) => {
+            const pm = PLATFORM_META[item.platform.toLowerCase()] ?? { icon: '◈', label: item.platform };
+            return (
+              <article class="feed-item feed-item--vla" style={`animation-delay: ${0.05 * i}s`} role="listitem">
+                <div class="feed-item-inner">
+                  <div class="feed-item-top">
+                    <span class="feed-entity">{item.entity}</span>
+                    <div class="feed-item-right">
+                      <span class="feed-platform-badge" title={pm.label}>{pm.icon}</span>
+                      <time class="feed-date" datetime={item.date}>{formatCompact(item.date)}</time>
+                    </div>
+                  </div>
+                  <p class="feed-event">{item.event}</p>
+                  <div class="feed-footer">
+                    <span class="feed-source-tag feed-source-tag--vla">VLA INTEL</span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        {displayVLA.length === 0 && (
+          <p class="feed-empty">尚無 VLA 情報資料</p>
+        )}
+      </section>
+
     </div>
 
-    {displayItems.length === 0 && (
-      <p class="text-pulsar-muted font-ibm-plex-mono text-sm text-center py-12">
-        尚無社交情報資料 — 請先執行 pnpm sync-data
-      </p>
-    )}
+    <!-- ── Bottom note ─────────────────────────────── -->
+    <footer class="social-footer fade-in-3">
+      <span class="footer-note">
+        資料來源：DashScope 網路搜尋 · 每日 07:45 / 09:30 自動採集 · 72h 硬截止去重
+      </span>
+      <span class="footer-report-link">
+        深度分析 → <a href="/reports">雙週報告</a>
+      </span>
+    </footer>
+
   </div>
 </BaseLayout>
+
+<style>
+/* ============================================================
+   SOCIAL INTEL PAGE — INTELLIGENCE FEED DESIGN
+   Scoped CSS: only affects this page
+============================================================ */
+
+/* ── Page wrapper ── */
+.social-page {
+  padding-top: 60px;
+  padding-bottom: 80px;
+}
+
+/* ── Page masthead ── */
+.social-masthead {
+  padding-bottom: 40px;
+}
+
+.social-overline {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 14px;
+}
+
+.social-page-title {
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif !important;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.social-page-subtitle {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 22px;
+}
+
+.social-rule {
+  border: none;
+  border-top: 2px solid var(--border);
+  position: relative;
+  margin-bottom: 18px;
+}
+
+/* Dual-color accent on rule */
+.social-rule::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--accent-amber);
+}
+
+.social-rule::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 64px;
+  width: 40px;
+  height: 2px;
+  background: var(--accent-cyan);
+}
+
+.social-desc {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.85;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin-bottom: 0;
+}
+
+/* ── Dual-column feed ── */
+.dual-feed {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+/* ── Vertical divider ── */
+.feed-divider {
+  display: flex;
+  justify-content: center;
+  padding: 0 32px;
+  padding-top: 70px; /* align below channel headers */
+}
+
+.feed-divider-line {
+  width: 1px;
+  height: 100%;
+  min-height: 300px;
+  background: linear-gradient(to bottom, transparent, var(--border) 15%, var(--border) 85%, transparent);
+}
+
+/* ── Channel section ── */
+.feed-channel {
+  padding-top: 40px;
+}
+
+.channel-header {
+  padding-bottom: 16px;
+  margin-bottom: 4px;
+}
+
+.channel-header-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.channel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.channel-dot--ai  { background: var(--accent-amber); }
+.channel-dot--vla { background: var(--accent-cyan); }
+
+.channel-title {
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif !important;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.channel-count {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  margin-left: auto;
+}
+
+.channel-subtitle {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.channel-accent-line {
+  height: 2px;
+  border-radius: 1px;
+  width: 100%;
+}
+
+.channel-accent-line--ai  { background: linear-gradient(to right, var(--accent-amber), transparent); }
+.channel-accent-line--vla { background: linear-gradient(to right, var(--accent-cyan), transparent); }
+
+/* ── Feed list ── */
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Feed item ── */
+.feed-item {
+  position: relative;
+  padding: 0;
+  /* Items fade in staggered */
+  animation: feedItemIn 0.4s ease both;
+}
+
+@keyframes feedItemIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.feed-item-inner {
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  /* Left border accent via ::before on item-inner */
+  padding-left: 18px;
+  transition: background 0.18s ease, padding-left 0.18s ease;
+}
+
+.feed-item-inner::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  border-radius: 1px;
+  opacity: 0;
+  transform: scaleY(0.3);
+  transform-origin: center;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.feed-item--ai  .feed-item-inner::before { background: var(--accent-amber); }
+.feed-item--vla .feed-item-inner::before { background: var(--accent-cyan); }
+
+.feed-item:hover .feed-item-inner {
+  background: var(--surface-2);
+  padding-left: 22px;
+}
+
+.feed-item:hover .feed-item-inner::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* Item top row */
+.feed-item-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.feed-entity {
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  flex: 1;
+  min-width: 0;
+}
+
+.feed-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.feed-platform-badge {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface-2);
+  cursor: default;
+}
+
+.feed-date {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+/* Event text */
+.feed-event {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+}
+
+/* Footer */
+.feed-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feed-source-tag {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  border: 1px solid rgba(212,145,10,0.2);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.feed-source-tag--vla {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border-color: rgba(15,143,160,0.2);
+}
+
+/* Empty state */
+.feed-empty {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  padding: 32px 0;
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+
+/* ── Page footer ── */
+.social-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.footer-note {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.footer-report-link {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.footer-report-link a {
+  color: var(--accent-amber);
+  text-decoration: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.footer-report-link a:hover {
+  opacity: 0.75;
+}
+
+/* ── Responsive: stack columns on mobile ── */
+@media (max-width: 768px) {
+  .dual-feed {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .feed-divider {
+    display: none;
+  }
+
+  .feed-channel {
+    padding-top: 32px;
+  }
+
+  .feed-channel + .feed-channel {
+    border-top: 2px solid var(--border-subtle);
+  }
+
+  .social-page-title {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .feed-entity {
+    font-size: 0.82rem;
+  }
+
+  .feed-event {
+    font-size: 0.78rem;
+  }
+}
+</style>

@@ -1,7 +1,8 @@
 ---
 /**
  * src/pages/reports/index.astro
- * Biweekly reports archive — lists reports and reflections.
+ * Biweekly reports archive — "Intelligence Archive" editorial design.
+ * Heavy vertical rhythm, serif typography, dramatic date display.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadBiweeklyReports, extractMarkdownSummary } from '../../utils/data';
@@ -11,19 +12,21 @@ const reflections = loadBiweeklyReports(12, true);
 
 // Pair reports with reflections by date proximity
 interface ReportEntry {
-  date:       string;
-  summary:    string;
-  hasReflection: boolean;
+  date:            string;
+  summary:         string;
+  hasReflection:   boolean;
   reflectionDate?: string;
+  reflectionSummary?: string;
 }
 
 const entries: ReportEntry[] = reports.map(r => {
-  const reflDate = reflections.find(ref => ref.date >= r.date)?.date;
+  const refObj  = reflections.find(ref => ref.date >= r.date);
   return {
-    date:           r.date,
-    summary:        extractMarkdownSummary(r.content, 250),
-    hasReflection:  !!reflDate,
-    reflectionDate: reflDate,
+    date:              r.date,
+    summary:           extractMarkdownSummary(r.content, 180),
+    hasReflection:     !!refObj,
+    reflectionDate:    refObj?.date,
+    reflectionSummary: refObj ? extractMarkdownSummary(refObj.content, 120) : undefined,
   };
 });
 
@@ -31,24 +34,32 @@ const entries: ReportEntry[] = reports.map(r => {
 const MOCK_ENTRIES: ReportEntry[] = [
   {
     date: '2026-03-01',
-    summary: '本期雙週報告整合 VLA 研究進展、AI 應用趨勢、社交情報與校準分析。涵蓋 flow matching 突破（5篇 ⚡），Karpathy Software 3.0 論述，DeepSeek-V3 開源影響分析，以及前期 8 項預測的驗證（6 ✅ / 1 ❌ / 1 ⏳）。',
+    summary: '本期整合 VLA 研究進展、AI 應用趨勢與社交情報。涵蓋 flow matching 突破（5篇 ⚡），Karpathy Software 3.0 論述，DeepSeek-V3 開源影響分析，前期 8 項預測驗證（6 ✅ / 1 ❌ / 1 ⏳）。',
     hasReflection: true,
     reflectionDate: '2026-03-01',
+    reflectionSummary: '本期反思：flow matching 優勢或被高估；agentic IDE 滲透速度超出預期；下期關注 embodied reasoning 與 cursor-style tooling 的交叉點。',
   },
   {
     date: '2026-02-15',
-    summary: '聚焦世界模型與具身推理的理論突破。JEPA vs autoregressive 路線分歧加深，Meta FAIR 和 DeepMind 各自佔據不同賭注。AI 應用端：Cursor 月活用戶突破100萬，agentic IDE 競爭白熱化。',
+    summary: '聚焦世界模型與具身推理的理論突破。JEPA vs autoregressive 路線分歧加深，Meta FAIR 和 DeepMind 各自佔據不同賭注。AI 應用端：Cursor 月活突破100萬。',
     hasReflection: true,
     reflectionDate: '2026-02-16',
+    reflectionSummary: '反思：對 world model convergence timeline 過於樂觀，修正假設 A-07 信心值 −0.08。',
   },
   {
     date: '2026-02-01',
-    summary: '二月首期雙週：VLA scaling law 實驗結果喜憂參半。30B+ 參數確見推理湧現，但 action precision 仍需視覺-運動訓練。AI 側：DeepSeek-R1 開源衝擊持續，多家公司宣佈基於 R1 的定制化計劃。',
+    summary: '二月首期雙週：VLA scaling law 實驗結果喜憂參半。30B+ 參數確見推理湧現，但 action precision 仍需視覺-運動訓練。AI 側：DeepSeek-R1 開源衝擊持續。',
     hasReflection: false,
   },
 ];
 
 const displayEntries = entries.length > 0 ? entries : MOCK_ENTRIES;
+
+// Format ISO date as numeric: "2026.02.12"
+function formatDateNumeric(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return `${y}.${m}.${d}`;
+}
 
 // Format ISO date as Chinese: "2026年2月12日"
 function formatDateZh(iso: string): string {
@@ -56,17 +67,17 @@ function formatDateZh(iso: string): string {
   return `${year}年${month}月${day}日`;
 }
 
-// Compute a biweekly period label: e.g. "2026年2月16日–3月1日"
-function formatPeriodZh(iso: string): string {
-  const end = new Date(iso);
+// Compute a biweekly period label: e.g. "2026.02.16 – 03.01"
+function formatPeriod(iso: string): string {
+  const end   = new Date(iso);
   const start = new Date(end);
   start.setDate(start.getDate() - 13);
-  const sy = start.getFullYear();
-  const sm = start.getMonth() + 1;
-  const sd = start.getDate();
-  const em = end.getMonth() + 1;
-  const ed = end.getDate();
-  return `${sy}年${sm}月${sd}日–${em}月${ed}日`;
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const sd = String(start.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const ey = end.getFullYear();
+  return `${ey}.${sm}.${sd} – ${em}.${ed}`;
 }
 ---
 
@@ -74,87 +85,629 @@ function formatPeriodZh(iso: string): string {
   title="雙週報告 Biweekly"
   description="Pulsar AI 研究雙週深度報告 — VLA 進展、AI 應用、社交情報與校準分析"
 >
-  <div class="page-container section">
-    <!-- Page header -->
-    <div class="mb-10">
-      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
-        深度分析 · 每兩週更新
+  <div class="archive-page page-container">
+
+    <!-- ═══════════════════════════════════════════════════
+         PAGE MASTHEAD
+    ══════════════════════════════════════════════════════ -->
+    <header class="archive-masthead fade-in-1">
+      <div class="masthead-overline">
+        <span class="masthead-classification">CLASSIFIED · RESEARCH INTELLIGENCE</span>
+        <span class="masthead-sep">|</span>
+        <span class="masthead-cycle">雙週週期 · BIWEEKLY CYCLE</span>
+      </div>
+
+      <h1 class="masthead-title">雙週報告</h1>
+
+      <p class="masthead-subtitle">
+        PULSAR INTELLIGENCE ARCHIVE &nbsp;·&nbsp; 每兩週深度分析
       </p>
-      <h1 class="font-lora text-3xl md:text-4xl font-bold text-pulsar-text mb-3">
-        雙週報告
-      </h1>
-      <p class="text-pulsar-muted max-w-xl font-noto-serif-sc">
+
+      <hr class="masthead-rule" />
+
+      <p class="masthead-desc">
         每兩週由 pipeline 自動生成，涵蓋 VLA 和 AI 應用兩條研究線的深度回顧、
-        前期預測驗證（✅/❌/⏳）、假設校準，以及下期觀察重點。
+        前期預測驗證（✅ / ❌ / ⏳）、假設校準，以及下期觀察重點。
+        每份報告均附反思副本，供後期校準回溯。
       </p>
-    </div>
 
-    <!-- Report list -->
-    <div class="grid grid-cols-1 gap-6">
+      <div class="masthead-stats">
+        <div class="stat-item">
+          <span class="stat-num">{displayEntries.length}</span>
+          <span class="stat-label">DISPATCHES</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat-item">
+          <span class="stat-num">{displayEntries.filter(e => e.hasReflection).length}</span>
+          <span class="stat-label">W/ REFLECTION</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat-item">
+          <span class="stat-num">14D</span>
+          <span class="stat-label">CYCLE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════
+         ARCHIVE LEDGER
+    ══════════════════════════════════════════════════════ -->
+    <section class="archive-ledger" aria-label="報告存檔列表">
+
+      {displayEntries.length === 0 && (
+        <div class="empty-state">
+          <div class="empty-icon">▣</div>
+          <p class="empty-title">ARCHIVE PENDING</p>
+          <p class="empty-sub">Pipeline 尚未生成雙週報告 — 待下一個週期後自動同步</p>
+          <div class="empty-blinker" aria-hidden="true">_</div>
+        </div>
+      )}
+
       {displayEntries.map((entry, i) => (
-        <article class="card">
-          <!-- Header -->
-          <div class="flex items-start justify-between gap-4 mb-4">
-            <div>
-              <div class="flex items-center gap-2 mb-1 flex-wrap">
-                {i === 0 && (
-                  <span class="tag tag-ai text-[10px]">最新</span>
-                )}
-                <span class="tag tag-vla text-[10px]">VLA</span>
-                <span class="tag tag-ai text-[10px]">AI App</span>
-                <time
-                  datetime={entry.date}
-                  class="font-ibm-plex-mono text-xs text-pulsar-muted"
-                >
-                  {formatDateZh(entry.date)}
-                </time>
+        <article class:list={['dispatch-row', i === 0 && 'dispatch-row--latest']} data-index={i}>
+
+          <!-- ── Left: date column ─────────────────────── -->
+          <div class="dispatch-date-col" aria-hidden="true">
+            <time class="dispatch-date-big" datetime={entry.date}>
+              {formatDateNumeric(entry.date)}
+            </time>
+            {i === 0 && <span class="dispatch-latest-pip">LATEST</span>}
+          </div>
+
+          <!-- ── Right: content column ─────────────────── -->
+          <div class="dispatch-content-col">
+
+            <!-- Report block -->
+            <div class="dispatch-report">
+              <div class="dispatch-meta-row">
+                <span class="dispatch-type-badge dispatch-type-report">雙週報告</span>
+                <span class="dispatch-period">{formatPeriod(entry.date)}</span>
               </div>
-              <h2 class="font-lora text-xl font-bold text-pulsar-text">
-                雙週報告 · {formatPeriodZh(entry.date)}
+
+              <h2 class="dispatch-title">
+                <a href={`/reports/${entry.date}`} class="dispatch-title-link">
+                  深度分析 · {formatDateZh(entry.date)}
+                  <span class="dispatch-arrow" aria-hidden="true">→</span>
+                </a>
               </h2>
-            </div>
-            <div class="flex gap-2 shrink-0">
-              {entry.hasReflection && (
-                <span class="tag text-[10px] bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
-                  含反思
+
+              <p class="dispatch-excerpt">{entry.summary}</p>
+
+              <div class="dispatch-action-row">
+                <a href={`/reports/${entry.date}`} class="dispatch-read-link">
+                  閱讀全文
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M2 6h8M6 2l4 4-4 4"/>
+                  </svg>
+                </a>
+                <span class="dispatch-coverage">
+                  VLA &nbsp;·&nbsp; AI App &nbsp;·&nbsp; 社交情報 &nbsp;·&nbsp; 校準
                 </span>
-              )}
+              </div>
             </div>
-          </div>
 
-          <!-- Summary -->
-          <p class="text-pulsar-muted text-sm leading-relaxed font-noto-serif-sc mb-4">
-            {entry.summary}
-          </p>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-4 pt-3 border-t border-pulsar-border text-sm">
-            <a
-              href={`/reports/${entry.date}`}
-              class="text-pulsar-amber font-semibold hover:underline flex items-center gap-1"
-            >
-              閱讀報告
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M2 6h8M6 2l4 4-4 4"/>
-              </svg>
-            </a>
+            <!-- Reflection block (indented, if exists) -->
             {entry.hasReflection && (
-              <a
-                href={`/reports/${entry.reflectionDate}-reflection`}
-                class="text-pulsar-cyan hover:underline flex items-center gap-1"
-              >
-                查看反思
-              </a>
+              <div class="dispatch-reflection">
+                <div class="dispatch-reflection-label">
+                  <span class="reflection-marker">反思</span>
+                  <span class="reflection-date">· {entry.reflectionDate ? formatDateZh(entry.reflectionDate) : ''}</span>
+                </div>
+                {entry.reflectionSummary && (
+                  <p class="reflection-excerpt">{entry.reflectionSummary}</p>
+                )}
+                <a href={`/reports/${entry.reflectionDate}-reflection`} class="reflection-link">
+                  查看反思 →
+                </a>
+              </div>
             )}
+
           </div>
+
         </article>
       ))}
-    </div>
 
-    {displayEntries.length === 0 && (
-      <p class="text-center text-pulsar-muted font-ibm-plex-mono text-sm py-12">
-        尚無雙週報告 — 待 pipeline 生成後同步資料
-      </p>
-    )}
+    </section>
+
   </div>
 </BaseLayout>
+
+<style>
+/* ============================================================
+   REPORTS PAGE — INTELLIGENCE ARCHIVE DESIGN
+   Scoped CSS: only affects this page
+============================================================ */
+
+/* ── Page wrapper ── */
+.archive-page {
+  padding-top: 60px;
+  padding-bottom: 80px;
+}
+
+/* ── Masthead ── */
+.archive-masthead {
+  padding-bottom: 40px;
+  margin-bottom: 0;
+}
+
+.masthead-overline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.masthead-classification {
+  color: var(--accent-amber);
+  opacity: 0.85;
+}
+
+.masthead-sep {
+  opacity: 0.3;
+}
+
+.masthead-cycle {
+  opacity: 0.6;
+}
+
+.masthead-title {
+  /* Override global h1 to use the page-serif style */
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif !important;
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.masthead-subtitle {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 24px;
+}
+
+.masthead-rule {
+  border: none;
+  border-top: 2px solid var(--border);
+  margin-bottom: 20px;
+}
+
+/* Thin amber accent line above rule */
+.archive-masthead .masthead-rule {
+  position: relative;
+}
+
+.archive-masthead .masthead-rule::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background: var(--accent-amber);
+}
+
+.masthead-desc {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--text-secondary);
+  max-width: 660px;
+  margin-bottom: 28px;
+}
+
+/* Stats row */
+.masthead-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 48px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.stat-num {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.stat-div {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  opacity: 0.6;
+}
+
+/* ── Archive ledger ── */
+.archive-ledger {
+  /* Use a left gutter for the date column */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Dispatch row ── */
+.dispatch-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 0 40px;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  /* Subtle left padding shift on hover via padding-left */
+  padding-left: 0;
+  transition: padding-left 0.22s ease;
+}
+
+.dispatch-row:first-child {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.dispatch-row:hover {
+  padding-left: 4px;
+}
+
+/* Latest entry: amber left border on hover */
+.dispatch-row--latest:hover .dispatch-date-big {
+  color: var(--accent-amber);
+}
+
+/* Non-latest: cyan date on hover */
+.dispatch-row:not(.dispatch-row--latest):hover .dispatch-date-big {
+  color: var(--accent-cyan);
+}
+
+/* Hover left-border accent bar */
+.dispatch-row::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  background: var(--accent-amber);
+  border-radius: 1px;
+  opacity: 0;
+  transform: scaleY(0.4);
+  transform-origin: center;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.dispatch-row:not(.dispatch-row--latest)::before {
+  background: var(--accent-cyan);
+}
+
+.dispatch-row:hover::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* ── Date column ── */
+.dispatch-date-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+
+.dispatch-date-big {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+  line-height: 1.3;
+  transition: color 0.22s ease;
+  display: block;
+}
+
+.dispatch-latest-pip {
+  display: inline-block;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  border: 1px solid rgba(212,145,10,0.25);
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+/* ── Content column ── */
+.dispatch-content-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Report block ── */
+.dispatch-report {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dispatch-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dispatch-type-badge {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.dispatch-type-report {
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  border-color: rgba(212,145,10,0.3);
+}
+
+.dispatch-period {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+/* Report title */
+.dispatch-title {
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif !important;
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dispatch-title-link {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  opacity: 1;
+  transition: color 0.2s;
+}
+
+.dispatch-title-link:hover {
+  color: var(--accent-amber);
+  opacity: 1;
+}
+
+.dispatch-arrow {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--accent-amber);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  transform: translateX(-4px);
+}
+
+.dispatch-title-link:hover .dispatch-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Excerpt */
+.dispatch-excerpt {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.85;
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0;
+}
+
+/* Action row */
+.dispatch-action-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.dispatch-read-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent-amber);
+  text-decoration: none;
+  opacity: 1;
+  transition: opacity 0.2s, letter-spacing 0.2s;
+}
+
+.dispatch-read-link:hover {
+  opacity: 0.8;
+  letter-spacing: 0.12em;
+}
+
+.dispatch-coverage {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
+/* ── Reflection block ── */
+.dispatch-reflection {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 640px;
+}
+
+.dispatch-reflection-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reflection-marker {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+}
+
+.reflection-date {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.reflection-excerpt {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+.reflection-link {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+  text-decoration: none;
+  opacity: 0.85;
+  align-self: flex-start;
+  transition: opacity 0.2s;
+}
+
+.reflection-link:hover {
+  opacity: 1;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  padding: 80px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 2.5rem;
+  color: var(--border);
+  margin-bottom: 8px;
+}
+
+.empty-title {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.empty-sub {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  max-width: 380px;
+  line-height: 1.7;
+}
+
+.empty-blinker {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 1.2rem;
+  color: var(--accent-amber);
+  animation: blink 1.1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Responsive: collapse date column on narrow screens ── */
+@media (max-width: 640px) {
+  .dispatch-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 24px 0;
+  }
+
+  .dispatch-date-col {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 0;
+  }
+
+  .dispatch-date-big {
+    font-size: 0.85rem;
+  }
+
+  .masthead-title {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .dispatch-reflection {
+    padding: 10px 14px;
+  }
+
+  .masthead-stats {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+</style>
