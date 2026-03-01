@@ -27,7 +27,7 @@ from pathlib import Path
 ENV_FILE    = Path("/home/admin/.clawdbot/.env")
 OUTPUT_FILE = Path("/home/admin/clawd/memory/vla-github-theory.json")
 REPO        = "sou350121/VLA-Handbook"
-MAX_FILES   = 80
+MAX_FILES   = 300
 RATE_SLEEP  = 0.1   # seconds between API calls
 
 
