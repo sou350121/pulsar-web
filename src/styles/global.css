@@ -1493,3 +1493,129 @@ hr.pulsar-divider {
 /* Icon helpers */
 .icon-sun::before  { content: '☀'; }
 .icon-moon::before { content: '◑'; }
+
+/* ============================================================
+   INFORMATION DENSITY — tighter desktop layout
+============================================================ */
+
+/* Reduce section vertical rhythm: 64px → 48px */
+.section { padding: 48px 0; }
+.section-header { margin-bottom: 24px; }
+
+/* Hero: tighter padding */
+.hero {
+  padding-top: 80px;
+  padding-bottom: 56px;
+  min-height: 480px;
+}
+
+/* Pick cards: reduce inner padding + grid gap */
+.pick-card { padding: 16px; }
+.picks-grid { gap: 16px; }
+
+/* Dash cards: tighter */
+.dash-card { padding: 18px 20px; }
+.dashboard-grid { gap: 16px; }
+
+/* Hero cards: tighter */
+.hero-card { padding: 24px; }
+.hero-grid  { gap: 20px; }
+
+/* Social cards: more compact */
+.social-card { padding: 14px 16px; min-width: 280px; }
+
+/* Section header label gap */
+.section-header .section-label { margin-bottom: 4px; }
+
+/* ============================================================
+   MOBILE OPTIMIZATIONS — 375px–767px
+============================================================ */
+@media (max-width: 767px) {
+
+  /* ── Typography ── */
+  body { font-size: 0.95rem; line-height: 1.65; }
+
+  /* ── Hero ── */
+  .hero {
+    padding-top: 64px;
+    padding-bottom: 40px;
+    min-height: unset;     /* don't force height on small screens */
+  }
+  .hero-headline h1 { font-size: clamp(1.7rem, 7vw, 2.4rem); }
+  .hero-subtitle    { font-size: 0.85rem; }
+  .hero-meta        { gap: 8px; flex-wrap: wrap; }
+
+  /* Hero two-col → single col already handled, ensure gap */
+  .hero-grid { gap: 16px; }
+  .hero-card { padding: 18px; }
+  .hero-card-title  { font-size: 1rem; }
+  .hero-card-summary { font-size: 0.82rem; -webkit-line-clamp: 3; }
+
+  /* ── Sections ── */
+  .section { padding: 36px 0; }
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+
+  /* ── Picks grid: single col, tight ── */
+  .picks-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pick-card         { padding: 14px; gap: 10px; }
+  .pick-title        { font-size: 0.88rem; }
+  .pick-summary      { font-size: 0.8rem; -webkit-line-clamp: 2; }
+  .pick-source-logo  { width: 26px; height: 26px; font-size: 0.7rem; }
+
+  /* ── Dashboard ── */
+  .dashboard-grid { gap: 12px; }
+  .dash-card      { padding: 14px 16px; }
+  .dash-card-title { font-size: 0.8rem; }
+  .sparkline       { height: 40px; }
+
+  /* ── Social strip ── */
+  .social-card { min-width: 260px; padding: 12px 14px; }
+  .social-content { font-size: 0.8rem; -webkit-line-clamp: 3; }
+  /* Remove desktop fade hint on mobile — full-bleed scroll */
+  .social-scroll-wrapper::after { display: none; }
+
+  /* ── Nav ── */
+  .nav-logo    { font-size: 0.9rem; }
+  .logo-zh     { display: none; }   /* hide Chinese name on tiny screens */
+  .live-dot    { font-size: 0.6rem; }
+
+  /* ── Footer ── */
+  .footer-grid { gap: 24px; }
+
+  /* ── Archive list items (AI Daily / VLA Daily) ── */
+  .card.flex { padding: 12px 14px; min-height: 52px; }
+
+  /* ── Ticker ── */
+  .ticker { padding: 0; }
+  .ticker-text { font-size: 0.7rem; }
+
+  /* ── Report teaser ── */
+  .report-teaser {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .report-cta {
+    align-self: flex-start;
+    flex-direction: row;
+    gap: 8px;
+    padding: 10px 16px;
+  }
+  .report-excerpt { font-size: 0.82rem; -webkit-line-clamp: 4; }
+}
+
+/* ── Tiny phones (< 375px) ── */
+@media (max-width: 374px) {
+  .container      { padding: 0 12px; }
+  .hero-card      { padding: 14px; }
+  .section        { padding: 28px 0; }
+  .pick-card      { padding: 12px; }
+}

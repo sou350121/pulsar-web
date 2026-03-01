@@ -111,7 +111,7 @@ const todayPicks  = recentPicks[0] ?? MOCK_PICKS;
 const displayDate = todayPicks.date;
 
 // Top 6 items for the picks grid
-const gridItems   = todayPicks.items.slice(0, 6);
+const gridItems   = todayPicks.items.slice(0, 9);
 // Top 2 items for the hero featured cards
 // AI hero: top item from today's AI picks
 const heroAI  = todayPicks.items[0];
@@ -131,7 +131,7 @@ const realSocial = [...aiSocial, ...vlaSocial].map(s => ({
   tag:      '',
 })).filter(s => s.event.length > 10);
 
-const socialItems = realSocial.length >= 3 ? realSocial.slice(0, 5) : MOCK_SOCIAL;
+const socialItems = realSocial.length >= 3 ? realSocial.slice(0, 7) : MOCK_SOCIAL;
 
 // Pipeline health
 const driftOk = !driftState?.drift_active;
