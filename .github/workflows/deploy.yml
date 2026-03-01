@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # 每天 12:00 上海時間（04:00 UTC）自動重建，pipeline 在 11:15 結束
+    - cron: '0 4 * * *'
 
 permissions:
   contents: read
@@ -40,7 +43,6 @@ jobs:
           SSH_KEY:  ${{ secrets.DEPLOY_SSH_KEY }}
           SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
           SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
-        # Only runs if the SSH_KEY secret is configured
         if: ${{ env.SSH_KEY != '' }}
         run: |
           mkdir -p ~/.ssh
