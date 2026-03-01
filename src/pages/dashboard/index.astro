@@ -13,6 +13,10 @@ import {
   loadAIDailyPicks,
   loadVLASOTA,
   loadLatestCalibration,
+  loadCrossDomainInsights,
+  loadRecentCalibrationTriggers,
+  loadVLATagDistribution,
+  loadAICategoryDistribution,
   type DriftMetricsFile,
   type VLASOTAEntry,
   type DailyPickDay,
@@ -99,6 +103,32 @@ const calibTriggers   = calibration?.triggers  ?? [];
 const calibVLAScanned = calibration?.vla_assumptions_scanned ?? 0;
 const calibAIScanned  = calibration?.ai_assumptions_scanned  ?? 0;
 const calibDate       = calibration?.executed_at?.slice(0, 10) ?? '—';
+
+// ── 前沿判斷力 panel data ─────────────────────────────────────────
+const crossDomain      = loadCrossDomainInsights(10);
+const calibTriggerLog  = loadRecentCalibrationTriggers(14);
+const vlaTagDist       = loadVLATagDistribution(7);
+const aiCatDist        = loadAICategoryDistribution(7);
+
+// Compute VLA breakthrough rate (⚡+🔧 / total) from recent days
+const vlaTagTotals = vlaTagDist.reduce(
+  (acc, d) => ({ flash: acc.flash + d.flash, wrench: acc.wrench + d.wrench, total: acc.total + d.total }),
+  { flash: 0, wrench: 0, total: 0 }
+);
+const vlaBreakthroughPct = vlaTagTotals.total > 0
+  ? Math.round((vlaTagTotals.flash + vlaTagTotals.wrench) / vlaTagTotals.total * 100)
+  : 0;
+
+// Cross-domain rule labels
+const RULE_LABELS: Record<string, string> = {
+  R001: 'VLA 技法 → AI App',
+  R002: 'VLA 世界模型 → AI App',
+  R003: 'AI App Agent → VLA',
+};
+const DOMAIN_ARROW: Record<string, string> = {
+  vla: 'VLA',
+  ai_app: 'AI App',
+};
 ---
 
 <BaseLayout
@@ -375,6 +405,166 @@ const calibDate       = calibration?.executed_at?.slice(0, 10) ?? '—';
             ))}
           </div>
         )}
+      </div>
+
+    </div>
+
+    <!-- ══ 前沿判斷力 SECTION ═══════════════════════════════════════ -->
+    <div class="db-section-label">
+      <span class="db-section-title">前沿判斷力</span>
+      <span class="db-section-desc">跨域洞察 · 假設挑戰 · 領域脈動</span>
+    </div>
+
+    <!-- ── 判斷雷達 (Judgment Radar) strip ── -->
+    <div class="db-radar">
+      <div class="db-radar-cell">
+        <div class="db-radar-icon">⚡</div>
+        <div class="db-radar-body">
+          <span class="db-radar-val db-radar-val--cyan">{vlaBreakthroughPct || '—'}%</span>
+          <span class="db-radar-key">VLA 突破率</span>
+          <span class="db-radar-sub">近 7 天 ⚡+🔧</span>
+        </div>
+      </div>
+      <div class="db-radar-sep"></div>
+      <div class="db-radar-cell">
+        <div class="db-radar-icon">🔀</div>
+        <div class="db-radar-body">
+          <span class="db-radar-val db-radar-val--amber">{crossDomain.length || 0}</span>
+          <span class="db-radar-key">跨域訊號</span>
+          <span class="db-radar-sub">cross-domain rules</span>
+        </div>
+      </div>
+      <div class="db-radar-sep"></div>
+      <div class="db-radar-cell">
+        <div class="db-radar-icon">⚠</div>
+        <div class="db-radar-body">
+          <span class={`db-radar-val ${calibTriggerLog.length > 0 ? 'db-radar-val--warn' : 'db-radar-val--ok'}`}>
+            {calibTriggerLog.length}
+          </span>
+          <span class="db-radar-key">假設挑戰</span>
+          <span class="db-radar-sub">近 14 天觸發</span>
+        </div>
+      </div>
+      <div class="db-radar-sep"></div>
+      <div class="db-radar-cell">
+        <div class="db-radar-icon">📊</div>
+        <div class="db-radar-body">
+          <span class="db-radar-val">{aiCatDist[0]?.category ?? '—'}</span>
+          <span class="db-radar-key">AI 主導類別</span>
+          <span class="db-radar-sub">近 7 天最多</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="db-grid">
+
+      <!-- ── 跨域洞察 ── -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title">跨域洞察</span>
+          <span class="db-panel-meta">VLA ↔ AI App</span>
+        </div>
+        {crossDomain.length === 0 ? (
+          <p class="db-empty">尚無跨域訊號，系統持續監測中</p>
+        ) : (
+          <div class="db-xd-list">
+            {crossDomain.slice(0, 5).map(ins => (
+              <div class="db-xd-row">
+                <div class="db-xd-meta">
+                  <span class="db-xd-rule">{RULE_LABELS[ins.rule_id] ?? ins.label}</span>
+                  <span class="db-xd-date">{ins.date}</span>
+                </div>
+                <a href={ins.url} target="_blank" rel="noopener" class="db-xd-title">
+                  {ins.rating} {ins.title}
+                </a>
+                {ins.matched_keywords.length > 0 && (
+                  <div class="db-xd-kws">
+                    {ins.matched_keywords.map(kw => <span class="db-xd-kw">{kw}</span>)}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- ── 假設挑戰記錄 ── -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title">假設挑戰記錄</span>
+          <span class="db-panel-meta">近 14 天 · {calibTriggerLog.length} 條</span>
+        </div>
+        {calibTriggerLog.length === 0 ? (
+          <div class="db-calib-ok">
+            <span class="db-calib-ok-icon">✓</span>
+            <span class="db-calib-ok-text">假設穩定，近期無觸發</span>
+          </div>
+        ) : (
+          <div class="db-trigger-list">
+            {calibTriggerLog.slice(0, 8).map(entry => (
+              <div class="db-trigger-row">
+                <span class="db-trigger-date">{entry.date.slice(5)}</span>
+                <span class="db-trigger-text">{entry.trigger.slice(0, 90)}{entry.trigger.length > 90 ? '…' : ''}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- ── 領域脈動 VLA tag timeline ── -->
+      <div class="db-panel db-panel--full">
+        <div class="db-panel-header">
+          <span class="db-panel-title">領域脈動</span>
+          <span class="db-panel-meta">近 7 天信號分佈</span>
+        </div>
+        <div class="db-pulse-wrap">
+          <!-- VLA tag stacked bars -->
+          <div class="db-pulse-col">
+            <span class="db-pulse-label">VLA 評分</span>
+            <div class="db-pulse-bars">
+              {vlaTagDist.map(d => {
+                const total = Math.max(1, d.total);
+                return (
+                  <div class="db-pulse-day">
+                    <div class="db-pulse-stack">
+                      {d.flash  > 0 && <div class="db-ps db-ps--flash"  style={`height:${Math.round(d.flash/total*100)}%`} title={`⚡ ${d.flash}`}></div>}
+                      {d.wrench > 0 && <div class="db-ps db-ps--wrench" style={`height:${Math.round(d.wrench/total*100)}%`} title={`🔧 ${d.wrench}`}></div>}
+                      {d.book   > 0 && <div class="db-ps db-ps--book"   style={`height:${Math.round(d.book/total*100)}%`}   title={`📖 ${d.book}`}></div>}
+                      {d.x      > 0 && <div class="db-ps db-ps--x"      style={`height:${Math.round(d.x/total*100)}%`}      title={`❌ ${d.x}`}></div>}
+                    </div>
+                    <span class="db-pulse-date">{d.date.slice(5)}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div class="db-pulse-legend">
+              <span class="db-pl-dot db-pl-dot--flash"></span><span class="db-pl-text">⚡ 突破</span>
+              <span class="db-pl-dot db-pl-dot--wrench"></span><span class="db-pl-text">🔧 工程</span>
+              <span class="db-pl-dot db-pl-dot--book"></span><span class="db-pl-text">📖 參考</span>
+            </div>
+          </div>
+
+          <div class="db-pulse-sep"></div>
+
+          <!-- AI category breakdown -->
+          <div class="db-pulse-col">
+            <span class="db-pulse-label">AI App 類別</span>
+            <div class="db-cat-list">
+              {aiCatDist.slice(0, 7).map((c, i) => {
+                const pct = Math.round(c.count / (aiCatDist[0]?.count ?? 1) * 100);
+                return (
+                  <div class="db-cat-row">
+                    <span class="db-cat-name">{c.category}</span>
+                    <div class="db-cat-bar-wrap">
+                      <div class="db-cat-bar" style={`width:${pct}%`}></div>
+                    </div>
+                    <span class="db-cat-count">{c.count}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -1085,5 +1275,405 @@ html.dark .db-calib-triggers { border-top-color: #131E30; }
   text-align: center;
   padding: 20px 0;
   opacity: 0.6;
+}
+
+/* ── Section label ── */
+.db-section-label {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 36px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+html.dark .db-section-label {
+  border-bottom-color: #1A2840;
+}
+
+.db-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+}
+
+html.dark .db-section-title {
+  text-shadow: 0 0 10px rgba(245,183,49,0.4);
+}
+
+.db-section-desc {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+/* ── Judgment Radar strip ── */
+.db-radar {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: var(--surface);
+  flex-wrap: wrap;
+}
+
+html.dark .db-radar {
+  background: #070B14;
+  border-color: rgba(245,183,49,0.15);
+  box-shadow: 0 0 0 1px rgba(245,183,49,0.04), 0 4px 20px rgba(0,0,0,0.35);
+}
+
+.db-radar-sep {
+  width: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+html.dark .db-radar-sep { background: #1A2840; }
+
+.db-radar-cell {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.db-radar-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.db-radar-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.db-radar-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.db-radar-val--cyan { color: var(--accent-cyan); }
+.db-radar-val--amber { color: var(--accent-amber); }
+.db-radar-val--warn  { color: var(--accent-amber); }
+.db-radar-val--ok    { color: #00C060; }
+
+html.dark .db-radar-val--cyan  { text-shadow: 0 0 12px rgba(62,207,207,0.4); }
+html.dark .db-radar-val--amber { text-shadow: 0 0 12px rgba(245,183,49,0.4); }
+html.dark .db-radar-val--warn  { text-shadow: 0 0 12px rgba(245,183,49,0.4); }
+html.dark .db-radar-val--ok    { color: #00FF88; text-shadow: 0 0 12px rgba(0,255,136,0.4); }
+
+.db-radar-key {
+  font-size: 0.52rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.db-radar-sub {
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+/* ── Cross-domain insights ── */
+.db-xd-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.db-xd-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+html.dark .db-xd-row { border-bottom-color: #0F1A2A; }
+.db-xd-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.db-xd-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.db-xd-rule {
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  color: var(--accent-amber);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+html.dark .db-xd-rule { text-shadow: 0 0 6px rgba(245,183,49,0.4); }
+
+.db-xd-date {
+  font-size: 0.5rem;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.db-xd-title {
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  line-height: 1.45;
+  transition: color 0.15s;
+  display: block;
+}
+
+.db-xd-title:hover { color: var(--accent-cyan); }
+html.dark .db-xd-title:hover { text-shadow: 0 0 8px rgba(62,207,207,0.35); }
+
+.db-xd-kws {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.db-xd-kw {
+  font-size: 0.5rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(62,207,207,0.08);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(62,207,207,0.2);
+  letter-spacing: 0.05em;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* ── Calibration trigger log ── */
+.db-calib-ok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  color: #00C060;
+}
+
+html.dark .db-calib-ok {
+  color: #00FF88;
+}
+
+.db-calib-ok-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.db-calib-ok-text {
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+}
+
+.db-trigger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.db-trigger-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+html.dark .db-trigger-row { border-bottom-color: #0F1A2A; }
+.db-trigger-row:last-child { border-bottom: none; }
+
+.db-trigger-date {
+  font-size: 0.52rem;
+  color: var(--accent-amber);
+  font-family: "IBM Plex Mono", monospace;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.db-trigger-text {
+  font-size: 0.64rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ── Domain Pulse ── */
+.db-pulse-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: start;
+}
+
+.db-pulse-sep {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+  margin: 0 20px;
+}
+
+html.dark .db-pulse-sep { background: #1A2840; }
+
+.db-pulse-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.db-pulse-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.db-pulse-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 80px;
+}
+
+.db-pulse-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.db-pulse-stack {
+  width: 100%;
+  height: 66px;
+  display: flex;
+  flex-direction: column-reverse;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.db-ps {
+  width: 100%;
+  transition: height 0.3s;
+  min-height: 2px;
+}
+
+.db-ps--flash  { background: #FFD700; }
+.db-ps--wrench { background: var(--accent-cyan); }
+.db-ps--book   { background: #4A8080; opacity: 0.7; }
+.db-ps--x      { background: #333; opacity: 0.4; }
+
+html.dark .db-ps--flash  { background: #FFD700; box-shadow: 0 0 4px rgba(255,215,0,0.4); }
+html.dark .db-ps--wrench { background: var(--accent-cyan); box-shadow: 0 0 4px rgba(62,207,207,0.4); }
+
+.db-pulse-date {
+  font-size: 0.46rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+  opacity: 0.6;
+}
+
+.db-pulse-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.db-pl-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.db-pl-dot--flash  { background: #FFD700; }
+.db-pl-dot--wrench { background: var(--accent-cyan); }
+.db-pl-dot--book   { background: #4A8080; }
+
+.db-pl-text {
+  font-size: 0.5rem;
+  color: var(--text-tertiary);
+  margin-right: 6px;
+}
+
+/* AI category bars */
+.db-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.db-cat-row {
+  display: grid;
+  grid-template-columns: 5rem 1fr 1.6rem;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-cat-name {
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.db-cat-bar-wrap {
+  height: 5px;
+  background: var(--border-subtle);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+html.dark .db-cat-bar-wrap { background: #131E30; }
+
+.db-cat-bar {
+  height: 100%;
+  background: var(--accent-amber);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+html.dark .db-cat-bar { box-shadow: 0 0 5px rgba(245,183,49,0.4); }
+
+.db-cat-count {
+  font-size: 0.55rem;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+/* Radar mobile */
+@media (max-width: 600px) {
+  .db-radar { display: grid; grid-template-columns: 1fr 1fr; }
+  .db-radar-sep { display: none; }
+  .db-radar-cell { border-bottom: 1px solid var(--border); }
+  html.dark .db-radar-cell { border-bottom-color: #1A2840; }
+
+  .db-pulse-wrap { grid-template-columns: 1fr; }
+  .db-pulse-sep  { display: none; }
 }
 </style>

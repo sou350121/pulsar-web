@@ -458,6 +458,46 @@ export function extractMarkdownSummary(content: string, maxLen: number = 300): s
     .concat(content.length > maxLen ? '…' : '');
 }
 
+// Cross-domain insights
+export interface CrossDomainInsight {
+  rule_id:          string;
+  label:            string;
+  source_domain:    string;
+  target_domain:    string;
+  title:            string;
+  url:              string;
+  rating:           string;
+  matched_keywords: string[];
+  abstract:         string;
+  date:             string;
+}
+
+interface CrossDomainFile {
+  cross_domain_insights: CrossDomainInsight[];
+}
+
+// VLA tag distribution per day
+export interface VLATagDay {
+  date:   string;
+  flash:  number;   // ⚡
+  wrench: number;   // 🔧
+  book:   number;   // 📖
+  x:      number;   // ❌
+  total:  number;
+}
+
+// AI category count
+export interface AICategoryCount {
+  category: string;
+  count:    number;
+}
+
+// Calibration trigger entry
+export interface CalibTriggerEntry {
+  date:    string;
+  trigger: string;
+}
+
 // ---------------------------------------------------------------------------
 // CalibrationCheck — shape of calibration-check-YYYY-MM-DD.json
 // ---------------------------------------------------------------------------
@@ -487,4 +527,102 @@ export function loadLatestCalibration(): CalibrationCheck | null {
   if (files.length === 0) return null;
   const data = readJson<CalibrationCheck>(files[0]);
   return data ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// loadCrossDomainInsights
+// Returns the N most recent cross-domain insight entries.
+// ---------------------------------------------------------------------------
+export function loadCrossDomainInsights(n: number = 20): CrossDomainInsight[] {
+  const data = readJson<CrossDomainFile>('cross-domain-insight.json');
+  if (!data?.cross_domain_insights) return [];
+  return [...data.cross_domain_insights]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
+// loadRecentCalibrationTriggers
+// Collects all triggered assumptions from the last N calibration check files.
+// ---------------------------------------------------------------------------
+export function loadRecentCalibrationTriggers(maxFiles: number = 14): CalibTriggerEntry[] {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('calibration-check-') && f.endsWith('.json'))
+      .sort()
+      .reverse()
+      .slice(0, maxFiles);
+  } catch {
+    return [];
+  }
+  const result: CalibTriggerEntry[] = [];
+  for (const filename of files) {
+    const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
+    const date = dateMatch?.[1] ?? '';
+    const data = readJson<CalibrationCheck>(filename);
+    if (data?.triggers?.length) {
+      for (const trigger of data.triggers) {
+        result.push({ date, trigger });
+      }
+    }
+  }
+  return result.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+// ---------------------------------------------------------------------------
+// loadVLATagDistribution
+// Returns per-day breakdown of ⚡/🔧/📖/❌ counts from VLA rating files.
+// ---------------------------------------------------------------------------
+export function loadVLATagDistribution(n: number = 7): VLATagDay[] {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+      .sort()
+      .reverse()
+      .slice(0, n);
+  } catch {
+    return [];
+  }
+  return files
+    .map(filename => {
+      const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
+      const date  = dateMatch?.[1] ?? 'unknown';
+      const data  = readJson<{ papers: VLARatingRaw[] }>(filename);
+      const papers = data?.papers ?? [];
+      return {
+        date,
+        flash:  papers.filter(p => p.rating === '⚡').length,
+        wrench: papers.filter(p => p.rating === '🔧').length,
+        book:   papers.filter(p => p.rating === '📖').length,
+        x:      papers.filter(p => p.rating === '❌').length,
+        total:  papers.length,
+      };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date)); // ascending for timeline view
+}
+
+// ---------------------------------------------------------------------------
+// loadAICategoryDistribution
+// Returns category counts from the most recent N days of AI daily picks.
+// ---------------------------------------------------------------------------
+export function loadAICategoryDistribution(days: number = 7): AICategoryCount[] {
+  const data = readJson<AIDailyPickFile>('ai-daily-pick.json');
+  if (!data?.daily_picks) return [];
+  const recent = [...data.daily_picks]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, days);
+  const counts: Record<string, number> = {};
+  for (const day of recent) {
+    for (const item of day.items ?? []) {
+      const cat = item.category ?? '其他';
+      counts[cat] = (counts[cat] ?? 0) + 1;
+    }
+  }
+  return Object.entries(counts)
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count);
 }
