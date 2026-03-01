@@ -1,8 +1,10 @@
 ---
 /**
  * src/pages/daily/index.astro
- * Combined AI App + VLA daily archive — single merged page.
- * Most recent entries first; colour-coded by domain.
+ * Combined AI App + VLA daily archive — 7-day summary + domain switcher + archive.
+ * User intents: (1) catch up quickly → 7-day summary with top ⚡ signals,
+ *               (2) switch domain focus → tab nav to /ai-daily or /vla,
+ *               (3) find a specific day → archive list below.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadAIDailyPicks, loadVLADailyPicks } from '../../utils/data';
@@ -12,27 +14,67 @@ const base = import.meta.env.BASE_URL;
 const aiDays  = loadAIDailyPicks(60);
 const vlaDays = loadVLADailyPicks(60);
 
-// Merge and sort descending by date
-type DomainDay = { date: string; domain: 'ai' | 'vla'; count: number; firstTitle: string; counts: Record<string, number> };
+// ── 7-day summary ────────────────────────────────────────────────────────────
+const sevenAI  = aiDays.slice(0, 7);
+const sevenVLA = vlaDays.slice(0, 7);
+
+// Flatten items and tag with date + domain
+const flatAI  = sevenAI.flatMap(d  => d.items.map(i => ({ ...i, date: d.date,  domain: 'ai'  as const })));
+const flatVLA = sevenVLA.flatMap(d => d.items.map(i => ({ ...i, date: d.date,  domain: 'vla' as const })));
+const flatAll = [...flatAI, ...flatVLA];
+
+const aiTotal    = flatAI.length;
+const vlaTotal   = flatVLA.length;
+const flashCount = flatAll.filter(i => i.rating === '⚡').length;
+const wrenchCount= flatAll.filter(i => i.rating === '🔧').length;
+const bookCount  = flatAll.filter(i => i.rating === '📖').length;
+
+// Top ⚡ signals — interleave VLA (2) + AI (3) for variety
+const topFlash = [
+  ...flatVLA.filter(i => i.rating === '⚡').slice(0, 2),
+  ...flatAI.filter(i  => i.rating === '⚡').slice(0, 3),
+].slice(0, 5);
+
+// Summary date range label
+const summaryDates = [
+  ...sevenAI.map(d => d.date),
+  ...sevenVLA.map(d => d.date),
+].sort();
+const dateFrom = summaryDates[0] ?? '';
+const dateTo   = summaryDates[summaryDates.length - 1] ?? '';
+
+function srcTag(s: string): string {
+  return (s ?? 'SRC').toUpperCase().slice(0, 8);
+}
+
+// ── Merged archive ────────────────────────────────────────────────────────────
+type DomainDay = {
+  date: string; domain: 'ai' | 'vla';
+  count: number; firstTitle: string; counts: Record<string, number>;
+};
 
 const merged: DomainDay[] = [
   ...aiDays.map(d => ({
     date: d.date, domain: 'ai' as const,
     count: d.items.length,
     firstTitle: d.items[0]?.title ?? '',
-    counts: d.items.reduce<Record<string, number>>((a, i) => { a[i.rating] = (a[i.rating] ?? 0) + 1; return a; }, {}),
+    counts: d.items.reduce<Record<string, number>>((a, i) => {
+      a[i.rating] = (a[i.rating] ?? 0) + 1; return a;
+    }, {}),
   })),
   ...vlaDays.map(d => ({
     date: d.date, domain: 'vla' as const,
     count: d.items.length,
     firstTitle: d.items[0]?.title ?? '',
-    counts: d.items.reduce<Record<string, number>>((a, i) => { a[i.rating] = (a[i.rating] ?? 0) + 1; return a; }, {}),
+    counts: d.items.reduce<Record<string, number>>((a, i) => {
+      a[i.rating] = (a[i.rating] ?? 0) + 1; return a;
+    }, {}),
   })),
 ].sort((a, b) => b.date.localeCompare(a.date) || (a.domain === 'ai' ? -1 : 1));
 
-const today = new Date().toISOString().slice(0, 10);
+const today     = new Date().toISOString().slice(0, 10);
 const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-const dayBefore  = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
+const dayBefore = new Date(Date.now() - 172800000).toISOString().slice(0, 10);
 
 function recencyLabel(date: string): string | null {
   if (date === today)     return '最新';
@@ -46,16 +88,32 @@ function dotDate(iso: string): string {
   return `${y} · ${m} · ${d}`;
 }
 
-// Group by month for separators
 let lastMonth = '';
 ---
 
 <BaseLayout
-  title="日報 — AI & VLA"
-  description="AI App 與 VLA 每日精選合輯 — 合併歸檔"
+  title="研究日報 — 近7日匯總 | AI App + VLA"
+  description="AI App 精選與 VLA 論文的每日合輯 — 近7日綜合匯總、⚡突破信號、歸檔索引"
 >
   <div class="daily-page page-container">
 
+    <!-- ── Domain switcher tabs ── -->
+    <nav class="domain-nav" aria-label="領域切換">
+      <a href={`${base}/daily`} class="domain-tab domain-tab--active" aria-current="page">
+        <span class="tab-dot tab-dot--both" aria-hidden="true"></span>
+        全部
+      </a>
+      <a href={`${base}/ai-daily`} class="domain-tab">
+        <span class="tab-dot tab-dot--ai" aria-hidden="true"></span>
+        AI App 線
+      </a>
+      <a href={`${base}/vla`} class="domain-tab">
+        <span class="tab-dot tab-dot--vla" aria-hidden="true"></span>
+        VLA 線
+      </a>
+    </nav>
+
+    <!-- ── Masthead ── -->
     <header class="daily-masthead">
       <p class="daily-overline">DAILY INTELLIGENCE · AI APP + VLA</p>
       <h1 class="daily-title">研究日報</h1>
@@ -65,14 +123,100 @@ let lastMonth = '';
       </div>
       <p class="daily-desc">
         AI App 精選與 VLA 論文評級的每日合輯。
-        時效性強 — 重點看最近 3–7 天；更早的僅作參考。
+        下方匯總近 7 天的信號總覽，歸檔索引可按領域過濾。
       </p>
-      <div class="daily-legend">
-        <span class="legend-dot legend-dot--ai"></span><span class="legend-label">AI App 日報</span>
-        <span class="legend-dot legend-dot--vla"></span><span class="legend-label">VLA 研究日報</span>
-      </div>
     </header>
 
+    <!-- ── 7-Day Summary ── -->
+    {(aiTotal > 0 || vlaTotal > 0) && (
+      <section class="summary-block" aria-label="近7日匯總">
+
+        <div class="summary-header">
+          <span class="summary-eyebrow">近 7 日匯總</span>
+          {dateFrom && dateTo && (
+            <span class="summary-range">{dateFrom.slice(5)} → {dateTo.slice(5)}</span>
+          )}
+        </div>
+
+        <!-- Stat chips row -->
+        <div class="summary-stats">
+          <div class="stat-chip stat-chip--ai">
+            <span class="stat-num">{aiTotal}</span>
+            <span class="stat-lbl">AI精選</span>
+          </div>
+          <div class="stat-chip stat-chip--vla">
+            <span class="stat-num">{vlaTotal}</span>
+            <span class="stat-lbl">VLA論文</span>
+          </div>
+          <div class="stat-chip stat-chip--flash">
+            <span class="stat-num">⚡ {flashCount}</span>
+            <span class="stat-lbl">突破</span>
+          </div>
+          <div class="stat-chip stat-chip--wrench">
+            <span class="stat-num">🔧 {wrenchCount}</span>
+            <span class="stat-lbl">工具/技術</span>
+          </div>
+          <div class="stat-chip stat-chip--book">
+            <span class="stat-num">📖 {bookCount}</span>
+            <span class="stat-lbl">背景/觀點</span>
+          </div>
+        </div>
+
+        <!-- Top ⚡ signals -->
+        {topFlash.length > 0 && (
+          <div class="top-flash">
+            <p class="top-flash-eyebrow">⚡ 本週最強信號</p>
+            <ul class="top-flash-list" role="list">
+              {topFlash.map(item => (
+                <li>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flash-row"
+                    title={item.title}
+                  >
+                    <span class:list={['flash-dot', item.domain === 'vla' ? 'flash-dot--vla' : 'flash-dot--ai']} aria-hidden="true"></span>
+                    <span class="flash-title">{item.title}</span>
+                    <span class="flash-meta">{srcTag(item.source)}&thinsp;·&thinsp;{item.date.slice(5)}</span>
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
+                      stroke="currentColor" stroke-width="1.5"
+                      class="flash-arrow" aria-hidden="true">
+                      <path d="M1 5h8M6 2l3 3-3 3"/>
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Quick-jump links to latest day in each domain -->
+        <div class="summary-quickjump">
+          {aiDays[0] && (
+            <a href={`${base}/ai-daily/${aiDays[0].date}`} class="qj-link qj-link--ai">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M1 6h10M7 2l4 4-4 4"/></svg>
+              AI 今日 · {aiDays[0].date.slice(5)}
+            </a>
+          )}
+          {vlaDays[0] && (
+            <a href={`${base}/vla/${vlaDays[0].date}`} class="qj-link qj-link--vla">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M1 6h10M7 2l4 4-4 4"/></svg>
+              VLA 今日 · {vlaDays[0].date.slice(5)}
+            </a>
+          )}
+        </div>
+
+      </section>
+    )}
+
+    <!-- ── Archive header ── -->
+    <div class="archive-header-row">
+      <h2 class="archive-heading">歸檔索引</h2>
+      <span class="archive-badge">{merged.length} 期</span>
+    </div>
+
+    <!-- ── Archive list ── -->
     {merged.length === 0 ? (
       <p class="daily-empty">尚無日報資料</p>
     ) : (
@@ -126,22 +270,72 @@ let lastMonth = '';
         })}
       </div>
     )}
+
   </div>
 </BaseLayout>
 
 <style>
 .daily-page {
-  padding-top: 56px;
+  padding-top: 40px;
   padding-bottom: 80px;
+}
+
+/* ── Domain nav tabs ── */
+.domain-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+  padding-bottom: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.domain-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px 10px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.domain-tab:hover {
+  color: var(--text-secondary);
+}
+
+.domain-tab--active {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.tab-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tab-dot--ai   { background: var(--accent-amber); }
+.tab-dot--vla  { background: var(--accent-cyan); }
+.tab-dot--both {
+  background: linear-gradient(90deg, var(--accent-amber) 50%, var(--accent-cyan) 50%);
 }
 
 /* ── Masthead ── */
 .daily-masthead {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .daily-overline {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-family: 'Menlo', 'Consolas', monospace;
   font-size: 0.62rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -151,7 +345,7 @@ let lastMonth = '';
 
 .daily-title {
   font-family: Georgia, 'Songti SC', serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 700;
   color: var(--text-primary);
   margin: 0 0 14px;
@@ -161,8 +355,8 @@ let lastMonth = '';
 .daily-rule {
   display: flex;
   height: 3px;
-  width: 120px;
-  margin-bottom: 16px;
+  width: 100px;
+  margin-bottom: 14px;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -171,34 +365,243 @@ let lastMonth = '';
 .daily-rule-vla { flex: 2; background: var(--accent-cyan); }
 
 .daily-desc {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.7;
-  max-width: 600px;
-  margin: 0 0 16px;
+  max-width: 560px;
+  margin: 0;
 }
 
-.daily-legend {
+/* ── 7-day summary block ── */
+.summary-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 24px 18px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-amber) 0%, var(--accent-cyan) 100%);
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-eyebrow {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.summary-range {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+/* Stat chips */
+.summary-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  min-width: 72px;
+  transition: border-color 0.15s;
+}
+
+.stat-chip--ai     { border-color: rgba(212, 145, 10, 0.25); }
+.stat-chip--vla    { border-color: rgba(15, 143, 160, 0.25); }
+.stat-chip--flash  { border-color: rgba(212, 145, 10, 0.20); }
+.stat-chip--wrench { border-color: rgba(43, 142, 199, 0.20); }
+.stat-chip--book   { border-color: rgba(61, 139, 94, 0.20); }
+
+.stat-num {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-chip--ai .stat-num  { color: var(--accent-amber); }
+.stat-chip--vla .stat-num { color: var(--accent-cyan); }
+
+.stat-lbl {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* Top flash signals */
+.top-flash {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+.top-flash-eyebrow {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.top-flash-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.flash-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.06em;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
 }
 
-.legend-dot {
-  width: 8px;
-  height: 8px;
+.top-flash-list li:last-child .flash-row {
+  border-bottom: none;
+}
+
+.flash-row:hover .flash-title {
+  color: var(--text-primary);
+}
+
+.flash-row:hover .flash-arrow {
+  color: var(--accent-amber);
+  transform: translateX(2px);
+}
+
+.flash-dot {
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.legend-dot--ai  { background: var(--accent-amber); }
-.legend-dot--vla { background: var(--accent-cyan); }
+.flash-dot--ai  { background: var(--accent-amber); }
+.flash-dot--vla { background: var(--accent-cyan); }
 
-.legend-label { margin-right: 14px; }
+.flash-title {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.12s;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+.flash-meta {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.flash-arrow {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  transition: color 0.12s, transform 0.12s;
+}
+
+/* Quick jump */
+.summary-quickjump {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.qj-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.qj-link--ai:hover  { border-color: var(--accent-amber); color: var(--accent-amber); background: var(--accent-amber-bg); }
+.qj-link--vla:hover { border-color: var(--accent-cyan);  color: var(--accent-cyan);  background: var(--accent-cyan-bg); }
+
+/* ── Archive header row ── */
+.archive-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.archive-heading {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.archive-badge {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+}
 
 /* ── Month separator ── */
 .month-sep {
@@ -231,7 +634,7 @@ let lastMonth = '';
   grid-template-columns: 14rem 1fr auto;
   gap: 16px;
   align-items: center;
-  padding: 13px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--border-subtle);
   text-decoration: none;
   color: inherit;
@@ -259,7 +662,6 @@ let lastMonth = '';
 
 .day-row:hover::before { transform: scaleY(1); }
 
-/* ── Left: domain pill + date + recency ── */
 .day-left {
   display: flex;
   align-items: center;
@@ -305,7 +707,6 @@ let lastMonth = '';
   white-space: nowrap;
 }
 
-/* ── Middle: rating chips + teaser ── */
 .day-mid {
   display: flex;
   flex-direction: column;
@@ -339,7 +740,6 @@ let lastMonth = '';
   text-overflow: ellipsis;
 }
 
-/* ── Right: count + arrow ── */
 .day-right {
   display: flex;
   align-items: center;
@@ -362,12 +762,29 @@ let lastMonth = '';
 .day-row--ai:hover  .day-arrow { color: var(--accent-amber); transform: translateX(3px); }
 .day-row--vla:hover .day-arrow { color: var(--accent-cyan);  transform: translateX(3px); }
 
-/* ── Mobile: stack date info above teaser ── */
+/* ── Mobile ── */
 @media (max-width: 640px) {
+  .summary-block {
+    padding: 16px;
+  }
+
+  .summary-stats {
+    gap: 6px;
+  }
+
+  .stat-chip {
+    min-width: 60px;
+    padding: 7px 10px;
+  }
+
+  .stat-num {
+    font-size: 0.9rem;
+  }
+
   .day-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
-    gap: 6px 8px;
+    gap: 5px 8px;
   }
 
   .day-left  { grid-column: 1; grid-row: 1; flex-wrap: wrap; }
@@ -381,6 +798,15 @@ let lastMonth = '';
     -webkit-box-orient: vertical;
     overflow: hidden;
     white-space: normal;
+  }
+
+  .domain-nav {
+    gap: 0;
+  }
+
+  .domain-tab {
+    padding: 7px 10px 9px;
+    font-size: 0.62rem;
   }
 }
 </style>

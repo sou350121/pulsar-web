@@ -7,6 +7,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadAIDailyPicks } from '../../utils/data';
 
+const base  = import.meta.env.BASE_URL;
 const picks = loadAIDailyPicks(60);  // last 60 days
 
 // Compute rating counts + first article title per day
@@ -63,6 +64,22 @@ for (const day of daysWithStats) {
   description="每日 AI 研究與應用精選 — 評分、摘要與源鏈結"
 >
   <div class="page-container section">
+
+    <!-- ── Domain switcher tabs ── -->
+    <nav class="domain-nav" aria-label="領域切換">
+      <a href={`${base}/daily`} class="domain-tab">
+        <span class="tab-dot tab-dot--both" aria-hidden="true"></span>
+        全部
+      </a>
+      <a href={`${base}/ai-daily`} class="domain-tab domain-tab--active" aria-current="page">
+        <span class="tab-dot tab-dot--ai" aria-hidden="true"></span>
+        AI App 線
+      </a>
+      <a href={`${base}/vla`} class="domain-tab">
+        <span class="tab-dot tab-dot--vla" aria-hidden="true"></span>
+        VLA 線
+      </a>
+    </nav>
 
     <!-- ── Editorial header ── -->
     <header class="archive-header">
@@ -154,6 +171,48 @@ for (const day of daysWithStats) {
 </BaseLayout>
 
 <style>
+/* ── Domain nav ── */
+.domain-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.domain-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px 10px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.domain-tab:hover { color: var(--text-secondary); }
+
+.domain-tab--active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-amber);
+}
+
+.tab-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tab-dot--ai   { background: var(--accent-amber); }
+.tab-dot--vla  { background: var(--accent-cyan); }
+.tab-dot--both { background: linear-gradient(90deg, var(--accent-amber) 50%, var(--accent-cyan) 50%); }
+
 /* ── Archive header ── */
 .archive-header {
   margin-bottom: 2.5rem;
