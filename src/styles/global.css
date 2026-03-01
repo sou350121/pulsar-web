@@ -1628,3 +1628,325 @@ hr.pulsar-divider {
   padding: 20px 0 0;
   background: var(--bg);
 }
+
+/* ============================================================
+   MOBILE OVERHAUL v2 — premium mobile-first reading experience
+   Overrides any earlier mobile rules. Targets: 375px – 767px,
+   with a sub-breakpoint at < 360px for the smallest phones.
+============================================================ */
+
+/* ── Prevent horizontal overflow on all pages ── */
+html, body {
+  overflow-x: hidden;
+}
+
+/* ── Scrollable horizontal areas (ticker, social strip) ──
+   They must scroll themselves without triggering page scroll. */
+.social-scroll-container,
+.ticker {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767px) {
+
+  /* ────────────────────────────────────────────
+     TYPOGRAPHY
+  ──────────────────────────────────────────── */
+
+  /* Base body: 15px, comfortable line-height */
+  body {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* Article / paragraph text */
+  p, .pick-summary, .hero-card-summary, .hero-subtitle,
+  .social-content, .health-item, .report-excerpt {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* Headings — constrained for mobile screens */
+  h1, .hero-headline h1 {
+    font-size: 24px !important;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  h2, .section-header h2 {
+    font-size: 20px !important;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  h3 { font-size: 17px; line-height: 1.3; }
+
+  /* Monospace text: floor at 12px */
+  code, kbd, pre, samp,
+  .font-mono,
+  .hero-date, .pick-date, .social-entity, .social-time,
+  .dash-card-title, .health-time, .section-number,
+  .footer-copy, .footer-version, .footer-auto-label,
+  .ticker, .ticker-text,
+  .btn, .nav-lang, .live-dot,
+  .rating-badge, .source-tag, .tag,
+  .report-label, .report-cta,
+  .entity-name, .entity-count, .spark-label, .spark-value,
+  .section-link, .pick-read-link, .domain-tag,
+  .hero-card-label, .status-badge, .pick-date {
+    font-size: max(12px, 0.75rem);
+  }
+
+  /* ────────────────────────────────────────────
+     NAVIGATION
+  ──────────────────────────────────────────── */
+
+  /* Nav height slightly tighter on mobile */
+  .nav-inner { height: 56px; }
+
+  /* Logo: ensure it renders cleanly on small screens */
+  .nav-logo {
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+  }
+
+  /* Chinese subtitle: show it, balanced size */
+  .nav-logo .logo-zh {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: var(--text-tertiary);
+    margin-top: -3px;
+    display: block;       /* explicitly shown — override the earlier display:none */
+  }
+
+  /* Live dot: keep visible, compact */
+  .live-dot {
+    font-size: max(12px, 0.68rem);
+    gap: 4px;
+  }
+
+  /* ────────────────────────────────────────────
+     LAYOUT: PAGE & CONTAINER
+  ──────────────────────────────────────────── */
+
+  .container {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .page-container {
+    max-width: 100%;
+    padding-inline: 16px;
+  }
+
+  /* ────────────────────────────────────────────
+     HERO
+  ──────────────────────────────────────────── */
+
+  .hero {
+    padding-top: 72px;   /* nav height + clearance */
+    padding-bottom: 32px;
+    min-height: unset;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  .hero-headline { margin-bottom: 12px; }
+  .hero-subtitle {
+    font-size: 14px;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .hero-meta { gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+
+  .hero-card {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .hero-card-title { font-size: 15px; line-height: 1.45; margin: 10px 0 8px; }
+  .hero-card-summary { font-size: 13px; line-height: 1.6; }
+
+  /* ────────────────────────────────────────────
+     SECTIONS
+  ──────────────────────────────────────────── */
+
+  .section {
+    padding: 32px 0;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+
+  .section-header h2 {
+    font-size: 20px !important;
+  }
+
+  /* Section numbers: decorative, keep tiny */
+  .section-number {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 1px 6px;
+  }
+
+  /* ────────────────────────────────────────────
+     CARDS
+  ──────────────────────────────────────────── */
+
+  .card {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Archive list card variant */
+  .card.flex { padding: 12px 14px; min-height: 52px; }
+
+  /* ────────────────────────────────────────────
+     PICKS GRID — 1 column
+  ──────────────────────────────────────────── */
+
+  .picks-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Force any Tailwind cols-3 grids to 1 column on mobile */
+  .grid.cols-3,
+  [class*="grid-cols-3"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pick-card {
+    padding: 14px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+
+  .pick-title   { font-size: 14px; line-height: 1.5; }
+  .pick-summary { font-size: 13px; line-height: 1.6; }
+  .pick-source-logo { width: 26px; height: 26px; font-size: 0.68rem; border-radius: 6px; }
+
+  /* ────────────────────────────────────────────
+     DASHBOARD GRID
+  ──────────────────────────────────────────── */
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dash-card { padding: 14px 16px; }
+  .sparkline { height: 40px; }
+
+  /* ────────────────────────────────────────────
+     SOCIAL INTEL STRIP
+  ──────────────────────────────────────────── */
+
+  /* Remove desktop fade-out edge on mobile */
+  .social-scroll-wrapper::after { display: none; }
+
+  .social-card {
+    width: 272px;
+    min-width: 272px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    gap: 8px;
+  }
+
+  .social-content { font-size: 13px; line-height: 1.6; }
+  .social-strip   { gap: 12px; }
+
+  /* ────────────────────────────────────────────
+     TICKER
+  ──────────────────────────────────────────── */
+
+  .ticker {
+    padding: 6px 0;
+    /* Horizontal scroll only — never triggers vertical page scroll */
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+
+  .ticker-text { font-size: max(12px, 0.7rem); }
+
+  /* ────────────────────────────────────────────
+     REPORT TEASER
+  ──────────────────────────────────────────── */
+
+  .report-teaser {
+    grid-template-columns: 1fr;
+    padding: 28px 20px;
+    gap: 20px;
+    border-radius: 14px;
+  }
+
+  .report-title { font-size: 18px; }
+  .report-excerpt { font-size: 13px; line-height: 1.65; }
+
+  .report-cta {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    font-size: max(12px, 0.75rem);
+  }
+
+  .report-cta-arrow { font-size: 1.4rem; }
+
+  /* ────────────────────────────────────────────
+     FOOTER
+  ──────────────────────────────────────────── */
+
+  footer { padding: 32px 0 24px; }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+
+  /* ────────────────────────────────────────────
+     DIGEST BLOCK (wrapper only — no digest-* internals)
+  ──────────────────────────────────────────── */
+  .digest-block { padding: 12px 0 0; }
+
+} /* end @media (max-width: 767px) */
+
+/* ── Very small phones: < 360px ── */
+@media (max-width: 359px) {
+
+  body { font-size: 14px; }
+
+  .container, .page-container { padding: 0 12px; }
+
+  .nav-logo {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* Hide Chinese subtitle on truly tiny screens */
+  .nav-logo .logo-zh { display: none; }
+
+  .hero  { padding-top: 64px; padding-bottom: 24px; }
+  .section { padding: 24px 0; }
+
+  .hero-card, .pick-card { padding: 12px; }
+
+  h1, .hero-headline h1 { font-size: 21px !important; }
+  h2, .section-header h2 { font-size: 18px !important; }
+
+  .social-card { width: 248px; min-width: 248px; }
+}

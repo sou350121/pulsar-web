@@ -99,50 +99,88 @@ const isActive = (href: string) => {
 </nav>
 
 <style>
+  /* ── Hamburger button: hidden on desktop, shown on mobile ── */
   .mobile-menu-btn {
     display: none;
-    padding: 8px;
-    border-radius: 6px;
+    /* 44px minimum tap target */
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-secondary);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
   .mobile-menu-btn:hover {
     background: var(--surface-2);
     color: var(--text-primary);
   }
-
-  @media (max-width: 768px) {
-    .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+  .mobile-menu-btn:focus-visible {
+    outline: 2px solid var(--accent-amber);
+    outline-offset: 2px;
   }
 
+  @media (max-width: 768px) {
+    .mobile-menu-btn { display: flex; }
+  }
+
+  /* ── Mobile Navigation Drawer ── */
   .mobile-menu {
-    background: var(--surface);
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
     border-top: 1px solid var(--border);
-    padding: 8px 24px 16px;
+    /* Generous left/right padding for breathing room */
+    padding: 8px 0 20px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
 
   .mobile-menu.hidden { display: none; }
 
+  /* ── Individual nav links: 48px min touch target ── */
   .mobile-menu-link {
-    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 0.9rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
     color: var(--text-secondary);
     text-decoration: none;
-    padding: 10px 0;
+    /* 16px horizontal padding, enough vertical for 48px touch target */
+    padding: 14px 24px;
     border-bottom: 1px solid var(--border-subtle);
-    transition: color 0.2s;
+    /* min-height ensures at least 48px on any device */
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.03em;
+    transition: color 0.15s, background 0.15s;
     opacity: 1;
   }
 
+  /* Last item: remove the separator line */
   .mobile-menu-link:last-child { border-bottom: none; }
-  .mobile-menu-link:hover,
-  .mobile-menu-link.active { color: var(--accent-amber); opacity: 1; }
+
+  .mobile-menu-link:hover {
+    color: var(--text-primary);
+    background: var(--surface-2);
+  }
+
+  .mobile-menu-link.active {
+    color: var(--accent-amber);
+    font-weight: 500;
+  }
+
+  .mobile-menu-link:focus-visible {
+    outline: 2px solid var(--accent-amber);
+    outline-offset: -2px;
+  }
 </style>
 
 <script>
