@@ -5,8 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # 每天 12:00 上海時間（04:00 UTC）自動重建，pipeline 在 11:15 結束
-    - cron: '0 4 * * *'
+    # 每天 11:55 上海時間（03:55 UTC）開始重建，12:00 前就緒；pipeline 在 11:15 結束
+    - cron: '55 3 * * *'
 
 permissions:
   contents: read
