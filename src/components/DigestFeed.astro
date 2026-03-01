@@ -27,18 +27,20 @@ interface DigestItem {
 }
 
 interface Props {
-  date:       string;
-  aiItems:    DigestItem[];
-  vlaItems:   DigestItem[];
-  showLinks?: boolean;
-  maxItems?:  number;
-  title?:     string;
+  date:            string;
+  aiItems:         DigestItem[];
+  vlaItems:        DigestItem[];
+  deepDiveItems?:  DigestItem[];
+  showLinks?:      boolean;
+  maxItems?:       number;
+  title?:          string;
 }
 
 const {
   date,
   aiItems,
   vlaItems,
+  deepDiveItems = [],
   showLinks = true,
   maxItems  = 12,
   title,
@@ -72,11 +74,13 @@ function sourceTag(src: string): string {
   return (src ?? 'SRC').toUpperCase().slice(0, 8);
 }
 
-const aiSlice  = aiItems.slice(0, maxItems);
-const vlaSlice = vlaItems.slice(0, maxItems);
+const aiSlice       = aiItems.slice(0, maxItems);
+const vlaSlice      = vlaItems.slice(0, maxItems);
+const deepDiveSlice = deepDiveItems.slice(0, maxItems);
 
-const hasAi  = aiSlice.length  > 0;
-const hasVla = vlaSlice.length > 0;
+const hasAi       = aiSlice.length       > 0;
+const hasVla      = vlaSlice.length      > 0;
+const hasDeepDive = deepDiveSlice.length > 0;
 
 const wordmark = title ?? 'PULSAR DIGEST';
 ---
@@ -228,6 +232,67 @@ const wordmark = title ?? 'PULSAR DIGEST';
     <div class="digest-empty" role="status">
       — VLA 線今日無資料 —
     </div>
+  )}
+
+  <!-- ── DEEP DIVE LINE ── -->
+  {hasDeepDive && (
+    <section aria-labelledby="digest-section-deepdive">
+      <div class="digest-section-header digest-section--deepdive">
+        <span class="digest-section-label" id="digest-section-deepdive">
+          DEEP DIVE 深析&nbsp;&middot;&nbsp;新增文章&nbsp;·&nbsp;近 7 天
+        </span>
+        <span class="digest-section-meta" aria-hidden="true">
+          {deepDiveSlice.length}&thinsp;篇
+        </span>
+      </div>
+
+      <ul class="digest-list" role="list">
+        {deepDiveSlice.map((item) => {
+          const emoji    = ratingEmoji(item.rating);
+          const modifier = ratingModifier(item.rating);
+          const tag      = sourceTag(item.source);
+          const domainMod = item.domain === 'vla' ? 'digest-item--vla' : 'digest-item--ai';
+          const rowClass = `digest-item ${domainMod} ${modifier} digest-item--deepdive`;
+
+          return (
+            <li class={rowClass}>
+              {showLinks ? (
+                <a
+                  class="digest-item-link"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={item.title}
+                  aria-label={`${emoji} ${item.title}`}
+                >
+                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                  <span class="digest-content">
+                    <span class="digest-title">{item.title}</span>
+                    <span class="digest-sep" aria-hidden="true">—</span>
+                    <span class="digest-summary digest-summary--type">{item.summary}</span>
+                  </span>
+                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                    {tag}
+                  </span>
+                </a>
+              ) : (
+                <div class="digest-item-link" aria-label={`${emoji} ${item.title}`}>
+                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                  <span class="digest-content">
+                    <span class="digest-title">{item.title}</span>
+                    <span class="digest-sep" aria-hidden="true">—</span>
+                    <span class="digest-summary digest-summary--type">{item.summary}</span>
+                  </span>
+                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                    {tag}
+                  </span>
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   )}
 
 </div>

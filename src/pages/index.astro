@@ -25,6 +25,8 @@ import {
   loadEntityIndex,
   loadSocialIntel,
   loadBiweeklyReports,
+  loadAIDeepDive,
+  loadVLATheory,
   extractMarkdownSummary,
   type DailyPickDay,
 } from '../utils/data';
@@ -39,6 +41,41 @@ const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
 const vlaSocial     = loadSocialIntel('vla', 2);
 const biweekly      = loadBiweeklyReports(1);
+
+// Deep dive — articles added in the last 7 days (AI + VLA theory)
+const DEEP_DIVE_DAYS = 7;
+const deepDiveCutoff = new Date(Date.now() - DEEP_DIVE_DAYS * 86400000).toISOString().slice(0, 10);
+
+// Signal type → emoji for AI deep dives
+const SIGNAL_EMOJI: Record<string, string> = {
+  technical_breakthrough: '⚡',
+  product_release:        '🔧',
+  breaking_change:        '🔧',
+  research_update:        '📖',
+  ecosystem_signal:       '📊',
+};
+
+const aiDeepDiveRaw  = loadAIDeepDive(60).filter(a => a.date >= deepDiveCutoff);
+const vlaTheoryRaw   = loadVLATheory(60).filter(a => a.date >= deepDiveCutoff);
+
+const deepDiveItems = [
+  ...aiDeepDiveRaw.map(a => ({
+    title:   a.title,
+    summary: a.signal_type?.replace(/_/g, ' ') ?? 'deep dive',
+    rating:  SIGNAL_EMOJI[a.signal_type ?? ''] ?? '📖',
+    source:  (a.source ?? 'AI').replace(/^social-/, '').slice(0, 10),
+    url:     a.html_url ?? a.url,
+    domain:  'ai' as const,
+  })),
+  ...vlaTheoryRaw.map(a => ({
+    title:   a.title,
+    summary: a.target_dir?.replace('theory/', '') ?? 'theory',
+    rating:  '📐',
+    source:  'VLA-THEORY',
+    url:     a.html_url ?? a.url,
+    domain:  'vla' as const,
+  })),
+].sort((a, b) => 0);  // preserve source order (AI first, then VLA)
 
 // ---------------------------------------------------------------------------
 // Mock data — used when real data is absent (pre-sync)
@@ -222,6 +259,7 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
         date={displayDate}
         aiItems={digestAiItems}
         vlaItems={digestVlaItems}
+        deepDiveItems={deepDiveItems}
       />
     </div>
   </section>

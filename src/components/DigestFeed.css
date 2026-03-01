@@ -234,8 +234,11 @@ html.dark .digest-section-label {
   white-space: nowrap;
 }
 
-.digest-section--ai  { --digest-section-accent: var(--accent-amber); }
-.digest-section--vla { --digest-section-accent: var(--accent-cyan);  }
+.digest-section--ai       { --digest-section-accent: var(--accent-amber); }
+.digest-section--vla      { --digest-section-accent: var(--accent-cyan);  }
+.digest-section--deepdive { --digest-section-accent: #A78BFA; }  /* soft violet */
+
+html.dark .digest-section--deepdive { --digest-section-accent: #C4B5FD; }
 
 /* ============================================================
    ITEM LIST
@@ -517,6 +520,26 @@ html.dark .digest-source {
     font-size: 0.56rem;
     letter-spacing: 0.16em;
   }
+}
+
+/* ── Deep Dive item — summary shows signal type as a badge-like label ── */
+.digest-summary--type {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: #A78BFA;
+  opacity: 0.85;
+  font-style: normal;
+  text-transform: lowercase;
+}
+
+html.dark .digest-summary--type {
+  color: #C4B5FD;
+  opacity: 0.9;
+}
+
+/* Slightly de-emphasise deepdive rows vs signal rows */
+.digest-item--deepdive .digest-title {
+  font-weight: 500;
 }
 
 /* ── Tiny phones ≤ 374px ── */
