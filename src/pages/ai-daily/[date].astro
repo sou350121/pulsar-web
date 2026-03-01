@@ -44,6 +44,33 @@ const nextDate = (() => {
   title={`AI 日報 ${date}`}
   description={`${date} AI 每日精選 — ${items.length} 篇，含 VLA、應用、模型最新動態`}
 >
+  <!-- Telegram-style digest at top — all items in a dense list -->
+  <section class="digest-block" aria-label="今日 AI 情報摘要">
+    <div class="container">
+      <div class="digest-feed">
+        <div class="digest-header">
+          <span class="digest-date">{date}</span>
+          <span class="digest-title-main">AI APP 日報 · PULSAR DIGEST</span>
+          <span class="digest-live">● {items.length} 條</span>
+        </div>
+        <div class="digest-section-label digest-label-ai">
+          AI APP 線 · {items.length} 條精選
+        </div>
+        {items.map(item => (
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-ai">
+            <span class="digest-rating">{item.rating.charAt(0)}</span>
+            <span class="digest-text">
+              <span class="digest-item-title">{item.title}</span>
+              <span class="digest-dash">—</span>
+              <span class="digest-item-summary">{item.summary}</span>
+            </span>
+            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <div class="page-container section">
     <!-- Breadcrumb -->
     <nav aria-label="Breadcrumb" class="mb-6 text-sm font-ibm-plex-mono text-pulsar-muted">

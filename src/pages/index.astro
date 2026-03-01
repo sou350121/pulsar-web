@@ -32,7 +32,7 @@ import {
 // Load real data (returns empty/null when src/data/ not yet populated)
 // ---------------------------------------------------------------------------
 const recentPicks   = loadAIDailyPicks(1);
-const recentVLA     = loadVLADailyPicks(1);
+const recentVLA     = loadVLADailyPicks(2);
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
@@ -202,7 +202,55 @@ const platformIcon: Record<string, string> = {
   </div>
 
   <!-- ==========================================================
-       2. HERO SECTION
+       2. DAILY DIGEST BLOCK — telegram-style, all items at a glance
+       ========================================================== -->
+  <section class="digest-block" aria-label="今日情報摘要">
+    <div class="container">
+      <div class="digest-feed">
+        <!-- Header -->
+        <div class="digest-header">
+          <span class="digest-date">{displayDate}</span>
+          <span class="digest-title-main">PULSAR DIGEST · 照見系統</span>
+          <span class="digest-live">● LIVE</span>
+        </div>
+
+        <!-- AI section -->
+        <div class="digest-section-label digest-label-ai">
+          AI APP 線 · {todayPicks.items.length} 條精選
+        </div>
+        {todayPicks.items.map(item => (
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-ai">
+            <span class="digest-rating">{item.rating.charAt(0)}</span>
+            <span class="digest-text">
+              <span class="digest-item-title">{item.title}</span>
+              <span class="digest-dash">—</span>
+              <span class="digest-item-summary">{item.summary}</span>
+            </span>
+            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
+          </a>
+        ))}
+
+        <!-- VLA section -->
+        <div class="digest-section-label digest-label-vla">
+          VLA 線 · {todayVLA?.items.length ?? 0} 篇論文
+        </div>
+        {(todayVLA?.items ?? []).map(item => (
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="digest-row digest-row-vla">
+            <span class="digest-rating">{item.rating.charAt(0)}</span>
+            <span class="digest-text">
+              <span class="digest-item-title">{item.title}</span>
+              <span class="digest-dash">—</span>
+              <span class="digest-item-summary">{item.summary}</span>
+            </span>
+            <span class="digest-src">{item.source.toUpperCase().slice(0,6)}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================
+       3. HERO SECTION (was section 2; detailed featured cards)
        ========================================================== -->
   <section class="hero" id="daily" aria-labelledby="hero-title">
     <div class="container">
@@ -214,7 +262,7 @@ const platformIcon: Record<string, string> = {
       </div>
 
       <div class="hero-headline fade-in-2">
-        <span class="section-label section-number" style="display:block;margin-bottom:8px;">01 — 今日精選</span>
+        <span class="section-label section-number" style="display:block;margin-bottom:8px;">02 — 今日精選</span>
         <span class="overline">DAILY INTELLIGENCE · 照見系統</span>
         <h1 id="hero-title">今日 <em>AI</em> 洞察</h1>
       </div>
@@ -266,14 +314,14 @@ const platformIcon: Record<string, string> = {
   </section>
 
   <!-- ==========================================================
-       3. PICKS GRID
+       4. PICKS GRID
        ========================================================== -->
   <section class="section" id="picks" aria-labelledby="picks-title">
     <div class="container">
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">02 — 精選列表</span>
+          <span class="section-label section-number">03 — 精選列表</span>
           <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span>最新精選</h2>
         </div>
         <a href={`${base}/ai-daily`} class="section-link btn btn-outline">查看全部 →</a>
@@ -324,14 +372,14 @@ const platformIcon: Record<string, string> = {
   <hr class="grid-rule" />
 
   <!-- ==========================================================
-       4. SOCIAL INTEL STRIP
+       5. SOCIAL INTEL STRIP
        ========================================================== -->
   <section class="section section-alt social-section" id="social" aria-labelledby="social-title">
     <div class="container">
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">03 — 動態追蹤</span>
+          <span class="section-label section-number">04 — 動態追蹤</span>
           <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span>社交情報 · 過去72小時</h2>
         </div>
         <a href={`${base}/social`} class="section-link btn btn-outline">完整情報 →</a>
@@ -363,14 +411,14 @@ const platformIcon: Record<string, string> = {
   </section>
 
   <!-- ==========================================================
-       5. DASHBOARD METRICS ROW
+       6. DASHBOARD METRICS ROW
        ========================================================== -->
   <section class="section" id="dashboard" aria-labelledby="dashboard-title">
     <div class="container">
 
       <div class="section-header fade-in-1">
         <div>
-          <span class="section-label section-number">04 — 系統監控</span>
+          <span class="section-label section-number">05 — 系統監控</span>
           <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span>管道儀表板</h2>
         </div>
         <span class="live-dot" style="font-size:0.7rem;">Pipeline 已更新</span>
@@ -500,14 +548,14 @@ const platformIcon: Record<string, string> = {
   <hr class="grid-rule" />
 
   <!-- ==========================================================
-       6. BIWEEKLY REPORT TEASER
+       7. BIWEEKLY REPORT TEASER
        ========================================================== -->
   <section class="section" id="reports" aria-labelledby="report-title">
     <div class="container">
 
       <div class="section-header fade-in-1" style="margin-bottom:24px;">
         <div>
-          <span class="section-label section-number">05 — 深度分析</span>
+          <span class="section-label section-number">06 — 深度分析</span>
           <h2><span class="accent-line" aria-hidden="true"></span>雙週報告</h2>
         </div>
       </div>
