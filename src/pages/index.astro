@@ -184,17 +184,17 @@ const mixedSignals = [
   return bS - aS;
 }).slice(0, 6);
 
-// Real sparkline from drift metrics
-const sparkHistory: Array<{ date: string; vla: number; ai: number }> = [];
-if (driftMetrics) {
-  for (const [date, vals] of Object.entries(driftMetrics as DriftMetricsFile).sort()) {
-    sparkHistory.push({
-      date,
-      vla: vals.vla?.papers_scanned ?? 0,
-      ai:  vals.ai_app?.items_scanned ?? 0,
-    });
-  }
-}
+// Real sparkline from drift metrics — flat array format:
+// [{ date, vla_papers_scanned, aiapp_items_scanned, ... }, ...]
+const sparkHistory: Array<{ date: string; vla: number; ai: number }> = (
+  Array.isArray(driftMetrics) ? driftMetrics : []
+)
+  .sort((a: { date: string }, b: { date: string }) => a.date.localeCompare(b.date))
+  .map((entry: any) => ({
+    date: entry.date ?? '',
+    vla:  entry.vla_papers_scanned  ?? 0,
+    ai:   entry.aiapp_items_scanned ?? 0,
+  }));
 const spark7      = sparkHistory.slice(-7);
 const sparkMaxVLA = Math.max(1, ...spark7.map(d => d.vla));
 const sparkMaxAI  = Math.max(1, ...spark7.map(d => d.ai));
@@ -621,11 +621,17 @@ const RULE_LABELS: Record<string, string> = {
           </div>
         </div>
 
-        <!-- Pipeline health -->
+        <!-- Pipeline health — dynamic status derived from driftState + crossDomain -->
         <div class="dash-card">
           <div class="dash-card-header">
             <span class="dash-card-title">管道健康</span>
-            <span class="status-badge status-ok">16/16 ✓</span>
+            <span class:list={['status-badge', driftState ? (driftState.drift_active ? 'status-warn' : 'status-ok') : 'status-muted']}>
+              {driftState ? (driftState.drift_active ? '⚠ 漂移' : '正常 ✓') : '待確認'}
+            </span>
+          </div>
+          <div class="pipeline-meta">
+            <span class="pipeline-date">更新：{driftState?.last_check ?? '—'}</span>
+            <span class="pipeline-xd">跨域訊號 {crossDomain.length} 條</span>
           </div>
           <div class="health-list">
             {[
@@ -1028,6 +1034,23 @@ const RULE_LABELS: Record<string, string> = {
 :global(html.dark) .hp-social-tag--vla {
   background: rgba(62,207,207,0.08) !important;
   border-color: rgba(62,207,207,0.2) !important;
+}
+
+/* ── Pipeline health meta row ── */
+.pipeline-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.pipeline-date,
+.pipeline-xd {
+  opacity: 0.75;
 }
 
 /* ── Real sparkline ── */

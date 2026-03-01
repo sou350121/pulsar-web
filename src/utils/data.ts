@@ -72,14 +72,18 @@ interface VLARatingFile {
   papers:  VLARatingRaw[];
 }
 
-// Drift metrics — keyed by date string
-export interface DriftMetricsFile {
-  // date → domain → metric → number
-  [date: string]: {
-    vla?:    Record<string, number>;
-    ai_app?: Record<string, number>;
-  };
+// Drift metrics — flat array of daily snapshots (actual pipeline format)
+export interface DriftMetricsEntry {
+  date:                 string;
+  vla_papers_scanned?:  number;
+  vla_final_in_report?: number;
+  vla_sources_active?:  number;
+  vla_tg_msg_len?:      number;
+  aiapp_items_scanned?: number;
+  aiapp_items_report?:  number;
 }
+
+export type DriftMetricsFile = DriftMetricsEntry[];
 
 // Drift state
 export interface DriftStateFile {
@@ -297,15 +301,17 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
 
 // ---------------------------------------------------------------------------
 // loadDriftMetrics
-// Returns the full drift-metrics and drift-state objects.
+// Returns the flat drift-metrics array and drift-state object.
+// drift-metrics.json is a plain array of DriftMetricsEntry (one per day).
 // ---------------------------------------------------------------------------
 export function loadDriftMetrics(): {
-  metrics: DriftMetricsFile | null;
-  state:   DriftStateFile   | null;
+  metrics: DriftMetricsEntry[];
+  state:   DriftStateFile | null;
 } {
   return {
-    metrics: readJson<DriftMetricsFile>('drift-metrics.json'),
-    state:   readJson<DriftStateFile>  ('drift-state.json'),
+    // The file is a top-level array; fall back to empty array when missing
+    metrics: readJson<DriftMetricsEntry[]>('drift-metrics.json') ?? [],
+    state:   readJson<DriftStateFile>('drift-state.json'),
   };
 }
 
