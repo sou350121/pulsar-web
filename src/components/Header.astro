@@ -55,7 +55,7 @@ const isActive = (href: string) => {
         <span class="live-dot">LIVE</span>
         <ThemeToggle />
 
-        <!-- Mobile hamburger -->
+        <!-- Mobile hamburger / close toggle -->
         <button
           id="mobile-menu-btn"
           type="button"
@@ -64,10 +64,16 @@ const isActive = (href: string) => {
           aria-expanded="false"
           aria-label="開啟選單"
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <!-- Hamburger icon (shown when menu is closed) -->
+          <svg id="menu-icon-open" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <rect y="3"  width="20" height="2" rx="1"/>
             <rect y="9"  width="20" height="2" rx="1"/>
             <rect y="15" width="20" height="2" rx="1"/>
+          </svg>
+          <!-- Close icon (shown when menu is open) -->
+          <svg id="menu-icon-close" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="display:none;">
+            <line x1="3" y1="3" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="17" y1="3" x2="3" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </button>
       </div>
@@ -140,12 +146,18 @@ const isActive = (href: string) => {
 </style>
 
 <script>
-  const btn  = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
+  const btn       = document.getElementById('mobile-menu-btn');
+  const menu      = document.getElementById('mobile-menu');
+  const iconOpen  = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
   btn?.addEventListener('click', () => {
     const isHidden = menu?.classList.toggle('hidden') ?? true;
     const open = !isHidden;
     btn.setAttribute('aria-expanded', String(open));
     btn.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
+    // Swap hamburger ↔ close (✕) icon
+    if (iconOpen)  iconOpen.style.display  = open ? 'none'  : '';
+    if (iconClose) iconClose.style.display = open ? ''      : 'none';
   });
 </script>
