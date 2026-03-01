@@ -179,8 +179,8 @@ const mixedSignals = [
   ...digestAiItems,
   ...digestVlaItems,
 ].sort((a, b) => {
-  const aS = SIGNAL_ORDER[a.rating.charAt(0)] ?? 1;
-  const bS = SIGNAL_ORDER[b.rating.charAt(0)] ?? 1;
+  const aS = SIGNAL_ORDER[[...a.rating][0] ?? a.rating] ?? 1;
+  const bS = SIGNAL_ORDER[[...b.rating][0] ?? b.rating] ?? 1;
   return bS - aS;
 }).slice(0, 6);
 
@@ -236,10 +236,10 @@ const ratingLabel: Record<string, string> = {
   '⚡': '突破', '🔧': '技術', '📖': '觀點', '❌': '低關聯',
 };
 function getRatingClass(r: string): string {
-  return ratingClass[r.charAt(0)] ?? 'rating-badge rating-book';
+  return ratingClass[[...r][0] ?? r] ?? 'rating-badge rating-book';
 }
 function getRatingLabel(r: string): string {
-  const first = r.charAt(0);
+  const first = [...r][0] ?? r;
   if (ratingLabel[first]) return ratingLabel[first];
   if (r.includes(' ')) return r.split(' ').slice(1).join(' ');
   return ratingLabel[r] ?? r;
@@ -348,7 +348,7 @@ const RULE_LABELS: Record<string, string> = {
         <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
           <div class="hero-card-label"><span>今日 AI 精選</span></div>
           <span class={getRatingClass(heroAI.rating)}>
-            {heroAI.rating.charAt(0)} {getRatingLabel(heroAI.rating)}
+            {[...heroAI.rating][0]} {getRatingLabel(heroAI.rating)}
           </span>
           <h2 class="hero-card-title" id="hero-ai-title">{heroAI.title}</h2>
           <p class="hero-card-summary">{heroAI.summary}</p>
@@ -364,7 +364,7 @@ const RULE_LABELS: Record<string, string> = {
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
           <div class="hero-card-label"><span>今日 VLA 論文</span></div>
           <span class={getRatingClass(heroVLA.rating)}>
-            {heroVLA.rating.charAt(0)} {getRatingLabel(heroVLA.rating)}
+            {[...heroVLA.rating][0]} {getRatingLabel(heroVLA.rating)}
           </span>
           <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
           <p class="hero-card-summary">{heroVLA.summary}</p>
@@ -397,7 +397,7 @@ const RULE_LABELS: Record<string, string> = {
 
       <div class="hp-signal-grid">
         {mixedSignals.map((item, i) => {
-          const emoji  = item.rating.charAt(0);
+          const emoji  = [...item.rating][0] ?? item.rating;
           const rcls   = ratingClass[emoji] ?? 'rating-badge rating-book';
           const rlabel = ratingLabel[emoji] ?? '';
           const isVla  = item.domain === 'vla';
