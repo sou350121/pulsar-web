@@ -1,12 +1,9 @@
 ---
 /**
  * src/pages/dashboard/index.astro
- * Data dashboard — pipeline health, quality drift, entity stats, upstream signals.
- * Charts rendered as simple CSS-based visualisations (no JS charting lib needed
- * for SSG; add Chart.js or lightweight alternative later if desired).
+ * Mission Control — pipeline health, quality drift, entity stats, upstream signals.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import MetricCard from '../../components/MetricCard.astro';
 import {
   loadDriftMetrics,
   loadEntityIndex,
@@ -21,14 +18,12 @@ const upstream      = loadUpstreamSignals(30);
 const topLabs       = getTopEntities(8, 'lab');
 const topMethods    = getTopEntities(10, 'method');
 
-// Derive summary stats
 const entityCount   = Object.keys(entityIndex.entities).length;
 const labCount      = topLabs.length;
 const methodCount   = topMethods.length;
 const driftActive   = driftState?.drift_active ?? false;
 const lastCheck     = driftState?.last_check ?? '—';
 
-// Build drift history for the mini sparkline (last 14 days of VLA papers_scanned)
 const driftHistory: Array<{ date: string; vla: number; ai: number }> = [];
 if (driftMetrics) {
   for (const [date, vals] of Object.entries(driftMetrics as DriftMetricsFile).sort()) {
@@ -43,7 +38,6 @@ const last14 = driftHistory.slice(-14);
 const maxVLA = Math.max(1, ...last14.map(d => d.vla));
 const maxAI  = Math.max(1, ...last14.map(d => d.ai));
 
-// Upstream signal keyword distribution
 const kwCounts: Record<string, number> = {};
 for (const sig of upstream) {
   kwCounts[sig.keyword] = (kwCounts[sig.keyword] ?? 0) + 1;
@@ -52,248 +46,688 @@ const topKeywords = Object.entries(kwCounts)
   .sort((a, b) => b[1] - a[1])
   .slice(0, 10);
 const maxKwCount = Math.max(1, ...topKeywords.map(([, c]) => c));
+
+// Placeholder data
+const placeholderBars = [65,70,68,72,60,75,80,78,82,71,68,74,77,79];
+const placeholderKw = [
+  ['flow matching',18],['world model',14],['embodied',12],
+  ['Mamba / SSM',10],['scaling law',9],['reasoning',8],
+  ['RLHF',7],['diffusion',6],['benchmark',5],['agent',4],
+] as [string, number][];
+const placeholderLabs = [
+  'CMU Robotics Lab','Google DeepMind','Stanford IRIS',
+  'UC Berkeley RAIL','Meta FAIR Robotics','ETH Zurich RSL','MIT CSAIL','OpenAI Robotics',
+];
+const placeholderMethods = [
+  ['FlowMatching',18],['DiffusionPolicy',14],['DreamerV3',10],
+  ['JEPA',8],['ACT',7],['RT-2',6],['GR00T',5],['Pi0',5],['RDT',4],['OpenVLA',4],
+] as [string, number][];
 ---
 
 <BaseLayout
-  title="管道儀表板 Dashboard"
-  description="Pulsar pipeline 監控面板 — 品質漂移、實體追蹤、上游訊號分佈"
+  title="儀表板 Dashboard"
+  description="Pulsar 管道監控 — 品質漂移、實體追蹤、上游訊號分佈"
 >
-  <div class="page-container section">
-    <!-- Page header -->
-    <div class="mb-8">
-      <p class="font-ibm-plex-mono text-xs uppercase tracking-widest text-pulsar-amber mb-2">
-        Pipeline 監控
-      </p>
-      <h1 class="font-lora text-3xl font-bold text-pulsar-text mb-2">
-        數據面板
-      </h1>
-      <p class="text-pulsar-muted text-sm font-ibm-plex-mono">
-        最後更新: {lastCheck} · 品質漂移:
-        <span class:list={[driftActive ? 'text-amber-500' : 'text-green-500', 'font-semibold']}>
-          {driftActive ? '⚠ 活躍' : '✓ 正常'}
-        </span>
-      </p>
+  <div class="db-page">
+
+    <!-- ══ PAGE HEADER ══════════════════════════════════════════════ -->
+    <header class="db-header">
+      <div class="db-header-left">
+        <div class="db-sys-label">
+          <span class="db-sys-dot"></span>
+          SYS:ONLINE
+        </div>
+        <h1 class="db-title">MISSION CONTROL</h1>
+        <p class="db-subtitle">照見系統 · Pipeline 監控面板</p>
+      </div>
+      <div class="db-header-right">
+        <div class="db-status-block">
+          <span class="db-status-key">LAST CHECK</span>
+          <span class="db-status-val">{lastCheck}</span>
+        </div>
+        <div class={`db-status-block ${driftActive ? 'db-status--warn' : 'db-status--ok'}`}>
+          <span class="db-status-key">QUALITY DRIFT</span>
+          <span class="db-status-val">{driftActive ? '⚠ ACTIVE' : '✓ NOMINAL'}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══ METRIC STRIP ═════════════════════════════════════════════ -->
+    <div class="db-metrics">
+      <div class="db-metric">
+        <span class="db-metric-num">{entityCount || 142}</span>
+        <span class="db-metric-label">ENTITIES</span>
+        <span class="db-metric-delta db-delta--up">+12</span>
+      </div>
+      <div class="db-metric-sep"></div>
+      <div class="db-metric">
+        <span class="db-metric-num">{labCount || 34}</span>
+        <span class="db-metric-label">LABS</span>
+      </div>
+      <div class="db-metric-sep"></div>
+      <div class="db-metric">
+        <span class="db-metric-num">{methodCount || 67}</span>
+        <span class="db-metric-label">METHODS</span>
+      </div>
+      <div class="db-metric-sep"></div>
+      <div class="db-metric db-metric--cyan">
+        <span class="db-metric-num">{upstream.length || 300}</span>
+        <span class="db-metric-label">UPSTREAM SIG</span>
+        <span class="db-metric-delta db-delta--up">+8%</span>
+      </div>
+      <div class="db-metric-sep"></div>
+      <div class={`db-metric ${driftActive ? 'db-metric--warn' : 'db-metric--ok'}`}>
+        <span class="db-metric-num">{driftActive ? 'WARN' : 'OK'}</span>
+        <span class="db-metric-label">DRIFT STATUS</span>
+      </div>
+      <div class="db-metric-sep"></div>
+      <div class="db-metric">
+        <span class="db-metric-num">28</span>
+        <span class="db-metric-label">CALIB DAYS</span>
+      </div>
     </div>
 
-    <!-- ── Top metrics ── -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
-      <MetricCard
-        label="追蹤實體"
-        value={entityCount || 142}
-        status={entityCount > 0 ? 'ok' : 'neutral'}
-        trend="+12"
-      />
-      <MetricCard
-        label="實驗室"
-        value={labCount || 34}
-        status="ok"
-      />
-      <MetricCard
-        label="方法"
-        value={methodCount || 67}
-        status="ok"
-      />
-      <MetricCard
-        label="上游訊號"
-        value={upstream.length || 300}
-        status="ok"
-        trend="+8%"
-      />
-      <MetricCard
-        label="品質漂移"
-        value={driftActive ? 'WARN' : 'OK'}
-        status={driftActive ? 'warn' : 'ok'}
-      />
-      <MetricCard
-        label="校準天數"
-        value="28"
-        unit="days"
-        status="ok"
-      />
-    </div>
+    <!-- ══ MAIN GRID ═════════════════════════════════════════════════ -->
+    <div class="db-grid">
 
-    <!-- ── Two column layout ── -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <!-- Quality Drift sparkline -->
+      <div class="db-panel db-panel--spark">
+        <div class="db-panel-header">
+          <span class="db-panel-title">品質趨勢</span>
+          <span class="db-panel-meta">近 14 天</span>
+        </div>
+        <div class="db-legend">
+          <span class="db-legend-dot db-legend-dot--cyan"></span>
+          <span class="db-legend-text">VLA 論文</span>
+          <span class="db-legend-dot db-legend-dot--amber"></span>
+          <span class="db-legend-text">AI 條目</span>
+        </div>
 
-      <!-- Quality Drift sparkline (CSS bars) -->
-      <div class="card">
-        <h2 class="font-lora font-semibold text-pulsar-text mb-1 text-base">
-          品質趨勢 (近14天)
-        </h2>
-        <p class="text-pulsar-muted text-xs font-ibm-plex-mono mb-4">
-          VLA 論文數 (藍) · AI 條目數 (橙)
-        </p>
-
-        {last14.length > 0 ? (
-          <div class="flex items-end gap-1 h-32">
-            {last14.map(d => (
-              <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
-                <!-- VLA bar: min-height 4px so zero-value days still render -->
-                <div
-                  class="w-full bg-pulsar-cyan/50 rounded-t"
-                  style={`height: ${Math.round((d.vla / maxVLA) * 100)}%; min-height: 4px;`}
-                  title={`${d.date}: VLA ${d.vla}`}
-                />
-                <!-- AI bar: min-height 4px so zero-value days still render -->
-                <div
-                  class="w-full bg-pulsar-amber/50 rounded-t"
-                  style={`height: ${Math.round((d.ai / maxAI) * 100)}%; min-height: 4px;`}
-                  title={`${d.date}: AI ${d.ai}`}
-                />
+        <div class="db-spark">
+          {(last14.length > 0 ? last14 : placeholderBars.map((v, i) => ({
+            date: `day-${i}`,
+            vla: v,
+            ai: Math.round(v * 0.6),
+          }))).map((d, i) => {
+            const vlaPct  = Math.max(4, Math.round((('vla' in d ? d.vla : d) as number) / maxVLA * 100));
+            const aiPct   = Math.max(4, Math.round((('ai'  in d ? d.ai  : d) as number) / maxAI  * 100));
+            const isToday = i === (last14.length || placeholderBars.length) - 1;
+            return (
+              <div class={`db-bar-col ${isToday ? 'db-bar-col--today' : ''}`}>
+                <div class="db-bar db-bar--vla" style={`height:${vlaPct}%`} title={`${'date' in d ? d.date : ''} VLA: ${'vla' in d ? d.vla : d}`}></div>
+                <div class="db-bar db-bar--ai"  style={`height:${aiPct}%`}  title={`${'date' in d ? d.date : ''} AI: ${'ai' in d ? d.ai : Math.round((d as number)*0.6)}`}></div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <!-- Placeholder bars when no real data -->
-          <div class="flex items-end gap-1 h-32">
-            {[65,70,68,72,60,75,80,78,82,71,68,74,77,79].map((pct, i) => (
-              <div class="flex flex-col items-center gap-0.5 flex-1">
-                <div class="w-full bg-pulsar-cyan/40 rounded-t" style={`height: ${pct}%; min-height: 4px;`} />
-                <div class="w-full bg-pulsar-amber/40 rounded-t" style={`height: ${Math.round(pct * 0.6)}%; min-height: 4px;`} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div class="flex items-center gap-4 mt-3 text-xs font-ibm-plex-mono text-pulsar-muted">
-          <span class="flex items-center gap-1">
-            <span class="w-3 h-2 rounded bg-pulsar-cyan/50 inline-block" />
-            VLA 論文
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="w-3 h-2 rounded bg-pulsar-amber/50 inline-block" />
-            AI 條目
-          </span>
+            );
+          })}
         </div>
       </div>
 
-      <!-- Upstream keyword distribution -->
-      <div class="card">
-        <h2 class="font-lora font-semibold text-pulsar-text mb-1 text-base">
-          上游關鍵字分佈
-        </h2>
-        <p class="text-pulsar-muted text-xs font-ibm-plex-mono mb-4">
-          arxiv 信號 · 前10關鍵字
-        </p>
-
-        {topKeywords.length > 0 ? (
-          <div class="space-y-2">
-            {topKeywords.map(([kw, count]) => (
-              <div class="flex items-center gap-2 text-xs">
-                <span class="font-ibm-plex-mono text-pulsar-muted w-28 shrink-0 truncate">{kw}</span>
-                <div class="flex-1 bg-pulsar-border rounded-full h-2 overflow-hidden">
-                  <div
-                    class="h-full bg-pulsar-cyan rounded-full transition-all"
-                    style={`width: ${Math.round((count / maxKwCount) * 100)}%`}
-                  />
+      <!-- Upstream keyword bars -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title">上游關鍵字</span>
+          <span class="db-panel-meta">arxiv · top 10</span>
+        </div>
+        <div class="db-kw-list">
+          {(topKeywords.length > 0 ? topKeywords : placeholderKw).map(([kw, count], i) => {
+            const pct = Math.round((Number(count) / (topKeywords.length > 0 ? maxKwCount : 18)) * 100);
+            const rank = i + 1;
+            return (
+              <div class="db-kw-row">
+                <span class="db-kw-rank">{rank}</span>
+                <span class="db-kw-label">{kw}</span>
+                <div class="db-kw-bar-wrap">
+                  <div class="db-kw-bar" style={`width:${pct}%`}></div>
                 </div>
-                <span class="font-ibm-plex-mono text-pulsar-muted w-6 text-right shrink-0">
-                  {count}
-                </span>
+                <span class="db-kw-count">{count}</span>
               </div>
-            ))}
-          </div>
-        ) : (
-          <!-- Placeholder bars -->
-          <div class="space-y-2">
-            {[
-              ['flow matching', 18], ['world model', 14], ['embodied', 12],
-              ['Mamba / SSM',   10], ['scaling law',  9], ['reasoning',    8],
-              ['RLHF',           7], ['diffusion',    6], ['benchmark',    5], ['agent',  4],
-            ].map(([kw, count]) => (
-              <div class="flex items-center gap-2 text-xs">
-                <span class="font-ibm-plex-mono text-pulsar-muted w-28 shrink-0 truncate">{kw}</span>
-                <div class="flex-1 bg-pulsar-border rounded-full h-2 overflow-hidden">
-                  <div
-                    class="h-full bg-pulsar-cyan/60 rounded-full"
-                    style={`width: ${Math.round((Number(count) / 18) * 100)}%`}
-                  />
-                </div>
-                <span class="font-ibm-plex-mono text-pulsar-muted w-6 text-right shrink-0">
-                  {count}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
-    </div>
-
-    <!-- ── Entity tables ── -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
       <!-- Top Labs -->
-      <div class="card overflow-hidden p-0">
-        <div class="px-5 py-4 border-b border-pulsar-border">
-          <h2 class="font-lora font-semibold text-pulsar-text text-base">活躍實驗室</h2>
-          <p class="text-pulsar-muted text-xs font-ibm-plex-mono">按訊號數排序</p>
+      <div class="db-panel db-panel--table">
+        <div class="db-panel-header">
+          <span class="db-panel-title">活躍實驗室</span>
+          <span class="db-panel-meta">by signal count</span>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-pulsar-border bg-pulsar-bg">
-                <th class="px-5 py-2.5 text-left text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">#</th>
-                <th class="px-5 py-2.5 text-left text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">實驗室</th>
-                <th class="px-5 py-2.5 text-right text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">訊號數</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(topLabs.length > 0 ? topLabs : [
-                { name: 'CMU Robotics Lab',     signals: [{},{},{},{},{},{},{},{},{},{},{},{},{}] },
-                { name: 'Google DeepMind',       signals: [{},{},{},{},{},{},{},{},{},{},{}] },
-                { name: 'Stanford IRIS',         signals: [{},{},{},{},{},{},{},{},{}] },
-                { name: 'UC Berkeley RAIL',      signals: [{},{},{},{},{},{},{}] },
-                { name: 'Meta FAIR Robotics',    signals: [{},{},{},{},{},{}] },
-              ] as any[]).map((lab, i) => (
-                <tr class="border-b border-pulsar-border last:border-0 hover:bg-pulsar-bg/50">
-                  <td class="px-5 py-2.5 font-ibm-plex-mono text-pulsar-muted text-xs">{i + 1}</td>
-                  <td class="px-5 py-2.5 text-pulsar-text font-noto-serif-sc">{lab.name}</td>
-                  <td class="px-5 py-2.5 text-right font-ibm-plex-mono text-pulsar-muted">
-                    {lab.signals.length}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div class="db-rank-list">
+          {(topLabs.length > 0
+            ? topLabs.map(l => [l.name, l.signals.length] as [string, number])
+            : placeholderLabs.map((name, i) => [name, 18 - i * 2] as [string, number])
+          ).map(([name, count], i) => {
+            const pct = Math.round(Number(count) / (topLabs.length > 0 ? topLabs[0].signals.length : 18) * 100);
+            return (
+              <div class="db-rank-row">
+                <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
+                <span class="db-rank-name">{name}</span>
+                <div class="db-rank-bar-wrap">
+                  <div class="db-rank-bar db-rank-bar--cyan" style={`width:${pct}%`}></div>
+                </div>
+                <span class="db-rank-count">{count}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       <!-- Top Methods -->
-      <div class="card overflow-hidden p-0">
-        <div class="px-5 py-4 border-b border-pulsar-border">
-          <h2 class="font-lora font-semibold text-pulsar-text text-base">熱門方法</h2>
-          <p class="text-pulsar-muted text-xs font-ibm-plex-mono">按出現頻次排序</p>
+      <div class="db-panel db-panel--table">
+        <div class="db-panel-header">
+          <span class="db-panel-title">熱門方法</span>
+          <span class="db-panel-meta">by frequency</span>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-pulsar-border bg-pulsar-bg">
-                <th class="px-5 py-2.5 text-left text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">#</th>
-                <th class="px-5 py-2.5 text-left text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">方法</th>
-                <th class="px-5 py-2.5 text-right text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">頻次</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(topMethods.length > 0 ? topMethods : [
-                { name: 'FlowMatching',   signals: [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}] },
-                { name: 'DiffusionPolicy',signals: [{},{},{},{},{},{},{},{},{},{},{},{},{},{}] },
-                { name: 'DreamerV3',      signals: [{},{},{},{},{},{},{},{},{},{}] },
-                { name: 'JEPA',           signals: [{},{},{},{},{},{},{},{}] },
-                { name: 'ACT',            signals: [{},{},{},{},{},{},{}] },
-                { name: 'RT-2',           signals: [{},{},{},{},{},{}] },
-              ] as any[]).map((m, i) => (
-                <tr class="border-b border-pulsar-border last:border-0 hover:bg-pulsar-bg/50">
-                  <td class="px-5 py-2.5 font-ibm-plex-mono text-pulsar-muted text-xs">{i + 1}</td>
-                  <td class="px-5 py-2.5 font-ibm-plex-mono text-pulsar-text text-xs">{m.name}</td>
-                  <td class="px-5 py-2.5 text-right font-ibm-plex-mono text-pulsar-muted">
-                    {m.signals.length}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div class="db-rank-list">
+          {(topMethods.length > 0
+            ? topMethods.map(m => [m.name, m.signals.length] as [string, number])
+            : placeholderMethods
+          ).map(([name, count], i) => {
+            const maxC = topMethods.length > 0 ? topMethods[0].signals.length : 18;
+            const pct = Math.round(Number(count) / maxC * 100);
+            return (
+              <div class="db-rank-row">
+                <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
+                <span class="db-rank-name db-rank-name--mono">{name}</span>
+                <div class="db-rank-bar-wrap">
+                  <div class="db-rank-bar db-rank-bar--amber" style={`width:${pct}%`}></div>
+                </div>
+                <span class="db-rank-count">{count}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
+
     </div>
   </div>
 </BaseLayout>
+
+<style>
+/* ================================================================
+   DASHBOARD — Mission Control
+   Deep space command center aesthetic.
+   System fonts only. CSS vars from global.css.
+================================================================ */
+
+/* ── Page shell ── */
+.db-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", "Courier New", monospace;
+}
+
+/* ── Header ── */
+.db-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+html.dark .db-header {
+  border-bottom-color: #1A2840;
+}
+
+.db-sys-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: #00C060;
+  margin-bottom: 8px;
+  text-shadow: 0 0 8px rgba(0, 192, 96, 0.5);
+}
+
+html.dark .db-sys-label {
+  color: #00FF88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+}
+
+.db-sys-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+  animation: db-pulse 2s ease-in-out infinite;
+}
+
+@keyframes db-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.db-title {
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 6px;
+  /* Subtle amber gradient on dark */
+  background: linear-gradient(135deg, var(--text-primary) 60%, var(--accent-amber) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.db-subtitle {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--text-tertiary);
+}
+
+.db-header-right {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.db-status-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  min-width: 120px;
+}
+
+html.dark .db-status-block {
+  background: #080D18;
+  border-color: #1A2840;
+}
+
+.db-status-key {
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: var(--text-tertiary);
+}
+
+.db-status-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.db-status--ok .db-status-val  { color: #00C060; }
+.db-status--warn .db-status-val { color: var(--accent-amber); }
+html.dark .db-status--ok .db-status-val { color: #00FF88; text-shadow: 0 0 8px rgba(0,255,136,0.4); }
+html.dark .db-status--warn .db-status-val { color: var(--accent-amber); text-shadow: 0 0 8px rgba(245,183,49,0.4); }
+
+/* ── Metric strip ── */
+.db-metrics {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  background: var(--surface);
+  flex-wrap: wrap;
+}
+
+html.dark .db-metrics {
+  background: #070B14;
+  border-color: #1A2840;
+  box-shadow: 0 0 0 1px rgba(245,183,49,0.03), 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.db-metric {
+  flex: 1;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 12px 14px;
+  position: relative;
+  gap: 3px;
+}
+
+.db-metric-sep {
+  width: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+html.dark .db-metric-sep { background: #1A2840; }
+
+.db-metric-num {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.db-metric--ok   .db-metric-num { color: #00C060; }
+.db-metric--warn .db-metric-num { color: var(--accent-amber); }
+.db-metric--cyan .db-metric-num { color: var(--accent-cyan); }
+
+html.dark .db-metric--ok   .db-metric-num { color: #00FF88; text-shadow: 0 0 12px rgba(0,255,136,0.4); }
+html.dark .db-metric--warn .db-metric-num { color: var(--accent-amber); text-shadow: 0 0 12px rgba(245,183,49,0.4); }
+html.dark .db-metric--cyan .db-metric-num { color: var(--accent-cyan); text-shadow: 0 0 12px rgba(62,207,207,0.3); }
+
+.db-metric-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.2em;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.db-metric-delta {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.48rem;
+  letter-spacing: 0.05em;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.db-delta--up {
+  color: #00C060;
+  background: rgba(0, 192, 96, 0.1);
+}
+
+html.dark .db-delta--up {
+  color: #00FF88;
+  background: rgba(0,255,136,0.08);
+}
+
+/* ── Main grid ── */
+.db-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .db-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Panel base ── */
+.db-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+html.dark .db-panel {
+  background: #080D18;
+  border-color: #1A2840;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.db-panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.db-panel-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.db-panel-meta {
+  font-size: 0.54rem;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+/* ── Sparkline ── */
+.db-panel--spark {}
+
+.db-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.db-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.db-legend-dot--cyan  { background: var(--accent-cyan); opacity: 0.8; }
+.db-legend-dot--amber { background: var(--accent-amber); opacity: 0.8; }
+.db-legend-text { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--text-tertiary); }
+
+.db-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 100px;
+  padding-bottom: 0;
+}
+
+.db-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.db-bar-col--today .db-bar {
+  opacity: 1 !important;
+}
+
+.db-bar {
+  border-radius: 2px 2px 0 0;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+  min-height: 3px;
+}
+
+.db-bar-col:hover .db-bar { opacity: 1; }
+
+.db-bar--vla {
+  background: var(--accent-cyan);
+}
+
+.db-bar--ai {
+  background: var(--accent-amber);
+}
+
+html.dark .db-bar--vla { box-shadow: 0 0 4px rgba(62,207,207,0.3); }
+html.dark .db-bar--ai  { box-shadow: 0 0 4px rgba(245,183,49,0.3); }
+
+/* ── Keyword bars ── */
+.db-kw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.db-kw-row {
+  display: grid;
+  grid-template-columns: 1.2rem 7rem 1fr 2rem;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-kw-rank {
+  font-size: 0.55rem;
+  color: var(--text-tertiary);
+  text-align: right;
+  opacity: 0.6;
+}
+
+.db-kw-label {
+  font-size: 0.64rem;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-kw-bar-wrap {
+  height: 6px;
+  background: var(--border-subtle);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+html.dark .db-kw-bar-wrap { background: #131E30; }
+
+.db-kw-bar {
+  height: 100%;
+  background: var(--accent-cyan);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+html.dark .db-kw-bar { box-shadow: 0 0 6px rgba(62,207,207,0.4); }
+
+.db-kw-count {
+  font-size: 0.58rem;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+/* ── Rank lists ── */
+.db-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.db-rank-row {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto 2.2rem;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+html.dark .db-rank-row { border-bottom-color: #0F1A2A; }
+
+.db-rank-row:last-child { border-bottom: none; }
+
+.db-rank-pos {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-align: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.db-rank-pos--top {
+  color: var(--accent-amber);
+  border-color: rgba(212,145,10,0.35);
+  background: rgba(212,145,10,0.08);
+}
+
+html.dark .db-rank-pos--top {
+  color: var(--accent-amber);
+  border-color: rgba(245,183,49,0.3);
+  background: rgba(245,183,49,0.07);
+  text-shadow: 0 0 6px rgba(245,183,49,0.4);
+}
+
+.db-rank-name {
+  font-size: 0.7rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+}
+
+.db-rank-name--mono {
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.65rem;
+}
+
+.db-rank-bar-wrap {
+  height: 4px;
+  background: var(--border-subtle);
+  border-radius: 2px;
+  overflow: hidden;
+  width: 60px;
+  flex-shrink: 0;
+}
+
+html.dark .db-rank-bar-wrap { background: #131E30; }
+
+.db-rank-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.db-rank-bar--cyan  { background: var(--accent-cyan); }
+.db-rank-bar--amber { background: var(--accent-amber); }
+
+html.dark .db-rank-bar--cyan  { box-shadow: 0 0 4px rgba(62,207,207,0.5); }
+html.dark .db-rank-bar--amber { box-shadow: 0 0 4px rgba(245,183,49,0.5); }
+
+.db-rank-count {
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .db-page { padding: 20px 14px 40px; }
+
+  .db-header { padding-bottom: 20px; margin-bottom: 20px; }
+
+  .db-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-radius: 8px;
+  }
+
+  .db-metric-sep { display: none; }
+
+  .db-metric {
+    padding: 14px 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  html.dark .db-metric { border-bottom-color: #1A2840; }
+
+  .db-kw-row {
+    grid-template-columns: 1.2rem 5.5rem 1fr 1.8rem;
+  }
+
+  .db-rank-bar-wrap { width: 40px; }
+}
+</style>
