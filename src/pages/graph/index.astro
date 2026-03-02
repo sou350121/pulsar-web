@@ -1,0 +1,201 @@
+---
+/**
+ * src/pages/graph/index.astro
+ * Knowledge Graph page — "Deep Field Observatory" design.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import KnowledgeGraph from '../../components/KnowledgeGraph.astro';
+import { loadGraphData } from '../../utils/data';
+
+const graphData = loadGraphData();
+const hasData = graphData !== null;
+const stats    = graphData?.stats ?? { nodes:0, edges:0, sources:{paper:0,theory:0,ai_pick:0} };
+const generated = graphData?.generated ?? '';
+---
+
+<BaseLayout
+  title="知識圖譜"
+  description="Pulsar 研究知識圖譜 — 論文聚類、跨領域橋樑與熱門研究方向互動可視化"
+>
+  <main class="page">
+
+    <!-- Page header -->
+    <header class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">
+          <span data-tc>知識圖譜</span>
+          <span data-sc>知识图谱</span>
+        </h1>
+        <p class="page-sub">
+          <span data-tc>論文聚類 · 跨領域橋樑 · 熱門研究方向</span>
+          <span data-sc>论文聚类 · 跨领域桥梁 · 热门研究方向</span>
+        </p>
+      </div>
+      {hasData && (
+        <div class="stats-strip">
+          <span class="sstat">
+            <span class="sval" style="color:var(--gn-paper)">{stats.sources.paper}</span>
+            <span class="slbl" data-tc>VLA 論文</span>
+            <span class="slbl" data-sc>VLA 论文</span>
+          </span>
+          <span class="sdot">·</span>
+          <span class="sstat">
+            <span class="sval" style="color:var(--gn-theory)">{stats.sources.theory}</span>
+            <span class="slbl" data-tc>理論</span>
+            <span class="slbl" data-sc>理论</span>
+          </span>
+          <span class="sdot">·</span>
+          <span class="sstat">
+            <span class="sval" style="color:var(--gn-ai)">{stats.sources.ai_pick}</span>
+            <span class="slbl" data-tc>AI 動態</span>
+            <span class="slbl" data-sc>AI 动态</span>
+          </span>
+          <span class="sdot">·</span>
+          <span class="sstat">
+            <span class="sval">{stats.edges}</span>
+            <span class="slbl" data-tc>連結</span>
+            <span class="slbl" data-sc>链接</span>
+          </span>
+          {generated && (
+            <>
+              <span class="sdot sep">·</span>
+              <span class="sdate">{generated}</span>
+            </>
+          )}
+        </div>
+      )}
+    </header>
+
+    {hasData ? (
+      <>
+        <!-- Inject data for client script -->
+        <script type="application/json" id="graph-data" set:html={JSON.stringify(graphData)} />
+        <KnowledgeGraph />
+      </>
+    ) : (
+      <div class="empty">
+        <div class="empty-icon">🕸️</div>
+        <h2 data-tc>圖譜數據尚未生成</h2>
+        <h2 data-sc>图谱数据尚未生成</h2>
+        <p data-tc>請執行以下命令：</p>
+        <p data-sc>请执行以下命令：</p>
+        <code class="empty-cmd">python3.11 /home/admin/clawd/scripts/build-graph-data.py</code>
+        <p class="empty-hint" data-tc>然後重新運行 sync-data.py 並重建站點</p>
+        <p class="empty-hint" data-sc>然后重新运行 sync-data.py 并重建站点</p>
+      </div>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  :root {
+    --gn-paper:  #0A84D0;
+    --gn-theory: #C27C00;
+    --gn-ai:     #1A7A40;
+  }
+  html.dark {
+    --gn-paper:  #38BDF8;
+    --gn-theory: #FCD34D;
+    --gn-ai:     #4ADE80;
+  }
+
+  .page {
+    max-width: var(--page-max-width);
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  /* ── Header ─────────────────────────────────────────────────────────── */
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .page-title {
+    font-size: clamp(22px, 4vw, 28px);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+  }
+
+  .page-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Stats strip ─────────────────────────────────────────────────────── */
+  .stats-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .sstat {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .sval {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .slbl {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .sdot {
+    color: var(--border);
+    font-size: 13px;
+    user-select: none;
+  }
+  .sdot.sep { margin: 0 2px; }
+
+  .sdate {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: 'Menlo', 'Consolas', monospace;
+  }
+
+  /* ── Empty state ─────────────────────────────────────────────────────── */
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    gap: 6px;
+  }
+  .empty-icon { font-size: 44px; margin-bottom: 10px; }
+  .empty h2 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin: 0; }
+  .empty p  { font-size: 14px; color: var(--text-secondary); margin: 2px 0; }
+  .empty-cmd {
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 12px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: var(--accent-amber);
+    margin: 8px 0;
+    word-break: break-all;
+  }
+  .empty-hint { font-size: 12px; color: var(--text-tertiary); margin: 0; }
+</style>

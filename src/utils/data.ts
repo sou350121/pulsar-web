@@ -632,3 +632,44 @@ export function loadAICategoryDistribution(days: number = 7): AICategoryCount[] 
     .map(([category, count]) => ({ category, count }))
     .sort((a, b) => b.count - a.count);
 }
+
+// ---------------------------------------------------------------------------
+// GraphData — shape of graph-data.json (built by build-graph-data.py)
+// ---------------------------------------------------------------------------
+
+export interface GraphNode {
+  id:      string;   // e.g. "paper:0", "theory:2", "ai_pick:5"
+  label:   string;
+  type:    'paper' | 'theory' | 'ai_pick';
+  date:    string;
+  url:     string;
+  rating:  string;
+  snippet: string;
+}
+
+export interface GraphEdge {
+  source: string;
+  target: string;
+  weight: number;  // cosine similarity [0.15, 1.0]
+}
+
+export interface GraphStats {
+  nodes:   number;
+  edges:   number;
+  sources: { paper: number; theory: number; ai_pick: number };
+}
+
+export interface GraphData {
+  generated: string;
+  stats:     GraphStats;
+  nodes:     GraphNode[];
+  edges:     GraphEdge[];
+}
+
+// ---------------------------------------------------------------------------
+// loadGraphData
+// Reads graph-data.json from src/data/. Returns null if file is missing.
+// ---------------------------------------------------------------------------
+export function loadGraphData(): GraphData | null {
+  return readJson<GraphData>('graph-data.json');
+}

@@ -56,6 +56,8 @@ JSON_FILES = [
     "vla-theory-articles.json",
     # VLA GitHub full library (all theory/ files from VLA-Handbook)
     "vla-github-theory.json",
+    "graph-data.json",
+    "vla-daily-hotspots.json",
 ]
 
 # Markdown file patterns — (prefix, how_many_recent_to_copy)
