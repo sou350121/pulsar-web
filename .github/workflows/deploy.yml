@@ -44,25 +44,33 @@ jobs:
           SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
           SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
         if: ${{ env.SSH_KEY != '' }}
+        continue-on-error: true   # fallback: use committed src/data/ if SSH fails
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          # Run sync + tar in one SSH session to avoid reconnect issues
-          ssh -i ~/.ssh/deploy_key \
-            -o StrictHostKeyChecking=no \
-            -o ConnectTimeout=30 \
-            "$SSH_USER@$SSH_HOST" \
-            "sudo python3.11 /home/claudeuser/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
-             cd /home/claudeuser/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"
-          # Pull the tarball in a second connection
-          sleep 2
-          scp -i ~/.ssh/deploy_key \
-            -o StrictHostKeyChecking=no \
-            "$SSH_USER@$SSH_HOST:/tmp/pulsar-data.tar.gz" \
-            /tmp/pulsar-data.tar.gz
-          tar xzf /tmp/pulsar-data.tar.gz
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ServerAliveInterval=15"
+          # Retry SSH up to 3 times (sshd MaxStartups may drop connections under brute-force load)
+          for attempt in 1 2 3; do
+            echo "SSH attempt $attempt/3..."
+            if ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" \
+                "sudo python3.11 /home/claudeuser/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
+                 cd /home/claudeuser/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"; then
+              echo "SSH sync succeeded on attempt $attempt"
+              break
+            fi
+            [ $attempt -lt 3 ] && { echo "Retrying in 15s..."; sleep 15; }
+          done
+          # Pull the tarball (also with retry)
+          for attempt in 1 2 3; do
+            if scp $SSH_OPTS "$SSH_USER@$SSH_HOST:/tmp/pulsar-data.tar.gz" /tmp/pulsar-data.tar.gz; then
+              tar xzf /tmp/pulsar-data.tar.gz
+              echo "Data sync complete."
+              break
+            fi
+            [ $attempt -lt 3 ] && { echo "SCP retry $attempt in 15s..."; sleep 15; }
+          done
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

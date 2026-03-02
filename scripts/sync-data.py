@@ -62,8 +62,8 @@ JSON_FILES = [
 MARKDOWN_PATTERNS = [
     ("_ai_social_",            30),   # daily AI social intel
     ("_vla_social_",           30),   # daily VLA social intel
-    ("_biweekly_",             12),   # biweekly reports
-    ("_biweekly_reflection_",  12),   # biweekly reflections
+    ("_biweekly_",             12),   # biweekly reports (covers _biweekly_reflection_ too)
+    ("_ai_biweekly_",          12),   # AI app biweekly reports
     ("_ai_daily_pick_",        30),   # dated ai daily pick markdown (if exists)
     ("calibration-check-",     14),   # calibration check JSONs
 ]
