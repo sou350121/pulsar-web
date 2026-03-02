@@ -1,738 +1,570 @@
 ---
 /**
- * src/pages/ai-deepdive/index.astro
- * AI Agent Deep Dive — 深度理論文章庫，鏈接 Agent-Playbook GitHub theory/ 目錄。
- * Data source: ai-github-theory.json (93 articles from theory/** dirs).
- * Articles from the last 14 days render as visual cards; older ones as list rows grouped by month.
+ * src/pages/ai-deepdive/index.astro — 學習導向重設計
+ * 問題：93 篇全落入「最近 2 週」，讀者被 93 張卡片轟炸，不知從何入手。
+ * 解法：入門路徑 → 精選必讀 8 篇 → 模塊過濾 + 緊湊列表。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadAIGitHubArticles } from '../../utils/data';
 import type { AIGitHubArticle } from '../../utils/data';
 
 const articles = loadAIGitHubArticles(200);
-
 const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
-const GITHUB_DEEPDIVE_PATH = `${GITHUB_REPO}/tree/main/theory`;
+const gh = (mod: string, slug: string) => `${GITHUB_REPO}/blob/main/theory/${mod}/${slug}`;
 
-// 14-day (2-week) cutoff
-const cutoff = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
-const recentArticles = articles.filter(a => a.date >= cutoff);
-const olderArticles  = articles.filter(a => a.date < cutoff);
-
-// Group older articles by month
-const byMonth: Record<string, AIGitHubArticle[]> = {};
-for (const a of olderArticles) {
-  const [y, m] = a.date.split('-');
-  const key = `${y}-${m}`;
-  (byMonth[key] ??= []).push(a);
-}
-const months = Object.keys(byMonth).sort().reverse();
-
-// Module breakdown stats (count per module, ordered)
-const MODULE_ORDER = ['01-principles', '02-agent-design', '03-engineering', '04-paradigm', '05-strategy', '06-frontier'];
-const moduleCounts: Record<string, { topic: string; count: number }> = {};
-for (const a of articles) {
-  if (!moduleCounts[a.module]) {
-    moduleCounts[a.module] = { topic: a.topic, count: 0 };
-  }
-  moduleCounts[a.module].count++;
-}
-const moduleStats = MODULE_ORDER
-  .filter(m => moduleCounts[m])
-  .map(m => ({ module: m, ...moduleCounts[m] }));
-
-function dotDate(iso: string) {
-  const [y, m, d] = iso.split('-');
-  return `${y}.${m}.${d}`;
-}
-
-// Module color mapping (amber for ★ engineering, teal-ish for others via CSS vars)
-const MODULE_ACCENT: Record<string, string> = {
-  '01-principles':   'blue',
-  '02-agent-design': 'purple',
-  '03-engineering':  'amber',
-  '04-paradigm':     'green',
-  '05-strategy':     'red',
-  '06-frontier':     'cyan',
+// ── Module metadata ─────────────────────────────────────────────────────────
+const MODULE_ORDER = ['01-principles','02-agent-design','03-engineering','04-paradigm','05-strategy','06-frontier'];
+const MM: Record<string, { label: string; accent: string; star?: boolean }> = {
+  '01-principles':   { label: '底層原理',   accent: 'blue' },
+  '02-agent-design': { label: 'Agent 設計', accent: 'purple' },
+  '03-engineering':  { label: '工程實戰',   accent: 'amber', star: true },
+  '04-paradigm':     { label: '範式轉變',   accent: 'green' },
+  '05-strategy':     { label: '戰略生存',   accent: 'red' },
+  '06-frontier':     { label: '前沿研究',   accent: 'cyan' },
 };
+
+// Group by module, sort alphabetically within each
+const byModule: Record<string, AIGitHubArticle[]> = {};
+for (const a of articles) { (byModule[a.module] ??= []).push(a); }
+for (const m of MODULE_ORDER) { byModule[m]?.sort((a, b) => a.title.localeCompare(b.title)); }
+
+// ── Curated pinned articles (8 must-reads) ──────────────────────────────────
+const PINNED = [
+  { mod: '03-engineering', slug: '00-glossary-for-beginners.md',
+    title: '新手詞彙表',        desc: '掌握 Agent 工程核心術語，第一篇必讀' },
+  { mod: '01-principles',  slug: 'agent-mental-model.md',
+    title: 'Agent 心智模型',    desc: '理解 Agent 如何「思考」的底層認知框架' },
+  { mod: '03-engineering', slug: 'context-engineering-field-guide.md',
+    title: 'Context 工程手冊',  desc: '從壓縮到結構化注入的完整方法論' },
+  { mod: '03-engineering', slug: 'agent-failure-taxonomy.md',
+    title: 'T1–T6 故障分類法', desc: '生產部署前必讀的 Agent 失敗模式大全' },
+  { mod: '03-engineering', slug: 'trust-tier-design.md',
+    title: '信任分層設計',       desc: '防止 Agent 越權的多層級權限架構' },
+  { mod: '03-engineering', slug: 'eval-loop-as-production-practice.md',
+    title: '評估環路即生產實踐', desc: '把評估從測試階段提升為持續生產實踐' },
+  { mod: '03-engineering', slug: 'delegation-not-automation-engineering-principles.md',
+    title: '委托而非自動化',     desc: '重新定義 Agent 與人類協作的工程邊界' },
+  { mod: '05-strategy',    slug: 'agent-native-org-roles.md',
+    title: 'Agent 原生組織角色', desc: 'Agent 時代的職能重構與角色設計' },
+].map((p, i) => ({
+  ...p,
+  url: gh(p.mod, p.slug),
+  accent: MM[p.mod]?.accent ?? 'amber',
+  modLabel: MM[p.mod]?.label ?? '',
+  num: String(i + 1).padStart(2, '0'),
+}));
+
+// ── Learning paths ───────────────────────────────────────────────────────────
+const PATHS = [
+  {
+    role: '工程師入門', icon: '⚙',
+    desc: '從零建立完整的 Agentic 工程認知',
+    accent: 'amber',
+    steps: [
+      { label: '新手詞彙表',        url: gh('03-engineering', '00-glossary-for-beginners.md') },
+      { label: 'Agent 心智模型',     url: gh('01-principles',  'agent-mental-model.md') },
+      { label: 'Context 工程手冊',   url: gh('03-engineering', 'context-engineering-field-guide.md') },
+      { label: 'T1–T6 故障分類法',  url: gh('03-engineering', 'agent-failure-taxonomy.md') },
+      { label: 'Agent 記憶系統',     url: gh('02-agent-design','agent-memory-system-short-to-long.md') },
+    ],
+  },
+  {
+    role: '系統架構師', icon: '⬡',
+    desc: '設計可靠的多 Agent 控制平面與治理',
+    accent: 'purple',
+    steps: [
+      { label: '信任分層設計',        url: gh('03-engineering', 'trust-tier-design.md') },
+      { label: '控制平面設計',        url: gh('03-engineering', 'agentic-control-plane-design.md') },
+      { label: '委托而非自動化',      url: gh('03-engineering', 'delegation-not-automation-engineering-principles.md') },
+      { label: 'Agentic 編排元系統', url: gh('02-agent-design', 'agentic-orchestration-meta-system.md') },
+      { label: 'Agent 原生組織角色',  url: gh('05-strategy',    'agent-native-org-roles.md') },
+    ],
+  },
+  {
+    role: '產品 / 戰略', icon: '◎',
+    desc: '把握範式轉變，制定 AI 時代競爭策略',
+    accent: 'green',
+    steps: [
+      { label: 'Vibe Coding 範式',   url: gh('04-paradigm', 'vibe-coding-paradigm.md') },
+      { label: '智能作為資源',        url: gh('04-paradigm', 'intelligence-as-a-resource.md') },
+      { label: 'Agent 原生組織角色',  url: gh('05-strategy', 'agent-native-org-roles.md') },
+      { label: '評估環路即生產實踐',  url: gh('03-engineering','eval-loop-as-production-practice.md') },
+    ],
+  },
+];
 
 const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
   title="AI 理論文章庫"
-  description="AI Agent 底層原理、工程實戰與前沿研究 — Agent-Playbook theory/ 完整文章庫（93 篇）"
+  description="Agentic Engineering 學習指南 — 93 篇深度文章，從入門到架構師"
 >
-  <div class="dd-page page-container">
+<div class="dd-page page-container">
 
-    <!-- ── Breadcrumb ── -->
-    <nav class="dd-breadcrumb" aria-label="麵包屑">
-      <a href={`${base}/`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
-      <span class="bc-sep">›</span>
-      <span class="bc-current"><span data-tc>AI 理論文章庫</span><span data-sc>AI 理论文章库</span></span>
-    </nav>
+  <!-- ── Breadcrumb ── -->
+  <nav class="breadcrumb" aria-label="breadcrumb">
+    <a href={`${base}`} class="bc-a">首頁</a>
+    <span class="bc-sep">›</span>
+    <span class="bc-cur">AI 理論文章庫</span>
+  </nav>
 
-    <!-- ── Masthead ── -->
-    <header class="dd-masthead">
-      <div class="dd-overline"><span data-tc>AI APP 線 · THEORY ARCHIVE</span><span data-sc>AI APP 线 · THEORY ARCHIVE</span></div>
-      <h1 class="dd-title"><span data-tc>AI 理論文章庫</span><span data-sc>AI 理论文章库</span></h1>
-      <div class="dd-accent-bar dd-accent-bar--amber"></div>
+  <!-- ── Masthead ── -->
+  <header class="masthead">
+    <div class="masthead-overline">AGENT-PLAYBOOK · THEORY ARCHIVE</div>
+    <h1 class="masthead-title">Agentic Engineering<br/>學習知識庫</h1>
+    <div class="masthead-bar"></div>
+    <div class="masthead-stats">
+      <span class="stat"><strong>{MODULE_ORDER.filter(m => byModule[m]).length}</strong> 個模塊</span>
+      <span class="stat-div">·</span>
+      <span class="stat"><strong>{articles.length}</strong> 篇文章</span>
+      <span class="stat-div">·</span>
+      <span class="stat">Pulsar 每日自動更新</span>
+      <a href={`${GITHUB_REPO}/tree/main/theory`} target="_blank" rel="noopener noreferrer" class="masthead-gh">
+        GitHub 全庫 →
+      </a>
+    </div>
+  </header>
 
-      <p class="dd-desc">
-        <span data-tc>Agent-Playbook 理論知識庫，涵蓋底層原理、Agent 設計、工程實戰、範式轉變、戰略生存與前沿研究六大模塊。
-        Pulsar pipeline 持續追蹤最新論文與工程實踐，自動生成深度分析文章，
-        存入 </span><span data-sc>Agent-Playbook 理论知识库，涵盖底层原理、Agent 设计、工程实战、范式转变、战略生存与前沿研究六大模块。
-        Pulsar pipeline 持续追踪最新论文与工程实践，自动生成深度分析文章，
-        存入 </span><strong>Agent-Playbook</strong><span data-tc> theory/ 目錄並同步至此頁面。</span><span data-sc> theory/ 目录并同步至此页面。</span>
-      </p>
-
-      <!-- GitHub link — hero CTA -->
-      <div class="dd-cta-row">
-        <a href={GITHUB_DEEPDIVE_PATH} target="_blank" rel="noopener noreferrer" class="dd-github-btn">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
-              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87
-              2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
-              0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12
-              0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27
-              1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
-              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95
-              .29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
-              0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          <span data-tc>Agent-Playbook 庫</span><span data-sc>Agent-Playbook 库</span>
-          <span class="dd-github-sub"><span data-tc>theory/ 目錄</span><span data-sc>theory/ 目录</span></span>
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M2 6h8M6 2l4 4-4 4"/>
-          </svg>
-        </a>
-        <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" class="dd-github-secondary">
-          <span data-tc>查看全庫 →</span><span data-sc>查看全库 →</span>
-        </a>
-        <div class="dd-count-pill">
-          <span class="dd-count-num">{articles.length}</span>
-          <span class="dd-count-lbl">篇理論文章</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- ── Module Breakdown Stats ── -->
-    {moduleStats.length > 0 && (
-      <div class="dd-module-stats">
-        <div class="dd-module-stats-label">
-          <span data-tc>模塊分佈</span><span data-sc>模块分布</span>
-        </div>
-        <div class="dd-module-grid">
-          {moduleStats.map(({ module, topic, count }) => (
-            <div class={`dd-module-chip dd-module-chip--${MODULE_ACCENT[module] ?? 'amber'}`}>
-              <span class="dd-module-topic">{topic}</span>
-              <span class="dd-module-count">{count}</span>
+  <!-- ══════════════════════════════
+       SECTION A: 入門路徑
+  ══════════════════════════════ -->
+  <section class="start-here">
+    <div class="sh-label">✦ 不知道從哪裡開始？選一條路徑</div>
+    <div class="path-grid">
+      {PATHS.map(path => (
+        <div class={`path-card path-card--${path.accent}`}>
+          <div class="path-head">
+            <span class="path-icon">{path.icon}</span>
+            <div>
+              <div class="path-role">{path.role}</div>
+              <div class="path-desc">{path.desc}</div>
             </div>
-          ))}
+          </div>
+          <ol class="path-steps">
+            {path.steps.map((step, i) => (
+              <li class="path-step">
+                <span class="step-n">{i + 1}</span>
+                <a href={step.url} target="_blank" rel="noopener noreferrer" class="step-link">
+                  {step.label}
+                  <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ol>
         </div>
-      </div>
-    )}
+      ))}
+    </div>
+  </section>
 
-    <!-- ── Empty state ── -->
-    {articles.length === 0 && (
-      <div class="dd-empty">
-        <span class="dd-empty-icon">▣</span>
-        <p><span data-tc>尚無理論文章 — 等待 pipeline 同步</span><span data-sc>尚无理论文章 — 等待 pipeline 同步</span></p>
-      </div>
-    )}
+  <!-- ══════════════════════════════
+       SECTION B: 精選必讀 8 篇
+  ══════════════════════════════ -->
+  <section class="pinned-section">
+    <div class="section-hd">
+      <h2 class="section-title">精選必讀</h2>
+      <span class="section-sub">建立 Agentic 工程直覺的 8 篇核心文章</span>
+    </div>
+    <div class="pinned-grid">
+      {PINNED.map(p => (
+        <a href={p.url} target="_blank" rel="noopener noreferrer" class={`pinned-card pinned-card--${p.accent}`}>
+          <div class="pinned-num">{p.num}</div>
+          <div class="pinned-body">
+            <span class={`pinned-mod pinned-mod--${p.accent}`}>{p.modLabel}</span>
+            <div class="pinned-title">{p.title}</div>
+            <div class="pinned-desc">{p.desc}</div>
+          </div>
+          <span class="pinned-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
 
-    <!-- ══════════════════════════════════════════
-         SECTION: 最近 2 週 (card grid)
-    ══════════════════════════════════════════ -->
-    {recentArticles.length > 0 && (
-      <div class="dd-section">
-        <div class="dd-section-subheader">
-          <span class="dd-section-label"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
-          <span class="dd-section-count">{recentArticles.length} 篇</span>
-        </div>
-        <div class="dd-card-grid">
-          {recentArticles.map((article) => (
-            <article class="dd-card">
-              <div class="dd-card-top">
-                <time class="dd-card-date">{dotDate(article.date)}</time>
-                <span class={`dd-card-tag dd-card-tag--${MODULE_ACCENT[article.module] ?? 'amber'}`}>
-                  {article.topic}
-                </span>
-              </div>
-              <h3 class="dd-card-title">{article.title}</h3>
-              <div class="dd-card-tags">
-                <span class="dd-card-tag dd-card-tag--neutral">{article.module}</span>
-              </div>
+  <!-- ══════════════════════════════
+       SECTION C: 全部文章 + 模塊過濾
+  ══════════════════════════════ -->
+  <section class="browse-section">
+    <div class="section-hd">
+      <h2 class="section-title">全部文章</h2>
+      <span class="section-sub">{articles.length} 篇 · 點擊模塊過濾</span>
+    </div>
+
+    <!-- Module filter -->
+    <div class="mod-filter" id="mod-filter" role="tablist" aria-label="模塊過濾">
+      <button class="mf-btn mf-btn--all active" data-mod="all" role="tab" aria-selected="true">
+        全部 <span class="mf-ct">{articles.length}</span>
+      </button>
+      {MODULE_ORDER.filter(m => byModule[m]).map(m => (
+        <button class={`mf-btn mf-btn--${MM[m].accent}`} data-mod={m} role="tab" aria-selected="false">
+          {MM[m].label}{MM[m].star ? ' ★' : ''}
+          <span class="mf-ct">{byModule[m].length}</span>
+        </button>
+      ))}
+    </div>
+
+    <!-- Article groups -->
+    <div class="mod-browse" id="mod-browse">
+      {MODULE_ORDER.filter(m => byModule[m]).map(m => (
+        <div class="mod-group" data-mod={m}>
+          <div class="mod-group-hd">
+            <span class={`mod-label mod-label--${MM[m].accent}`}>
+              {MM[m].label}
+              {MM[m].star && <span class="mod-star-badge">核心模塊</span>}
+            </span>
+            <span class="mod-ct">{byModule[m].length} 篇</span>
+          </div>
+          <div class="art-list">
+            {byModule[m].map(article => (
               <a
                 href={article.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="dd-card-cta"
+                class="art-row"
+                data-mod={m}
               >
-                <span data-tc>GitHub 閱讀原文</span><span data-sc>GitHub 阅读原文</span>
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M2 6h8M6 2l4 4-4 4"/>
+                <span class={`art-dot art-dot--${MM[m].accent}`}></span>
+                <span class="art-title">{article.title}</span>
+                <svg class="art-ext" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
                 </svg>
               </a>
-            </article>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    )}
+      ))}
+    </div>
+  </section>
 
-    <!-- ══════════════════════════════════════════
-         SECTION: 更多文章 (list rows)
-    ══════════════════════════════════════════ -->
-    {olderArticles.length > 0 && (
-      <div class="dd-section">
-        <div class="dd-section-subheader">
-          <span class="dd-section-label">更多文章 · 全部在 GitHub</span>
-          <span class="dd-section-count">{olderArticles.length} 篇</span>
-        </div>
-        <div class="dd-archive">
-          {months.map(monthKey => {
-            const [y, m] = monthKey.split('-');
-            return (
-              <div class="dd-month-group">
-                <div class="dd-month-label">
-                  {y} 年 {parseInt(m)} 月 &nbsp;·&nbsp; {byMonth[monthKey].length} 篇
-                </div>
-                <div class="dd-article-list">
-                  {byMonth[monthKey].map((article, i) => (
-                    <a
-                      href={article.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="dd-article-row"
-                      style={`animation-delay:${i * 0.035}s`}
-                    >
-                      <!-- Left: date -->
-                      <time class="dd-art-date">{dotDate(article.date)}</time>
-
-                      <!-- Mid: title + tags -->
-                      <div class="dd-art-body">
-                        <span class="dd-art-title">{article.title}</span>
-                        <div class="dd-art-tags">
-                          <span class={`dd-tag dd-tag--${MODULE_ACCENT[article.module] ?? 'amber'}`}>
-                            {article.topic}
-                          </span>
-                          <span class="dd-tag">{article.module}</span>
-                        </div>
-                      </div>
-
-                      <!-- Right: GitHub icon -->
-                      <span class="dd-art-ext" aria-label="在 GitHub 閱讀">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                          stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                          <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
-                          <path d="M8 1h3v3M11 1L6 6"/>
-                        </svg>
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    )}
-
-  </div>
+</div>
 </BaseLayout>
 
 <style>
-.dd-page {
-  padding-top: 32px;
-  padding-bottom: 80px;
+/* ── Base ─────────────────────────────────── */
+.dd-page { padding-top: 28px; padding-bottom: 80px; }
+
+/* ── Breadcrumb ───────────────────────────── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.66rem; letter-spacing: 0.05em;
 }
+.bc-a { color: var(--text-tertiary); text-decoration: none; }
+.bc-a:hover { color: var(--text-secondary); }
+.bc-sep { color: var(--text-tertiary); opacity: 0.4; }
+.bc-cur { color: var(--text-secondary); }
 
-/* ── Masthead ── */
-.dd-masthead { margin-bottom: 40px; }
-
-.dd-overline {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 10px;
+/* ── Masthead ─────────────────────────────── */
+.masthead { margin-bottom: 44px; }
+.masthead-overline {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 10px;
 }
-
-.dd-title {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 16px;
-  line-height: 1.1;
+.masthead-title {
+  font-family: Georgia,'Songti SC',serif;
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 700; line-height: 1.15;
+  color: var(--text-primary); margin: 0 0 14px;
 }
-
-.dd-accent-bar {
-  height: 3px;
-  width: 80px;
-  border-radius: 2px;
-  margin-bottom: 18px;
+.masthead-bar {
+  width: 56px; height: 3px; border-radius: 2px;
+  background: var(--accent-amber); margin-bottom: 18px;
 }
-
-.dd-accent-bar--amber { background: var(--accent-amber); }
-
-.dd-desc {
-  font-size: 0.92rem;
-  color: var(--text-secondary);
-  line-height: 1.75;
-  max-width: 680px;
-  margin: 0 0 28px;
+.masthead-stats {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.72rem; color: var(--text-tertiary);
 }
-
-.dd-desc strong { color: var(--text-primary); }
-
-/* ── GitHub CTA ── */
-.dd-cta-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.dd-github-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--text-primary);
-  color: var(--bg);
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  padding: 10px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: opacity 0.2s, transform 0.2s;
-  opacity: 1;
-  position: relative;
-}
-
-.dd-github-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-
-.dd-github-sub {
-  font-size: 0.6rem;
-  opacity: 0.6;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-}
-
-.dd-github-secondary {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.72rem;
-  color: var(--accent-amber);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-  opacity: 0.85;
+.masthead-stats strong { color: var(--accent-amber); }
+.stat-div { opacity: 0.4; }
+.masthead-gh {
+  margin-left: auto;
+  color: var(--accent-amber); text-decoration: none;
+  font-size: 0.7rem; letter-spacing: 0.06em;
   transition: opacity 0.15s;
 }
+.masthead-gh:hover { opacity: 0.7; }
 
-.dd-github-secondary:hover { opacity: 1; }
-
-.dd-count-pill {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-  font-family: 'Menlo', 'Consolas', monospace;
-  margin-left: auto;
-}
-
-.dd-count-num {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent-amber);
-  line-height: 1;
-}
-
-.dd-count-lbl {
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-}
-
-/* ── Module Breakdown Stats ── */
-.dd-module-stats {
-  margin-bottom: 40px;
-  padding: 18px 20px;
+/* ══ SECTION A: Start Here ══════════════════ */
+.start-here {
+  margin-bottom: 52px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-amber);
+  border-radius: 12px;
   background: var(--surface);
+}
+.sh-label {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent-amber); margin-bottom: 20px; font-weight: 600;
+}
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 860px) { .path-grid { grid-template-columns: 1fr; } }
+@media (min-width: 540px) and (max-width: 860px) { .path-grid { grid-template-columns: 1fr 1fr; } }
+
+.path-card {
+  padding: 20px;
   border: 1px solid var(--border);
   border-radius: 10px;
+  background: var(--bg);
+  display: flex; flex-direction: column; gap: 16px;
 }
-
-.dd-module-stats-label {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
+.path-head {
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.path-icon {
+  font-size: 1.3rem; line-height: 1;
+  flex-shrink: 0; padding-top: 1px;
+}
+.path-role {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
+.path-desc { font-size: 0.78rem; color: var(--text-tertiary); line-height: 1.5; }
 
-.dd-module-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.path-card--amber { border-top: 3px solid var(--accent-amber); }
+.path-card--amber .path-role { color: var(--accent-amber); }
+.path-card--purple { border-top: 3px solid #8b5cf6; }
+.path-card--purple .path-role { color: #8b5cf6; }
+.path-card--green  { border-top: 3px solid #22c55e; }
+.path-card--green  .path-role { color: #22c55e; }
+
+.path-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.path-step { display: flex; align-items: baseline; gap: 8px; }
+.step-n {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.6rem; color: var(--text-tertiary);
+  min-width: 14px; flex-shrink: 0;
 }
-
-.dd-module-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  background: var(--surface-2, rgba(0,0,0,0.03));
-}
-
-.dd-module-topic { color: var(--text-secondary); font-weight: 600; }
-.dd-module-count {
-  color: var(--text-tertiary);
-  font-size: 0.62rem;
-  opacity: 0.8;
-}
-
-/* Per-module accent colors (reuse amber as default; others use CSS fallbacks) */
-.dd-module-chip--amber  { border-color: rgba(212,145,10,0.3); }
-.dd-module-chip--amber .dd-module-topic  { color: var(--accent-amber); }
-.dd-module-chip--blue   { border-color: rgba(59,130,246,0.3); }
-.dd-module-chip--blue .dd-module-topic   { color: #3b82f6; }
-.dd-module-chip--purple { border-color: rgba(139,92,246,0.3); }
-.dd-module-chip--purple .dd-module-topic { color: #8b5cf6; }
-.dd-module-chip--green  { border-color: rgba(34,197,94,0.3); }
-.dd-module-chip--green .dd-module-topic  { color: #22c55e; }
-.dd-module-chip--red    { border-color: rgba(239,68,68,0.3); }
-.dd-module-chip--red .dd-module-topic    { color: #ef4444; }
-.dd-module-chip--cyan   { border-color: rgba(6,182,212,0.3); }
-.dd-module-chip--cyan .dd-module-topic   { color: #06b6d4; }
-
-/* ── Empty state ── */
-.dd-empty {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 48px 0;
-  font-family: 'Menlo', monospace;
-  font-size: 0.82rem;
-  color: var(--text-tertiary);
-}
-
-.dd-empty-icon { font-size: 1.4rem; }
-
-/* ── Sections ── */
-.dd-section { margin-bottom: 48px; }
-
-.dd-section-subheader {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.dd-section-label {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent-amber);
-  font-weight: 600;
-}
-
-.dd-section-count {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  color: var(--text-tertiary);
-}
-
-/* ── Card grid ── */
-.dd-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-.dd-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--accent-amber);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.dd-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover, 0 8px 24px rgba(0,0,0,0.12));
-  border-color: var(--accent-amber);
-}
-
-.dd-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.dd-card-date {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-}
-
-.dd-card-title {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.5;
-  margin: 0;
-  flex: 1;
-}
-
-.dd-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.dd-card-tag {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-
-/* Card tag accent variants */
-.dd-card-tag--amber  { background: rgba(212,145,10,0.12);  color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
-.dd-card-tag--blue   { background: rgba(59,130,246,0.10);  color: #3b82f6;             border: 1px solid rgba(59,130,246,0.25); }
-.dd-card-tag--purple { background: rgba(139,92,246,0.10);  color: #8b5cf6;             border: 1px solid rgba(139,92,246,0.25); }
-.dd-card-tag--green  { background: rgba(34,197,94,0.10);   color: #22c55e;             border: 1px solid rgba(34,197,94,0.25); }
-.dd-card-tag--red    { background: rgba(239,68,68,0.10);   color: #ef4444;             border: 1px solid rgba(239,68,68,0.25); }
-.dd-card-tag--cyan   { background: rgba(6,182,212,0.10);   color: #06b6d4;             border: 1px solid rgba(6,182,212,0.25); }
-
-.dd-card-tag--neutral {
-  background: var(--surface-2, rgba(0,0,0,0.04));
-  color: var(--text-tertiary);
-  border: 1px solid var(--border);
-}
-
-.dd-card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  padding: 7px 14px;
-  border-radius: 20px;
-  background: var(--accent-amber);
-  color: var(--bg, #fff);
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  align-self: flex-start;
-  transition: opacity 0.15s, transform 0.15s;
-}
-
-.dd-card-cta:hover { opacity: 0.88; transform: translateX(2px); }
-
-/* ── Archive (older list rows) ── */
-.dd-archive { display: flex; flex-direction: column; gap: 40px; }
-
-.dd-month-group {}
-
-.dd-month-label {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0;
-}
-
-.dd-article-list { display: flex; flex-direction: column; }
-
-/* ── Article rows ── */
-.dd-article-row {
-  display: grid;
-  grid-template-columns: 6rem 1fr auto;
-  gap: 16px;
-  align-items: start;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border-subtle);
-  text-decoration: none;
-  color: inherit;
-  position: relative;
-  transition: background 0.15s, padding-left 0.15s;
-  animation: artFade 0.35s ease both;
-}
-
-@keyframes artFade {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: none; }
-}
-
-.dd-article-row::before {
-  content: '';
-  position: absolute;
-  left: -2px; top: 0; bottom: 0;
-  width: 2px;
-  background: var(--accent-amber);
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.2s ease;
-}
-
-.dd-article-row:hover {
-  background: var(--surface-2, rgba(0,0,0,0.02));
-  padding-left: 6px;
-}
-
-.dd-article-row:hover::before { transform: scaleY(1); }
-
-.dd-art-date {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.03em;
-  padding-top: 2px;
-  white-space: nowrap;
-  transition: color 0.18s;
-}
-
-.dd-article-row:hover .dd-art-date { color: var(--accent-amber); }
-
-.dd-art-body {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.dd-art-title {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.5;
-}
-
-.dd-art-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.dd-tag {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 1px 6px;
-  border-radius: 2px;
-  border: 1px solid var(--border);
-  color: var(--text-tertiary);
-}
-
-/* List row tag accent variants */
-.dd-tag--amber  { border-color: rgba(212,145,10,0.3);  color: var(--accent-amber); background: rgba(212,145,10,0.08); }
-.dd-tag--blue   { border-color: rgba(59,130,246,0.3);  color: #3b82f6;             background: rgba(59,130,246,0.06); }
-.dd-tag--purple { border-color: rgba(139,92,246,0.3);  color: #8b5cf6;             background: rgba(139,92,246,0.06); }
-.dd-tag--green  { border-color: rgba(34,197,94,0.3);   color: #22c55e;             background: rgba(34,197,94,0.06); }
-.dd-tag--red    { border-color: rgba(239,68,68,0.3);   color: #ef4444;             background: rgba(239,68,68,0.06); }
-.dd-tag--cyan   { border-color: rgba(6,182,212,0.3);   color: #06b6d4;             background: rgba(6,182,212,0.06); }
-
-.dd-art-ext {
-  color: var(--text-tertiary);
-  padding-top: 3px;
-  transition: color 0.18s, transform 0.18s;
-  flex-shrink: 0;
-}
-
-.dd-article-row:hover .dd-art-ext {
-  color: var(--accent-amber);
-  transform: translate(2px, -2px);
-}
-
-/* ── Mobile ── */
-@media (max-width: 640px) {
-  .dd-card-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dd-article-row {
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    gap: 4px 8px;
-  }
-
-  .dd-art-date {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .dd-art-ext {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-  }
-
-  .dd-art-body {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  .dd-count-pill { margin-left: 0; }
-
-  .dd-cta-row { gap: 10px; }
-
-  .dd-module-grid { gap: 6px; }
-}
-
-@media (max-width: 900px) and (min-width: 641px) {
-  .dd-card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ── Breadcrumb ── */
-.dd-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-}
-.bc-link {
-  color: var(--text-tertiary);
-  text-decoration: none;
+.step-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.82rem; color: var(--text-secondary);
+  text-decoration: none; line-height: 1.5;
   transition: color 0.15s;
 }
-.bc-link:hover { color: var(--text-secondary); opacity: 1; }
-.bc-sep { color: var(--text-tertiary); opacity: 0.5; }
-.bc-current { color: var(--text-secondary); }
+.step-link:hover { color: var(--text-primary); }
+.step-link svg { opacity: 0.4; flex-shrink: 0; }
+.step-link:hover svg { opacity: 0.8; }
+
+/* ══ SECTION B: Pinned ═══════════════════════ */
+.pinned-section { margin-bottom: 52px; }
+
+.section-hd {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent-amber); margin: 0;
+}
+.section-sub {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.6rem; letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.pinned-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media (max-width: 640px) { .pinned-grid { grid-template-columns: 1fr; } }
+@media (min-width: 1100px) { .pinned-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.pinned-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  text-decoration: none; color: inherit;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.pinned-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+}
+.pinned-card--amber:hover { border-color: rgba(212,145,10,0.5); }
+.pinned-card--blue:hover   { border-color: rgba(59,130,246,0.5); }
+.pinned-card--red:hover    { border-color: rgba(239,68,68,0.5); }
+
+.pinned-num {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 1rem; font-weight: 700;
+  color: var(--border); flex-shrink: 0;
+  line-height: 1; padding-top: 2px;
+  transition: color 0.2s;
+}
+.pinned-card:hover .pinned-num { color: var(--text-tertiary); }
+
+.pinned-body { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.pinned-mod {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 600;
+}
+.pinned-mod--amber  { color: var(--accent-amber); }
+.pinned-mod--blue   { color: #3b82f6; }
+.pinned-mod--purple { color: #8b5cf6; }
+.pinned-mod--red    { color: #ef4444; }
+
+.pinned-title {
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--text-primary); line-height: 1.45;
+}
+.pinned-desc {
+  font-size: 0.75rem; color: var(--text-tertiary); line-height: 1.55;
+}
+.pinned-arrow {
+  color: var(--text-tertiary); flex-shrink: 0;
+  font-size: 0.85rem; padding-top: 2px;
+  transition: transform 0.2s, color 0.2s;
+}
+.pinned-card:hover .pinned-arrow { transform: translate(3px, -1px); color: var(--text-secondary); }
+
+/* ══ SECTION C: Browse All ═══════════════════ */
+.browse-section { margin-bottom: 60px; }
+
+.mod-filter {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 28px;
+}
+.mf-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  cursor: pointer; transition: all 0.15s;
+}
+.mf-btn:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+.mf-btn.active { color: #fff; }
+.mf-btn.active .mf-ct { color: rgba(255,255,255,0.7); }
+.mf-btn--all.active    { background: var(--text-primary); border-color: var(--text-primary); }
+.mf-btn--amber.active  { background: var(--accent-amber); border-color: var(--accent-amber); }
+.mf-btn--blue.active   { background: #3b82f6; border-color: #3b82f6; }
+.mf-btn--purple.active { background: #8b5cf6; border-color: #8b5cf6; }
+.mf-btn--green.active  { background: #22c55e; border-color: #22c55e; }
+.mf-btn--red.active    { background: #ef4444; border-color: #ef4444; }
+.mf-btn--cyan.active   { background: #06b6d4; border-color: #06b6d4; }
+
+.mf-ct { font-size: 0.6rem; color: var(--text-tertiary); }
+
+.mod-browse { display: flex; flex-direction: column; gap: 36px; }
+
+.mod-group-hd {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 10px; margin-bottom: 2px;
+  border-bottom: 1px solid var(--border);
+}
+.mod-label {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.mod-label--amber  { color: var(--accent-amber); }
+.mod-label--blue   { color: #3b82f6; }
+.mod-label--purple { color: #8b5cf6; }
+.mod-label--green  { color: #22c55e; }
+.mod-label--red    { color: #ef4444; }
+.mod-label--cyan   { color: #06b6d4; }
+
+.mod-star-badge {
+  display: inline-block; margin-left: 8px;
+  padding: 1px 7px; border-radius: 10px;
+  background: rgba(212,145,10,0.12);
+  border: 1px solid rgba(212,145,10,0.25);
+  color: var(--accent-amber);
+  font-size: 0.55rem; font-weight: 600; letter-spacing: 0.08em;
+  vertical-align: middle;
+}
+.mod-ct {
+  margin-left: auto;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.58rem; color: var(--text-tertiary); letter-spacing: 0.06em;
+}
+
+.art-list { display: flex; flex-direction: column; }
+.art-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(0,0,0,0.06));
+  text-decoration: none; color: inherit;
+  transition: padding-left 0.15s, background 0.15s;
+  position: relative;
+}
+.art-row::before {
+  content: '';
+  position: absolute; left: -2px; top: 0; bottom: 0; width: 2px;
+  background: var(--accent-amber);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 0.18s;
+}
+.art-row:hover { padding-left: 8px; background: var(--surface); }
+.art-row:hover::before { transform: scaleY(1); }
+
+.art-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  flex-shrink: 0; opacity: 0.7;
+}
+.art-dot--amber  { background: var(--accent-amber); }
+.art-dot--blue   { background: #3b82f6; }
+.art-dot--purple { background: #8b5cf6; }
+.art-dot--green  { background: #22c55e; }
+.art-dot--red    { background: #ef4444; }
+.art-dot--cyan   { background: #06b6d4; }
+
+.art-title {
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 0.88rem; color: var(--text-secondary);
+  line-height: 1.5; flex: 1;
+  transition: color 0.15s;
+}
+.art-row:hover .art-title { color: var(--text-primary); }
+
+.art-ext {
+  flex-shrink: 0; color: var(--text-tertiary); opacity: 0.4;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.art-row:hover .art-ext { opacity: 0.8; transform: translate(2px, -2px); }
+
+.mod-group[hidden] { display: none; }
 </style>
+
+<script>
+const filter = document.getElementById('mod-filter');
+const browse = document.getElementById('mod-browse');
+if (filter && browse) {
+  filter.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('.mf-btn');
+    if (!btn) return;
+    const mod = btn.dataset.mod ?? 'all';
+    filter.querySelectorAll('.mf-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    browse.querySelectorAll<HTMLElement>('.mod-group').forEach(g => {
+      g.hidden = mod !== 'all' && g.dataset.mod !== mod;
+    });
+  });
+}
+</script>
