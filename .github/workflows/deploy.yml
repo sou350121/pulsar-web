@@ -55,8 +55,9 @@ jobs:
           for attempt in 1 2 3; do
             echo "SSH attempt $attempt/3..."
             if ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" \
-                "sudo python3.11 /home/claudeuser/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
-                 cd /home/claudeuser/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"; then
+                "sudo python3.11 /home/admin/clawd/scripts/build-graph-data.py 2>&1 | tail -5 && \
+                 sudo python3.11 /home/admin/clawd/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
+                 cd /home/admin/clawd/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"; then
               echo "SSH sync succeeded on attempt $attempt"
               break
             fi

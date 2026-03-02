@@ -58,6 +58,7 @@ JSON_FILES = [
     "vla-github-theory.json",
     "graph-data.json",
     "vla-daily-hotspots.json",
+    "ai-github-theory.json",
 ]
 
 # Markdown file patterns — (prefix, how_many_recent_to_copy)

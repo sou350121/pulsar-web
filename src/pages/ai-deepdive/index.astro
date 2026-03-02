@@ -1,16 +1,18 @@
 ---
 /**
  * src/pages/ai-deepdive/index.astro
- * AI Agent Deep Dive — 深度追蹤文章庫，鏈接 Agent-Playbook GitHub 倉庫。
- * Articles from the last 7 days render as visual cards; older ones as list rows.
+ * AI Agent Deep Dive — 深度理論文章庫，鏈接 Agent-Playbook GitHub theory/ 目錄。
+ * Data source: ai-github-theory.json (93 articles from theory/** dirs).
+ * Articles from the last 14 days render as visual cards; older ones as list rows grouped by month.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadAIDeepDive } from '../../utils/data';
+import { loadAIGitHubArticles } from '../../utils/data';
+import type { AIGitHubArticle } from '../../utils/data';
 
-const articles = loadAIDeepDive(50);
+const articles = loadAIGitHubArticles(200);
 
 const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
-const GITHUB_DEEPDIVE_PATH = `${GITHUB_REPO}/tree/main/blog/deep-dive`;
+const GITHUB_DEEPDIVE_PATH = `${GITHUB_REPO}/tree/main/theory`;
 
 // 14-day (2-week) cutoff
 const cutoff = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
@@ -18,7 +20,7 @@ const recentArticles = articles.filter(a => a.date >= cutoff);
 const olderArticles  = articles.filter(a => a.date < cutoff);
 
 // Group older articles by month
-const byMonth: Record<string, typeof olderArticles> = {};
+const byMonth: Record<string, AIGitHubArticle[]> = {};
 for (const a of olderArticles) {
   const [y, m] = a.date.split('-');
   const key = `${y}-${m}`;
@@ -26,25 +28,40 @@ for (const a of olderArticles) {
 }
 const months = Object.keys(byMonth).sort().reverse();
 
+// Module breakdown stats (count per module, ordered)
+const MODULE_ORDER = ['01-principles', '02-agent-design', '03-engineering', '04-paradigm', '05-strategy', '06-frontier'];
+const moduleCounts: Record<string, { topic: string; count: number }> = {};
+for (const a of articles) {
+  if (!moduleCounts[a.module]) {
+    moduleCounts[a.module] = { topic: a.topic, count: 0 };
+  }
+  moduleCounts[a.module].count++;
+}
+const moduleStats = MODULE_ORDER
+  .filter(m => moduleCounts[m])
+  .map(m => ({ module: m, ...moduleCounts[m] }));
+
 function dotDate(iso: string) {
   const [y, m, d] = iso.split('-');
   return `${y}.${m}.${d}`;
 }
 
-const SIGNAL_LABELS: Record<string, string> = {
-  product_release: '產品發布',
-  open_source:     '開源',
-  research:        '研究',
-  update:          '更新',
-  framework:       '框架',
-  tool:            '工具',
+// Module color mapping (amber for ★ engineering, teal-ish for others via CSS vars)
+const MODULE_ACCENT: Record<string, string> = {
+  '01-principles':   'blue',
+  '02-agent-design': 'purple',
+  '03-engineering':  'amber',
+  '04-paradigm':     'green',
+  '05-strategy':     'red',
+  '06-frontier':     'cyan',
 };
+
 const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
-  title="AI 深度追蹤"
-  description="AI Agent 工具、框架與產品發布的深度技術拆解 — Agent-Playbook 庫"
+  title="AI 理論文章庫"
+  description="AI Agent 底層原理、工程實戰與前沿研究 — Agent-Playbook theory/ 完整文章庫（93 篇）"
 >
   <div class="dd-page page-container">
 
@@ -52,25 +69,21 @@ const base = import.meta.env.BASE_URL;
     <nav class="dd-breadcrumb" aria-label="麵包屑">
       <a href={`${base}/`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">›</span>
-      <span class="bc-current"><span data-tc>AI 深度追蹤</span><span data-sc>AI 深度追踪</span></span>
+      <span class="bc-current"><span data-tc>AI 理論文章庫</span><span data-sc>AI 理论文章库</span></span>
     </nav>
 
     <!-- ── Masthead ── -->
     <header class="dd-masthead">
-      <div class="dd-overline"><span data-tc>AI APP 線 · DEEP DIVE ARCHIVE</span><span data-sc>AI APP 线 · DEEP DIVE ARCHIVE</span></div>
-      <h1 class="dd-title"><span data-tc>AI 深度追蹤</span><span data-sc>AI 深度追踪</span></h1>
+      <div class="dd-overline"><span data-tc>AI APP 線 · THEORY ARCHIVE</span><span data-sc>AI APP 线 · THEORY ARCHIVE</span></div>
+      <h1 class="dd-title"><span data-tc>AI 理論文章庫</span><span data-sc>AI 理论文章库</span></h1>
       <div class="dd-accent-bar dd-accent-bar--amber"></div>
 
       <p class="dd-desc">
-        <span data-tc>針對 AI Agent 工具、框架與產品發布的深度技術拆解。
-        不同於純聚合摘要，Pulsar 對每篇信號進行評級（⚡/🔧/📖），
-        並在跨域規則引擎觸發時將 AI App 洞察與 VLA 研究前沿交叉比對。
-        每次有重大發布或社交信號達閾值時，pipeline 自動生成深度分析文章，
-        存入 </span><span data-sc>针对 AI Agent 工具、框架与产品发布的深度技术拆解。
-        不同于纯聚合摘要，Pulsar 对每篇信号进行评级（⚡/🔧/📖），
-        并在跨域规则引擎触发时将 AI App 洞察与 VLA 研究前沿交叉比对。
-        每次有重大发布或社交讯号达阈值时，pipeline 自动生成深度分析文章，
-        存入 </span><strong>Agent-Playbook</strong><span data-tc> 庫並同步至此頁面。</span><span data-sc> 库并同步至此页面。</span>
+        <span data-tc>Agent-Playbook 理論知識庫，涵蓋底層原理、Agent 設計、工程實戰、範式轉變、戰略生存與前沿研究六大模塊。
+        Pulsar pipeline 持續追蹤最新論文與工程實踐，自動生成深度分析文章，
+        存入 </span><span data-sc>Agent-Playbook 理论知识库，涵盖底层原理、Agent 设计、工程实战、范式转变、战略生存与前沿研究六大模块。
+        Pulsar pipeline 持续追踪最新论文与工程实践，自动生成深度分析文章，
+        存入 </span><strong>Agent-Playbook</strong><span data-tc> theory/ 目錄並同步至此頁面。</span><span data-sc> theory/ 目录并同步至此页面。</span>
       </p>
 
       <!-- GitHub link — hero CTA -->
@@ -89,7 +102,7 @@ const base = import.meta.env.BASE_URL;
               0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
           <span data-tc>Agent-Playbook 庫</span><span data-sc>Agent-Playbook 库</span>
-          <span class="dd-github-sub"><span data-tc>deep-dive/ 目錄</span><span data-sc>deep-dive/ 目录</span></span>
+          <span class="dd-github-sub"><span data-tc>theory/ 目錄</span><span data-sc>theory/ 目录</span></span>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M2 6h8M6 2l4 4-4 4"/>
           </svg>
@@ -99,16 +112,33 @@ const base = import.meta.env.BASE_URL;
         </a>
         <div class="dd-count-pill">
           <span class="dd-count-num">{articles.length}</span>
-          <span class="dd-count-lbl">篇深度文章</span>
+          <span class="dd-count-lbl">篇理論文章</span>
         </div>
       </div>
     </header>
+
+    <!-- ── Module Breakdown Stats ── -->
+    {moduleStats.length > 0 && (
+      <div class="dd-module-stats">
+        <div class="dd-module-stats-label">
+          <span data-tc>模塊分佈</span><span data-sc>模块分布</span>
+        </div>
+        <div class="dd-module-grid">
+          {moduleStats.map(({ module, topic, count }) => (
+            <div class={`dd-module-chip dd-module-chip--${MODULE_ACCENT[module] ?? 'amber'}`}>
+              <span class="dd-module-topic">{topic}</span>
+              <span class="dd-module-count">{count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
 
     <!-- ── Empty state ── -->
     {articles.length === 0 && (
       <div class="dd-empty">
         <span class="dd-empty-icon">▣</span>
-        <p><span data-tc>尚無深度追蹤文章 — pipeline 自動生成中</span><span data-sc>尚无深度追踪文章 — pipeline 自动生成中</span></p>
+        <p><span data-tc>尚無理論文章 — 等待 pipeline 同步</span><span data-sc>尚无理论文章 — 等待 pipeline 同步</span></p>
       </div>
     )}
 
@@ -126,18 +156,16 @@ const base = import.meta.env.BASE_URL;
             <article class="dd-card">
               <div class="dd-card-top">
                 <time class="dd-card-date">{dotDate(article.date)}</time>
-                <span class="dd-card-tag dd-card-tag--amber">
-                  {SIGNAL_LABELS[article.signal_type] ?? article.signal_type}
+                <span class={`dd-card-tag dd-card-tag--${MODULE_ACCENT[article.module] ?? 'amber'}`}>
+                  {article.topic}
                 </span>
               </div>
               <h3 class="dd-card-title">{article.title}</h3>
-              {article.source && (
-                <div class="dd-card-tags">
-                  <span class="dd-card-tag dd-card-tag--neutral">{article.source}</span>
-                </div>
-              )}
+              <div class="dd-card-tags">
+                <span class="dd-card-tag dd-card-tag--neutral">{article.module}</span>
+              </div>
               <a
-                href={article.html_url ?? article.url}
+                href={article.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="dd-card-cta"
@@ -173,7 +201,7 @@ const base = import.meta.env.BASE_URL;
                 <div class="dd-article-list">
                   {byMonth[monthKey].map((article, i) => (
                     <a
-                      href={article.html_url ?? article.url}
+                      href={article.html_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="dd-article-row"
@@ -186,12 +214,10 @@ const base = import.meta.env.BASE_URL;
                       <div class="dd-art-body">
                         <span class="dd-art-title">{article.title}</span>
                         <div class="dd-art-tags">
-                          <span class="dd-tag dd-tag--amber">
-                            {SIGNAL_LABELS[article.signal_type] ?? article.signal_type}
+                          <span class={`dd-tag dd-tag--${MODULE_ACCENT[article.module] ?? 'amber'}`}>
+                            {article.topic}
                           </span>
-                          {article.source && (
-                            <span class="dd-tag">{article.source}</span>
-                          )}
+                          <span class="dd-tag">{article.module}</span>
                         </div>
                       </div>
 
@@ -223,7 +249,7 @@ const base = import.meta.env.BASE_URL;
 }
 
 /* ── Masthead ── */
-.dd-masthead { margin-bottom: 48px; }
+.dd-masthead { margin-bottom: 40px; }
 
 .dd-overline {
   font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
@@ -330,6 +356,64 @@ const base = import.meta.env.BASE_URL;
   color: var(--text-tertiary);
   text-transform: uppercase;
 }
+
+/* ── Module Breakdown Stats ── */
+.dd-module-stats {
+  margin-bottom: 40px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.dd-module-stats-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.dd-module-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dd-module-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  background: var(--surface-2, rgba(0,0,0,0.03));
+}
+
+.dd-module-topic { color: var(--text-secondary); font-weight: 600; }
+.dd-module-count {
+  color: var(--text-tertiary);
+  font-size: 0.62rem;
+  opacity: 0.8;
+}
+
+/* Per-module accent colors (reuse amber as default; others use CSS fallbacks) */
+.dd-module-chip--amber  { border-color: rgba(212,145,10,0.3); }
+.dd-module-chip--amber .dd-module-topic  { color: var(--accent-amber); }
+.dd-module-chip--blue   { border-color: rgba(59,130,246,0.3); }
+.dd-module-chip--blue .dd-module-topic   { color: #3b82f6; }
+.dd-module-chip--purple { border-color: rgba(139,92,246,0.3); }
+.dd-module-chip--purple .dd-module-topic { color: #8b5cf6; }
+.dd-module-chip--green  { border-color: rgba(34,197,94,0.3); }
+.dd-module-chip--green .dd-module-topic  { color: #22c55e; }
+.dd-module-chip--red    { border-color: rgba(239,68,68,0.3); }
+.dd-module-chip--red .dd-module-topic    { color: #ef4444; }
+.dd-module-chip--cyan   { border-color: rgba(6,182,212,0.3); }
+.dd-module-chip--cyan .dd-module-topic   { color: #06b6d4; }
 
 /* ── Empty state ── */
 .dd-empty {
@@ -438,11 +522,13 @@ const base = import.meta.env.BASE_URL;
   white-space: nowrap;
 }
 
-.dd-card-tag--amber {
-  background: var(--accent-amber-bg, rgba(212,145,10,0.12));
-  color: var(--accent-amber);
-  border: 1px solid rgba(212,145,10,0.25);
-}
+/* Card tag accent variants */
+.dd-card-tag--amber  { background: rgba(212,145,10,0.12);  color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
+.dd-card-tag--blue   { background: rgba(59,130,246,0.10);  color: #3b82f6;             border: 1px solid rgba(59,130,246,0.25); }
+.dd-card-tag--purple { background: rgba(139,92,246,0.10);  color: #8b5cf6;             border: 1px solid rgba(139,92,246,0.25); }
+.dd-card-tag--green  { background: rgba(34,197,94,0.10);   color: #22c55e;             border: 1px solid rgba(34,197,94,0.25); }
+.dd-card-tag--red    { background: rgba(239,68,68,0.10);   color: #ef4444;             border: 1px solid rgba(239,68,68,0.25); }
+.dd-card-tag--cyan   { background: rgba(6,182,212,0.10);   color: #06b6d4;             border: 1px solid rgba(6,182,212,0.25); }
 
 .dd-card-tag--neutral {
   background: var(--surface-2, rgba(0,0,0,0.04));
@@ -570,11 +656,13 @@ const base = import.meta.env.BASE_URL;
   color: var(--text-tertiary);
 }
 
-.dd-tag--amber {
-  border-color: rgba(212,145,10,0.3);
-  color: var(--accent-amber);
-  background: var(--accent-amber-bg);
-}
+/* List row tag accent variants */
+.dd-tag--amber  { border-color: rgba(212,145,10,0.3);  color: var(--accent-amber); background: rgba(212,145,10,0.08); }
+.dd-tag--blue   { border-color: rgba(59,130,246,0.3);  color: #3b82f6;             background: rgba(59,130,246,0.06); }
+.dd-tag--purple { border-color: rgba(139,92,246,0.3);  color: #8b5cf6;             background: rgba(139,92,246,0.06); }
+.dd-tag--green  { border-color: rgba(34,197,94,0.3);   color: #22c55e;             background: rgba(34,197,94,0.06); }
+.dd-tag--red    { border-color: rgba(239,68,68,0.3);   color: #ef4444;             background: rgba(239,68,68,0.06); }
+.dd-tag--cyan   { border-color: rgba(6,182,212,0.3);   color: #06b6d4;             background: rgba(6,182,212,0.06); }
 
 .dd-art-ext {
   color: var(--text-tertiary);
@@ -619,6 +707,8 @@ const base = import.meta.env.BASE_URL;
   .dd-count-pill { margin-left: 0; }
 
   .dd-cta-row { gap: 10px; }
+
+  .dd-module-grid { gap: 6px; }
 }
 
 @media (max-width: 900px) and (min-width: 641px) {
@@ -626,6 +716,7 @@ const base = import.meta.env.BASE_URL;
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 /* ── Breadcrumb ── */
 .dd-breadcrumb {
   display: flex;

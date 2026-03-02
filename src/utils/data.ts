@@ -673,3 +673,37 @@ export interface GraphData {
 export function loadGraphData(): GraphData | null {
   return readJson<GraphData>('graph-data.json');
 }
+
+// ---------------------------------------------------------------------------
+// AIGitHubArticle — shape of ai-github-theory.json (fetched by fetch-ai-github.py)
+// Each article is a theory/**/*.md file in Agent-Playbook repo.
+// ---------------------------------------------------------------------------
+export interface AIGitHubArticle {
+  path:     string;   // e.g. "theory/03-engineering/context-engineering-field-guide.md"
+  title:    string;
+  url:      string;
+  html_url: string;
+  date:     string;   // YYYY-MM-DD, from last commit
+  topic:    string;   // module label (e.g. "工程實戰")
+  module:   string;   // e.g. "03-engineering"
+  slug:     string;   // filename without .md
+}
+
+interface AIGitHubFile {
+  fetched_at: string;
+  repo:       string;
+  stats:      { total: number; by_module: Record<string, number> };
+  articles:   AIGitHubArticle[];
+}
+
+// ---------------------------------------------------------------------------
+// loadAIGitHubArticles
+// Returns up to N articles from ai-github-theory.json, sorted date desc.
+// ---------------------------------------------------------------------------
+export function loadAIGitHubArticles(n: number = 200): AIGitHubArticle[] {
+  const data = readJson<AIGitHubFile>('ai-github-theory.json');
+  if (!data?.articles) return [];
+  return [...data.articles]
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .slice(0, n);
+}
