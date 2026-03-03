@@ -307,21 +307,29 @@ const RULE_LABELS: Record<string, string> = {
             <span data-tc>注意力比訊息更稀缺。很少有系統追蹤自己說過的話。</span><span data-sc>注意力比信息更稀缺。很少有系统追踪自己说过的话。</span>
           </p>
           <p class="hp-briefing-body">
-            <span data-tc>Pulsar 不同：同時覆蓋 <strong>VLA 機器人前沿 × AI 應用趨勢</strong>，LLM 每日為信號評級而非轉發（⚡ 突破 · 🔧 技術 · 📖 觀點）；跨域共振引擎標記兩條線的技術交叉；雙週校準讓每一個預判都有結果——<em>包括誤判</em>。這是情報，不是摘要。</span><span data-sc>Pulsar 不同：同时覆盖 <strong>VLA 机器人前沿 × AI 应用趋势</strong>，LLM 每日为讯号评级而非转发（⚡ 突破 · 🔧 技术 · 📖 观点）；跨域共振引擎标记两条线的技术交叉；双周校准让每一个预判都有结果——<em>包括误判</em>。这是情报，不是摘要。</span>
+            <span data-tc>Pulsar 不同：同時覆蓋 <strong><abbr class="hp-abbr-vla" title="Vision-Language-Action">VLA</abbr> 機器人前沿 × AI 應用趨勢</strong>，LLM 每日為信號評級而非轉發（⚡ 突破 · 🔧 技術 · 📖 觀點）；跨域共振引擎標記兩條線的技術交叉；雙週校準讓每一個預判都有結果——<em>包括誤判</em>。這是情報，不是摘要。</span><span data-sc>Pulsar 不同：同时覆盖 <strong>VLA 机器人前沿 × AI 应用趋势</strong>，LLM 每日为讯号评级而非转发（⚡ 突破 · 🔧 技术 · 📖 观点）；跨域共振引擎标记两条线的技术交叉；双周校准让每一个预判都有结果——<em>包括误判</em>。这是情报，不是摘要。</span>
           </p>
 
         </div>
 
-        <!-- Right: ready signal -->
-        <div class="hp-briefing-right">
-          <div class="hp-briefing-ready">
-            <span class="hp-briefing-ready-time">12:00</span>
-            <span class="hp-briefing-ready-check">✓</span>
-            <span class="hp-briefing-ready-label">
-              <span data-tc>定時查閱，一覽無遺</span><span data-sc>定时查阅，一览无遗</span>
-            </span>
+        <!-- Right: domain explainer — answers "what is VLA?" for new visitors -->
+        <div class="hp-domain-explainer">
+          <div class="hp-domain-card hp-domain-card--vla">
+            <span class="hp-domain-icon" aria-hidden="true">🤖</span>
+            <div class="hp-domain-content">
+              <span class="hp-domain-pill hp-domain-pill--vla">VLA 域</span>
+              <p class="hp-domain-fullname">Vision-Language-Action</p>
+              <p class="hp-domain-desc"><span data-tc>機器人視覺·語言·動作整合研究，每日 09:05 追蹤 arxiv 最新論文</span><span data-sc>机器人视觉·语言·动作整合研究，每日 09:05 追踪 arxiv 最新论文</span></p>
+            </div>
           </div>
-          <p class="hp-briefing-ready-sub">VLA ROBOTICS · AI APPLICATION</p>
+          <div class="hp-domain-card hp-domain-card--ai">
+            <span class="hp-domain-icon" aria-hidden="true">🧠</span>
+            <div class="hp-domain-content">
+              <span class="hp-domain-pill hp-domain-pill--ai">AI App 域</span>
+              <p class="hp-domain-fullname">Agent · Tools · Ecosystem</p>
+              <p class="hp-domain-desc"><span data-tc>AI 工具、Agent 框架、產業趨勢，每日 07:00 掃描 28 個來源</span><span data-sc>AI 工具、Agent 框架、产业趋势，每日 07:00 扫描 28 个来源</span></p>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -673,7 +681,7 @@ const RULE_LABELS: Record<string, string> = {
               { name: '<span data-tc>品質漂移檢查</span><span data-sc>品质漂移检查</span>',    time: '10:10', ok: driftOk },
               { name: '<span data-tc>語義索引重建</span><span data-sc>语义索引重建</span>',    time: '11:15', ok: true  },
               { name: '<span data-tc>跨域規則引擎</span><span data-sc>跨域规则引擎</span>',    time: '10:20', ok: true  },
-              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '08:50', ok: true  },
+              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '00:50', ok: true  },
             ].map(item => (
               <div class="health-item">
                 <span class:list={['health-icon', item.ok ? 'health-ok' : 'health-warn']}>
@@ -1312,5 +1320,137 @@ const RULE_LABELS: Record<string, string> = {
   .hp-signal-grid { gap: 10px; }
   .hp-signal-card { padding: 12px; }
   .hp-signal-title { font-size: 0.78rem; }
+}
+
+/* ══════════════════════════════════════════════════════
+   Domain Explainer Cards — replaces meaningless "12:00 ✓"
+   Answers "what is VLA?" for first-time visitors.
+   ══════════════════════════════════════════════════════ */
+.hp-domain-explainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hp-domain-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.hp-domain-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  pointer-events: none;
+  border-radius: 12px;
+}
+
+.hp-domain-card--vla::before  { background: var(--accent-cyan); }
+.hp-domain-card--ai::before   { background: var(--accent-amber); }
+
+.hp-domain-card--vla {
+  border-left: 3px solid var(--accent-cyan);
+}
+.hp-domain-card--ai {
+  border-left: 3px solid var(--accent-amber);
+}
+
+:global(html.dark) .hp-domain-card {
+  background: #080D18;
+  border-color: #1A2840;
+}
+:global(html.dark) .hp-domain-card--vla  { border-left-color: var(--accent-cyan); }
+:global(html.dark) .hp-domain-card--ai   { border-left-color: var(--accent-amber); }
+
+.hp-domain-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+:global(html.dark) .hp-domain-card--vla:hover  { box-shadow: 0 0 0 1px rgba(62,207,207,0.15), 0 6px 20px rgba(0,0,0,0.35); }
+:global(html.dark) .hp-domain-card--ai:hover   { box-shadow: 0 0 0 1px rgba(245,183,49,0.15), 0 6px 20px rgba(0,0,0,0.35); }
+
+.hp-domain-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
+
+.hp-domain-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hp-domain-pill {
+  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  display: inline-block;
+  width: fit-content;
+}
+.hp-domain-pill--vla {
+  color: var(--accent-cyan);
+  background: rgba(15,143,160,0.10);
+  border: 1px solid rgba(15,143,160,0.22);
+}
+.hp-domain-pill--ai {
+  color: var(--accent-amber);
+  background: rgba(212,145,10,0.10);
+  border: 1px solid rgba(212,145,10,0.22);
+}
+:global(html.dark) .hp-domain-pill--vla {
+  background: rgba(62,207,207,0.08);
+  border-color: rgba(62,207,207,0.18);
+  text-shadow: 0 0 8px rgba(62,207,207,0.3);
+}
+:global(html.dark) .hp-domain-pill--ai {
+  background: rgba(245,183,49,0.08);
+  border-color: rgba(245,183,49,0.18);
+  text-shadow: 0 0 8px rgba(245,183,49,0.3);
+}
+
+.hp-domain-fullname {
+  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1.4;
+}
+:global(html.dark) .hp-domain-fullname { color: #C8D4F0; }
+
+.hp-domain-desc {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+:global(html.dark) .hp-domain-desc { color: #5A7090; }
+
+/* VLA abbreviation inline tooltip */
+.hp-abbr-vla {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--accent-cyan);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+:global(html.dark) .hp-abbr-vla {
+  text-decoration-color: rgba(62,207,207,0.6);
 }
 </style>
