@@ -1,40 +1,30 @@
 # 🤖 AI 每日精选 | 2026-03-03
 
-🔥 头条（2 条）
-- OpenAI 讨论以 7500 亿美元估值融资数百亿美元
-  The Information 独家：估值较上一轮涨 50%，亚马逊洽投 100 亿+，AI 军备竞赛持续升温
-  https://www.theinformation.com/articles/openai-in-talks-to-raise-hundreds-of-millions-at-750b-valuation
-
-- 特朗普禁令后美军仍动用 Claude 执行空袭，军用版或达 Opus 5.5 水平
-  WSJ/CNBC 交叉验证：CENTCOM 深度集成 Claude 于情报与目标识别，替换需 6 个月，定制版算力独占
-  https://www.36kr.com/p/3705271177228676
-
-⚡ 精选动态（4 条）
-- 【🏢行业】腾讯成立 AI Infra/Data/计算平台三部，前 OpenAI 研究员姚顺雨任首席 AI 科学家
-  直通总裁办，一手抓算法一手抓算力，腾讯大模型研发体系全面提速
+🔥 头条（1-2 条）
+- OpenAI 讨论以 7500 亿美元估值融资数百亿
+  较上一轮估值涨 50%，AI 军备竞赛持续升温，资本对 AGI 前景仍极度乐观
   http://www.geekpark.net/news/358151
 
-- 【🔧工具】Govbase – 从法案原文到新闻偏见到社交贴的全链路追踪
-  HN Show HN：AI 流水线将国会法案/行政令转为通俗摘要，透明度工具新范式
-  https://govbase.com
+⚡ 精选动态（3-5 条）
+- 【🔧工具】CtrlAI – AI Agent Guardrail Proxy
+  Product Hunt 新上架：为 AI agent 提供透明代理层的安全防护，guardrail 落地新方案
+  https://www.producthunt.com/products/ctrlai
 
-- 【🔧工具】cmux – 为 coding agents 打造的开源终端
-  ProductHunt 新上架：专为 agent 交互优化的终端体验，支持多 agent 会话管理
-  https://www.producthunt.com/products/cmux
+- 【🔧工具】Aura – Semantic Version Control for AI Coding Agents
+  在 Git 之上为 AI coding agent 提供语义版本控制，解决 agent 生成代码的追溯问题
+  https://www.producthunt.com/products/aura-28
 
-- 【🔧工具】theORQL – Cursor for frontend，AI 能看见 UI
-  ProductHunt：在 Chrome 和 VS Code 中构建调试，AI 视觉理解前端布局
-  https://www.producthunt.com/products/stop-coding-blind-ai-that-sees-the-ui
+- 【📊趋势】Go vs AI Agents 技术讨论
+  HN 123 分热议：从并发模型、部署效率角度论证 Go 比 Python 更适合 agent 开发
+  https://getbruin.com/blog/go-is-the-best-language-for-agents/
 
-🌟 GitHub Pick（1 个）
-- anthropics/claude-code  ⭐ trending / 争议热点  ·  Issue
-  Cowork 功能在 macOS 上无警告创建 10GB VM 镜像，引发 344 分 HN 热议，agent 本地资源管理边界讨论
-  https://github.com/anthropics/claude-code/issues/22543
+- 【🔧工具】Parallel coding agents with tmux and Markdown specs
+  实用工作流：用 tmux+Markdown 规范实现多 agent 并行编码，HN 95 分
+  https://schipper.ai/posts/parallel-coding-agents/
 
-💬 社区热议（1 条）
-- Anthropic 军用版 Claude 能力推测（Reddit）
-  核心争论：军用定制版是否真达 Opus 5.5，还是仅针对特定用例微调；物理隔离机密云算力独占
-  https://www.reddit.com/r/singularity
+- 【🏢行业】火山引擎的 AI 云原生战略（续报）
+  昨日已报，今日深度：从内部基建到对外服务的战略转型路径
+  http://www.geekpark.net/news/358192
 
 ---
-来源验证：OpenAI 融资 (The Information)、Claude 军用 (WSJ/CNBC/36Kr)、腾讯 AI 架构 (极客公园)、工具类 (ProductHunt/HN)
+规则：如果今天没什么大事，也要精选五小事（3-5 条）；只有在极端情况下才发"今日无重大动态"。
