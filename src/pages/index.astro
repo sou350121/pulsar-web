@@ -25,6 +25,7 @@ import {
   loadAIDeepDive,
   loadVLATheory,
   loadVLAGitHubArticles,
+  loadAIGitHubArticles,
   loadCrossDomainInsights,
   extractMarkdownSummary,
   type DailyPickDay,
@@ -90,6 +91,33 @@ const deepDiveItems = [
     domain:  'vla' as const,
   })),
 ];
+
+// Pipeline-only deep dive items for DigestFeed (excludes GitHub repo articles)
+const digestDeepDiveItems = [
+  ...aiDeepDiveRaw.map(a => ({
+    title:   a.title,
+    summary: a.signal_type?.replace(/_/g, ' ') ?? 'deep dive',
+    rating:  SIGNAL_EMOJI[a.signal_type ?? ''] ?? '📖',
+    source:  (a.source ?? 'AI').replace(/^social-/, '').slice(0, 10),
+    url:     a.html_url ?? a.url,
+    domain:  'ai' as const,
+  })),
+  ...vlaTheoryRaw.map(a => ({
+    title:   a.title,
+    summary: a.target_dir?.replace('theory/', '') ?? 'theory',
+    rating:  '📐',
+    source:  'VLA-THEORY',
+    url:     a.html_url ?? a.url,
+    domain:  'vla' as const,
+  })),
+];
+
+// Knowledge base totals for ticker (GitHub repo totals, not filtered by date)
+const kbVlaTotal = loadVLAGitHubArticles(9999).length;
+const kbAiTotal  = loadAIGitHubArticles(9999).length;
+const kbTotal    = kbVlaTotal + kbAiTotal;
+// Real daily deep dive picks (pipeline output only, not GitHub repo articles)
+const realDeepDiveCount = aiDeepDiveRaw.length + vlaTheoryRaw.length;
 
 // ---------------------------------------------------------------------------
 // Mock fallbacks
@@ -272,7 +300,7 @@ const RULE_LABELS: Record<string, string> = {
           <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
           <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
           <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
-          Deep Dive 近 3 日 {deepDiveItems.length} 篇&ensp;·&ensp;
+          <span data-tc>近 3 日精選</span><span data-sc>近 3 日精选</span> {realDeepDiveCount} 篇 · <span data-tc>知識庫</span><span data-sc>知识库</span> {kbTotal} 篇&ensp;·&ensp;
         </span>
       </div>
     </div>
@@ -287,7 +315,7 @@ const RULE_LABELS: Record<string, string> = {
         date={displayDate}
         aiItems={digestAiItems}
         vlaItems={digestVlaItems}
-        deepDiveItems={deepDiveItems}
+        deepDiveItems={digestDeepDiveItems}
       />
     </div>
   </section>
@@ -304,10 +332,10 @@ const RULE_LABELS: Record<string, string> = {
           <p class="hp-briefing-overline">RESEARCH INTELLIGENCE · PULSAR</p>
           <h2 class="hp-briefing-name">PULSAR · <span class="hp-briefing-zh"><span data-tc>照見</span><span data-sc>照见</span></span></h2>
           <p class="hp-briefing-problem">
-            <span data-tc>注意力比訊息更稀缺。很少有系統追蹤自己說過的話。</span><span data-sc>注意力比信息更稀缺。很少有系统追踪自己说过的话。</span>
+            <span data-tc>每天有幾百篇論文和新聞值得你知道。Pulsar 替你讀完，挑出真正重要的。</span><span data-sc>每天有几百篇论文和新闻值得你知道。Pulsar 替你读完，挑出真正重要的。</span>
           </p>
           <p class="hp-briefing-body">
-            <span data-tc>Pulsar 不同：同時覆蓋 <strong><abbr class="hp-abbr-vla" title="Vision-Language-Action">VLA</abbr> 機器人前沿 × AI 應用趨勢</strong>，LLM 每日為信號評級而非轉發（⚡ 突破 · 🔧 技術 · 📖 觀點）；跨域共振引擎標記兩條線的技術交叉；雙週校準讓每一個預判都有結果——<em>包括誤判</em>。這是情報，不是摘要。</span><span data-sc>Pulsar 不同：同时覆盖 <strong>VLA 机器人前沿 × AI 应用趋势</strong>，LLM 每日为讯号评级而非转发（⚡ 突破 · 🔧 技术 · 📖 观点）；跨域共振引擎标记两条线的技术交叉；双周校准让每一个预判都有结果——<em>包括误判</em>。这是情报，不是摘要。</span>
+            <span data-tc>每日覆蓋 <strong><abbr class="hp-abbr-vla" title="Vision-Language-Action">VLA</abbr> 機器人前沿 × AI 應用趨勢</strong>，LLM 為每條信號評級（⚡ 突破 · 🔧 技術 · 📖 觀點）而非轉發；跨域引擎標記技術交叉；雙週回頭驗證每個預判——<em>包括誤判</em>。這是情報系統，不是 RSS 閱讀器。</span><span data-sc>每日覆盖 <strong>VLA 机器人前沿 × AI 应用趋势</strong>，LLM 为每条讯号评级（⚡ 突破 · 🔧 技术 · 📖 观点）而非转发；跨域引擎标记技术交叉；双周回头验证每个预判——<em>包括误判</em>。这是情报系统，不是 RSS 阅读器。</span>
           </p>
 
         </div>
@@ -319,7 +347,7 @@ const RULE_LABELS: Record<string, string> = {
             <div class="hp-domain-content">
               <span class="hp-domain-pill hp-domain-pill--vla">VLA 域</span>
               <p class="hp-domain-fullname">Vision-Language-Action</p>
-              <p class="hp-domain-desc"><span data-tc>機器人如何「看懂」世界、理解語言並執行動作的前沿研究 · 每天 12:00 更新</span><span data-sc>机器人如何"看懂"世界、理解语言并执行动作的前沿研究 · 每天 12:00 更新</span></p>
+              <p class="hp-domain-desc"><span data-tc>機器人正在學會用眼睛思考。每天從 arXiv 篩出值得看的突破，評完才推。· 每天 12:00 更新</span><span data-sc>机器人正在学会用眼睛思考。每天从 arXiv 筛出值得看的突破，评完才推。· 每天 12:00 更新</span></p>
             </div>
           </div>
           <div class="hp-domain-card hp-domain-card--ai">
@@ -327,7 +355,7 @@ const RULE_LABELS: Record<string, string> = {
             <div class="hp-domain-content">
               <span class="hp-domain-pill hp-domain-pill--ai">AI App 域</span>
               <p class="hp-domain-fullname">Agent · Tools · Ecosystem</p>
-              <p class="hp-domain-desc"><span data-tc>AI 工具、Agent 框架與產業生態——軟體如何被 AI 重新定義 · 每天 12:00 更新</span><span data-sc>AI 工具、Agent 框架与产业生态——软件如何被 AI 重新定义 · 每天 12:00 更新</span></p>
+              <p class="hp-domain-desc"><span data-tc>你用的工具，背後每天都在變。Pulsar 替你盯著，挑出值得關注的。· 每天 12:00 更新</span><span data-sc>你用的工具，背后每天都在变。Pulsar 替你盯着，挑出值得关注的。· 每天 12:00 更新</span></p>
             </div>
           </div>
         </div>
@@ -381,8 +409,8 @@ const RULE_LABELS: Record<string, string> = {
         </div>
         <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
         <div class="hp-stat hp-stat--hide-mobile">
-          <span class="hp-stat-num">{deepDiveItems.length}</span>
-          <span class="hp-stat-label">深析新增</span>
+          <span class="hp-stat-num">{kbTotal}</span>
+          <span class="hp-stat-label"><span data-tc>知識庫</span><span data-sc>知识库</span></span>
         </div>
       </div>
 
