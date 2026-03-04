@@ -15,16 +15,17 @@
 import RatingBadge from './RatingBadge.astro';
 
 interface Props {
-  title:   string;
-  summary: string;
-  rating:  string;
-  source:  string;
-  date:    string;
-  domain:  'vla' | 'ai' | string;
-  url:     string;
+  title:        string;
+  summary:      string;
+  rating:       string;
+  source:       string;
+  date:         string;
+  domain:       'vla' | 'ai' | string;
+  url:          string;
+  affiliation?: string;
 }
 
-const { title, summary, rating, source, date, domain, url } = Astro.props;
+const { title, summary, rating, source, date, domain, url, affiliation } = Astro.props;
 
 const domainLabel = domain === 'vla' ? 'VLA' : 'AI App';
 const domainTag   = domain === 'vla' ? 'tag-vla' : 'tag-ai';
@@ -35,6 +36,9 @@ const domainTag   = domain === 'vla' ? 'tag-vla' : 'tag-ai';
   <div class="flex items-center gap-2 flex-wrap">
     <RatingBadge rating={rating} size="sm" />
     <span class:list={['tag', domainTag]}>{domainLabel}</span>
+    {affiliation && (
+      <span class="tag tag-affiliation font-ibm-plex-mono">{affiliation}</span>
+    )}
     <time
       datetime={date}
       class="ml-auto text-xs font-ibm-plex-mono text-pulsar-muted shrink-0"

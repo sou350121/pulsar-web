@@ -17,13 +17,14 @@
 import './DigestFeed.css';
 
 interface DigestItem {
-  title:   string;
-  summary: string;
+  title:        string;
+  summary:      string;
   /** '⚡' | '🔧' | '📖' | '❌' or longer form like '🔧 工具' */
-  rating:  string;
-  source:  string;
-  url:     string;
-  domain:  'ai' | 'vla';
+  rating:       string;
+  source:       string;
+  url:          string;
+  domain:       'ai' | 'vla';
+  affiliation?: string;   // [Lab|Author] from VLA pipeline
 }
 
 interface Props {
@@ -196,25 +197,33 @@ const wordmark = title ?? 'PULSAR DIGEST';
                   target="_blank"
                   rel="noopener noreferrer"
                   title={item.title}
-                  aria-label={`${emoji} ${item.title} — ${item.summary}`}
+                  aria-label={`${emoji} ${item.title} — ${item.affiliation ?? ''} ${item.summary}`}
                 >
                   <span class="digest-rating" aria-hidden="true">{emoji}</span>
                   <span class="digest-content">
                     <span class="digest-title">{item.title}</span>
-                    <span class="digest-sep" aria-hidden="true">—</span>
-                    <span class="digest-summary">{item.summary}</span>
+                    <span class="digest-vla-sub">
+                      {item.affiliation && (
+                        <span class="digest-affiliation" aria-label={`機構: ${item.affiliation}`}>{item.affiliation}</span>
+                      )}
+                      <span class="digest-summary">{item.summary}</span>
+                    </span>
                   </span>
                   <span class="digest-source" aria-label={`來源: ${item.source}`}>
                     {tag}
                   </span>
                 </a>
               ) : (
-                <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
+                <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.affiliation ?? ''} ${item.summary}`}>
                   <span class="digest-rating" aria-hidden="true">{emoji}</span>
                   <span class="digest-content">
                     <span class="digest-title">{item.title}</span>
-                    <span class="digest-sep" aria-hidden="true">—</span>
-                    <span class="digest-summary">{item.summary}</span>
+                    <span class="digest-vla-sub">
+                      {item.affiliation && (
+                        <span class="digest-affiliation" aria-label={`機構: ${item.affiliation}`}>{item.affiliation}</span>
+                      )}
+                      <span class="digest-summary">{item.summary}</span>
+                    </span>
                   </span>
                   <span class="digest-source" aria-label={`來源: ${item.source}`}>
                     {tag}

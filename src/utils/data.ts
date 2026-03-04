@@ -29,17 +29,19 @@ const DATA_DIR = resolveDataDir();
 // ---------------------------------------------------------------------------
 
 export interface DailyPickItem {
-  title:   string;
-  url:     string;
-  summary: string;
-  rating:  '⚡' | '🔧' | '📖' | '❌' | string;
-  source:  string;
-  domain:  'ai' | 'vla' | string;
+  title:       string;
+  url:         string;
+  summary:     string;
+  rating:      '⚡' | '🔧' | '📖' | '❌' | string;
+  source:      string;
+  domain:      'ai' | 'vla' | string;
+  affiliation?: string;
 }
 
 export interface DailyPickDay {
-  date:  string;           // 'YYYY-MM-DD'
-  items: DailyPickItem[];
+  date:   string;           // 'YYYY-MM-DD'
+  items:  DailyPickItem[];
+  daText?: string;          // Devil's Advocate analysis (Phase 2.7)
 }
 
 // Raw shape from ai-daily-pick.json (pipeline format)
@@ -70,6 +72,7 @@ interface VLARatingRaw {
 interface VLARatingFile {
   ok:      boolean;
   papers:  VLARatingRaw[];
+  da_text?: string;
 }
 
 // Drift metrics — flat array of daily snapshots (actual pipeline format)
@@ -285,6 +288,7 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
     const papers = data?.papers ?? [];
     return {
       date,
+      daText: data?.da_text || '',
       items: papers
         .filter(p => p.rating !== '❌')   // skip low-relevance by default
         .map((raw): DailyPickItem => ({
@@ -292,8 +296,9 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
           url:     raw.url              ?? '#',
           summary: raw.reason           || raw.abstract_snippet || '',
           rating:  raw.rating           ?? '📖',
-          source:  raw.source           ?? 'arxiv',
-          domain:  'vla',
+          source:      raw.source      ?? 'arxiv',
+          domain:      'vla',
+          affiliation: raw.affiliation  || '',
         })),
     };
   }).filter(day => day.items.length > 0);

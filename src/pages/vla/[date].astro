@@ -99,6 +99,14 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
       </div>
     </div>
 
+    <!-- DA Callout: Devil's Advocate analysis from Phase 2.7 -->
+    {day.daText && (
+      <div class="da-callout">
+        <div class="da-callout-label">🔥 最強反駁</div>
+        <p class="da-callout-body">{day.daText}</p>
+      </div>
+    )}
+
     <!-- ⚡ Breakthroughs -->
     {(byRating['⚡'] ?? []).length > 0 && (
       <div class="mb-8">
@@ -113,6 +121,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
               date={date}
               domain="vla"
               url={item.url}
+              affiliation={item.affiliation}
             />
           ))}
         </div>
@@ -133,6 +142,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
               date={date}
               domain="vla"
               url={item.url}
+              affiliation={item.affiliation}
             />
           ))}
         </div>
@@ -153,6 +163,7 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
               date={date}
               domain="vla"
               url={item.url}
+              affiliation={item.affiliation}
             />
           ))}
         </div>
@@ -448,6 +459,30 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
   transition: color 0.15s;
 }
 .ddb-cross:hover { color: var(--accent-amber); }
+
+/* ── DA Callout ── */
+.da-callout {
+  border-left: 3px solid var(--accent-amber);
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 2rem;
+}
+.da-callout-label {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.da-callout-body {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin: 0;
+}
 
 /* ── Mobile: stack pagination vertically ── */
 @media (max-width: 640px) {

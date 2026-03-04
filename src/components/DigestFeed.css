@@ -542,6 +542,107 @@ html.dark .digest-summary--type {
   font-weight: 500;
 }
 
+/* ============================================================
+   VLA 2-ROW LAYOUT — title on row 1, affiliation + summary on row 2
+   Gives academic paper titles full width & lets summary breathe.
+   ============================================================ */
+
+/* Row container: align to top so emoji/source align with title */
+.digest-item--vla .digest-item-link {
+  align-items: start;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+/* Emoji pinned to first text row */
+.digest-item--vla .digest-rating {
+  align-self: start;
+  padding-top: 2px;
+}
+
+/* Source badge pinned to first row */
+.digest-item--vla .digest-source {
+  align-self: start;
+  margin-top: 2px;
+}
+
+/* Content column: stack title over sub-row */
+.digest-item--vla .digest-content {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  overflow: hidden;
+}
+
+/* Title: full width, one line, ellipsis if needed */
+.digest-item--vla .digest-title {
+  max-width: 100%;
+  flex-shrink: 1;
+  width: 100%;
+}
+
+/* Sub-row: affiliation badge + summary side by side */
+.digest-vla-sub {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Affiliation badge — cyan monospace, compact */
+.digest-affiliation {
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(62, 207, 207, 0.08);
+  border: 1px solid rgba(62, 207, 207, 0.18);
+  padding: 0px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+html.dark .digest-affiliation {
+  color: #3ECFCF;
+  background: rgba(62, 207, 207, 0.07);
+  border-color: rgba(62, 207, 207, 0.15);
+}
+
+/* Summary in VLA sub-row: allow 2 lines, more readable */
+.digest-item--vla .digest-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  font-size: 0.71rem;
+  line-height: 1.45;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hide the old sep in VLA rows (replaced by 2-row layout) */
+.digest-item--vla .digest-sep {
+  display: none;
+}
+
+/* Mobile: VLA sub-row stays horizontal but source moves to its natural spot */
+@media (max-width: 767px) {
+  .digest-item--vla .digest-content {
+    flex-direction: column;
+    gap: 3px;
+  }
+  .digest-vla-sub {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}
+
 /* ── Tiny phones ≤ 374px ── */
 @media (max-width: 374px) {
   .digest-item-link {
