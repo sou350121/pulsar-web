@@ -662,3 +662,176 @@ html.dark .digest-affiliation {
     font-size: 0.78rem;
   }
 }
+
+/* ============================================================
+   DOMAIN TAB BAR — pill style, domain-identity glow
+   ============================================================ */
+.digest-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px 8px;
+  background: var(--surface);
+  /* Subtle frosted separation from header */
+  border-bottom: 1px solid transparent;
+}
+
+html.dark .digest-tabs {
+  background: #0A0F1C;
+}
+
+.digest-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition:
+    background  0.18s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+    color       0.18s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow  0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 30px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.digest-tab:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
+
+html.dark .digest-tab {
+  border-color: #1A2840;
+  color: #3A5070;
+}
+
+/* Count badge inside tab */
+.digest-tab-count {
+  font-size: 0.52rem;
+  opacity: 0.65;
+  font-weight: 500;
+}
+
+/* ── ALL tab active ── */
+.digest-tab--all.digest-tab--active {
+  background: var(--surface-2, #F4F4F0);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+html.dark .digest-tab--all.digest-tab--active {
+  background: #131E30;
+  border-color: #2A3D58;
+  color: #C8D4F0;
+  box-shadow: 0 0 0 1px rgba(200, 212, 240, 0.06);
+}
+
+/* ── AI tab — amber identity ── */
+.digest-tab--ai:hover,
+.digest-tab--ai.digest-tab--active {
+  color: var(--accent-amber);
+  border-color: rgba(212, 145, 10, 0.45);
+  background: rgba(212, 145, 10, 0.07);
+}
+html.dark .digest-tab--ai:hover,
+html.dark .digest-tab--ai.digest-tab--active {
+  color: var(--accent-amber);
+  border-color: rgba(245, 183, 49, 0.35);
+  background: rgba(245, 183, 49, 0.07);
+}
+html.dark .digest-tab--ai.digest-tab--active {
+  box-shadow:
+    0 0 12px rgba(245, 183, 49, 0.12),
+    0 0 0 1px rgba(245, 183, 49, 0.15);
+}
+
+/* ── VLA tab — cyan identity ── */
+.digest-tab--vla:hover,
+.digest-tab--vla.digest-tab--active {
+  color: var(--accent-cyan);
+  border-color: rgba(15, 143, 160, 0.45);
+  background: rgba(15, 143, 160, 0.07);
+}
+html.dark .digest-tab--vla:hover,
+html.dark .digest-tab--vla.digest-tab--active {
+  color: var(--accent-cyan);
+  border-color: rgba(62, 207, 207, 0.35);
+  background: rgba(62, 207, 207, 0.07);
+}
+html.dark .digest-tab--vla.digest-tab--active {
+  box-shadow:
+    0 0 12px rgba(62, 207, 207, 0.12),
+    0 0 0 1px rgba(62, 207, 207, 0.15);
+}
+
+/* ── Gradient divider below tabs ── */
+.digest-tabs-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--border) 20%,
+    var(--border) 80%,
+    transparent 100%
+  );
+}
+html.dark .digest-tabs-divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(245, 183, 49, 0.12) 30%,
+    rgba(62, 207, 207, 0.08) 70%,
+    transparent 100%
+  );
+}
+
+/* ── Section fade-in animation when tab switches ── */
+.digest-domain-section {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: none;
+}
+
+.digest-domain-section.digest-section-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity  0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile: compact tab bar */
+@media (max-width: 767px) {
+  .digest-tabs {
+    gap: 4px;
+    padding: 8px 10px 6px;
+  }
+  .digest-tab {
+    font-size: 0.56rem;
+    padding: 4px 10px;
+    min-height: 28px;
+    letter-spacing: 0.08em;
+  }
+  .digest-tab-count {
+    font-size: 0.48rem;
+  }
+}
+
+/* Tiny phones: even tighter */
+@media (max-width: 374px) {
+  .digest-tab-label {
+    /* Keep label visible even on tiny screens */
+    font-size: 0.52rem;
+  }
+  .digest-tab-count {
+    display: none;
+  }
+}

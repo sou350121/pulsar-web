@@ -12,6 +12,7 @@
  *   showLinks — Wrap rows in <a> tags (default true)
  *   maxItems  — Max items per section (default 12)
  *   title     — Override header wordmark text (optional)
+ *   singleDomain — If true, hides the tab bar (sub-pages with one domain)
  */
 
 import './DigestFeed.css';
@@ -35,6 +36,7 @@ interface Props {
   showLinks?:      boolean;
   maxItems?:       number;
   title?:          string;
+  singleDomain?:   boolean;
 }
 
 const {
@@ -45,6 +47,7 @@ const {
   showLinks = true,
   maxItems  = 12,
   title,
+  singleDomain = false,
 } = Astro.props;
 
 /**
@@ -83,6 +86,10 @@ const hasAi       = aiSlice.length       > 0;
 const hasVla      = vlaSlice.length      > 0;
 const hasDeepDive = deepDiveSlice.length > 0;
 
+// Count domains present — only show tabs when multiple domains exist
+const domainCount = (hasAi ? 1 : 0) + (hasVla ? 1 : 0);
+const showTabs    = !singleDomain && domainCount >= 2;
+
 const wordmark = title ?? 'PULSAR DIGEST';
 ---
 
@@ -103,205 +110,308 @@ const wordmark = title ?? 'PULSAR DIGEST';
     </span>
   </header>
 
-  <!-- ── AI LINE ── -->
-  {hasAi && (
-    <section aria-labelledby="digest-section-ai">
-      <div class="digest-section-header digest-section--ai">
-        <span class="digest-section-label" id="digest-section-ai">
-          <span data-tc>AI APP 線</span><span data-sc>AI APP 线</span>&nbsp;&middot;&nbsp;<span data-tc>行業</span><span data-sc>行业</span>&nbsp;·&nbsp;工具&nbsp;·&nbsp;<span data-tc>趨勢</span><span data-sc>趋势</span>
-        </span>
-        <span class="digest-section-meta" aria-hidden="true">
-          {aiSlice.length}&thinsp;條
-        </span>
-      </div>
-
-      <ul class="digest-list" role="list">
-        {aiSlice.map((item) => {
-          const emoji    = ratingEmoji(item.rating);
-          const modifier = ratingModifier(item.rating);
-          const tag      = sourceTag(item.source);
-          const rowClass = `digest-item digest-item--ai ${modifier}`;
-
-          return (
-            <li class={rowClass}>
-              {showLinks ? (
-                <a
-                  class="digest-item-link"
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={item.title}
-                  aria-label={`${emoji} ${item.title} — ${item.summary}`}
-                >
-                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                  <span class="digest-content">
-                    <span class="digest-title">{item.title}</span>
-                    <span class="digest-sep" aria-hidden="true">—</span>
-                    <span class="digest-summary">{item.summary}</span>
-                  </span>
-                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
-                    {tag}
-                  </span>
-                </a>
-              ) : (
-                <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
-                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                  <span class="digest-content">
-                    <span class="digest-title">{item.title}</span>
-                    <span class="digest-sep" aria-hidden="true">—</span>
-                    <span class="digest-summary">{item.summary}</span>
-                  </span>
-                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
-                    {tag}
-                  </span>
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
-
-  {!hasAi && (
-    <div class="digest-empty" role="status">
-      <span data-tc>— AI 線今日無資料 —</span><span data-sc>— AI 线今日无资料 —</span>
+  <!-- ── DOMAIN TAB BAR — only shown when multiple domains present ── -->
+  {showTabs && (
+    <div class="digest-tabs" role="tablist" aria-label="域篩選" data-digest-tabs>
+      <button
+        class="digest-tab digest-tab--all digest-tab--active"
+        role="tab"
+        aria-selected="true"
+        data-tab="all"
+        aria-controls="digest-sections"
+      >
+        <span class="digest-tab-label">全部</span>
+        <span class="digest-tab-count">{aiSlice.length + vlaSlice.length}</span>
+      </button>
+      {hasAi && (
+        <button
+          class="digest-tab digest-tab--ai"
+          role="tab"
+          aria-selected="false"
+          data-tab="ai"
+          aria-controls="digest-sections"
+        >
+          <span class="digest-tab-label">AI 線</span>
+          <span class="digest-tab-count">{aiSlice.length}</span>
+        </button>
+      )}
+      {hasVla && (
+        <button
+          class="digest-tab digest-tab--vla"
+          role="tab"
+          aria-selected="false"
+          data-tab="vla"
+          aria-controls="digest-sections"
+        >
+          <span class="digest-tab-label">VLA 線</span>
+          <span class="digest-tab-count">{vlaSlice.length}</span>
+        </button>
+      )}
     </div>
+    <div class="digest-tabs-divider" aria-hidden="true"></div>
   )}
 
-  <!-- ── VLA LINE ── -->
-  {hasVla && (
-    <section aria-labelledby="digest-section-vla">
-      <div class="digest-section-header digest-section--vla">
-        <span class="digest-section-label" id="digest-section-vla">
-          <span data-tc>VLA 線</span><span data-sc>VLA 线</span>&nbsp;&middot;&nbsp;cs.RO&nbsp;·&nbsp;cs.AI&nbsp;·&nbsp;cs.LG
-        </span>
-        <span class="digest-section-meta" aria-hidden="true">
-          Qwen3.5-Plus&nbsp;·&nbsp;{vlaSlice.length}&thinsp;篇
-        </span>
-      </div>
+  <!-- ── SECTIONS WRAPPER ── -->
+  <div id="digest-sections" data-digest-sections>
 
-      <ul class="digest-list" role="list">
-        {vlaSlice.map((item) => {
-          const emoji    = ratingEmoji(item.rating);
-          const modifier = ratingModifier(item.rating);
-          const tag      = sourceTag(item.source);
-          const rowClass = `digest-item digest-item--vla ${modifier}`;
+    <!-- ── AI LINE ── -->
+    {hasAi && (
+      <section aria-labelledby="digest-section-ai" data-domain="ai" class="digest-domain-section">
+        <div class="digest-section-header digest-section--ai">
+          <span class="digest-section-label" id="digest-section-ai">
+            <span data-tc>AI APP 線</span><span data-sc>AI APP 线</span>&nbsp;&middot;&nbsp;<span data-tc>行業</span><span data-sc>行业</span>&nbsp;·&nbsp;工具&nbsp;·&nbsp;<span data-tc>趨勢</span><span data-sc>趋势</span>
+          </span>
+          <span class="digest-section-meta" aria-hidden="true">
+            {aiSlice.length}&thinsp;條
+          </span>
+        </div>
 
-          return (
-            <li class={rowClass}>
-              {showLinks ? (
-                <a
-                  class="digest-item-link"
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={item.title}
-                  aria-label={`${emoji} ${item.title} — ${item.affiliation ?? ''} ${item.summary}`}
-                >
-                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                  <span class="digest-content">
-                    <span class="digest-title">{item.title}</span>
-                    <span class="digest-vla-sub">
-                      {item.affiliation && (
-                        <span class="digest-affiliation" aria-label={`機構: ${item.affiliation}`}>{item.affiliation}</span>
-                      )}
+        <ul class="digest-list" role="list">
+          {aiSlice.map((item) => {
+            const emoji    = ratingEmoji(item.rating);
+            const modifier = ratingModifier(item.rating);
+            const tag      = sourceTag(item.source);
+            const rowClass = `digest-item digest-item--ai ${modifier}`;
+
+            return (
+              <li class={rowClass}>
+                {showLinks ? (
+                  <a
+                    class="digest-item-link"
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={item.title}
+                    aria-label={`${emoji} ${item.title} — ${item.summary}`}
+                  >
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-sep" aria-hidden="true">—</span>
                       <span class="digest-summary">{item.summary}</span>
                     </span>
-                  </span>
-                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
-                    {tag}
-                  </span>
-                </a>
-              ) : (
-                <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.affiliation ?? ''} ${item.summary}`}>
-                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                  <span class="digest-content">
-                    <span class="digest-title">{item.title}</span>
-                    <span class="digest-vla-sub">
-                      {item.affiliation && (
-                        <span class="digest-affiliation" aria-label={`機構: ${item.affiliation}`}>{item.affiliation}</span>
-                      )}
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                      {tag}
+                    </span>
+                  </a>
+                ) : (
+                  <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-sep" aria-hidden="true">—</span>
                       <span class="digest-summary">{item.summary}</span>
                     </span>
-                  </span>
-                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
-                    {tag}
-                  </span>
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                      {tag}
+                    </span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
 
-  {!hasVla && (
-    <div class="digest-empty" role="status">
-      <span data-tc>— VLA 線今日無資料 —</span><span data-sc>— VLA 线今日无资料 —</span>
-    </div>
-  )}
-
-  <!-- ── DEEP DIVE LINE ── -->
-  {hasDeepDive && (
-    <section aria-labelledby="digest-section-deepdive">
-      <div class="digest-section-header digest-section--deepdive">
-        <span class="digest-section-label" id="digest-section-deepdive">
-          DEEP DIVE <span data-tc>深析</span><span data-sc>深析</span>&nbsp;&middot;&nbsp;<span data-tc>近期精選</span><span data-sc>近期精选</span>
-        </span>
-        <span class="digest-section-meta" aria-hidden="true">
-          {deepDiveSlice.length}&thinsp;篇
-        </span>
+    {!hasAi && (
+      <div class="digest-empty" role="status" data-domain="ai">
+        <span data-tc>— AI 線今日無資料 —</span><span data-sc>— AI 线今日无资料 —</span>
       </div>
+    )}
 
-      <ul class="digest-list" role="list">
-        {deepDiveSlice.map((item) => {
-          const emoji    = ratingEmoji(item.rating);
-          const modifier = ratingModifier(item.rating);
-          const tag      = sourceTag(item.source);
-          const domainMod = item.domain === 'vla' ? 'digest-item--vla' : 'digest-item--ai';
-          const rowClass = `digest-item ${domainMod} ${modifier} digest-item--deepdive`;
+    <!-- ── VLA LINE ── -->
+    {hasVla && (
+      <section aria-labelledby="digest-section-vla" data-domain="vla" class="digest-domain-section">
+        <div class="digest-section-header digest-section--vla">
+          <span class="digest-section-label" id="digest-section-vla">
+            <span data-tc>VLA 線</span><span data-sc>VLA 线</span>&nbsp;&middot;&nbsp;cs.RO&nbsp;·&nbsp;cs.AI&nbsp;·&nbsp;cs.LG
+          </span>
+          <span class="digest-section-meta" aria-hidden="true">
+            Qwen3.5-Plus&nbsp;·&nbsp;{vlaSlice.length}&thinsp;篇
+          </span>
+        </div>
 
-          return (
-            <li class={rowClass}>
-              {showLinks ? (
-                <a
-                  class="digest-item-link"
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={item.title}
-                  aria-label={`${emoji} ${item.title}`}
-                >
-                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                  <span class="digest-content">
-                    <span class="digest-title">{item.title}</span>
-                    <span class="digest-sep" aria-hidden="true">—</span>
-                    <span class="digest-summary digest-summary--type">{item.summary}</span>
-                  </span>
-                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
-                    {tag}
-                  </span>
-                </a>
-              ) : (
-                <div class="digest-item-link" aria-label={`${emoji} ${item.title}`}>
-                  <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                  <span class="digest-content">
-                    <span class="digest-title">{item.title}</span>
-                    <span class="digest-sep" aria-hidden="true">—</span>
-                    <span class="digest-summary digest-summary--type">{item.summary}</span>
-                  </span>
-                  <span class="digest-source" aria-label={`來源: ${item.source}`}>
-                    {tag}
-                  </span>
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
+        <ul class="digest-list" role="list">
+          {vlaSlice.map((item) => {
+            const emoji    = ratingEmoji(item.rating);
+            const modifier = ratingModifier(item.rating);
+            const tag      = sourceTag(item.source);
+            const rowClass = `digest-item digest-item--vla ${modifier}`;
+
+            return (
+              <li class={rowClass}>
+                {showLinks ? (
+                  <a
+                    class="digest-item-link"
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={item.title}
+                    aria-label={`${emoji} ${item.title} — ${item.affiliation ?? ''} ${item.summary}`}
+                  >
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-vla-sub">
+                        {item.affiliation && (
+                          <span class="digest-affiliation" aria-label={`機構: ${item.affiliation}`}>{item.affiliation}</span>
+                        )}
+                        <span class="digest-summary">{item.summary}</span>
+                      </span>
+                    </span>
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                      {tag}
+                    </span>
+                  </a>
+                ) : (
+                  <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.affiliation ?? ''} ${item.summary}`}>
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-vla-sub">
+                        {item.affiliation && (
+                          <span class="digest-affiliation" aria-label={`機構: ${item.affiliation}`}>{item.affiliation}</span>
+                        )}
+                        <span class="digest-summary">{item.summary}</span>
+                      </span>
+                    </span>
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                      {tag}
+                    </span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+
+    {!hasVla && (
+      <div class="digest-empty" role="status" data-domain="vla">
+        <span data-tc>— VLA 線今日無資料 —</span><span data-sc>— VLA 线今日无资料 —</span>
+      </div>
+    )}
+
+    <!-- ── DEEP DIVE LINE ── -->
+    {hasDeepDive && (
+      <section aria-labelledby="digest-section-deepdive" data-domain="all" class="digest-domain-section">
+        <div class="digest-section-header digest-section--deepdive">
+          <span class="digest-section-label" id="digest-section-deepdive">
+            DEEP DIVE <span data-tc>深析</span><span data-sc>深析</span>&nbsp;&middot;&nbsp;<span data-tc>近期精選</span><span data-sc>近期精选</span>
+          </span>
+          <span class="digest-section-meta" aria-hidden="true">
+            {deepDiveSlice.length}&thinsp;篇
+          </span>
+        </div>
+
+        <ul class="digest-list" role="list">
+          {deepDiveSlice.map((item) => {
+            const emoji    = ratingEmoji(item.rating);
+            const modifier = ratingModifier(item.rating);
+            const tag      = sourceTag(item.source);
+            const domainMod = item.domain === 'vla' ? 'digest-item--vla' : 'digest-item--ai';
+            const rowClass = `digest-item ${domainMod} ${modifier} digest-item--deepdive`;
+
+            return (
+              <li class={rowClass}>
+                {showLinks ? (
+                  <a
+                    class="digest-item-link"
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={item.title}
+                    aria-label={`${emoji} ${item.title}`}
+                  >
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-sep" aria-hidden="true">—</span>
+                      <span class="digest-summary digest-summary--type">{item.summary}</span>
+                    </span>
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                      {tag}
+                    </span>
+                  </a>
+                ) : (
+                  <div class="digest-item-link" aria-label={`${emoji} ${item.title}`}>
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-sep" aria-hidden="true">—</span>
+                      <span class="digest-summary digest-summary--type">{item.summary}</span>
+                    </span>
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>
+                      {tag}
+                    </span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+
+  </div><!-- /digest-sections -->
 
 </div>
+
+<!-- Tab switching script — minimal JS, ~35 lines -->
+<script>
+(function () {
+  const STORAGE_KEY = 'pulsar-digest-tab';
+
+  document.querySelectorAll<HTMLElement>('[data-digest-tabs]').forEach(tabBar => {
+    const feed     = tabBar.closest<HTMLElement>('.digest-feed');
+    if (!feed) return;
+    const sections = feed.querySelector<HTMLElement>('[data-digest-sections]');
+    if (!sections) return;
+
+    const tabs = Array.from(tabBar.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+
+    /** Show sections matching `domain` ("all" shows everything). */
+    function applyTab(domain: string) {
+      // Fade all sections out, then show matching
+      sections!.querySelectorAll<HTMLElement>('[data-domain]').forEach(sec => {
+        const secDomain = sec.dataset.domain ?? 'all';
+        const visible = domain === 'all' || secDomain === domain || secDomain === 'all';
+        if (visible) {
+          sec.style.display = '';
+          // Trigger reflow for re-animation
+          sec.classList.remove('digest-section-visible');
+          void sec.offsetHeight;
+          sec.classList.add('digest-section-visible');
+        } else {
+          sec.style.display = 'none';
+          sec.classList.remove('digest-section-visible');
+        }
+      });
+
+      // Update tab ARIA + active class
+      tabs.forEach(tab => {
+        const isActive = tab.dataset.tab === domain;
+        tab.setAttribute('aria-selected', String(isActive));
+        tab.classList.toggle('digest-tab--active', isActive);
+      });
+
+      try { localStorage.setItem(STORAGE_KEY, domain); } catch {}
+    }
+
+    // Restore from localStorage
+    let saved = 'all';
+    try { saved = localStorage.getItem(STORAGE_KEY) ?? 'all'; } catch {}
+    // Only restore if the saved tab actually exists in this feed
+    if (!tabs.some(t => t.dataset.tab === saved)) saved = 'all';
+    applyTab(saved);
+
+    // Click handlers
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => applyTab(tab.dataset.tab ?? 'all'));
+      // Keyboard: Enter / Space already fires click on <button>
+    });
+  });
+})();
+</script>
