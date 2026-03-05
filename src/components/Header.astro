@@ -14,6 +14,7 @@ const nav = [
   { href: `${base}/vla-deepdive`,  label: 'VLA 深挖', labelSC: 'VLA 深挖' },
   { href: `${base}/social`,        label: '社交情報', labelSC: '社交情报' },
   { href: `${base}/dashboard`,     label: '儀表板',   labelSC: '仪表板'   },
+  { href: `${base}/graph`,        label: '知識圖譜', labelSC: '知识图谱' },
   { href: `${base}/reports`,       label: '雙週報告', labelSC: '双周报告' },
 ];
 
@@ -45,6 +46,7 @@ const isActive = (href: string) => {
               href={href}
               class:list={[isActive(href) ? 'active' : '']}
               aria-current={isActive(href) ? 'page' : undefined}
+              data-vla-tooltip={href.includes('vla') ? 'Vision-Language-Action 機器人研究' : undefined}
             >
               <span data-tc>{label}</span>
               <span data-sc>{labelSC}</span>
@@ -185,6 +187,47 @@ const isActive = (href: string) => {
   .mobile-menu-link:focus-visible {
     outline: 2px solid var(--accent-amber);
     outline-offset: -2px;
+  }
+
+  /* ── VLA acronym tooltip (desktop only) ── */
+  :global(.nav-links) [data-vla-tooltip] {
+    position: relative;
+  }
+  :global(.nav-links) [data-vla-tooltip]::after {
+    content: attr(data-vla-tooltip);
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: "IBM Plex Mono", "Menlo", monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+    transform: translateX(-50%) translateY(-2px);
+    z-index: 200;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    border-left: 2px solid var(--accent-cyan);
+  }
+  :global(.nav-links) [data-vla-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  :global(html.dark .nav-links) [data-vla-tooltip]::after {
+    background: #0D1424;
+    border-color: #1E2D4A;
+    color: #7B8FAB;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  @media (max-width: 768px) {
+    :global(.nav-links) [data-vla-tooltip]::after { display: none; }
   }
 </style>
 

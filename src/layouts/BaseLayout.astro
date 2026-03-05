@@ -22,7 +22,7 @@ interface Props {
 const {
   title = 'Pulsar',
   description = 'AI Research Intelligence — 照見 (Zhàojiàn) pipeline monitoring, daily picks, and biweekly reflections.',
-  ogImage = '/og-default.png',
+  ogImage = '',
   noIndex = false,
 } = Astro.props;
 
@@ -30,6 +30,7 @@ const siteName = 'Pulsar';
 const fullTitle = title === 'Pulsar' ? siteName : `${title} | ${siteName}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://pulsar.sou350121.github.io');
 const base = import.meta.env.BASE_URL;
+const resolvedOgImage = ogImage || `${base}/og-default.png`;
 ---
 
 <!doctype html>
@@ -49,14 +50,14 @@ const base = import.meta.env.BASE_URL;
     <meta property="og:url"         content={canonicalURL} />
     <meta property="og:title"       content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image"       content={ogImage} />
+    <meta property="og:image"       content={resolvedOgImage} />
     <meta property="og:site_name"   content={siteName} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card"        content="summary_large_image" />
     <meta name="twitter:title"       content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image"       content={ogImage} />
+    <meta name="twitter:image"       content={resolvedOgImage} />
 
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
 

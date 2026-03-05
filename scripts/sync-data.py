@@ -56,14 +56,17 @@ JSON_FILES = [
     "vla-theory-articles.json",
     # VLA GitHub full library (all theory/ files from VLA-Handbook)
     "vla-github-theory.json",
+    "graph-data.json",
+    "vla-daily-hotspots.json",
+    "ai-github-theory.json",
 ]
 
 # Markdown file patterns — (prefix, how_many_recent_to_copy)
 MARKDOWN_PATTERNS = [
     ("_ai_social_",            30),   # daily AI social intel
     ("_vla_social_",           30),   # daily VLA social intel
-    ("_biweekly_",             12),   # biweekly reports
-    ("_biweekly_reflection_",  12),   # biweekly reflections
+    ("_biweekly_",             12),   # biweekly reports (covers _biweekly_reflection_ too)
+    ("_ai_biweekly_",          12),   # AI app biweekly reports
     ("_ai_daily_pick_",        30),   # dated ai daily pick markdown (if exists)
     ("calibration-check-",     14),   # calibration check JSONs
 ]

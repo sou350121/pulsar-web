@@ -25,8 +25,10 @@ import {
   loadAIDeepDive,
   loadVLATheory,
   loadVLAGitHubArticles,
+  loadAIGitHubArticles,
   loadCrossDomainInsights,
   extractMarkdownSummary,
+  relativeDay,
   type DailyPickDay,
   type DriftMetricsFile,
 } from '../utils/data';
@@ -35,7 +37,7 @@ import {
 // Load data
 // ---------------------------------------------------------------------------
 const recentPicks   = loadAIDailyPicks(1);
-const recentVLA     = loadVLADailyPicks(2);
+const recentVLA     = loadVLADailyPicks(1);
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
@@ -90,6 +92,42 @@ const deepDiveItems = [
     domain:  'vla' as const,
   })),
 ];
+
+// Pipeline-only deep dive items for DigestFeed (excludes GitHub repo articles)
+const digestDeepDiveItems = [
+  ...aiDeepDiveRaw.map(a => ({
+    title:   a.title,
+    summary: `${relativeDay(a.date)} · ${a.signal_type?.replace(/_/g, ' ') ?? 'deep dive'}`,
+    rating:  SIGNAL_EMOJI[a.signal_type ?? ''] ?? '📖',
+    source:  (a.source ?? 'AI').replace(/^social-/, '').slice(0, 10),
+    url:     a.html_url ?? a.url,
+    domain:  'ai' as const,
+  })),
+  ...vlaTheoryRaw.map(a => ({
+    title:   a.title,
+    summary: `${relativeDay(a.date)} · ${a.target_dir?.replace('theory/', '') ?? 'theory'}`,
+    rating:  '📐',
+    source:  'VLA-THEORY',
+    url:     a.html_url ?? a.url,
+    domain:  'vla' as const,
+  })),
+];
+
+// Deep dive URL lookup: source URL → GitHub doc URL (for 🔬 discovery badge)
+// Uses all available articles (not date-filtered) to match older deep dives too.
+const aiDeepDiveLookup = new Map<string, string>(
+  loadAIDeepDive(500).map(a => [a.url, a.html_url ?? a.url]).filter(([k]) => !!k)
+);
+const vlaTheoryLookup = new Map<string, string>(
+  loadVLATheory(500).map(a => [a.url, a.html_url ?? a.url]).filter(([k]) => !!k)
+);
+
+// Knowledge base totals for ticker (GitHub repo totals, not filtered by date)
+const kbVlaTotal = loadVLAGitHubArticles(9999).length;
+const kbAiTotal  = loadAIGitHubArticles(9999).length;
+const kbTotal    = kbVlaTotal + kbAiTotal;
+// Real daily deep dive picks (pipeline output only, not GitHub repo articles)
+const realDeepDiveCount = aiDeepDiveRaw.length + vlaTheoryRaw.length;
 
 // ---------------------------------------------------------------------------
 // Mock fallbacks
@@ -147,7 +185,7 @@ const MOCK_SOCIAL = [
 // ---------------------------------------------------------------------------
 const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 const displayDate = todayPicks.date;
-const todayVLA    = recentVLA[0];
+const todayVLA    = recentVLA[0]?.date === displayDate ? recentVLA[0] : undefined;
 
 const heroAI  = todayPicks.items[0];
 const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
@@ -165,9 +203,9 @@ const base        = import.meta.env.BASE_URL;
 // Today's counts
 const digestAiItems = todayPicks.items
   .filter(i => i.domain === 'ai')
-  .map(i => ({ ...i, domain: 'ai' as const }));
+  .map(i => ({ ...i, domain: 'ai' as const, deepDiveUrl: aiDeepDiveLookup.get(i.url) }));
 const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
-  .map(i => ({ ...i, domain: 'vla' as const }));
+  .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
 const todayAICount  = digestAiItems.length;
 const todayVLACount = digestVlaItems.length;
@@ -272,7 +310,7 @@ const RULE_LABELS: Record<string, string> = {
           <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
           <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
           <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
-          Deep Dive 近 3 日 {deepDiveItems.length} 篇&ensp;·&ensp;
+          <span data-tc>近 3 日精選</span><span data-sc>近 3 日精选</span> {realDeepDiveCount} 篇 · <span data-tc>知識庫</span><span data-sc>知识库</span> {kbTotal} 篇&ensp;·&ensp;
         </span>
       </div>
     </div>
@@ -287,7 +325,7 @@ const RULE_LABELS: Record<string, string> = {
         date={displayDate}
         aiItems={digestAiItems}
         vlaItems={digestVlaItems}
-        deepDiveItems={deepDiveItems}
+        deepDiveItems={digestDeepDiveItems}
       />
     </div>
   </section>
@@ -304,24 +342,32 @@ const RULE_LABELS: Record<string, string> = {
           <p class="hp-briefing-overline">RESEARCH INTELLIGENCE · PULSAR</p>
           <h2 class="hp-briefing-name">PULSAR · <span class="hp-briefing-zh"><span data-tc>照見</span><span data-sc>照见</span></span></h2>
           <p class="hp-briefing-problem">
-            <span data-tc>注意力比訊息更稀缺。很少有系統追蹤自己說過的話。</span><span data-sc>注意力比信息更稀缺。很少有系统追踪自己说过的话。</span>
+            <span data-tc>每天有幾百篇論文和新聞值得你知道。Pulsar 替你讀完，挑出真正重要的。</span><span data-sc>每天有几百篇论文和新闻值得你知道。Pulsar 替你读完，挑出真正重要的。</span>
           </p>
           <p class="hp-briefing-body">
-            <span data-tc>Pulsar 不同：同時覆蓋 <strong>VLA 機器人前沿 × AI 應用趨勢</strong>，LLM 每日為信號評級而非轉發（⚡ 突破 · 🔧 技術 · 📖 觀點）；跨域共振引擎標記兩條線的技術交叉；雙週校準讓每一個預判都有結果——<em>包括誤判</em>。這是情報，不是摘要。</span><span data-sc>Pulsar 不同：同时覆盖 <strong>VLA 机器人前沿 × AI 应用趋势</strong>，LLM 每日为讯号评级而非转发（⚡ 突破 · 🔧 技术 · 📖 观点）；跨域共振引擎标记两条线的技术交叉；双周校准让每一个预判都有结果——<em>包括误判</em>。这是情报，不是摘要。</span>
+            <span data-tc>每日覆蓋 <strong><abbr class="hp-abbr-vla" title="Vision-Language-Action">VLA</abbr> 機器人前沿 × AI 應用趨勢</strong>，LLM 為每條信號評級（⚡ 突破 · 🔧 技術 · 📖 觀點）而非轉發；跨域引擎標記技術交叉；雙週回頭驗證每個預判——<em>包括誤判</em>。這是情報系統，不是 RSS 閱讀器。</span><span data-sc>每日覆盖 <strong>VLA 机器人前沿 × AI 应用趋势</strong>，LLM 为每条讯号评级（⚡ 突破 · 🔧 技术 · 📖 观点）而非转发；跨域引擎标记技术交叉；双周回头验证每个预判——<em>包括误判</em>。这是情报系统，不是 RSS 阅读器。</span>
           </p>
 
         </div>
 
-        <!-- Right: ready signal -->
-        <div class="hp-briefing-right">
-          <div class="hp-briefing-ready">
-            <span class="hp-briefing-ready-time">12:00</span>
-            <span class="hp-briefing-ready-check">✓</span>
-            <span class="hp-briefing-ready-label">
-              <span data-tc>定時查閱，一覽無遺</span><span data-sc>定时查阅，一览无遗</span>
-            </span>
+        <!-- Right: domain explainer — answers "what is VLA?" for new visitors -->
+        <div class="hp-domain-explainer">
+          <div class="hp-domain-card hp-domain-card--vla">
+            <span class="hp-domain-icon" aria-hidden="true">🤖</span>
+            <div class="hp-domain-content">
+              <span class="hp-domain-pill hp-domain-pill--vla">VLA 域</span>
+              <p class="hp-domain-fullname">Vision-Language-Action</p>
+              <p class="hp-domain-desc"><span data-tc>機器人正在學會用眼睛思考。每天從 arXiv 篩出值得看的突破，評完才推。· 每天 12:00 更新</span><span data-sc>机器人正在学会用眼睛思考。每天从 arXiv 筛出值得看的突破，评完才推。· 每天 12:00 更新</span></p>
+            </div>
           </div>
-          <p class="hp-briefing-ready-sub">VLA ROBOTICS · AI APPLICATION</p>
+          <div class="hp-domain-card hp-domain-card--ai">
+            <span class="hp-domain-icon" aria-hidden="true">🧠</span>
+            <div class="hp-domain-content">
+              <span class="hp-domain-pill hp-domain-pill--ai">AI App 域</span>
+              <p class="hp-domain-fullname">Agent · Tools · Ecosystem</p>
+              <p class="hp-domain-desc"><span data-tc>你用的工具，背後每天都在變。Pulsar 替你盯著，挑出值得關注的。· 每天 12:00 更新</span><span data-sc>你用的工具，背后每天都在变。Pulsar 替你盯着，挑出值得关注的。· 每天 12:00 更新</span></p>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -373,8 +419,8 @@ const RULE_LABELS: Record<string, string> = {
         </div>
         <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
         <div class="hp-stat hp-stat--hide-mobile">
-          <span class="hp-stat-num">{deepDiveItems.length}</span>
-          <span class="hp-stat-label">深析新增</span>
+          <span class="hp-stat-num">{kbTotal}</span>
+          <span class="hp-stat-label"><span data-tc>知識庫</span><span data-sc>知识库</span></span>
         </div>
       </div>
 
@@ -416,17 +462,26 @@ const RULE_LABELS: Record<string, string> = {
   <!-- ═══════════════════════════════════════════════════════════════
        4. SIGNAL MIX — top AI + VLA sorted by rating strength
        ═══════════════════════════════════════════════════════════════ -->
-  <section class="section" id="picks" aria-labelledby="picks-title">
+  <section class="section collapsible-section" id="picks" aria-labelledby="picks-title">
     <div class="container">
 
-      <div class="section-header fade-in-1">
-        <div>
+      <div class="section-header collapse-header fade-in-1"
+           data-collapse-id="signal-mix"
+           data-collapse-default="open"
+           role="button" tabindex="0"
+           aria-expanded="true" aria-controls="collapse-signal-mix">
+        <div class="collapse-header-left">
           <span class="section-label section-number">03 — 今日訊號</span>
           <h2 id="picks-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>精選訊號 · AI + VLA</span><span data-sc>精选讯号 · AI + VLA</span></h2>
         </div>
-        <a href={`${base}/ai-daily`} class="section-link btn btn-outline">全部 →</a>
+        <div class="collapse-header-right">
+          <span class="collapse-summary">{mixedSignals.length}&thinsp;則信號</span>
+          <a href={`${base}/ai-daily`} class="section-link btn btn-outline collapse-link" onclick="event.stopPropagation()">全部 →</a>
+          <span class="collapse-chevron" aria-hidden="true"></span>
+        </div>
       </div>
 
+      <div class="collapse-body collapse-body--open" id="collapse-signal-mix">
       <div class="hp-signal-grid">
         {mixedSignals.map((item, i) => {
           const emoji  = [...item.rating][0] ?? item.rating;
@@ -454,6 +509,7 @@ const RULE_LABELS: Record<string, string> = {
         })}
       </div>
 
+      </div><!-- /collapse-body signal-mix -->
     </div>
   </section>
 
@@ -465,13 +521,22 @@ const RULE_LABELS: Record<string, string> = {
   {crossDomain.length > 0 && (
     <section class="hp-xd-section" id="crossdomain" aria-labelledby="xd-title">
       <div class="container">
-        <div class="section-header fade-in-1">
-          <div>
+        <div class="section-header collapse-header fade-in-1"
+             data-collapse-id="cross-domain"
+             data-collapse-default="closed"
+             role="button" tabindex="0"
+             aria-expanded="false" aria-controls="collapse-cross-domain">
+          <div class="collapse-header-left">
             <span class="section-label section-number">04 — 跨域洞察</span>
             <h2 id="xd-title"><span class="accent-line" aria-hidden="true"></span>VLA ↔ AI App 交叉訊號</h2>
           </div>
-          <a href={`${base}/dashboard`} class="section-link btn btn-outline">儀表板 →</a>
+          <div class="collapse-header-right">
+            <span class="collapse-summary">{crossDomain.length}&thinsp;條跨域洞察</span>
+            <a href={`${base}/dashboard`} class="section-link btn btn-outline collapse-link" onclick="event.stopPropagation()">儀表板 →</a>
+            <span class="collapse-chevron" aria-hidden="true"></span>
+          </div>
         </div>
+        <div class="collapse-body" id="collapse-cross-domain">
         <div class="hp-xd-grid fade-in-2">
           {crossDomain.slice(0, 3).map(ins => (
             <article class="hp-xd-card">
@@ -490,6 +555,7 @@ const RULE_LABELS: Record<string, string> = {
             </article>
           ))}
         </div>
+        </div><!-- /collapse-body cross-domain -->
       </div>
     </section>
   )}
@@ -500,14 +566,23 @@ const RULE_LABELS: Record<string, string> = {
   <section class="section section-alt social-section" id="social" aria-labelledby="social-title">
     <div class="container">
 
-      <div class="section-header fade-in-1">
-        <div>
+      <div class="section-header collapse-header fade-in-1"
+           data-collapse-id="social-intel"
+           data-collapse-default="open"
+           role="button" tabindex="0"
+           aria-expanded="true" aria-controls="collapse-social-intel">
+        <div class="collapse-header-left">
           <span class="section-label section-number">05 — <span data-tc>動態追蹤</span><span data-sc>动态追踪</span></span>
           <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>社交情報 · 過去 72 小時</span><span data-sc>社交情报 · 过去 72 小时</span></h2>
         </div>
-        <a href={`${base}/social`} class="section-link btn btn-outline">完整情報 →</a>
+        <div class="collapse-header-right">
+          <span class="collapse-summary"><span data-tc>最新社群動態</span><span data-sc>最新社群动态</span></span>
+          <a href={`${base}/social`} class="section-link btn btn-outline collapse-link" onclick="event.stopPropagation()">完整情報 →</a>
+          <span class="collapse-chevron" aria-hidden="true"></span>
+        </div>
       </div>
 
+      <div class="collapse-body collapse-body--open" id="collapse-social-intel">
       <div class="social-scroll-wrapper fade-in-2">
         <div class="social-scroll-container" role="list" aria-label="Social intelligence feed">
           <div class="social-strip">
@@ -530,6 +605,7 @@ const RULE_LABELS: Record<string, string> = {
         </div>
       </div>
 
+      </div><!-- /collapse-body social-intel -->
     </div>
   </section>
 
@@ -539,14 +615,23 @@ const RULE_LABELS: Record<string, string> = {
   <section class="section" id="dashboard" aria-labelledby="dashboard-title">
     <div class="container">
 
-      <div class="section-header fade-in-1">
-        <div>
+      <div class="section-header collapse-header fade-in-1"
+           data-collapse-id="system-status"
+           data-collapse-default="closed"
+           role="button" tabindex="0"
+           aria-expanded="false" aria-controls="collapse-system-status">
+        <div class="collapse-header-left">
           <span class="section-label section-number">06 — 系統監控</span>
           <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>管道儀表板</span><span data-sc>管道仪表板</span></h2>
         </div>
-        <a href={`${base}/dashboard`} class="section-link btn btn-outline">詳細儀表板 →</a>
+        <div class="collapse-header-right">
+          <span class="collapse-summary"><span data-tc>管線正常 ✓</span><span data-sc>管线正常 ✓</span></span>
+          <a href={`${base}/dashboard`} class="section-link btn btn-outline collapse-link" onclick="event.stopPropagation()">詳細儀表板 →</a>
+          <span class="collapse-chevron" aria-hidden="true"></span>
+        </div>
       </div>
 
+      <div class="collapse-body" id="collapse-system-status">
       <div class="dashboard-grid fade-in-2">
 
         <!-- Real quality drift sparkline -->
@@ -673,7 +758,7 @@ const RULE_LABELS: Record<string, string> = {
               { name: '<span data-tc>品質漂移檢查</span><span data-sc>品质漂移检查</span>',    time: '10:10', ok: driftOk },
               { name: '<span data-tc>語義索引重建</span><span data-sc>语义索引重建</span>',    time: '11:15', ok: true  },
               { name: '<span data-tc>跨域規則引擎</span><span data-sc>跨域规则引擎</span>',    time: '10:20', ok: true  },
-              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '08:50', ok: true  },
+              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '00:50', ok: true  },
             ].map(item => (
               <div class="health-item">
                 <span class:list={['health-icon', item.ok ? 'health-ok' : 'health-warn']}>
@@ -687,6 +772,8 @@ const RULE_LABELS: Record<string, string> = {
         </div>
 
       </div>
+
+      </div><!-- /collapse-body system-status -->
     </div>
   </section>
 
@@ -698,13 +785,22 @@ const RULE_LABELS: Record<string, string> = {
   <section class="section" id="reports" aria-labelledby="report-title">
     <div class="container">
 
-      <div class="section-header fade-in-1" style="margin-bottom:24px;">
-        <div>
+      <div class="section-header collapse-header fade-in-1"
+           data-collapse-id="biweekly"
+           data-collapse-default="closed"
+           role="button" tabindex="0"
+           aria-expanded="false" aria-controls="collapse-biweekly">
+        <div class="collapse-header-left">
           <span class="section-label section-number">07 — 深度分析</span>
           <h2><span class="accent-line" aria-hidden="true"></span><span data-tc>雙週報告</span><span data-sc>双周报告</span></h2>
         </div>
+        <div class="collapse-header-right">
+          <span class="collapse-summary"><span data-tc>上期回顧</span><span data-sc>上期回顾</span></span>
+          <span class="collapse-chevron" aria-hidden="true"></span>
+        </div>
       </div>
 
+      <div class="collapse-body" id="collapse-biweekly">
       <div class="report-teaser fade-in-2">
         <div>
           <span class="report-label">
@@ -726,8 +822,88 @@ const RULE_LABELS: Record<string, string> = {
         </a>
       </div>
 
+      </div><!-- /collapse-body biweekly -->
     </div>
   </section>
+
+<!-- Collapsible section JS — localStorage persistence, smooth animation -->
+<script>
+(function () {
+  const PREFIX = 'pulsar-collapse-';
+
+  document.querySelectorAll<HTMLElement>('.collapse-header').forEach(header => {
+    const collapseId = header.dataset.collapseId;
+    if (!collapseId) return;
+    const body = document.getElementById('collapse-' + collapseId) as HTMLElement | null;
+    if (!body) return;
+
+    const storageKey = PREFIX + collapseId;
+    const defaultOpen = header.dataset.collapseDefault !== 'closed';
+
+    /** Apply open/closed state — no transition on first paint. */
+    function setOpen(open: boolean, animate: boolean) {
+      if (animate) {
+        body!.style.transition = 'max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.28s cubic-bezier(0.4,0,0.2,1)';
+      } else {
+        body!.style.transition = 'none';
+      }
+
+      if (open) {
+        body!.style.maxHeight = body!.scrollHeight + 'px';
+        body!.style.opacity   = '1';
+        header.setAttribute('aria-expanded', 'true');
+        header.classList.remove('collapse-header--closed');
+      } else {
+        body!.style.maxHeight = '0';
+        body!.style.opacity   = '0';
+        header.setAttribute('aria-expanded', 'false');
+        header.classList.add('collapse-header--closed');
+      }
+    }
+
+    // Restore from localStorage, fall back to default
+    let saved: string | null = null;
+    try { saved = localStorage.getItem(storageKey); } catch {}
+    const isOpen = saved !== null ? saved === 'open' : defaultOpen;
+    setOpen(isOpen, false);
+
+    // Click to toggle
+    header.addEventListener('click', () => {
+      const nowOpen = header.getAttribute('aria-expanded') === 'true';
+      const nextOpen = !nowOpen;
+      // Re-measure before opening (content may have changed)
+      if (nextOpen) {
+        body!.style.maxHeight = 'none';
+        const h = body!.scrollHeight;
+        body!.style.maxHeight = '0';
+        // Force reflow
+        void body!.offsetHeight;
+        body!.style.maxHeight = h + 'px';
+        body!.style.transition = 'max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.28s cubic-bezier(0.4,0,0.2,1)';
+        body!.style.opacity = '1';
+        header.setAttribute('aria-expanded', 'true');
+        header.classList.remove('collapse-header--closed');
+      } else {
+        body!.style.transition = 'max-height 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.28s cubic-bezier(0.4,0,0.2,1)';
+        body!.style.maxHeight = '0';
+        body!.style.opacity = '0';
+        header.setAttribute('aria-expanded', 'false');
+        header.classList.add('collapse-header--closed');
+      }
+      try { localStorage.setItem(storageKey, nextOpen ? 'open' : 'closed'); } catch {}
+    });
+
+    // Keyboard: Enter / Space
+    header.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        header.click();
+      }
+    });
+  });
+})();
+</script>
+
 
 </BaseLayout>
 
@@ -1313,4 +1489,306 @@ const RULE_LABELS: Record<string, string> = {
   .hp-signal-card { padding: 12px; }
   .hp-signal-title { font-size: 0.78rem; }
 }
+
+/* ══════════════════════════════════════════════════════
+   Domain Explainer Cards — replaces meaningless "12:00 ✓"
+   Answers "what is VLA?" for first-time visitors.
+   ══════════════════════════════════════════════════════ */
+.hp-domain-explainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hp-domain-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.hp-domain-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  pointer-events: none;
+  border-radius: 12px;
+}
+
+.hp-domain-card--vla::before  { background: var(--accent-cyan); }
+.hp-domain-card--ai::before   { background: var(--accent-amber); }
+
+.hp-domain-card--vla {
+  border-left: 3px solid var(--accent-cyan);
+}
+.hp-domain-card--ai {
+  border-left: 3px solid var(--accent-amber);
+}
+
+:global(html.dark) .hp-domain-card {
+  background: #080D18;
+  border-color: #1A2840;
+}
+:global(html.dark) .hp-domain-card--vla  { border-left-color: var(--accent-cyan); }
+:global(html.dark) .hp-domain-card--ai   { border-left-color: var(--accent-amber); }
+
+.hp-domain-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+:global(html.dark) .hp-domain-card--vla:hover  { box-shadow: 0 0 0 1px rgba(62,207,207,0.15), 0 6px 20px rgba(0,0,0,0.35); }
+:global(html.dark) .hp-domain-card--ai:hover   { box-shadow: 0 0 0 1px rgba(245,183,49,0.15), 0 6px 20px rgba(0,0,0,0.35); }
+
+.hp-domain-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+}
+
+.hp-domain-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hp-domain-pill {
+  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  display: inline-block;
+  width: fit-content;
+}
+.hp-domain-pill--vla {
+  color: var(--accent-cyan);
+  background: rgba(15,143,160,0.10);
+  border: 1px solid rgba(15,143,160,0.22);
+}
+.hp-domain-pill--ai {
+  color: var(--accent-amber);
+  background: rgba(212,145,10,0.10);
+  border: 1px solid rgba(212,145,10,0.22);
+}
+:global(html.dark) .hp-domain-pill--vla {
+  background: rgba(62,207,207,0.08);
+  border-color: rgba(62,207,207,0.18);
+  text-shadow: 0 0 8px rgba(62,207,207,0.3);
+}
+:global(html.dark) .hp-domain-pill--ai {
+  background: rgba(245,183,49,0.08);
+  border-color: rgba(245,183,49,0.18);
+  text-shadow: 0 0 8px rgba(245,183,49,0.3);
+}
+
+.hp-domain-fullname {
+  font-family: "IBM Plex Mono", "Menlo", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1.4;
+}
+:global(html.dark) .hp-domain-fullname { color: #C8D4F0; }
+
+.hp-domain-desc {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+:global(html.dark) .hp-domain-desc { color: #5A7090; }
+
+/* VLA abbreviation inline tooltip */
+.hp-abbr-vla {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--accent-cyan);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+:global(html.dark) .hp-abbr-vla {
+  text-decoration-color: rgba(62,207,207,0.6);
+}
+/* ══════════════════════════════════════════════════════
+   COLLAPSIBLE SECTIONS — chevron + smooth animation
+   ══════════════════════════════════════════════════════ */
+
+/* Collapsible header — extends existing section-header */
+.collapse-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.18s ease;
+  border-radius: 8px;
+  padding: 4px 0 4px;
+  position: relative;
+  /* flex already set by section-header; override justify-content */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collapse-header:hover {
+  background: color-mix(in srgb, var(--accent-amber) 4%, transparent);
+}
+:global(html.dark) .collapse-header:hover {
+  background: rgba(245, 183, 49, 0.04);
+}
+
+.collapse-header:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
+
+.collapse-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.collapse-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Summary text (muted, only visible when header is in view) */
+.collapse-summary {
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+  white-space: nowrap;
+  transition: opacity 0.18s ease;
+}
+
+:global(html.dark) .collapse-summary {
+  color: #3A5070;
+  opacity: 0.9;
+}
+
+/* Dim summary when section is open (content visible, less need for hint) */
+.collapse-header[aria-expanded="true"] .collapse-summary {
+  opacity: 0.45;
+}
+
+/* Chevron icon — CSS triangle, rotates on toggle */
+.collapse-chevron {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--surface-2, rgba(0,0,0,0.04));
+  border: 1px solid var(--border);
+  position: relative;
+  flex-shrink: 0;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+:global(html.dark) .collapse-chevron {
+  background: #0F1A2A;
+  border-color: #1A2840;
+}
+
+/* Arrow via pseudo element */
+.collapse-chevron::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -65%) rotate(0deg);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--text-tertiary);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-top-color 0.18s ease;
+}
+
+:global(html.dark) .collapse-chevron::after {
+  border-top-color: #3A5070;
+}
+
+/* Closed state: chevron points right (rotated -90deg) */
+.collapse-header--closed .collapse-chevron {
+  transform: rotate(-90deg);
+}
+
+/* Header hover: highlight chevron */
+.collapse-header:hover .collapse-chevron {
+  background: color-mix(in srgb, var(--accent-amber) 10%, var(--surface));
+  border-color: rgba(212, 145, 10, 0.35);
+}
+:global(html.dark) .collapse-header:hover .collapse-chevron {
+  background: rgba(245, 183, 49, 0.1);
+  border-color: rgba(245, 183, 49, 0.3);
+}
+.collapse-header:hover .collapse-chevron::after {
+  border-top-color: var(--accent-amber);
+}
+
+/* Prevent the section link inside header from inheriting pointer cursor issues */
+.collapse-link {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Collapse body — max-height animation ── */
+.collapse-body {
+  overflow: hidden;
+  /* max-height and opacity set by JS on mount */
+}
+
+/* Default open state for SSR (JS will take over) */
+.collapse-body--open {
+  max-height: 4000px;
+  opacity: 1;
+}
+
+/* Gradient fade-out hint at bottom of closed section (cosmetic, JS-controlled) */
+.collapse-header--closed + .collapse-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+}
+
+/* Mobile: hide the link in header, keep summary + chevron */
+@media (max-width: 640px) {
+  .collapse-link {
+    display: none;
+  }
+  .collapse-header-right {
+    gap: 8px;
+  }
+  .collapse-summary {
+    font-size: 0.54rem;
+  }
+}
+
+/* ── Section spacing: tighten gap when closed ── */
+.collapsible-section {
+  transition: margin 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 </style>

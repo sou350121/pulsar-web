@@ -1,0 +1,855 @@
+---
+/**
+ * KnowledgeGraph.astro
+ * "Deep Field Observatory" — Graphology + Sigma.js knowledge graph.
+ * UX: neighbor highlight, edge threshold, degree sizing, live count,
+ *     vignette canvas, luminous nodes, editorial tooltip, dark canvas.
+ */
+---
+
+<div class="graph-wrapper">
+
+  <!-- ── Controls ─────────────────────────────────────────────────── -->
+  <div class="graph-controls">
+    <div class="ctrl-top">
+      <div class="search-field">
+        <svg class="search-ico" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="4" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M10 10L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <input id="graph-search" type="search" placeholder="搜索節點標題…" class="search-input" autocomplete="off" spellcheck="false"/>
+      </div>
+      <div id="graph-status" class="graph-status" aria-live="polite">
+        <span class="status-dot"></span><span id="status-text">—</span>
+      </div>
+    </div>
+
+    <div class="ctrl-divider"></div>
+
+    <div class="ctrl-bottom">
+      <div class="fgroup">
+        <span class="flabel">類型</span>
+        <div class="pills">
+          <button class="pill active" data-filter-type="all">全部</button>
+          <button class="pill" data-filter-type="paper">論文</button>
+          <button class="pill" data-filter-type="theory">理論</button>
+          <button class="pill" data-filter-type="ai_pick">AI 動態</button>
+        </div>
+      </div>
+      <div class="fgroup fgroup-sep">
+        <span class="flabel">評級</span>
+        <div class="pills">
+          <button class="pill active" data-filter-rating="all">全部</button>
+          <button class="pill" data-filter-rating="⚡">⚡</button>
+          <button class="pill" data-filter-rating="🔧">🔧</button>
+          <button class="pill" data-filter-rating="📖">📖</button>
+        </div>
+      </div>
+      <div class="fgroup fgroup-slider">
+        <span class="flabel">連結密度</span>
+        <input id="edge-threshold" type="range" min="0.10" max="0.50" step="0.05" value="0.25" class="edge-slider"/>
+        <code id="threshold-val" class="threshold-val">0.25</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Graph canvas ─────────────────────────────────────────────── -->
+  <div class="graph-outer" id="graph-outer">
+    <div id="graph-container" class="graph-canvas" aria-label="知識圖譜"></div>
+
+    <!-- Vignette (pure CSS, pointer-events:none) -->
+    <div class="vignette" aria-hidden="true"></div>
+
+    <!-- Loading -->
+    <div id="graph-loading" class="graph-loading">
+      <div class="pulse-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <span id="graph-loading-text" class="loading-text">正在佈局圖譜…</span>
+    </div>
+
+    <!-- Legend (floating top-left) -->
+    <div class="legend-float">
+      <div class="legend-row"><i class="ldot ldot-paper"></i><span>VLA 論文</span></div>
+      <div class="legend-row"><i class="ldot ldot-theory"></i><span>理論深挖</span></div>
+      <div class="legend-row"><i class="ldot ldot-ai"></i><span>AI 動態</span></div>
+    </div>
+
+    <!-- Toolbar (top-right) -->
+    <div class="graph-toolbar">
+      <button id="btn-reset" class="tbtn" title="重置視角" aria-label="重置視角">
+        <svg viewBox="0 0 14 14" fill="none" width="13" height="13">
+          <path d="M1 7a6 6 0 1 0 1.3-3.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <polyline points="1,3.5 1,7 4.5,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button id="btn-fullscreen" class="tbtn" title="全屏" aria-label="全屏">
+        <svg id="icon-expand" viewBox="0 0 14 14" fill="none" width="13" height="13">
+          <path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg id="icon-collapse" viewBox="0 0 14 14" fill="none" width="13" height="13" style="display:none">
+          <path d="M5 1v4H1M13 5H9V1M9 13V9h4M1 9h4v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tooltip (position: fixed, follows cursor) -->
+  <div id="graph-tooltip" class="gtip" role="tooltip" aria-hidden="true">
+    <div class="gtip-stripe" id="gtip-stripe"></div>
+    <div class="gtip-body">
+      <div class="gtip-meta">
+        <span class="gtip-type" id="gtip-type"></span>
+        <span class="gtip-date" id="gtip-date"></span>
+      </div>
+      <div class="gtip-title" id="gtip-title"></div>
+      <div class="gtip-rating" id="gtip-rating"></div>
+      <p   class="gtip-snippet" id="gtip-snippet"></p>
+      <div class="gtip-foot">
+        <span class="gtip-degree" id="gtip-degree"></span>
+        <span class="gtip-cta">點擊開啟 →</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ── Tokens ─────────────────────────────────────────────────────────── */
+  :root {
+    --gn-paper:    #0A84D0;
+    --gn-theory:   #C27C00;
+    --gn-ai:       #1A7A40;
+    --graph-bg:    #EEECe7;
+    --vignette:    rgba(242,241,235,0.65);
+  }
+  html.dark {
+    --gn-paper:    #38BDF8;
+    --gn-theory:   #FCD34D;
+    --gn-ai:       #4ADE80;
+    --graph-bg:    #050A14;
+    --vignette:    rgba(5,10,20,0.72);
+  }
+
+  /* ── Wrapper ────────────────────────────────────────────────────────── */
+  .graph-wrapper { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ── Controls ───────────────────────────────────────────────────────── */
+  .graph-controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .ctrl-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .search-field {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 160px;
+  }
+  .search-ico {
+    position: absolute;
+    left: 10px;
+    width: 13px;
+    height: 13px;
+    color: var(--text-tertiary);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .search-input {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-input:focus {
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 0 2px var(--accent-amber-bg);
+  }
+  .search-input::placeholder { color: var(--text-tertiary); }
+  .search-input::-webkit-search-cancel-button { display: none; }
+
+  .graph-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+    padding: 0 2px;
+  }
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .ctrl-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 0 14px;
+  }
+
+  .ctrl-bottom {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 14px 10px;
+    flex-wrap: wrap;
+  }
+
+  .fgroup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fgroup-sep { margin-left: 2px; padding-left: 14px; border-left: 1px solid var(--border-subtle); }
+  .fgroup-slider { margin-left: auto; }
+
+  .flabel {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+
+  .pills { display: flex; gap: 3px; flex-wrap: wrap; }
+
+  .pill {
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+  .pill:hover { background: var(--surface-hover); color: var(--text-primary); border-color: var(--text-tertiary); }
+  .pill.active { background: var(--accent-amber-bg); border-color: var(--accent-amber); color: var(--accent-amber); font-weight: 500; }
+
+  .edge-slider {
+    width: 88px;
+    cursor: pointer;
+    accent-color: var(--accent-amber);
+    vertical-align: middle;
+  }
+  .threshold-val {
+    font-size: 11px;
+    font-family: 'Menlo', 'Consolas', monospace;
+    color: var(--accent-amber);
+    min-width: 28px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Graph outer ─────────────────────────────────────────────────── */
+  .graph-outer {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-hero);
+  }
+  .graph-outer.is-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .graph-canvas {
+    width: 100%;
+    height: 700px;
+    background: var(--graph-bg);
+    display: block;
+    transition: background 0.35s ease;
+  }
+  .graph-outer.is-fullscreen .graph-canvas { height: 100vh; }
+  @media (max-width: 768px) { .graph-canvas { height: 460px; } }
+
+  /* ── Vignette ────────────────────────────────────────────────────── */
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 55%, var(--vignette) 100%);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* ── Loading ─────────────────────────────────────────────────────── */
+  .graph-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: var(--graph-bg);
+    z-index: 20;
+    transition: opacity 0.45s ease;
+  }
+  .graph-loading.fade-out { opacity: 0; pointer-events: none; }
+
+  .pulse-dots {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+  }
+  .pulse-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    animation: pdot 1.2s ease-in-out infinite;
+  }
+  .pulse-dots span:nth-child(2) { animation-delay: 0.2s; opacity: 0.7; }
+  .pulse-dots span:nth-child(3) { animation-delay: 0.4s; opacity: 0.5; }
+
+  @keyframes pdot {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+    40%            { transform: scale(1.2); opacity: 1; }
+  }
+
+  .loading-text {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Legend float ─────────────────────────────────────────────────── */
+  .legend-float {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.88;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .ldot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ldot-paper  { background: var(--gn-paper); }
+  .ldot-theory { background: var(--gn-theory); }
+  .ldot-ai     { background: var(--gn-ai); }
+
+  /* ── Toolbar ─────────────────────────────────────────────────────── */
+  .graph-toolbar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .tbtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.10);
+    transition: background 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
+    opacity: 0.85;
+  }
+  .tbtn:hover {
+    background: var(--surface-2);
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+    opacity: 1;
+    box-shadow: 0 0 0 2px var(--accent-amber-bg);
+  }
+  .tbtn:focus-visible { outline: 2px solid var(--accent-amber); outline-offset: 2px; }
+
+  /* ── Tooltip ─────────────────────────────────────────────────────── */
+  .gtip {
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    max-width: 268px;
+    box-shadow: var(--shadow-hover);
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    transition: opacity 0.14s ease, transform 0.14s ease;
+    display: none;
+    overflow: hidden;
+  }
+  .gtip.visible { display: flex; opacity: 1; transform: translateY(0) scale(1); }
+
+  /* colored left stripe */
+  .gtip-stripe {
+    width: 3px;
+    flex-shrink: 0;
+    background: var(--gn-paper); /* overridden by JS */
+  }
+
+  .gtip-body {
+    flex: 1;
+    padding: 10px 12px 10px;
+    min-width: 0;
+  }
+
+  .gtip-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    gap: 4px;
+  }
+
+  .gtip-type {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  .gtip-date {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-family: 'Menlo', 'Consolas', monospace;
+    white-space: nowrap;
+  }
+
+  .gtip-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+
+  .gtip-rating {
+    font-size: 12px;
+    color: var(--accent-amber);
+    margin-bottom: 5px;
+    min-height: 16px;
+  }
+
+  .gtip-snippet {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0 0 8px;
+    min-height: 0;
+  }
+
+  .gtip-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 7px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .gtip-degree {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gtip-cta {
+    font-size: 10px;
+    color: var(--accent-amber);
+    letter-spacing: 0.02em;
+  }
+</style>
+
+<script>
+  import Graph from 'graphology';
+  import Sigma from 'sigma';
+  import louvain from 'graphology-communities-louvain';
+  import forceAtlas2 from 'graphology-layout-forceatlas2';
+  import circular from 'graphology-layout/circular';
+
+  // ── Design tokens (match CSS :root / .dark) ──────────────────────────
+  const isDark = () => document.documentElement.classList.contains('dark');
+
+  const COLORS_LIGHT: Record<string, string> = {
+    paper:   '#0A84D0',
+    theory:  '#C27C00',
+    ai_pick: '#1A7A40',
+  };
+  const COLORS_DARK: Record<string, string> = {
+    paper:   '#38BDF8',
+    theory:  '#FCD34D',
+    ai_pick: '#4ADE80',
+  };
+  const TYPE_LABELS: Record<string, string> = {
+    paper:   'VLA 論文',
+    theory:  '理論深挖',
+    ai_pick: 'AI 動態',
+  };
+  // Stripe colors for tooltip left border
+  const STRIPE_LIGHT: Record<string, string> = {
+    paper:   '#0A84D0',
+    theory:  '#C27C00',
+    ai_pick: '#1A7A40',
+  };
+  const STRIPE_DARK: Record<string, string> = {
+    paper:   '#38BDF8',
+    theory:  '#FCD34D',
+    ai_pick: '#4ADE80',
+  };
+  const BASE_SIZES: Record<string, number> = { paper: 4, theory: 7, ai_pick: 5 };
+  const GREY_L = 'rgba(160,155,145,0.2)';
+  const GREY_D = 'rgba(40,50,70,0.3)';
+
+  // ── State ─────────────────────────────────────────────────────────────
+  let sigmaInst: Sigma | null  = null;
+  let graphInst: Graph | null  = null;
+  let hoveredNode: string | null = null;
+  let hoveredNeighbors         = new Set<string>();
+  let activeTypeFilter         = 'all';
+  let activeRatingFilter       = 'all';
+  let edgeThreshold            = 0.25;
+  let searchQuery              = '';
+
+  const nodeColor  = (t: string) => isDark() ? (COLORS_DARK[t]  ?? '#7B8FAB') : (COLORS_LIGHT[t]  ?? '#8A90A0');
+  const stripeColor = (t: string) => isDark() ? (STRIPE_DARK[t] ?? '#7B8FAB') : (STRIPE_LIGHT[t] ?? '#8A90A0');
+
+  function edgeColor(w: number) {
+    const a = Math.min(0.8, 0.12 + w * 1.6);
+    return isDark()
+      ? `rgba(56,189,248,${(a * 0.40).toFixed(2)})`
+      : `rgba(10,132,208,${(a * 0.45).toFixed(2)})`;
+  }
+
+  // ── Visibility ────────────────────────────────────────────────────────
+  function nodeVisible(a: Record<string, unknown>) {
+    if (activeTypeFilter   !== 'all' && a.nodeType !== activeTypeFilter)   return false;
+    if (activeRatingFilter !== 'all' && a.rating   !== activeRatingFilter) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!((a.label ?? '') as string).toLowerCase().includes(q)) return false;
+    }
+    return true;
+  }
+
+  // ── Reducers ──────────────────────────────────────────────────────────
+  function nodeReducer(node: string, data: Record<string, unknown>) {
+    const res = { ...data };
+    if (!nodeVisible(data))  { res.hidden = true; return res; }
+    if (hoveredNode !== null) {
+      if (node === hoveredNode) {
+        res.size   = (data.size as number) * 1.7;
+        res.zIndex = 2;
+      } else if (!hoveredNeighbors.has(node)) {
+        res.color  = isDark() ? GREY_D : GREY_L;
+        res.label  = '';
+        res.zIndex = 0;
+      } else {
+        res.zIndex = 1;
+      }
+    }
+    return res;
+  }
+
+  function edgeReducer(edge: string, data: Record<string, unknown>) {
+    const graph = graphInst!;
+    const w = graph.getEdgeAttribute(edge, 'weight') as number;
+    if (w < edgeThreshold) return { ...data, hidden: true };
+    const srcA = graph.getNodeAttributes(graph.source(edge));
+    const tgtA = graph.getNodeAttributes(graph.target(edge));
+    if (!nodeVisible(srcA) || !nodeVisible(tgtA)) return { ...data, hidden: true };
+    const src = graph.source(edge), tgt = graph.target(edge);
+    if (hoveredNode !== null && src !== hoveredNode && tgt !== hoveredNode)
+      return { ...data, hidden: true };
+    return data;
+  }
+
+  // ── Refresh ───────────────────────────────────────────────────────────
+  function refresh() {
+    if (!sigmaInst || !graphInst) return;
+    sigmaInst.setSetting('nodeReducer', nodeReducer);
+    sigmaInst.setSetting('edgeReducer', edgeReducer);
+    sigmaInst.refresh();
+    updateStatus();
+  }
+
+  function updateStatus() {
+    const g = graphInst; if (!g) return;
+    let n = 0, e = 0;
+    g.forEachNode((_, a) => { if (nodeVisible(a)) n++; });
+    g.forEachEdge((edge, _, _s, _t, sA, tA) => {
+      const w = g.getEdgeAttribute(edge, 'weight') as number;
+      if (w >= edgeThreshold && nodeVisible(sA) && nodeVisible(tA)) e++;
+    });
+    const el = document.getElementById('status-text');
+    if (el) el.textContent = `${n} 個節點 · ${e} 條邊`;
+  }
+
+  // ── Tooltip ───────────────────────────────────────────────────────────
+  const gtip      = document.getElementById('graph-tooltip')!;
+  const gtipType  = document.getElementById('gtip-type')!;
+  const gtipDate  = document.getElementById('gtip-date')!;
+  const gtipTitle = document.getElementById('gtip-title')!;
+  const gtipRating = document.getElementById('gtip-rating')!;
+  const gtipSnippet = document.getElementById('gtip-snippet')!;
+  const gtipDegree = document.getElementById('gtip-degree')!;
+  const gtipStripe = document.getElementById('gtip-stripe')!;
+
+  function showTooltip(attrs: Record<string, unknown>, cx: number, cy: number) {
+    const type = attrs.nodeType as string;
+    gtipType.textContent    = TYPE_LABELS[type] ?? type;
+    gtipDate.textContent    = (attrs.date    ?? '') as string;
+    gtipTitle.textContent   = (attrs.label   ?? '') as string;
+    gtipRating.textContent  = (attrs.rating  ?? '') as string;
+    gtipSnippet.textContent = (attrs.snippet ?? '') as string;
+    gtipDegree.textContent  = `${graphInst?.degree(attrs._id as string) ?? 0} 個連結`;
+    gtipStripe.style.background = stripeColor(type);
+    gtip.classList.add('visible');
+    positionTooltip(cx, cy);
+  }
+  function hideTooltip() { gtip.classList.remove('visible'); }
+
+  function positionTooltip(cx: number, cy: number) {
+    const w = gtip.offsetWidth || 268, h = gtip.offsetHeight || 140;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let l = cx + 20, t = cy - 20;
+    if (l + w > vw - 8) l = cx - w - 20;
+    if (t + h > vh - 8) t = vh - h - 8;
+    if (t < 8) t = 8;
+    gtip.style.left = `${l}px`;
+    gtip.style.top  = `${t}px`;
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    if (gtip.classList.contains('visible')) positionTooltip(e.clientX, e.clientY);
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  function initGraph() {
+    const dataEl = document.getElementById('graph-data');
+    const loadEl = document.getElementById('graph-loading');
+    const loadTx = document.getElementById('graph-loading-text');
+
+    if (!dataEl?.textContent) {
+      if (loadTx) loadTx.textContent = '圖譜數據尚未生成，請先執行 build-graph-data.py';
+      return;
+    }
+
+    let gd: {
+      nodes: Array<{ id:string; label:string; type:string; date:string; url:string; rating:string; snippet:string }>;
+      edges: Array<{ source:string; target:string; weight:number }>;
+    };
+    try { gd = JSON.parse(dataEl.textContent); }
+    catch { if (loadTx) loadTx.textContent = 'JSON 解析失敗'; return; }
+
+    // Build graph
+    const graph = new Graph({ multi: false, type: 'undirected' });
+    graphInst = graph;
+
+    for (const n of gd.nodes) {
+      graph.addNode(n.id, {
+        label: n.label.slice(0, 70), nodeType: n.type,
+        url: n.url, date: n.date, rating: n.rating, snippet: n.snippet,
+        _id: n.id, size: BASE_SIZES[n.type] ?? 5, color: nodeColor(n.type),
+        x: Math.random() * 100, y: Math.random() * 100,
+      });
+    }
+    for (const e of gd.edges) {
+      if (graph.hasNode(e.source) && graph.hasNode(e.target)) {
+        try { graph.addEdge(e.source, e.target, { weight: e.weight, size: Math.max(0.3, e.weight * 2), color: edgeColor(e.weight) }); }
+        catch { /* skip dups */ }
+      }
+    }
+
+    // Degree-based sizing
+    let maxDeg = 1;
+    graph.forEachNode(n => { maxDeg = Math.max(maxDeg, graph.degree(n)); });
+    graph.updateEachNodeAttributes((node, a) => ({
+      ...a, size: (BASE_SIZES[a.nodeType as string] ?? 5) + (graph.degree(node) / maxDeg) * 8,
+    }));
+
+    // Layout
+    if (loadTx) loadTx.textContent = '正在計算佈局…';
+    circular.assign(graph, { scale: 200 });
+    forceAtlas2.assign(graph, {
+      iterations: 100,
+      settings: { gravity: 1.2, scalingRatio: 3, strongGravityMode: true, slowDown: 6 },
+    });
+
+    // Communities
+    try {
+      const c = louvain(graph);
+      graph.updateEachNodeAttributes((n, a) => ({ ...a, cluster: (c as Record<string, number>)[n] ?? 0 }));
+    } catch { /* ok */ }
+
+    // Sigma
+    const container = document.getElementById('graph-container')!;
+    const sigma = new Sigma(graph, container, {
+      defaultNodeColor:      nodeColor('paper'),
+      defaultEdgeColor:      edgeColor(0.3),
+      labelFont:             '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
+      labelSize:             11,
+      labelWeight:           '400',
+      labelColor:            { color: isDark() ? 'rgba(120,140,180,0.9)' : 'rgba(70,80,100,0.85)' },
+      labelDensity:          0.07,
+      labelGridCellSize:     120,
+      renderEdgeLabels:      false,
+      allowInvalidContainer: true,
+      nodeReducer, edgeReducer,
+    });
+    sigmaInst = sigma;
+
+    // Fade out loading
+    setTimeout(() => {
+      loadEl?.classList.add('fade-out');
+      setTimeout(() => { if (loadEl) loadEl.style.display = 'none'; }, 460);
+      updateStatus();
+    }, 80);
+
+    // Hover
+    sigma.on('enterNode', ({ node }) => {
+      hoveredNode = node;
+      hoveredNeighbors = new Set(graph.neighbors(node));
+      container.style.cursor = 'pointer';
+      refresh();
+    });
+    sigma.on('leaveNode', () => {
+      hoveredNode = null;
+      hoveredNeighbors = new Set();
+      hideTooltip();
+      container.style.cursor = 'default';
+      refresh();
+    });
+    sigma.on('clickNode', ({ node }) => {
+      const url = graph.getNodeAttribute(node, 'url') as string;
+      if (url && url !== '#') window.open(url, '_blank', 'noopener,noreferrer');
+    });
+    sigma.on('clickStage', () => { hoveredNode = null; hoveredNeighbors = new Set(); hideTooltip(); refresh(); });
+
+    // Track mouse pos + show tooltip on hover
+    const canvas = container.querySelector('canvas');
+    let mx = 400, my = 300;
+    canvas?.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      if (gtip.classList.contains('visible')) positionTooltip(mx, my);
+    });
+    sigma.on('enterNode', ({ node }) => {
+      const a = graph.getNodeAttributes(node);
+      showTooltip(a, mx, my);
+    });
+
+    // Theme change
+    new MutationObserver(() => {
+      graph.updateEachNodeAttributes((_, a) => ({ ...a, color: nodeColor(a.nodeType as string) }));
+      graph.updateEachEdgeAttributes((_, a) => ({ ...a, color: edgeColor(a.weight as number) }));
+      sigma.setSetting('labelColor', { color: isDark() ? 'rgba(120,140,180,0.9)' : 'rgba(70,80,100,0.85)' });
+      sigma.refresh();
+    }).observe(document.documentElement, { attributeFilter: ['class'] });
+
+    // Reset camera
+    document.getElementById('btn-reset')?.addEventListener('click', () => {
+      sigma.getCamera().animatedReset({ duration: 350 });
+    });
+
+    // Fullscreen
+    const outer = document.getElementById('graph-outer')!;
+    const icExp = document.getElementById('icon-expand')!;
+    const icCol = document.getElementById('icon-collapse')!;
+    document.getElementById('btn-fullscreen')?.addEventListener('click', () => {
+      const fs = outer.classList.toggle('is-fullscreen');
+      icExp.style.display = fs ? 'none' : '';
+      icCol.style.display = fs ? '' : 'none';
+      setTimeout(() => sigma.refresh(), 60);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && outer.classList.contains('is-fullscreen')) {
+        outer.classList.remove('is-fullscreen');
+        icExp.style.display = ''; icCol.style.display = 'none';
+        setTimeout(() => sigma.refresh(), 60);
+      }
+    });
+  }
+
+  // ── Controls wiring ───────────────────────────────────────────────────
+  document.querySelectorAll('[data-filter-type]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter-type]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    activeTypeFilter = (b as HTMLElement).dataset.filterType!;
+    refresh();
+  }));
+  document.querySelectorAll('[data-filter-rating]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter-rating]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    activeRatingFilter = (b as HTMLElement).dataset.filterRating!;
+    refresh();
+  }));
+  document.getElementById('graph-search')?.addEventListener('input', e => {
+    searchQuery = (e.target as HTMLInputElement).value.trim();
+    refresh();
+  });
+  const sliderEl = document.getElementById('edge-threshold') as HTMLInputElement;
+  const valEl = document.getElementById('threshold-val')!;
+  sliderEl?.addEventListener('input', () => {
+    edgeThreshold = parseFloat(sliderEl.value);
+    valEl.textContent = edgeThreshold.toFixed(2);
+    refresh();
+  });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initGraph);
+  else setTimeout(initGraph, 50);
+</script>
