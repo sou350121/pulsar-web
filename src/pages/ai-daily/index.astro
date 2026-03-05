@@ -27,10 +27,14 @@ function formatDateDots(dateStr: string): string {
 }
 
 // Relative time label for recent entries
-function relativeLabel(dateStr: string, index: number): string | null {
-  if (index === 0) return '最新';
-  if (index === 1) return '昨日';
-  if (index === 2) return '2日前';
+function relativeLabel(dateStr: string, _index: number): string | null {
+  // Date-based: compute actual diff from today (SSG build time, UTC+8 baseline)
+  const now  = new Date();
+  const d    = new Date(dateStr + 'T00:00:00+08:00');
+  const diff = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  if (diff <= 0) return '今天';
+  if (diff === 1) return '昨天';
+  if (diff <= 7)  return `${diff} 天前`;
   return null;
 }
 

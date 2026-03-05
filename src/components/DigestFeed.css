@@ -255,6 +255,8 @@ html.dark .digest-section--deepdive { --digest-section-accent: #C4B5FD; }
 .digest-item {
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
 }
 
 .digest-item:last-child { border-bottom: none; }
@@ -274,6 +276,7 @@ html.dark .digest-item:last-child { border-bottom: none; }
   text-decoration: none;
   color: inherit;
   min-width: 0;
+  flex: 1;   /* take remaining space when badge sibling is present */
   transition:
     background 0.15s ease,
     box-shadow 0.15s ease;
@@ -837,5 +840,56 @@ html.dark .digest-tabs-divider {
   }
   .digest-tab-count {
     display: none;
+  }
+}
+
+/* ============================================================
+   DEEP DIVE BADGE — 🔬 icon link, sibling to digest-item-link
+   ============================================================ */
+.digest-deepdive-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-right: 6px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  text-decoration: none;
+  font-size: 0.85rem;
+  line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  cursor: pointer;
+  transition:
+    background  0.18s ease,
+    border-color 0.18s ease,
+    transform   0.18s ease;
+  align-self: center;
+}
+
+.digest-deepdive-badge:hover,
+.digest-deepdive-badge:focus-visible {
+  background: rgba(167, 139, 250, 0.14);
+  border-color: rgba(167, 139, 250, 0.35);
+  transform: scale(1.12);
+  outline: none;
+}
+
+html.dark .digest-deepdive-badge:hover,
+html.dark .digest-deepdive-badge:focus-visible {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: rgba(196, 181, 253, 0.4);
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.2);
+}
+
+/* Mobile: slightly smaller */
+@media (max-width: 767px) {
+  .digest-deepdive-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 0.78rem;
+    margin-right: 4px;
   }
 }

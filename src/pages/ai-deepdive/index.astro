@@ -94,6 +94,18 @@ const PATHS = [
 ];
 
 const base = import.meta.env.BASE_URL;
+
+/** Show "N天前" badge for recently committed articles (≤14 days). Returns null for older ones. */
+function artNewBadge(dateStr: string): string | null {
+  if (!dateStr) return null;
+  const now  = new Date();
+  const d    = new Date(dateStr + 'T00:00:00+08:00');
+  const diff = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  if (diff <= 0)  return '今天';
+  if (diff === 1) return '昨天';
+  if (diff <= 14) return `${diff}天前`;
+  return null;
+}
 ---
 
 <BaseLayout
@@ -226,6 +238,9 @@ const base = import.meta.env.BASE_URL;
               >
                 <span class={`art-dot art-dot--${MM[m].accent}`}></span>
                 <span class="art-title">{article.title}</span>
+                {artNewBadge(article.date) ? (
+                  <span class="art-new-badge">{artNewBadge(article.date)}</span>
+                ) : null}
                 <svg class="art-ext" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                   <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
                 </svg>
@@ -538,6 +553,14 @@ const base = import.meta.env.BASE_URL;
   transition: color 0.15s;
 }
 .art-row:hover .art-title { color: var(--text-primary); }
+
+.art-new-badge {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.04em;
+  padding: 1px 6px; border-radius: 10px; white-space: nowrap; flex-shrink: 0;
+  background: rgba(212,145,10,0.12); color: var(--accent-amber);
+  border: 1px solid rgba(212,145,10,0.25);
+}
 
 .art-ext {
   flex-shrink: 0; color: var(--text-tertiary); opacity: 0.4;

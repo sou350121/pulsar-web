@@ -28,10 +28,14 @@ function formatDateDots(dateStr: string): string {
 }
 
 // Relative time label for most recent entries
-function relativeLabel(index: number): string | null {
-  if (index === 0) return '最新';
-  if (index === 1) return '前期';
-  if (index === 2) return '2期前';
+function relativeLabel(dateStr: string, _index: number): string | null {
+  // Date-based: compute actual diff from today (SSG build time, UTC+8 baseline)
+  const now  = new Date();
+  const d    = new Date(dateStr + 'T00:00:00+08:00');
+  const diff = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  if (diff <= 0) return '今天';
+  if (diff === 1) return '昨天';
+  if (diff <= 7)  return `${diff} 天前`;
   return null;
 }
 
@@ -113,7 +117,7 @@ for (const day of vlaDays) {
 
               {group.days.map((day, di) => {
                 const flatIdx = offset + di;
-                const relLabel = relativeLabel(flatIdx);
+                const relLabel = relativeLabel(day.date, flatIdx);
                 return (
                   <a
                     href={`${base}/vla/${day.date}`}

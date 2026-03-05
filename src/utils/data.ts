@@ -723,3 +723,18 @@ export function loadAIGitHubArticles(n: number = 200): AIGitHubArticle[] {
     .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
     .slice(0, n);
 }
+
+// ---------------------------------------------------------------------------
+// relativeDay
+// Returns a Chinese relative-day string ("今天", "昨天", "N 天前").
+// Uses Shanghai (UTC+8) midnight baseline. Runs at SSG build time; the site
+// is rebuilt daily so the offset stays accurate.
+// ---------------------------------------------------------------------------
+export function relativeDay(dateStr: string): string {
+  const now = new Date();
+  const d   = new Date(dateStr + 'T00:00:00+08:00');
+  const diff = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  if (diff <= 0)  return '今天';
+  if (diff === 1) return '昨天';
+  return `${diff} 天前`;
+}

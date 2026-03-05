@@ -28,6 +28,7 @@ import {
   loadAIGitHubArticles,
   loadCrossDomainInsights,
   extractMarkdownSummary,
+  relativeDay,
   type DailyPickDay,
   type DriftMetricsFile,
 } from '../utils/data';
@@ -96,7 +97,7 @@ const deepDiveItems = [
 const digestDeepDiveItems = [
   ...aiDeepDiveRaw.map(a => ({
     title:   a.title,
-    summary: a.signal_type?.replace(/_/g, ' ') ?? 'deep dive',
+    summary: `${relativeDay(a.date)} · ${a.signal_type?.replace(/_/g, ' ') ?? 'deep dive'}`,
     rating:  SIGNAL_EMOJI[a.signal_type ?? ''] ?? '📖',
     source:  (a.source ?? 'AI').replace(/^social-/, '').slice(0, 10),
     url:     a.html_url ?? a.url,
@@ -104,13 +105,22 @@ const digestDeepDiveItems = [
   })),
   ...vlaTheoryRaw.map(a => ({
     title:   a.title,
-    summary: a.target_dir?.replace('theory/', '') ?? 'theory',
+    summary: `${relativeDay(a.date)} · ${a.target_dir?.replace('theory/', '') ?? 'theory'}`,
     rating:  '📐',
     source:  'VLA-THEORY',
     url:     a.html_url ?? a.url,
     domain:  'vla' as const,
   })),
 ];
+
+// Deep dive URL lookup: source URL → GitHub doc URL (for 🔬 discovery badge)
+// Uses all available articles (not date-filtered) to match older deep dives too.
+const aiDeepDiveLookup = new Map<string, string>(
+  loadAIDeepDive(500).map(a => [a.url, a.html_url ?? a.url]).filter(([k]) => !!k)
+);
+const vlaTheoryLookup = new Map<string, string>(
+  loadVLATheory(500).map(a => [a.url, a.html_url ?? a.url]).filter(([k]) => !!k)
+);
 
 // Knowledge base totals for ticker (GitHub repo totals, not filtered by date)
 const kbVlaTotal = loadVLAGitHubArticles(9999).length;
@@ -193,9 +203,9 @@ const base        = import.meta.env.BASE_URL;
 // Today's counts
 const digestAiItems = todayPicks.items
   .filter(i => i.domain === 'ai')
-  .map(i => ({ ...i, domain: 'ai' as const }));
+  .map(i => ({ ...i, domain: 'ai' as const, deepDiveUrl: aiDeepDiveLookup.get(i.url) }));
 const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
-  .map(i => ({ ...i, domain: 'vla' as const }));
+  .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
 const todayAICount  = digestAiItems.length;
 const todayVLACount = digestVlaItems.length;
