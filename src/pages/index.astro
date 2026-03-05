@@ -37,7 +37,7 @@ import {
 // Load data
 // ---------------------------------------------------------------------------
 const recentPicks   = loadAIDailyPicks(1);
-const recentVLA     = loadVLADailyPicks(2);
+const recentVLA     = loadVLADailyPicks(1);
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  3);
@@ -185,7 +185,7 @@ const MOCK_SOCIAL = [
 // ---------------------------------------------------------------------------
 const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 const displayDate = todayPicks.date;
-const todayVLA    = recentVLA[0];
+const todayVLA    = recentVLA[0]?.date === displayDate ? recentVLA[0] : undefined;
 
 const heroAI  = todayPicks.items[0];
 const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
