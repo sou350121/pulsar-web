@@ -2,43 +2,56 @@
 /**
  * src/pages/vla/[date].astro
  * VLA Daily detail — individual day view, VLA items only.
- * Features upgraded pagination with styled prev/next boxes, pill list button,
- * and breadcrumb trail. Uses cyan accent for VLA brand distinction.
+ * Features:
+ *   - Filter funnel visualization (3-pass pipeline, 2026-03-05)
+ *   - Expandable full abstracts per paper
+ *   - Pass3 challenge/downgrade notes
+ *   - Bucket B collapsible section
+ *   - Upgraded pagination with styled prev/next boxes
+ *   - Cyan accent for VLA brand distinction.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
 import DigestFeed from '../../components/DigestFeed.astro';
-import { loadVLADailyPicks } from '../../utils/data';
+import { loadVLADailyPicksV2, loadVLADailyPicks } from '../../utils/data';
+import type { VLAPickDay, VLAPickItem } from '../../utils/data';
 
 export async function getStaticPaths() {
-  const vlaDays = loadVLADailyPicks(90);
-  return vlaDays.map(day => ({
+  // Use V2 loader for richer data; also load V1 for prev/next nav (lightweight)
+  const vlaDays = loadVLADailyPicksV2(90);
+  return vlaDays.map((day: VLAPickDay) => ({
     params: { date: day.date },
     props:  { day },
   }));
 }
 
-const { day } = Astro.props;
-const { date, items } = day;
+const { day } = Astro.props as { day: VLAPickDay };
+const { date, items, filter_funnel, bucket_b } = day;
 const base = import.meta.env.BASE_URL;
 
 // Group by rating
-const byRating: Record<string, typeof items> = {};
+const byRating: Record<string, VLAPickItem[]> = {};
 for (const item of items) {
   (byRating[item.rating] ??= []).push(item);
 }
 
 // Load all VLA days for correct prev/next (non-consecutive calendar days)
-const allDays = loadVLADailyPicks(90);
-const vlaDatesSorted = allDays.map(d => d.date).sort();
+// Use the V1 loader here — we only need dates and counts for nav boxes
+const allDaysNav = loadVLADailyPicks(90);
+const vlaDatesSorted = allDaysNav.map(d => d.date).sort();
 const idx = vlaDatesSorted.indexOf(date);
 const prevDate = idx > 0 ? vlaDatesSorted[idx - 1] : null;
 const nextDate = idx < vlaDatesSorted.length - 1 ? vlaDatesSorted[idx + 1] : null;
 
 // Count articles for prev/next nav boxes
-const prevCount = prevDate ? (allDays.find(d => d.date === prevDate)?.items.length ?? 0) : 0;
-const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.length ?? 0) : 0;
+const prevCount = prevDate ? (allDaysNav.find(d => d.date === prevDate)?.items.length ?? 0) : 0;
+const nextCount = nextDate ? (allDaysNav.find(d => d.date === nextDate)?.items.length ?? 0) : 0;
+
+// Build a readable funnel summary string for the aria-label
+const funnelAriaLabel = filter_funnel
+  ? `過濾漏斗：共 ${filter_funnel.total_rss} 篇 RSS → Pass1 A桶 ${filter_funnel.pass1_a} 篇 B桶 ${filter_funnel.pass1_b} 篇 → Pass2 晉升 ${filter_funnel.pass2_promoted} 篇 → Pass3 降級 ${filter_funnel.pass3_downgraded} 篇 → 最終 ${filter_funnel.final_star + filter_funnel.final_gear + filter_funnel.final_book} 篇`
+  : '';
 ---
 
 <BaseLayout
@@ -99,21 +112,98 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
       </div>
     </div>
 
+    <!-- ── Filter Funnel (3-pass pipeline visualization) ── -->
+    {filter_funnel && (
+      <div class="funnel-section" aria-label={funnelAriaLabel}>
+        <p class="funnel-label">3-Pass 過濾漏斗</p>
+        <div class="funnel-track">
+          <!-- Step 1: RSS input -->
+          <div class="funnel-step funnel-step--input">
+            <span class="funnel-count">{filter_funnel.total_rss}</span>
+            <span class="funnel-desc">RSS</span>
+          </div>
+
+          <span class="funnel-arrow" aria-hidden="true">▶</span>
+
+          <!-- Step 2: Pass1 -->
+          <div class="funnel-step funnel-step--pass1">
+            <span class="funnel-count">
+              {filter_funnel.pass1_a}<span class="funnel-sublabel">A</span>
+              <span class="funnel-plus">+</span>
+              {filter_funnel.pass1_b}<span class="funnel-sublabel">B</span>
+            </span>
+            <span class="funnel-desc">Pass1</span>
+          </div>
+
+          <span class="funnel-arrow" aria-hidden="true">▶</span>
+
+          <!-- Step 3: Pass2 promotions -->
+          <div class="funnel-step funnel-step--pass2">
+            <span class="funnel-count">+{filter_funnel.pass2_promoted}</span>
+            <span class="funnel-desc">Pass2 晉升</span>
+          </div>
+
+          <span class="funnel-arrow" aria-hidden="true">▶</span>
+
+          <!-- Step 4: Pass3 downgrades -->
+          <div class="funnel-step funnel-step--pass3">
+            <span class="funnel-count">-{filter_funnel.pass3_downgraded}</span>
+            <span class="funnel-desc">Pass3 降級</span>
+          </div>
+
+          <span class="funnel-arrow" aria-hidden="true">▶</span>
+
+          <!-- Step 5: Final output -->
+          <div class="funnel-step funnel-step--final">
+            <span class="funnel-count funnel-count--final">
+              {filter_funnel.final_star > 0 && (
+                <span class="funnel-final-badge funnel-final-badge--flash">⚡{filter_funnel.final_star}</span>
+              )}
+              {filter_funnel.final_gear > 0 && (
+                <span class="funnel-final-badge funnel-final-badge--wrench">🔧{filter_funnel.final_gear}</span>
+              )}
+              {filter_funnel.final_book > 0 && (
+                <span class="funnel-final-badge funnel-final-badge--book">📖{filter_funnel.final_book}</span>
+              )}
+            </span>
+            <span class="funnel-desc">最終</span>
+          </div>
+        </div>
+      </div>
+    )}
+
     <!-- ⚡ Breakthroughs -->
     {(byRating['⚡'] ?? []).length > 0 && (
       <div class="mb-8">
         <h2 class="font-lora text-xl font-semibold text-pulsar-amber mb-4">⚡ 突破</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(byRating['⚡'] ?? []).map(item => (
-            <ArticleCard
-              title={item.title}
-              summary={item.summary}
-              rating={item.rating}
-              source={item.source}
-              date={date}
-              domain="vla"
-              url={item.url}
-            />
+          {(byRating['⚡'] ?? []).map((item: VLAPickItem) => (
+            <div class="paper-card-wrap">
+              <ArticleCard
+                title={item.title}
+                summary={item.summary}
+                rating={item.rating}
+                source={item.source}
+                date={date}
+                domain="vla"
+                url={item.url}
+              />
+              {item.pass3_note && (
+                <div class="pass3-note" role="note">
+                  <span class="pass3-icon" aria-hidden="true">⚠</span>
+                  <span class="pass3-text">Pass3 降級：{item.pass3_note}</span>
+                </div>
+              )}
+              {item.full_abstract && (
+                <details class="abstract-details">
+                  <summary class="abstract-summary">展開摘要</summary>
+                  <p class="abstract-body">{item.full_abstract}</p>
+                  {item.affiliation && (
+                    <p class="abstract-affil">{item.affiliation}</p>
+                  )}
+                </details>
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -124,16 +214,33 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
       <div class="mb-8">
         <h2 class="font-lora text-xl font-semibold text-pulsar-cyan mb-4">🔧 <span data-tc>技術</span><span data-sc>技术</span></h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(byRating['🔧'] ?? []).map(item => (
-            <ArticleCard
-              title={item.title}
-              summary={item.summary}
-              rating={item.rating}
-              source={item.source}
-              date={date}
-              domain="vla"
-              url={item.url}
-            />
+          {(byRating['🔧'] ?? []).map((item: VLAPickItem) => (
+            <div class="paper-card-wrap">
+              <ArticleCard
+                title={item.title}
+                summary={item.summary}
+                rating={item.rating}
+                source={item.source}
+                date={date}
+                domain="vla"
+                url={item.url}
+              />
+              {item.pass3_note && (
+                <div class="pass3-note" role="note">
+                  <span class="pass3-icon" aria-hidden="true">⚠</span>
+                  <span class="pass3-text">Pass3 降級：{item.pass3_note}</span>
+                </div>
+              )}
+              {item.full_abstract && (
+                <details class="abstract-details">
+                  <summary class="abstract-summary">展開摘要</summary>
+                  <p class="abstract-body">{item.full_abstract}</p>
+                  {item.affiliation && (
+                    <p class="abstract-affil">{item.affiliation}</p>
+                  )}
+                </details>
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -144,19 +251,58 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
       <div class="mb-8">
         <h2 class="font-lora text-xl font-semibold text-pulsar-muted mb-4">📖 <span data-tc>背景閱讀</span><span data-sc>背景阅读</span></h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(byRating['📖'] ?? []).map(item => (
-            <ArticleCard
-              title={item.title}
-              summary={item.summary}
-              rating={item.rating}
-              source={item.source}
-              date={date}
-              domain="vla"
-              url={item.url}
-            />
+          {(byRating['📖'] ?? []).map((item: VLAPickItem) => (
+            <div class="paper-card-wrap">
+              <ArticleCard
+                title={item.title}
+                summary={item.summary}
+                rating={item.rating}
+                source={item.source}
+                date={date}
+                domain="vla"
+                url={item.url}
+              />
+              {item.pass3_note && (
+                <div class="pass3-note" role="note">
+                  <span class="pass3-icon" aria-hidden="true">⚠</span>
+                  <span class="pass3-text">Pass3 降級：{item.pass3_note}</span>
+                </div>
+              )}
+              {item.full_abstract && (
+                <details class="abstract-details">
+                  <summary class="abstract-summary">展開摘要</summary>
+                  <p class="abstract-body">{item.full_abstract}</p>
+                  {item.affiliation && (
+                    <p class="abstract-affil">{item.affiliation}</p>
+                  )}
+                </details>
+              )}
+            </div>
           ))}
         </div>
       </div>
+    )}
+
+    <!-- ── Pass1 Bucket B collapsible section ── -->
+    {bucket_b.length > 0 && (
+      <details class="bucket-b-section">
+        <summary class="bucket-b-summary">
+          <span class="bucket-b-toggle-icon" aria-hidden="true">▶</span>
+          Pass1 過濾論文
+          <span class="bucket-b-count">{bucket_b.length} 篇</span>
+        </summary>
+        <p class="bucket-b-hint">
+          以下論文在 Pass1 被分入 B 桶（相關性較低），未進入 LLM 精評。
+        </p>
+        <ul class="bucket-b-list">
+          {bucket_b.map(p => (
+            <li class="bucket-b-item">
+              <span class="bucket-b-title">{p.title}</span>
+              <span class="bucket-b-reason">{p.reason}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
     )}
 
     <!-- ── Pagination ── -->
@@ -249,6 +395,307 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
 .breadcrumb-current {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+/* ── Filter Funnel ── */
+.funnel-section {
+  margin-bottom: 2rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: 8px;
+}
+
+.funnel-label {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+}
+
+/* Horizontal track — flex row on desktop, column on mobile */
+.funnel-track {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.funnel-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  min-width: 54px;
+}
+
+/* Color variants per step */
+.funnel-step--input  { border-color: var(--border); }
+.funnel-step--pass1  { border-color: color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
+.funnel-step--pass2  { border-color: color-mix(in srgb, var(--accent-amber) 40%, transparent); }
+.funnel-step--pass3  { border-color: color-mix(in srgb, #c94040 40%, transparent); }
+.funnel-step--final  { border-color: var(--accent-cyan); background: var(--accent-cyan-bg); }
+
+.funnel-count {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+}
+
+.funnel-count--final {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.funnel-sublabel {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+.funnel-plus {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  margin: 0 0.05rem;
+}
+
+.funnel-desc {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.funnel-arrow {
+  font-size: 0.55rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* Final output badges with rating colors */
+.funnel-final-badge {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.funnel-final-badge--flash  { color: var(--rating-flash);  background: var(--rating-flash-bg); }
+.funnel-final-badge--wrench { color: var(--rating-wrench); background: var(--rating-wrench-bg); }
+.funnel-final-badge--book   { color: var(--rating-book);   background: var(--rating-book-bg); }
+
+/* ── Paper card wrapper (holds card + pass3 note + abstract) ── */
+.paper-card-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Pass3 downgrade note ── */
+.pass3-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  background: color-mix(in srgb, #c94040 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, #c94040 25%, transparent);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+.pass3-icon {
+  color: #c94040;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+  font-size: 0.7rem;
+}
+
+.pass3-text {
+  color: var(--text-secondary);
+}
+
+/* ── Expandable abstract ── */
+.abstract-details {
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* When pass3-note is absent the abstract-details rounds normally;
+   when both present, pass3-note takes top border and abstract is below */
+.pass3-note + .abstract-details {
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 6px 6px;
+}
+
+.abstract-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  border-top: 1px solid var(--border-subtle);
+  user-select: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.abstract-summary::-webkit-details-marker { display: none; }
+
+.abstract-summary::before {
+  content: '▶';
+  font-size: 0.5rem;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+details[open] .abstract-summary::before {
+  transform: rotate(90deg);
+}
+
+.abstract-summary:hover {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+}
+
+.abstract-body {
+  padding: 0.6rem 0.85rem 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', Georgia, serif;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.abstract-affil {
+  padding: 0.25rem 0.85rem 0.6rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* ── Bucket B collapsible section ── */
+.bucket-b-section {
+  margin-bottom: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.bucket-b-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  user-select: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.bucket-b-summary::-webkit-details-marker { display: none; }
+
+.bucket-b-toggle-icon {
+  font-size: 0.52rem;
+  transition: transform 0.2s;
+  display: inline-block;
+  color: var(--text-tertiary);
+}
+
+details[open] .bucket-b-toggle-icon {
+  transform: rotate(90deg);
+}
+
+.bucket-b-summary:hover {
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+.bucket-b-count {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 0.25rem;
+}
+
+.bucket-b-hint {
+  padding: 0.4rem 1rem 0.2rem;
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  border-top: 1px solid var(--border-subtle);
+  line-height: 1.5;
+}
+
+.bucket-b-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.bucket-b-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.bucket-b-item:last-child {
+  border-bottom: none;
+}
+
+.bucket-b-title {
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  font-family: 'PingFang SC', 'Microsoft YaHei', Georgia, serif;
+}
+
+.bucket-b-reason {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
+  line-height: 1.4;
 }
 
 /* ── Pagination nav ── */
@@ -449,8 +896,32 @@ const nextCount = nextDate ? (allDays.find(d => d.date === nextDate)?.items.leng
 }
 .ddb-cross:hover { color: var(--accent-amber); }
 
-/* ── Mobile: stack pagination vertically ── */
+/* ── Mobile responsive ── */
 @media (max-width: 640px) {
+  /* Funnel: vertical steps */
+  .funnel-track {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .funnel-arrow {
+    transform: rotate(90deg);
+    align-self: flex-start;
+    margin-left: 0.6rem;
+  }
+
+  .funnel-step {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .funnel-desc { text-align: right; }
+
+  /* Pagination: stack vertically */
   .pagination-nav {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;

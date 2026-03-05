@@ -65,11 +65,52 @@ interface VLARatingRaw {
   reason:           string;   // maps to summary
   abstract_snippet: string;
   affiliation:      string;
+  // New fields from 3-pass pipeline (2026-03-05)
+  full_abstract?:   string;   // full arXiv abstract ~800-1500 chars
+  pass3_note?:      string;   // Pass3 challenge reason if downgraded
+  pass1_reason?:    string;   // Pass1 bucket reason if bucket B
+}
+
+// Filter funnel counts from 3-pass pipeline
+export interface VLAFilterFunnel {
+  total_rss:        number;
+  pass1_a:          number;
+  pass1_b:          number;
+  pass2_promoted:   number;
+  pass3_downgraded: number;
+  final_star:       number;
+  final_gear:       number;
+  final_book:       number;
+  final_x:          number;
+}
+
+// Pass1 bucket B item (filtered out, not promoted)
+export interface VLABucketBItem {
+  title:  string;
+  reason: string;
 }
 
 interface VLARatingFile {
-  ok:      boolean;
-  papers:  VLARatingRaw[];
+  ok:              boolean;
+  papers:          VLARatingRaw[];
+  // New fields from 3-pass pipeline (2026-03-05)
+  filter_funnel?:  VLAFilterFunnel;
+  pass1_bucket_b?: VLABucketBItem[];
+}
+
+// Extended item type for VLA detail pages — carries 3-pass pipeline fields
+export interface VLAPickItem extends DailyPickItem {
+  full_abstract: string;
+  pass3_note:    string;
+  affiliation:   string;
+}
+
+// Extended day type returned by loadVLADailyPicksV2 — includes funnel + bucket B
+export interface VLAPickDay {
+  date:          string;
+  items:         VLAPickItem[];
+  filter_funnel: VLAFilterFunnel | null;
+  bucket_b:      VLABucketBItem[];
 }
 
 // Drift metrics — flat array of daily snapshots (actual pipeline format)
@@ -264,6 +305,7 @@ export function loadAIDailyPicks(n: number = 7): DailyPickDay[] {
 // loadVLADailyPicks
 // Returns the N most recent VLA daily rating days from
 // vla-daily-rating-out-YYYY-MM-DD.json files synced into src/data/.
+// Returns DailyPickDay[] — used by non-VLA-detail pages (index, dashboard, daily).
 // ---------------------------------------------------------------------------
 export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
   let files: string[];
@@ -297,6 +339,54 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
         })),
     };
   }).filter(day => day.items.length > 0);
+}
+
+// ---------------------------------------------------------------------------
+// loadVLADailyPicksV2
+// Like loadVLADailyPicks but returns the richer VLAPickDay type that carries
+// 3-pass pipeline fields: filter_funnel, bucket_b, full_abstract, pass3_note.
+// Used exclusively by the VLA detail page (src/pages/vla/[date].astro).
+// ---------------------------------------------------------------------------
+export function loadVLADailyPicksV2(n: number = 7): VLAPickDay[] {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+      .sort()
+      .reverse()
+      .slice(0, n);
+  } catch {
+    return [];
+  }
+
+  return files
+    .map(filename => {
+      const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
+      const date = dateMatch?.[1] ?? 'unknown';
+      const data = readJson<VLARatingFile>(filename);
+      const papers = data?.papers ?? [];
+      return {
+        date,
+        items: papers
+          .filter(p => p.rating !== '❌')
+          .map((raw): VLAPickItem => ({
+            title:         raw.title            ?? '',
+            url:           raw.url              ?? '#',
+            summary:       raw.reason           || raw.abstract_snippet || '',
+            rating:        raw.rating           ?? '📖',
+            source:        raw.source           ?? 'arxiv',
+            domain:        'vla' as const,
+            full_abstract: raw.full_abstract    ?? '',
+            pass3_note:    raw.pass3_note       ?? '',
+            affiliation:   raw.affiliation      ?? '',
+          })),
+        filter_funnel: data?.filter_funnel ?? null,
+        bucket_b:      data?.pass1_bucket_b ?? [],
+      };
+    })
+    // Keep days that have at least one displayable paper OR funnel/bucket data
+    .filter(day => day.items.length > 0 || day.filter_funnel !== null || day.bucket_b.length > 0);
 }
 
 // ---------------------------------------------------------------------------
