@@ -51,6 +51,7 @@ JSON_FILES = [
     # Cross-domain insight (optional, may not exist)
     "cross-domain-insight.json",
     # Deep dive content
+    "ai-app-daily.json",
     "ai-app-deep-dive-articles.json",
     "vla-sota-tracker.json",
     "vla-theory-articles.json",
@@ -68,6 +69,7 @@ MARKDOWN_PATTERNS = [
     ("_biweekly_",             12),   # biweekly reports (covers _biweekly_reflection_ too)
     ("_ai_biweekly_",          12),   # AI app biweekly reports
     ("_ai_daily_pick_",        30),   # dated ai daily pick markdown (if exists)
+    ("field-state-",            14),   # field-state mechanical signals
     ("calibration-check-",     14),   # calibration check JSONs
 ]
 
