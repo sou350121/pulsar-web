@@ -1,41 +1,57 @@
 ---
 /**
  * src/pages/vla-deepdive/index.astro
- * VLA Deep Dive — 理論深挖文章庫 + SOTA 排行 + VLA-Handbook 全庫。
- * Articles from the last 7 days render as visual cards; older ones as list rows.
+ * VLA Deep Dive — 統一文章庫 + 方法族趨勢 + SOTA 排行。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles } from '../../utils/data';
+import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState } from '../../utils/data';
 
 const theory   = loadVLATheory(50);
 const sota     = loadVLASOTA(30);
 const ghAll    = loadVLAGitHubArticles(100);
+const fieldState = loadLatestFieldState();
 
 const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
 const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
 const GITHUB_SOTA_PATH    = 'https://sota.evomind-tech.com';
 
-// 14-day (2-week) cutoff
+// 14-day cutoff
 const cutoff = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
 
-// Theory split
-const recentTheory = theory.filter(a => a.date >= cutoff);
-const olderTheory  = theory.filter(a => a.date < cutoff);
+// Deduplicate GitHub articles against theory articles (by title, case-insensitive)
+const theoryTitles = new Set(theory.map(a => a.title.toLowerCase().trim()));
+const dedupedGh = ghAll.filter(a => !theoryTitles.has(a.title.toLowerCase().trim()));
 
-// Group older theory by topic
-const byTopic: Record<string, typeof olderTheory> = {};
-for (const a of olderTheory) {
-  const topic = a.target_dir?.replace('theory/', '') ?? 'general';
-  (byTopic[topic] ??= []).push(a);
-}
-const topics = Object.keys(byTopic).sort();
+// Unified combined list (single data source)
+const allCombined = [
+  ...theory.map(a => ({
+    title:    a.title,
+    date:     a.date,
+    html_url: a.html_url ?? a.url,
+    topic:    a.target_dir?.replace('theory/', '') ?? 'general',
+    source:   'pipeline' as const,
+  })),
+  ...dedupedGh.map(a => ({
+    title:    a.title,
+    date:     a.date,
+    html_url: a.html_url,
+    topic:    a.topic,
+    source:   'github' as const,
+  })),
+].sort((a, b) => b.date.localeCompare(a.date));
+
+// Split into recent (cards) and older (topic-grouped list)
+const recentAll = allCombined.filter(a => a.date >= cutoff);
+const olderAll  = allCombined.filter(a => a.date < cutoff);
+const byTopicAll: Record<string, typeof olderAll> = {};
+for (const a of olderAll) { (byTopicAll[a.topic] ??= []).push(a); }
+const topics = Object.keys(byTopicAll).sort();
 
 function dotDate(iso: string) {
   const [y, m, d] = iso.split('-');
   return `${y}.${m}.${d}`;
 }
 
-/** Relative day badge for recently published VLA theory cards. */
 function vddRecency(dateStr: string): string {
   const now  = new Date();
   const d    = new Date(dateStr + 'T00:00:00+08:00');
@@ -47,36 +63,43 @@ function vddRecency(dateStr: string): string {
 
 // Group SOTA by benchmark
 const sotaByBenchmark: Record<string, typeof sota> = {};
-for (const s of sota) {
-  (sotaByBenchmark[s.benchmark] ??= []).push(s);
-}
+for (const s of sota) { (sotaByBenchmark[s.benchmark] ??= []).push(s); }
 const benchmarks = Object.keys(sotaByBenchmark).sort();
 
-// Deduplicate GitHub articles against theory articles (by title, case-insensitive)
-const theoryTitles = new Set(theory.map(a => a.title.toLowerCase().trim()));
-const dedupedGh = ghAll.filter(a => !theoryTitles.has(a.title.toLowerCase().trim()));
+// Method family display names
+const FAMILY_NAMES: Record<string, string> = {
+  diffusion_policy:   'Diffusion Policy',
+  flow_matching:      'Flow Matching',
+  rl_finetuning:      'RL Fine-tuning',
+  instruction_tuning: 'Instruction Tuning',
+  world_model:        'World Model',
+  tactile:            'Tactile',
+  dexterous_hand:     'Dexterous Hand',
+  cross_embodiment:   'Cross-Embodiment',
+};
 
-// Combine: theory items + deduplicated github items, deduplicated by title
-const allCombined = [
-  ...theory.map(a => ({
-    title:    a.title,
-    date:     a.date,
-    html_url: a.html_url ?? a.url,
-    topic:    a.target_dir?.replace('theory/', '') ?? 'general',
-    source:   'pipeline',
-  })),
-  ...dedupedGh.map(a => ({
-    title:    a.title,
-    date:     a.date,
-    html_url: a.html_url,
-    topic:    a.topic,
-    source:   'github',
-  })),
-].sort((a, b) => b.date.localeCompare(a.date));
+// Acceleration arrow
+function accelArrow(val: number): string {
+  if (val >= 1.15) return '↑';
+  if (val <= 0.85) return '↓';
+  return '→';
+}
 
-// Split combined library into 7-day cards and older list
-const recentGhLibrary = allCombined.filter(a => a.date >= cutoff);
-const olderGhLibrary  = allCombined.filter(a => a.date < cutoff);
+// Build saturated benchmark set from field-state (prefix match: BENCHMARK/SPLIT → BENCHMARK)
+const saturatedBenchmarks = new Set<string>();
+if (fieldState?.benchmark_health) {
+  for (const bh of fieldState.benchmark_health) {
+    if (bh.status === 'saturated') {
+      saturatedBenchmarks.add(bh.benchmark.split('/')[0]);
+    }
+  }
+}
+
+// Max bar width for method trend
+const maxCount7d = fieldState?.method_trends
+  ? Math.max(...fieldState.method_trends.map(m => m.count_7d), 1)
+  : 1;
+
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -93,23 +116,12 @@ const base = import.meta.env.BASE_URL;
       <span class="bc-current"><span data-tc>VLA 深度追蹤</span><span data-sc>VLA 深度追踪</span></span>
     </nav>
 
-    <!-- ── Masthead ── -->
+    <!-- ── Masthead (slim) ── -->
     <header class="vdd-masthead">
       <div class="vdd-overline"><span data-tc>VLA 線 · DEEP DIVE ARCHIVE</span><span data-sc>VLA 线 · DEEP DIVE ARCHIVE</span></div>
       <h1 class="vdd-title"><span data-tc>VLA 深度追蹤</span><span data-sc>VLA 深度追踪</span></h1>
       <div class="vdd-accent-bar"></div>
-
-      <p class="vdd-desc">
-        <span data-tc>Vision-Language-Action 系統的理論深挖與 SOTA 排行追蹤。
-        Pulsar 不止聚合論文——每篇由 pipeline 評級（⚡ 突破 / 🔧 工程 / 📖 綜述），
-        跨域規則引擎自動偵測 VLA 信號對 AI App 的溢出影響並反向校準假設。
-        Theory 文章由 pipeline 解析 arxiv 並存入 </span><span data-sc>Vision-Language-Action 系统的理论深挖与 SOTA 排行追踪。
-        Pulsar 不止聚合论文——每篇由 pipeline 评级（⚡ 突破 / 🔧 工程 / 📖 综述），
-        跨域规则引擎自动侦测 VLA 信号对 AI App 的溢出影响并反向校准假设。
-        Theory 文章由 pipeline 解析 arxiv 并存入 </span><strong>VLA-Handbook</strong><span data-tc> 庫；
-        SOTA 數據從 Evo-SOTA 自動拉取 CALVIN 等標準 Benchmark 的最新記錄。</span><span data-sc> 库；
-        SOTA 数据从 Evo-SOTA 自动拉取 CALVIN 等标准 Benchmark 的最新记录。</span>
-      </p>
+      <p class="vdd-desc"><span data-tc>Vision-Language-Action：讓機器人看→想→做的端到端模型</span><span data-sc>Vision-Language-Action：让机器人看→想→做的端到端模型</span></p>
 
       <!-- GitHub CTA row -->
       <div class="vdd-cta-row">
@@ -150,47 +162,82 @@ const base = import.meta.env.BASE_URL;
     </header>
 
     <!-- ══════════════════════════════════════════
-         SECTION 1: Theory Articles (pipeline-tracked)
+         FIELD-STATE: Method Trend Panel
     ══════════════════════════════════════════ -->
-    <section class="vdd-section" aria-label="VLA 理論深挖">
+    {fieldState && (
+      <section class="fs-panel" aria-label="方法族趨勢">
+        <div class="fs-header">
+          <h2 class="fs-title">方法族趨勢</h2>
+          <span class="fs-meta">
+            {fieldState.date} · {fieldState.total_papers_scanned} 篇掃描 ·
+            <span class={`fs-confidence fs-confidence--${fieldState.data_confidence}`}>
+              {fieldState.data_confidence}
+            </span>
+          </span>
+        </div>
+        <div class="fs-grid">
+          {fieldState.method_trends
+            .sort((a, b) => b.count_7d - a.count_7d)
+            .map(m => {
+              const barPct = Math.round((m.count_7d / maxCount7d) * 100);
+              const arrow = accelArrow(m.acceleration);
+              const arrowClass = arrow === '↑' ? 'fs-up' : arrow === '↓' ? 'fs-down' : 'fs-flat';
+              return (
+                <div class="fs-row">
+                  <span class="fs-family">{FAMILY_NAMES[m.family] ?? m.family}</span>
+                  <div class="fs-bar-wrap">
+                    <div class="fs-bar" style={`width:${barPct}%`}></div>
+                  </div>
+                  <span class="fs-count">{m.count_7d}</span>
+                  <span class={`fs-arrow ${arrowClass}`}>{arrow}</span>
+                </div>
+              );
+            })
+          }
+        </div>
+      </section>
+    )}
+
+    <!-- ══════════════════════════════════════════
+         UNIFIED: Theory Articles (merged)
+    ══════════════════════════════════════════ -->
+    <section class="vdd-section" aria-label="VLA 理論文章庫">
       <div class="vdd-section-header">
-        <h2 class="vdd-section-title"><span data-tc>📐 理論深挖</span><span data-sc>📐 理论深挖</span></h2>
+        <h2 class="vdd-section-title"><span data-tc>📐 理論文章庫</span><span data-sc>📐 理论文章库</span></h2>
         <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
           <span data-tc>查看 GitHub 全庫</span><span data-sc>查看 GitHub 全库</span> →
         </a>
       </div>
 
-      {theory.length === 0 ? (
+      {allCombined.length === 0 ? (
         <p class="vdd-empty"><span data-tc>尚無理論文章資料</span><span data-sc>尚无理论文章资料</span></p>
       ) : (
         <>
-          {/* --- 最近 2 週 card grid --- */}
-          {recentTheory.length > 0 && (
+          {/* --- Recent cards with NEW badge --- */}
+          {recentAll.length > 0 && (
             <div class="vdd-subsection">
               <div class="vdd-subsection-label">
                 <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
-                <span class="vdd-sublabel-count">{recentTheory.length} 篇</span>
+                <span class="vdd-sublabel-count">{recentAll.length} 篇</span>
               </div>
               <div class="vdd-card-grid">
-                {recentTheory.map((article) => (
+                {recentAll.map((article) => (
                   <article class="vdd-card">
                     <div class="vdd-card-top">
                       <time class="vdd-card-date">{dotDate(article.date)}</time>
                       <span class="vdd-card-recency">{vddRecency(article.date)}</span>
-                      {article.target_dir && (
-                        <span class="vdd-card-tag vdd-card-tag--cyan">
-                          {article.target_dir.replace('theory/', '').replace(/-/g, ' ')}
-                        </span>
-                      )}
+                      <span class="vdd-card-tag vdd-card-tag--cyan">
+                        {article.topic.replace(/-/g, ' ')}
+                      </span>
                     </div>
                     <h3 class="vdd-card-title">{article.title}</h3>
                     <a
-                      href={article.html_url ?? article.url}
+                      href={article.html_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="vdd-card-cta"
                     >
-                      <span data-tc>GitHub 閱讀原文</span><span data-sc>GitHub 阅读原文</span>
+                      <span data-tc>在 GitHub 閱讀</span><span data-sc>在 GitHub 阅读</span>
                       <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M2 6h8M6 2l4 4-4 4"/>
                       </svg>
@@ -201,25 +248,25 @@ const base = import.meta.env.BASE_URL;
             </div>
           )}
 
-          {/* --- 更多文章 list rows --- */}
-          {olderTheory.length > 0 && (
+          {/* --- Older articles grouped by topic --- */}
+          {olderAll.length > 0 && (
             <div class="vdd-subsection">
-              {recentTheory.length > 0 && (
+              {recentAll.length > 0 && (
                 <div class="vdd-subsection-label">
                   <span class="vdd-sublabel">更多文章 · 全部在 GitHub</span>
-                  <span class="vdd-sublabel-count">{olderTheory.length} 篇</span>
+                  <span class="vdd-sublabel-count">{olderAll.length} 篇</span>
                 </div>
               )}
               <div class="vdd-topics">
                 {topics.map(topic => (
                   <div class="vdd-topic-group">
                     <div class="vdd-topic-label">
-                      {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopic[topic].length} 篇
+                      {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} 篇
                     </div>
                     <div class="vdd-art-list">
-                      {byTopic[topic].map((article, i) => (
+                      {byTopicAll[topic].map((article, i) => (
                         <a
-                          href={article.html_url ?? article.url}
+                          href={article.html_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           class="vdd-art-row"
@@ -247,96 +294,7 @@ const base = import.meta.env.BASE_URL;
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 2: VLA-Handbook 全庫文章
-    ══════════════════════════════════════════ -->
-    <section class="vdd-section" aria-label="VLA-Handbook 全庫文章">
-      <div class="vdd-section-header">
-        <h2 class="vdd-section-title"><span data-tc>📚 VLA-Handbook 全庫文章</span><span data-sc>📚 VLA-Handbook 全库文章</span></h2>
-        <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
-          GitHub theory/ →
-        </a>
-      </div>
-      <p class="vdd-lib-desc">
-        <span data-tc>包含 pipeline 追蹤 + 手動添加的全部理論文章（共 </span><span data-sc>包含 pipeline 追踪 + 手动添加的全部理论文章（共 </span>{allCombined.length}<span data-tc> 篇，去重後）</span><span data-sc> 篇，去重后）</span>。
-      </p>
-
-      {allCombined.length === 0 ? (
-        <p class="vdd-empty"><span data-tc>尚無全庫資料</span><span data-sc>尚无全库资料</span></p>
-      ) : (
-        <>
-          {/* --- 最近 2 週 cards --- */}
-          {recentGhLibrary.length > 0 && (
-            <div class="vdd-subsection">
-              <div class="vdd-subsection-label">
-                <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
-                <span class="vdd-sublabel-count">{recentGhLibrary.length} 篇</span>
-              </div>
-              <div class="vdd-card-grid">
-                {recentGhLibrary.map((article) => (
-                  <article class="vdd-card">
-                    <div class="vdd-card-top">
-                      <time class="vdd-card-date">{dotDate(article.date)}</time>
-                      <span class="vdd-card-recency">{vddRecency(article.date)}</span>
-                      <span class="vdd-card-tag vdd-card-tag--cyan">
-                        {article.topic.replace(/-/g, ' ')}
-                      </span>
-                    </div>
-                    <h3 class="vdd-card-title">{article.title}</h3>
-                    <a
-                      href={article.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="vdd-card-cta"
-                    >
-                      <span data-tc>在 GitHub 閱讀</span><span data-sc>在 GitHub 阅读</span>
-                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M2 6h8M6 2l4 4-4 4"/>
-                      </svg>
-                    </a>
-                  </article>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* --- 更多文章 list rows --- */}
-          {olderGhLibrary.length > 0 && (
-            <div class="vdd-subsection">
-              {recentGhLibrary.length > 0 && (
-                <div class="vdd-subsection-label">
-                  <span class="vdd-sublabel">更多文章 · 全部在 GitHub</span>
-                  <span class="vdd-sublabel-count">{olderGhLibrary.length} 篇</span>
-                </div>
-              )}
-              <div class="vdd-art-list">
-                {olderGhLibrary.map((article, i) => (
-                  <a
-                    href={article.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="vdd-art-row"
-                    style={`animation-delay:${i * 0.02}s`}
-                  >
-                    <time class="vdd-art-date">{dotDate(article.date)}</time>
-                    <span class="vdd-art-title">{article.title}</span>
-                    <span class="vdd-art-ext" aria-label="在 GitHub 閱讀">
-                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
-                        <path d="M8 1h3v3M11 1L6 6"/>
-                      </svg>
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-        </>
-      )}
-    </section>
-
-    <!-- ══════════════════════════════════════════
-         SECTION 3: SOTA Leaderboard
+         SOTA Leaderboard
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="SOTA 排行">
       <div class="vdd-section-header">
@@ -353,9 +311,9 @@ const base = import.meta.env.BASE_URL;
           {benchmarks.map(bench => {
             const entries = sotaByBenchmark[bench].sort((a, b) => b.value - a.value);
             const top = entries[0];
+            const isSaturated = saturatedBenchmarks.has(bench);
             return (
               <div class="sota-bench-block">
-                <!-- Benchmark header -->
                 <div class="sota-bench-header">
                   <div class="sota-bench-left">
                     <span class="sota-bench-name">
@@ -365,11 +323,10 @@ const base = import.meta.env.BASE_URL;
                       }
                     </span>
                     {top.split && <span class="sota-bench-split">{top.split}</span>}
+                    {isSaturated && <span class="sota-saturated-badge">飽和</span>}
                   </div>
                   <span class="sota-bench-metric">{top.metric}</span>
                 </div>
-
-                <!-- Entries table -->
                 <div class="sota-table-wrap">
                   <table class="sota-table">
                     <thead>
@@ -408,542 +365,359 @@ const base = import.meta.env.BASE_URL;
       )}
     </section>
 
+    <!-- ── Cross-domain navigation ── -->
+    <nav class="xdomain-nav">
+      <a href={`${base}/ai-deepdive/`} class="xdomain-link">
+        <span data-tc>AI Agent 領域的工程實戰文章庫</span><span data-sc>AI Agent 领域的工程实战文章库</span>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+    </nav>
+
   </div>
 </BaseLayout>
 
 <style>
-.vdd-page {
-  padding-top: 32px;
-  padding-bottom: 80px;
+.vdd-page { padding-top: 32px; padding-bottom: 80px; }
+
+/* ── Breadcrumb ── */
+.dd-breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.68rem; letter-spacing: 0.05em;
 }
+.bc-link { color: var(--text-tertiary); text-decoration: none; transition: color 0.15s; }
+.bc-link:hover { color: var(--text-secondary); }
+.bc-sep { color: var(--text-tertiary); opacity: 0.5; }
+.bc-current { color: var(--text-secondary); }
 
 /* ── Masthead ── */
-.vdd-masthead { margin-bottom: 48px; }
-
+.vdd-masthead { margin-bottom: 36px; }
 .vdd-overline {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 10px;
+  font-family: 'Menlo','Consolas','Courier New',monospace;
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 10px;
 }
-
 .vdd-title {
-  font-family: Georgia, 'Songti SC', serif;
+  font-family: Georgia,'Songti SC',serif;
   font-size: clamp(2rem, 5vw, 3.4rem);
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 16px;
-  line-height: 1.1;
+  font-weight: 700; color: var(--text-primary);
+  margin: 0 0 16px; line-height: 1.1;
 }
-
-.vdd-accent-bar {
-  height: 3px;
-  width: 80px;
-  background: var(--accent-cyan);
-  border-radius: 2px;
-  margin-bottom: 18px;
-}
-
+.vdd-accent-bar { height: 3px; width: 80px; background: var(--accent-cyan); border-radius: 2px; margin-bottom: 14px; }
 .vdd-desc {
-  font-size: 0.92rem;
-  color: var(--text-secondary);
-  line-height: 1.75;
-  max-width: 680px;
-  margin: 0 0 28px;
+  font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;
+  max-width: 580px; margin: 0 0 20px;
 }
 
-.vdd-desc strong { color: var(--text-primary); }
-
-/* ── CTA row ── */
-.vdd-cta-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
+/* CTA row */
+.vdd-cta-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .vdd-github-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--text-primary);
-  color: var(--bg);
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  padding: 10px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: opacity 0.2s, transform 0.2s;
-  opacity: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--text-primary); color: var(--bg);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em;
+  padding: 10px 18px; border-radius: 8px;
+  text-decoration: none; transition: opacity 0.2s, transform 0.2s;
 }
-
 .vdd-github-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-
-.vdd-github-sub {
-  font-size: 0.6rem;
-  opacity: 0.6;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-}
-
+.vdd-github-sub { font-size: 0.6rem; opacity: 0.6; font-weight: 400; letter-spacing: 0.08em; }
 .vdd-github-secondary {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.72rem;
-  color: var(--accent-cyan);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-  opacity: 0.85;
-  transition: opacity 0.15s;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.72rem; color: var(--accent-cyan);
+  text-decoration: none; letter-spacing: 0.06em; opacity: 0.85; transition: opacity 0.15s;
 }
-
 .vdd-github-secondary:hover { opacity: 1; }
-
-.vdd-stats-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-family: 'Menlo', 'Consolas', monospace;
-  margin-left: auto;
-}
-
+.vdd-stats-row { display: flex; align-items: baseline; gap: 8px; font-family: 'Menlo','Consolas',monospace; margin-left: auto; }
 .vdd-stat { display: flex; align-items: baseline; gap: 4px; }
-
-.vdd-stat-num {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--accent-amber);
-  line-height: 1;
-}
-
+.vdd-stat-num { font-size: 1.3rem; font-weight: 700; color: var(--accent-amber); line-height: 1; }
 .vdd-stat-num--cyan { color: var(--accent-cyan); }
-
-.vdd-stat-lbl {
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-}
-
+.vdd-stat-lbl { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--text-tertiary); text-transform: uppercase; }
 .vdd-stat-sep { color: var(--border); font-size: 1rem; }
 
+/* ══ Field-State Panel ══ */
+.fs-panel {
+  margin-bottom: 8px; padding: 24px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-cyan);
+  border-radius: 12px; background: var(--surface);
+}
+.fs-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.fs-title {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent-cyan); margin: 0;
+}
+.fs-meta {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.6rem; color: var(--text-tertiary); letter-spacing: 0.06em;
+}
+.fs-confidence {
+  padding: 1px 6px; border-radius: 8px;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.08em;
+}
+.fs-confidence--high { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+.fs-confidence--moderate { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
+.fs-confidence--low { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.fs-grid { display: flex; flex-direction: column; gap: 8px; }
+.fs-row {
+  display: grid; grid-template-columns: 140px 1fr 36px 20px;
+  gap: 10px; align-items: center;
+}
+@media (max-width: 520px) { .fs-row { grid-template-columns: 100px 1fr 30px 18px; } }
+.fs-family {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.72rem; color: var(--text-secondary);
+  letter-spacing: 0.02em; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.fs-bar-wrap {
+  height: 14px; background: var(--border-subtle, rgba(0,0,0,0.06));
+  border-radius: 3px; overflow: hidden;
+}
+.fs-bar {
+  height: 100%; background: var(--accent-cyan); border-radius: 3px;
+  min-width: 4px; transition: width 0.3s ease;
+}
+.fs-count {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.72rem; font-weight: 700; color: var(--text-primary);
+  text-align: right;
+}
+.fs-arrow { font-size: 0.82rem; text-align: center; }
+.fs-up   { color: #22c55e; }
+.fs-down { color: #ef4444; }
+.fs-flat { color: var(--text-tertiary); }
+
 /* ── Sections ── */
-.vdd-section {
-  margin-top: 56px;
-  padding-top: 40px;
-  border-top: 1px solid var(--border);
-}
-
+.vdd-section { margin-top: 56px; padding-top: 40px; border-top: 1px solid var(--border); }
 .vdd-section-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 16px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 24px; gap: 16px;
 }
-
 .vdd-section-title {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin: 0;
 }
-
 .vdd-section-link {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  color: var(--accent-cyan);
-  text-decoration: none;
-  opacity: 0.85;
-  transition: opacity 0.15s;
-  flex-shrink: 0;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.68rem; letter-spacing: 0.06em;
+  color: var(--accent-cyan); text-decoration: none; opacity: 0.85;
+  transition: opacity 0.15s; flex-shrink: 0;
 }
-
 .vdd-section-link:hover { opacity: 1; }
-
-.vdd-lib-desc {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin: -12px 0 20px;
-  line-height: 1.6;
-}
-
 .vdd-empty {
-  font-family: 'Menlo', monospace;
-  font-size: 0.8rem;
-  color: var(--text-tertiary);
-  padding: 24px 0;
+  font-family: 'Menlo',monospace;
+  font-size: 0.8rem; color: var(--text-tertiary); padding: 24px 0;
 }
 
-/* ── Subsections (within a section) ── */
+/* Subsections */
 .vdd-subsection { margin-bottom: 32px; }
-
 .vdd-subsection-label {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
+  display: flex; align-items: baseline; gap: 10px;
+  margin-bottom: 16px; padding-bottom: 8px;
   border-bottom: 1px dashed var(--border);
 }
-
 .vdd-sublabel {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent-cyan);
-  font-weight: 600;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent-cyan); font-weight: 600;
 }
-
 .vdd-sublabel-count {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  color: var(--text-tertiary);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.58rem; letter-spacing: 0.1em; color: var(--text-tertiary);
 }
 
-/* ── Card grid ── */
-.vdd-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-
+/* Card grid */
+.vdd-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 .vdd-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--accent-cyan);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-top: 3px solid var(--accent-cyan); border-radius: 12px;
+  padding: 20px; display: flex; flex-direction: column; gap: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-
 .vdd-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-hover, 0 8px 24px rgba(0,0,0,0.12));
   border-color: var(--accent-cyan);
 }
-
-.vdd-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
+.vdd-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .vdd-card-date {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.03em;
-  white-space: nowrap;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.68rem; color: var(--text-tertiary);
+  letter-spacing: 0.03em; white-space: nowrap;
 }
-
 .vdd-card-recency {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 1px 7px;
-  border-radius: 10px;
-  white-space: nowrap;
-  background: rgba(6,182,212,0.12);
-  color: var(--accent-cyan);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.04em;
+  padding: 1px 7px; border-radius: 10px; white-space: nowrap;
+  background: rgba(6,182,212,0.12); color: var(--accent-cyan);
   border: 1px solid rgba(6,182,212,0.2);
 }
-
 .vdd-card-title {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.5;
-  margin: 0;
-  flex: 1;
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary); line-height: 1.5; margin: 0; flex: 1;
 }
-
 .vdd-card-tag {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 20px;
-  white-space: nowrap;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 20px; white-space: nowrap;
 }
-
 .vdd-card-tag--cyan {
   background: var(--accent-cyan-bg, rgba(6,182,212,0.1));
-  color: var(--accent-cyan);
-  border: 1px solid rgba(6,182,212,0.25);
+  color: var(--accent-cyan); border: 1px solid rgba(6,182,212,0.25);
 }
-
 .vdd-card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  padding: 7px 14px;
-  border-radius: 20px;
-  background: var(--accent-cyan);
-  color: var(--bg, #fff);
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: auto; padding: 7px 14px; border-radius: 20px;
+  background: var(--accent-cyan); color: var(--bg, #fff);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em;
+  text-decoration: none; align-self: flex-start;
   transition: opacity 0.15s, transform 0.15s;
 }
-
 .vdd-card-cta:hover { opacity: 0.88; transform: translateX(2px); }
 
-/* ── Theory topics ── */
+/* Topic groups */
 .vdd-topics { display: flex; flex-direction: column; gap: 32px; }
-
-.vdd-topic-group {}
-
 .vdd-topic-label {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent-cyan);
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent-cyan); padding: 8px 0;
+  border-bottom: 1px solid var(--border); margin-bottom: 0;
 }
-
 .vdd-art-list { display: flex; flex-direction: column; }
-
 .vdd-art-row {
-  display: grid;
-  grid-template-columns: 6rem 1fr auto;
-  gap: 14px;
-  align-items: start;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-subtle);
-  text-decoration: none;
-  color: inherit;
-  position: relative;
+  display: grid; grid-template-columns: 6rem 1fr auto;
+  gap: 14px; align-items: start;
+  padding: 12px 0; border-bottom: 1px solid var(--border-subtle);
+  text-decoration: none; color: inherit; position: relative;
   transition: background 0.14s, padding-left 0.14s;
   animation: artFadeIn 0.3s ease both;
 }
-
 @keyframes artFadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: none; }
 }
-
 .vdd-art-row::before {
-  content: '';
-  position: absolute;
-  left: -2px; top: 0; bottom: 0;
-  width: 2px;
-  background: var(--accent-cyan);
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.18s ease;
+  content: ''; position: absolute;
+  left: -2px; top: 0; bottom: 0; width: 2px;
+  background: var(--accent-cyan); transform: scaleY(0);
+  transform-origin: top; transition: transform 0.18s ease;
 }
-
 .vdd-art-row:hover { background: var(--surface-2, rgba(0,0,0,0.02)); padding-left: 6px; }
 .vdd-art-row:hover::before { transform: scaleY(1); }
-
 .vdd-art-date {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.67rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.03em;
-  padding-top: 2px;
-  white-space: nowrap;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.67rem; color: var(--text-tertiary);
+  letter-spacing: 0.03em; padding-top: 2px; white-space: nowrap;
   transition: color 0.18s;
 }
-
 .vdd-art-row:hover .vdd-art-date { color: var(--accent-cyan); }
-
 .vdd-art-title {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.5;
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--text-primary); line-height: 1.5;
 }
-
 .vdd-art-ext {
-  color: var(--text-tertiary);
-  padding-top: 3px;
-  flex-shrink: 0;
+  color: var(--text-tertiary); padding-top: 3px; flex-shrink: 0;
   transition: color 0.16s, transform 0.16s;
 }
-
 .vdd-art-row:hover .vdd-art-ext { color: var(--accent-cyan); transform: translate(2px, -2px); }
 
-/* ── SOTA groups ── */
+/* ── SOTA ── */
 .vdd-sota-groups { display: flex; flex-direction: column; gap: 36px; }
-
-.sota-bench-block {}
-
 .sota-bench-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 2px solid var(--accent-cyan);
-  margin-bottom: 0;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; padding: 10px 0;
+  border-bottom: 2px solid var(--accent-cyan); margin-bottom: 0;
 }
-
 .sota-bench-left { display: flex; align-items: baseline; gap: 10px; }
-
 .sota-bench-name {
-  font-family: Georgia, 'Songti SC', serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 1.05rem; font-weight: 700; color: var(--text-primary);
 }
-
-.sota-bench-name a {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px dotted var(--border);
-}
-
+.sota-bench-name a { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--border); }
 .sota-bench-name a:hover { color: var(--accent-cyan); border-bottom-color: var(--accent-cyan); }
-
 .sota-bench-split {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.62rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.1em;
-  padding: 2px 7px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.62rem; color: var(--text-tertiary);
+  letter-spacing: 0.1em; padding: 2px 7px;
+  border: 1px solid var(--border); border-radius: 3px;
 }
-
+.sota-saturated-badge {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 10px;
+  background: rgba(148,163,184,0.15); color: #94a3b8;
+  border: 1px solid rgba(148,163,184,0.3);
+}
 .sota-bench-metric {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--text-tertiary);
 }
-
-/* ── SOTA table ── */
-.sota-table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
+.sota-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .sota-table {
-  width: 100%;
-  min-width: 440px;
-  border-collapse: collapse;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.72rem;
+  width: 100%; min-width: 440px; border-collapse: collapse;
+  font-family: 'Menlo','Consolas','Courier New',monospace; font-size: 0.72rem;
 }
-
 .sota-table th {
-  text-align: left;
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  padding: 8px 12px 8px 0;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
+  text-align: left; font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-tertiary);
+  padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border); white-space: nowrap;
 }
-
-.sota-row {
-  border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.13s;
-}
-
+.sota-row { border-bottom: 1px solid var(--border-subtle); transition: background 0.13s; }
 .sota-row:hover { background: var(--surface-2, rgba(0,0,0,0.025)); }
-
 .sota-row--top { background: var(--accent-cyan-bg); }
-
-.sota-table td {
-  padding: 10px 12px 10px 0;
-  vertical-align: middle;
-  line-height: 1.4;
-}
-
-.sota-rank {
-  color: var(--text-tertiary);
-  font-size: 0.62rem;
-  width: 1.5rem;
-}
-
+.sota-table td { padding: 10px 12px 10px 0; vertical-align: middle; line-height: 1.4; }
+.sota-rank { color: var(--text-tertiary); font-size: 0.62rem; width: 1.5rem; }
 .sota-row--top .sota-rank { color: var(--accent-cyan); font-weight: 700; }
-
 .sota-model { color: var(--accent-cyan); font-weight: 600; }
-
-.sota-score {
-  font-weight: 700;
-  color: var(--accent-amber);
-  font-size: 0.84rem;
-}
-
+.sota-score { font-weight: 700; color: var(--accent-amber); font-size: 0.84rem; }
 .sota-baseline, .sota-date { color: var(--text-tertiary); }
-
-.sota-paper a {
-  color: var(--accent-cyan);
-  text-decoration: none;
-  opacity: 0.8;
-}
-
+.sota-paper a { color: var(--accent-cyan); text-decoration: none; opacity: 0.8; }
 .sota-paper a:hover { opacity: 1; }
+
+/* ── Cross-domain nav ── */
+.xdomain-nav {
+  margin-top: 56px; padding-top: 24px;
+  border-top: 1px dashed var(--border);
+  text-align: right;
+}
+.xdomain-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.76rem; color: var(--accent-cyan);
+  text-decoration: none; letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+}
+.xdomain-link:hover { opacity: 0.7; }
+.xdomain-link svg { transition: transform 0.15s; }
+.xdomain-link:hover svg { transform: translateX(3px); }
 
 /* ── Mobile ── */
 @media (max-width: 640px) {
-  .vdd-card-grid {
-    grid-template-columns: 1fr;
-  }
-
+  .vdd-card-grid { grid-template-columns: 1fr; }
   .vdd-art-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
     gap: 4px 8px;
   }
-
   .vdd-art-date  { grid-column: 1; grid-row: 1; }
   .vdd-art-ext   { grid-column: 2; grid-row: 1; align-self: center; }
   .vdd-art-title { grid-column: 1 / -1; grid-row: 2; }
-
   .vdd-stats-row { margin-left: 0; }
   .vdd-cta-row { gap: 10px; }
 }
-
 @media (max-width: 900px) and (min-width: 641px) {
-  .vdd-card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .vdd-card-grid { grid-template-columns: repeat(2, 1fr); }
 }
-/* ── Breadcrumb ── */
-.dd-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-}
-.bc-link {
-  color: var(--text-tertiary);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.bc-link:hover { color: var(--text-secondary); opacity: 1; }
-.bc-sep { color: var(--text-tertiary); opacity: 0.5; }
-.bc-current { color: var(--text-secondary); }
 </style>

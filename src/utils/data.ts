@@ -829,3 +829,50 @@ export function relativeDay(dateStr: string): string {
   if (diff === 1) return '昨天';
   return `${diff} 天前`;
 }
+
+// ---------------------------------------------------------------------------
+// Field-State — method trend + benchmark health from compute-field-state.py
+// ---------------------------------------------------------------------------
+export interface MethodTrend {
+  family:       string;
+  count_7d:     number;
+  count_14d:    number;
+  share_7d:     number;
+  acceleration: number;
+  status:       string;
+}
+
+export interface BenchmarkHealth {
+  benchmark:  string;
+  max_value:  number;
+  model:      string;
+  status:     string;
+  reason:     string;
+}
+
+export interface FieldStateFile {
+  date:                 string;
+  data_confidence:      string;
+  total_papers_scanned: number;
+  method_trends:        MethodTrend[];
+  benchmark_health:     BenchmarkHealth[];
+}
+
+// ---------------------------------------------------------------------------
+// loadLatestFieldState
+// Reads the newest field-state-YYYY-MM-DD.json from src/data/.
+// ---------------------------------------------------------------------------
+export function loadLatestFieldState(): FieldStateFile | null {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('field-state-') && f.endsWith('.json'))
+      .sort()
+      .reverse();
+  } catch {
+    return null;
+  }
+  if (files.length === 0) return null;
+  return readJson<FieldStateFile>(files[0]);
+}

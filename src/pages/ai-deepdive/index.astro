@@ -2,13 +2,14 @@
 /**
  * src/pages/ai-deepdive/index.astro — 學習導向重設計
  * 問題：93 篇全落入「最近 2 週」，讀者被 93 張卡片轟炸，不知從何入手。
- * 解法：入門路徑 → 精選必讀 8 篇 → 模塊過濾 + 緊湊列表。
+ * 解法：入門路徑 → 精選必讀 8 篇 → PULSAR 深度分析 → 模塊過濾 + 緊湊列表。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadAIGitHubArticles } from '../../utils/data';
+import { loadAIGitHubArticles, loadAIDeepDive } from '../../utils/data';
 import type { AIGitHubArticle } from '../../utils/data';
 
 const articles = loadAIGitHubArticles(200);
+const deepDiveArticles = loadAIDeepDive(50);
 const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
 const gh = (mod: string, slug: string) => `${GITHUB_REPO}/blob/main/theory/${mod}/${slug}`;
 
@@ -92,6 +93,17 @@ const PATHS = [
     ],
   },
 ];
+
+// ── Deep dive signal_type mapping ────────────────────────────────────────────
+const SIGNAL_MAP: Record<string, { label: string; accent: string }> = {
+  product_release:   { label: '新發布',     accent: 'amber' },
+  breaking_change:   { label: '破壞性變更', accent: 'red' },
+  framework_update:  { label: '框架更新',   accent: 'purple' },
+  blog_post:         { label: '深度文章',   accent: 'cyan' },
+};
+
+// Initial display limit for deep dive articles
+const DD_INITIAL = 12;
 
 const base = import.meta.env.BASE_URL;
 
@@ -195,6 +207,44 @@ function artNewBadge(dateStr: string): string | null {
   </section>
 
   <!-- ══════════════════════════════
+       SECTION B2: PULSAR 深度分析
+  ══════════════════════════════ -->
+  {deepDiveArticles.length > 0 && (
+    <section class="dd-section">
+      <div class="section-hd">
+        <h2 class="section-title">PULSAR 深度分析</h2>
+        <span class="section-sub">{deepDiveArticles.length} 篇 · Pipeline 自動生成</span>
+      </div>
+      <div class="dd-list" id="dd-list">
+        {deepDiveArticles.map((article, idx) => {
+          const sig = SIGNAL_MAP[article.signal_type] ?? { label: article.signal_type, accent: 'cyan' };
+          return (
+            <a
+              href={article.html_url ?? article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={`dd-row ${idx >= DD_INITIAL ? 'dd-row--hidden' : ''}`}
+              data-dd-idx={idx}
+            >
+              <time class="dd-date">{article.date}</time>
+              <span class={`dd-signal dd-signal--${sig.accent}`}>{sig.label}</span>
+              <span class="dd-title">{article.title}</span>
+              <svg class="dd-ext" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
+              </svg>
+            </a>
+          );
+        })}
+      </div>
+      {deepDiveArticles.length > DD_INITIAL && (
+        <button class="dd-expand-btn" id="dd-expand-btn" type="button">
+          展開全部（{deepDiveArticles.length} 篇）
+        </button>
+      )}
+    </section>
+  )}
+
+  <!-- ══════════════════════════════
        SECTION C: 全部文章 + 模塊過濾
   ══════════════════════════════ -->
   <section class="browse-section">
@@ -251,6 +301,16 @@ function artNewBadge(dateStr: string): string | null {
       ))}
     </div>
   </section>
+
+  <!-- ── Cross-domain navigation ── -->
+  <nav class="xdomain-nav">
+    <a href={`${base}/vla-deepdive/`} class="xdomain-link">
+      <span data-tc>VLA 機器人領域也有 Agent 相關研究</span><span data-sc>VLA 机器人领域也有 Agent 相关研究</span>
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </a>
+  </nav>
 
 </div>
 </BaseLayout>
@@ -451,6 +511,79 @@ function artNewBadge(dateStr: string): string | null {
 }
 .pinned-card:hover .pinned-arrow { transform: translate(3px, -1px); color: var(--text-secondary); }
 
+/* ══ SECTION B2: Deep Dive ═══════════════════ */
+.dd-section { margin-bottom: 52px; }
+.dd-list { display: flex; flex-direction: column; }
+.dd-row {
+  display: grid; grid-template-columns: 6.5rem auto 1fr 18px;
+  gap: 10px; align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(0,0,0,0.06));
+  text-decoration: none; color: inherit;
+  transition: padding-left 0.15s, background 0.15s;
+  position: relative;
+}
+.dd-row::before {
+  content: '';
+  position: absolute; left: -2px; top: 0; bottom: 0; width: 2px;
+  background: #06b6d4; transform: scaleY(0); transform-origin: top;
+  transition: transform 0.18s;
+}
+.dd-row:hover { padding-left: 8px; background: var(--surface); }
+.dd-row:hover::before { transform: scaleY(1); }
+.dd-row--hidden { display: none; }
+.dd-date {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.66rem; color: var(--text-tertiary);
+  letter-spacing: 0.03em; white-space: nowrap;
+}
+.dd-signal {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 10px; white-space: nowrap;
+}
+.dd-signal--amber  { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
+.dd-signal--red    { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.dd-signal--purple { background: rgba(139,92,246,0.12); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.25); }
+.dd-signal--cyan   { background: rgba(6,182,212,0.12); color: #06b6d4; border: 1px solid rgba(6,182,212,0.25); }
+.dd-title {
+  font-family: Georgia,'Songti SC',serif;
+  font-size: 0.84rem; color: var(--text-secondary);
+  line-height: 1.5; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.dd-row:hover .dd-title { color: var(--text-primary); }
+.dd-ext {
+  flex-shrink: 0; color: var(--text-tertiary); opacity: 0.4;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.dd-row:hover .dd-ext { opacity: 0.8; transform: translate(2px, -2px); }
+
+.dd-expand-btn {
+  display: block; margin: 16px auto 0;
+  padding: 8px 24px; border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.68rem; color: var(--text-tertiary);
+  cursor: pointer; letter-spacing: 0.06em;
+  transition: all 0.15s;
+}
+.dd-expand-btn:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+
+@media (max-width: 640px) {
+  .dd-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 4px 8px;
+  }
+  .dd-date { grid-column: 1; grid-row: 1; }
+  .dd-signal { grid-column: 2; grid-row: 1; }
+  .dd-title { grid-column: 1 / -1; grid-row: 2; white-space: normal; }
+  .dd-ext { display: none; }
+}
+
 /* ══ SECTION C: Browse All ═══════════════════ */
 .browse-section { margin-bottom: 60px; }
 
@@ -569,9 +702,27 @@ function artNewBadge(dateStr: string): string | null {
 .art-row:hover .art-ext { opacity: 0.8; transform: translate(2px, -2px); }
 
 .mod-group[hidden] { display: none; }
+
+/* ── Cross-domain nav ── */
+.xdomain-nav {
+  margin-top: 56px; padding-top: 24px;
+  border-top: 1px dashed var(--border);
+  text-align: right;
+}
+.xdomain-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.76rem; color: #06b6d4;
+  text-decoration: none; letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+}
+.xdomain-link:hover { opacity: 0.7; }
+.xdomain-link svg { transition: transform 0.15s; }
+.xdomain-link:hover svg { transform: translateX(3px); }
 </style>
 
 <script>
+// Module filter
 const filter = document.getElementById('mod-filter');
 const browse = document.getElementById('mod-browse');
 if (filter && browse) {
@@ -588,6 +739,17 @@ if (filter && browse) {
     browse.querySelectorAll<HTMLElement>('.mod-group').forEach(g => {
       g.hidden = mod !== 'all' && g.dataset.mod !== mod;
     });
+  });
+}
+
+// Deep dive expand
+const expandBtn = document.getElementById('dd-expand-btn');
+if (expandBtn) {
+  expandBtn.addEventListener('click', () => {
+    document.querySelectorAll('.dd-row--hidden').forEach(el => {
+      el.classList.remove('dd-row--hidden');
+    });
+    expandBtn.style.display = 'none';
   });
 }
 </script>
