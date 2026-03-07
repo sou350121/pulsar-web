@@ -1,0 +1,45 @@
+{
+  "date": "2026-03-07",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "counter_evidence:strong (5 hits) + LIBERO 饱和 (99.1%) 限制评测基准；但 diffusion_policy 方法族仍稳定，未达失效条件"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LIBERO 多榜饱和 (97-99%) 使开源 vs 闭源对比基准受限"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak (3D spatial 关键词 7d 内消失) + benchmark_relevance:weak (LIBERO 饱和影响 3D 精度任务评测)"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 23,
+  "ai_signals_scanned": 66,
+  "triggers": [],
+  "note": "3 个假设有信号：V-001 approaching (0.50), V-008/V-010 early warning (0.25)；机械预评分全部确认，无上调",
+  "method_trends_summary": {
+    "cross_embodiment": "stable",
+    "dexterous_hand": "stable",
+    "diffusion_policy": "stable",
+    "flow_matching": "stable",
+    "instruction_tuning": "stable",
+    "rl_finetuning": "stable",
+    "tactile": "stable",
+    "world_model": "stable"
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": [
+    "CALVIN/ABC-D (4.8%)",
+    "CALVIN/ABCD-D (4.8%)",
+    "CALVIN/D-D (4.3%)",
+    "LIBERO/non-standard (97.3%)",
+    "LIBERO/standard-closed (98.6%)",
+    "LIBERO/standard-opensource (99.1%)"
+  ]
+}

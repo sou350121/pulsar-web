@@ -14,8 +14,14 @@
         }
       ],
       "assumption_links": {
-        "V-006": 0.09,
-        "A-004": 0.08
+        "V-006": {
+          "strength": 0.09,
+          "direction": "supporting"
+        },
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
       }
     },
     "method:graspldp": {
@@ -92,10 +98,45 @@
           "rating": null,
           "domain": "ai_app",
           "why_picked": "OpenAI 最新旗舰模型，事实性更强、效率更高，支持深网研究时更长上下文保留，用户可在响应过程中打断并调整方向"
+        },
+        {
+          "date": "2026-03-07",
+          "title": "GPT-5.4 正式发布：原生支持计算机操控，编码能力超前代",
+          "url": "https://openai.com/index/gpt-5-4-thinking-system-card",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "OpenAI 最新旗舰模型，原生支持计算机操控（computer use），编码能力显著提升，专业知识工作表现接近人类专家，支持深网研究时更长上下文保留"
+        },
+        {
+          "date": "2026-03-07",
+          "title": "OpenAI 推出 Codex Security：AI 代理安全工具",
+          "url": "https://readhub.cn/topic/8rHooMLOSyw",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "OpenAI 发布专为 AI 代理设计的安全工具，可帮助安全团队发现并修复大型数据库漏洞，识别网络安全漏洞并提出解决方案，与 Anthropic Claude Code Security 形成竞争"
+        },
+        {
+          "date": "2026-03-07",
+          "title": "Anthropic：Claude 每天新增用户超 100 万",
+          "url": "https://readhub.cn/topic/8rHBtpHUO91",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "前 Instagram 联合创始人、Anthropic 高管 Mike Krieger 分享：Claude 日增用户破百万，增长或因在五角大楼争议中比 OpenAI 更具道德优势，且 AI 整体采用加速"
+        },
+        {
+          "date": "2026-03-07",
+          "title": "Descript 用 OpenAI 模型实现多语言视频配音",
+          "url": "https://openai.com/index/descript",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "Descript 使用 OpenAI 模型规模化多语言视频配音，优化翻译的意义和时序，使配音语音在跨语言场景中听起来自然"
         }
       ],
       "assumption_links": {
-        "A-006": 0.4
+        "A-006": {
+          "strength": 0.44,
+          "direction": "supporting"
+        }
       }
     },
     "lab:anthropic": {
@@ -141,10 +182,29 @@
           "rating": null,
           "domain": "ai_app",
           "why_picked": "国防部正式通知 Anthropic 其产品对美军供应链构成风险，此前 Claude Gov 是唯一能在五角大楼机密云运行的 AI 系统，此举或影响军方 AI 部署策略"
+        },
+        {
+          "date": "2026-03-07",
+          "title": "OpenAI 推出 Codex Security：AI 代理安全工具",
+          "url": "https://readhub.cn/topic/8rHooMLOSyw",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "OpenAI 发布专为 AI 代理设计的安全工具，可帮助安全团队发现并修复大型数据库漏洞，识别网络安全漏洞并提出解决方案，与 Anthropic Claude Code Security 形成竞争"
+        },
+        {
+          "date": "2026-03-07",
+          "title": "Anthropic：Claude 每天新增用户超 100 万",
+          "url": "https://readhub.cn/topic/8rHBtpHUO91",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "前 Instagram 联合创始人、Anthropic 高管 Mike Krieger 分享：Claude 日增用户破百万，增长或因在五角大楼争议中比 OpenAI 更具道德优势，且 AI 整体采用加速"
         }
       ],
       "assumption_links": {
-        "A-006": 0.4
+        "A-006": {
+          "strength": 0.4,
+          "direction": "supporting"
+        }
       }
     },
     "lab:qwen": {
@@ -169,7 +229,10 @@
         }
       ],
       "assumption_links": {
-        "S-001": 0.2
+        "S-001": {
+          "strength": 0.2,
+          "direction": "supporting"
+        }
       }
     },
     "lab:google": {
@@ -194,7 +257,10 @@
         }
       ],
       "assumption_links": {
-        "A-006": 0.04
+        "A-006": {
+          "strength": 0.04,
+          "direction": "supporting"
+        }
       }
     },
     "lab:stanford": {
@@ -264,7 +330,10 @@
         }
       ],
       "assumption_links": {
-        "A-006": 0.12
+        "A-006": {
+          "strength": 0.12,
+          "direction": "supporting"
+        }
       }
     },
     "method:vla": {
@@ -353,6 +422,14 @@
           "rating": "🔧",
           "domain": "vla",
           "abstract": "Vision-Language-Action (VLA) models are a promising path toward embodied intelligence, yet they often overlook the predi"
+        },
+        {
+          "date": "2026-03-06",
+          "title": "MEM: Multi-Scale Embodied Memory for Vision Language Action Models",
+          "url": "https://arxiv.org/abs/2603.03596",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03596v1 Announce Type: new Abstract: Conventionally, memory in end-to-end robotic learning involves inputting a sequence of past observations into the learned policy. However, in complex multi-stage real-world tasks, the robot's memory must represent past events at multiple levels of granularity: from long-term memory that captures abstracted semantic concepts (e.g., a robot cooking dinner should remember which stages of the recipe are already done) to short-term memory that captures"
         }
       ],
       "assumption_links": {}
@@ -371,7 +448,420 @@
         }
       ],
       "assumption_links": {}
+    },
+    "lab:edinburgh": {
+      "type": "lab",
+      "name": "Edinburgh",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "Beyond Pixel Histories: World Models with Persistent 3D State",
+          "url": "https://arxiv.org/abs/2603.03482",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03482v1 Announce Type: new Abstract: Interactive world models continually generate video by responding to a user's actions, enabling open-ended generation capabilities. However, existing models typically lack a 3D representation of the environment, meaning 3D consistency must be implicitly learned from data, and spatial memory is restricted to limited temporal context windows. This results in an unrealistic user experience and presents significant obstacles to down-stream tasks such a"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "method:world_model": {
+      "type": "method",
+      "name": "world_model",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "Beyond Pixel Histories: World Models with Persistent 3D State",
+          "url": "https://arxiv.org/abs/2603.03482",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03482v1 Announce Type: new Abstract: Interactive world models continually generate video by responding to a user's actions, enabling open-ended generation capabilities. However, existing models typically lack a 3D representation of the environment, meaning 3D consistency must be implicitly learned from data, and spatial memory is restricted to limited temporal context windows. This results in an unrealistic user experience and presents significant obstacles to down-stream tasks such a"
+        },
+        {
+          "date": "2026-03-06",
+          "title": "H-WM: Robotic Task and Motion Planning Guided by Hierarchical World Model",
+          "url": "https://arxiv.org/abs/2602.11291",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2602.11291v2 Announce Type: replace Abstract: World models are becoming central to robotic planning and control as they enable prediction of future state transitions. Existing approaches often emphasize video generation or natural-language prediction, which are difficult to ground in robot actions and suffer from compounding errors over long horizons. Classic task and motion planning models world transitions in logical space, enabling robot-executable and robust long-horizon reasoning. How"
+        },
+        {
+          "date": "2026-03-06",
+          "title": "RehearseVLA: Simulated Post-Training for VLAs with Physically-Consistent World Model",
+          "url": "https://arxiv.org/abs/2509.24948",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.24948v4 Announce Type: replace Abstract: Vision-Language-Action (VLA) models trained via imitation learning suffer from significant performance degradation in data-scarce scenarios due to their reliance on large-scale demonstration datasets. Although reinforcement learning (RL)-based post-training has proven effective in addressing data scarcity, its application to VLA models is hindered by the non-resettable nature of real-world environments. This limitation is particularly critical"
+        }
+      ],
+      "assumption_links": {
+        "A-004": {
+          "strength": 0.08,
+          "direction": "challenging"
+        }
+      }
+    },
+    "model:vita": {
+      "type": "model",
+      "name": "VITA",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "VITA: Vision-to-Action Flow Matching Policy",
+          "url": "https://arxiv.org/abs/2507.13231",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2507.13231v4 Announce Type: replace-cross Abstract: Conventional flow matching and diffusion-based policies sample via iterative denoising from standard noise distributions (e.g., Gaussian), and require conditioning modules to repeatedly incorporate visual information during the generative process, incurring substantial time and memory overhead. To reduce the complexity, we develop VITA, VIsion-To-Action policy, a noise-free and conditioning-free flow matching policy learning framework tha"
+        }
+      ],
+      "assumption_links": {
+        "V-001": {
+          "strength": 0.1,
+          "direction": "supporting"
+        }
+      }
+    },
+    "method:diffusion_policy": {
+      "type": "method",
+      "name": "diffusion_policy",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "VITA: Vision-to-Action Flow Matching Policy",
+          "url": "https://arxiv.org/abs/2507.13231",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2507.13231v4 Announce Type: replace-cross Abstract: Conventional flow matching and diffusion-based policies sample via iterative denoising from standard noise distributions (e.g., Gaussian), and require conditioning modules to repeatedly incorporate visual information during the generative process, incurring substantial time and memory overhead. To reduce the complexity, we develop VITA, VIsion-To-Action policy, a noise-free and conditioning-free flow matching policy learning framework tha"
+        }
+      ],
+      "assumption_links": {
+        "V-001": {
+          "strength": 0.1,
+          "direction": "challenging"
+        }
+      }
+    },
+    "method:flow_matching": {
+      "type": "method",
+      "name": "flow_matching",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "VITA: Vision-to-Action Flow Matching Policy",
+          "url": "https://arxiv.org/abs/2507.13231",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2507.13231v4 Announce Type: replace-cross Abstract: Conventional flow matching and diffusion-based policies sample via iterative denoising from standard noise distributions (e.g., Gaussian), and require conditioning modules to repeatedly incorporate visual information during the generative process, incurring substantial time and memory overhead. To reduce the complexity, we develop VITA, VIsion-To-Action policy, a noise-free and conditioning-free flow matching policy learning framework tha"
+        }
+      ],
+      "assumption_links": {
+        "V-001": {
+          "strength": 0.1,
+          "direction": "supporting"
+        }
+      }
+    },
+    "lab:ustc": {
+      "type": "lab",
+      "name": "USTC",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "Structural Action Transformer for 3D Dexterous Manipulation",
+          "url": "https://arxiv.org/abs/2603.03960",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03960v1 Announce Type: new Abstract: Achieving human-level dexterity in robots via imitation learning from heterogeneous datasets is hindered by the challenge of cross-embodiment skill transfer, particularly for high-DoF robotic hands. Existing methods, often relying on 2D observations and temporal-centric action representation, struggle to capture 3D spatial relations and fail to handle embodiment heterogeneity. This paper proposes the Structural Action Transformer (SAT), a new 3D de"
+        }
+      ],
+      "assumption_links": {
+        "V-009": {
+          "strength": 0.09,
+          "direction": "supporting"
+        }
+      }
+    },
+    "method:dexterous_hand": {
+      "type": "method",
+      "name": "dexterous_hand",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "Structural Action Transformer for 3D Dexterous Manipulation",
+          "url": "https://arxiv.org/abs/2603.03960",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03960v1 Announce Type: new Abstract: Achieving human-level dexterity in robots via imitation learning from heterogeneous datasets is hindered by the challenge of cross-embodiment skill transfer, particularly for high-DoF robotic hands. Existing methods, often relying on 2D observations and temporal-centric action representation, struggle to capture 3D spatial relations and fail to handle embodiment heterogeneity. This paper proposes the Structural Action Transformer (SAT), a new 3D de"
+        },
+        {
+          "date": "2026-03-06",
+          "title": "ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation with Physical Skill Challenges and Embodied Multimodal Reasoning",
+          "url": "https://arxiv.org/abs/2603.04363",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.04363v1 Announce Type: new Abstract: Dexterous manipulation enables robots to purposefully alter the physical world, transforming them from passive observers into active agents in unstructured environments. This capability is the cornerstone of physical artificial intelligence. Despite decades of advances in hardware, perception, control, and learning, progress toward general manipulation systems remains fragmented due to the absence of widely adopted standard benchmarks. The central"
+        }
+      ],
+      "assumption_links": {
+        "V-009": {
+          "strength": 0.09,
+          "direction": "supporting"
+        },
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "method:cross_embodiment": {
+      "type": "method",
+      "name": "cross_embodiment",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "Structural Action Transformer for 3D Dexterous Manipulation",
+          "url": "https://arxiv.org/abs/2603.03960",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03960v1 Announce Type: new Abstract: Achieving human-level dexterity in robots via imitation learning from heterogeneous datasets is hindered by the challenge of cross-embodiment skill transfer, particularly for high-DoF robotic hands. Existing methods, often relying on 2D observations and temporal-centric action representation, struggle to capture 3D spatial relations and fail to handle embodiment heterogeneity. This paper proposes the Structural Action Transformer (SAT), a new 3D de"
+        }
+      ],
+      "assumption_links": {
+        "V-009": {
+          "strength": 0.09,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:h-wm": {
+      "type": "model",
+      "name": "H-WM",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "H-WM: Robotic Task and Motion Planning Guided by Hierarchical World Model",
+          "url": "https://arxiv.org/abs/2602.11291",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2602.11291v2 Announce Type: replace Abstract: World models are becoming central to robotic planning and control as they enable prediction of future state transitions. Existing approaches often emphasize video generation or natural-language prediction, which are difficult to ground in robot actions and suffer from compounding errors over long horizons. Classic task and motion planning models world transitions in logical space, enabling robot-executable and robust long-horizon reasoning. How"
+        }
+      ],
+      "assumption_links": {
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "lab:上交": {
+      "type": "lab",
+      "name": "上交",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "RehearseVLA: Simulated Post-Training for VLAs with Physically-Consistent World Model",
+          "url": "https://arxiv.org/abs/2509.24948",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.24948v4 Announce Type: replace Abstract: Vision-Language-Action (VLA) models trained via imitation learning suffer from significant performance degradation in data-scarce scenarios due to their reliance on large-scale demonstration datasets. Although reinforcement learning (RL)-based post-training has proven effective in addressing data scarcity, its application to VLA models is hindered by the non-resettable nature of real-world environments. This limitation is particularly critical"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "model:rehearsevla": {
+      "type": "model",
+      "name": "RehearseVLA",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "RehearseVLA: Simulated Post-Training for VLAs with Physically-Consistent World Model",
+          "url": "https://arxiv.org/abs/2509.24948",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.24948v4 Announce Type: replace Abstract: Vision-Language-Action (VLA) models trained via imitation learning suffer from significant performance degradation in data-scarce scenarios due to their reliance on large-scale demonstration datasets. Although reinforcement learning (RL)-based post-training has proven effective in addressing data scarcity, its application to VLA models is hindered by the non-resettable nature of real-world environments. This limitation is particularly critical"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "method:rl_finetuning": {
+      "type": "method",
+      "name": "rl_finetuning",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "RehearseVLA: Simulated Post-Training for VLAs with Physically-Consistent World Model",
+          "url": "https://arxiv.org/abs/2509.24948",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.24948v4 Announce Type: replace Abstract: Vision-Language-Action (VLA) models trained via imitation learning suffer from significant performance degradation in data-scarce scenarios due to their reliance on large-scale demonstration datasets. Although reinforcement learning (RL)-based post-training has proven effective in addressing data scarcity, its application to VLA models is hindered by the non-resettable nature of real-world environments. This limitation is particularly critical"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "lab:mit": {
+      "type": "lab",
+      "name": "MIT",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation with Physical Skill Challenges and Embodied Multimodal Reasoning",
+          "url": "https://arxiv.org/abs/2603.04363",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.04363v1 Announce Type: new Abstract: Dexterous manipulation enables robots to purposefully alter the physical world, transforming them from passive observers into active agents in unstructured environments. This capability is the cornerstone of physical artificial intelligence. Despite decades of advances in hardware, perception, control, and learning, progress toward general manipulation systems remains fragmented due to the absence of widely adopted standard benchmarks. The central"
+        }
+      ],
+      "assumption_links": {
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "lab:adelson": {
+      "type": "lab",
+      "name": "Adelson",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation with Physical Skill Challenges and Embodied Multimodal Reasoning",
+          "url": "https://arxiv.org/abs/2603.04363",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.04363v1 Announce Type: new Abstract: Dexterous manipulation enables robots to purposefully alter the physical world, transforming them from passive observers into active agents in unstructured environments. This capability is the cornerstone of physical artificial intelligence. Despite decades of advances in hardware, perception, control, and learning, progress toward general manipulation systems remains fragmented due to the absence of widely adopted standard benchmarks. The central"
+        }
+      ],
+      "assumption_links": {
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:manipulationnet": {
+      "type": "model",
+      "name": "ManipulationNet",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "ManipulationNet: An Infrastructure for Benchmarking Real-World Robot Manipulation with Physical Skill Challenges and Embodied Multimodal Reasoning",
+          "url": "https://arxiv.org/abs/2603.04363",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.04363v1 Announce Type: new Abstract: Dexterous manipulation enables robots to purposefully alter the physical world, transforming them from passive observers into active agents in unstructured environments. This capability is the cornerstone of physical artificial intelligence. Despite decades of advances in hardware, perception, control, and learning, progress toward general manipulation systems remains fragmented due to the absence of widely adopted standard benchmarks. The central"
+        }
+      ],
+      "assumption_links": {
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:skillvla": {
+      "type": "model",
+      "name": "SkillVLA",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "SkillVLA: Tackling Combinatorial Diversity in Dual-Arm Manipulation via Skill Reuse",
+          "url": "https://arxiv.org/abs/2603.03836",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03836v1 Announce Type: new Abstract: Recent progress in vision-language-action (VLA) models has demonstrated strong potential for dual-arm manipulation, enabling complex behaviors and generalization to unseen environments. However, mainstream bimanual VLA formulations largely overlook the critical challenge of combinatorial diversity. Different pairings of single-arm behaviors can induce qualitatively distinct task behaviors, yet existing models do not explicitly account for this stru"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "model:mem": {
+      "type": "model",
+      "name": "MEM",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "MEM: Multi-Scale Embodied Memory for Vision Language Action Models",
+          "url": "https://arxiv.org/abs/2603.03596",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.03596v1 Announce Type: new Abstract: Conventionally, memory in end-to-end robotic learning involves inputting a sequence of past observations into the learned policy. However, in complex multi-stage real-world tasks, the robot's memory must represent past events at multiple levels of granularity: from long-term memory that captures abstracted semantic concepts (e.g., a robot cooking dinner should remember which stages of the recipe are already done) to short-term memory that captures"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "lab:ut austin": {
+      "type": "lab",
+      "name": "UT Austin",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "RoboCasa365: A Large-Scale Simulation Framework for Training and Benchmarking Generalist Robots",
+          "url": "https://tldr.takara.ai/p/2603.04356",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "Recent advances in robot learning have accelerated progress toward generalist robots that can perform everyday tasks in human environments. Yet it remains difficult to gauge how close we are to this vision. The field lacks a reproducible, large-scale benchmark for systematic evaluation. To fill this gap, we present RoboCasa365, a comprehensive simulation benchmark for household mobile manipulation. Built on the RoboCasa platform, RoboCasa365 introduces 365 everyday tasks across 2,500 diverse kit"
+        }
+      ],
+      "assumption_links": {
+        "A-006": {
+          "strength": 0.04,
+          "direction": "supporting"
+        }
+      }
+    },
+    "lab:zhu": {
+      "type": "lab",
+      "name": "Zhu",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "RoboCasa365: A Large-Scale Simulation Framework for Training and Benchmarking Generalist Robots",
+          "url": "https://tldr.takara.ai/p/2603.04356",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "Recent advances in robot learning have accelerated progress toward generalist robots that can perform everyday tasks in human environments. Yet it remains difficult to gauge how close we are to this vision. The field lacks a reproducible, large-scale benchmark for systematic evaluation. To fill this gap, we present RoboCasa365, a comprehensive simulation benchmark for household mobile manipulation. Built on the RoboCasa platform, RoboCasa365 introduces 365 everyday tasks across 2,500 diverse kit"
+        }
+      ],
+      "assumption_links": {
+        "A-006": {
+          "strength": 0.04,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:robocasa365": {
+      "type": "model",
+      "name": "RoboCasa365",
+      "signals": [
+        {
+          "date": "2026-03-06",
+          "title": "RoboCasa365: A Large-Scale Simulation Framework for Training and Benchmarking Generalist Robots",
+          "url": "https://tldr.takara.ai/p/2603.04356",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "Recent advances in robot learning have accelerated progress toward generalist robots that can perform everyday tasks in human environments. Yet it remains difficult to gauge how close we are to this vision. The field lacks a reproducible, large-scale benchmark for systematic evaluation. To fill this gap, we present RoboCasa365, a comprehensive simulation benchmark for household mobile manipulation. Built on the RoboCasa platform, RoboCasa365 introduces 365 everyday tasks across 2,500 diverse kit"
+        }
+      ],
+      "assumption_links": {
+        "A-006": {
+          "strength": 0.04,
+          "direction": "supporting"
+        }
+      }
+    },
+    "lab:kaist": {
+      "type": "lab",
+      "name": "KAIST",
+      "signals": [
+        {
+          "date": "2026-03-07",
+          "title": "Beyond the Patch: Exploring Vulnerabilities of Visuomotor Policies via Viewpoint-Consistent 3D Adversarial Object",
+          "url": "https://tldr.takara.ai/p/2603.04913",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "Neural network-based visuomotor policies enable robots to perform manipulation tasks but remain susceptible to perceptual attacks. For example, conventional 2D adversarial patches are effective under fixed-camera setups, where appearance is relatively consistent; however, their efficacy often diminishes under dynamic viewpoints from moving cameras, such as wrist-mounted setups, due to perspective distortions. To proactively investigate potential vulnerabilities beyond 2D patches, this work propo"
+        }
+      ],
+      "assumption_links": {}
     }
   },
-  "last_updated": "2026-03-06"
+  "last_updated": "2026-03-07"
 }

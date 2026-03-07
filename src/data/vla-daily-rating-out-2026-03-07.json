@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "model": "qwen3.5-plus",
+  "total": 2,
+  "counts": {
+    "⚡": 0,
+    "🔧": 0,
+    "📖": 1,
+    "❌": 1
+  },
+  "parse_error": "",
+  "filter_funnel": {
+    "total_rss": 2,
+    "pass1_a": 2,
+    "pass1_b": 0,
+    "pass2_promoted": 0,
+    "pass3_downgraded": 0,
+    "final_star": 0,
+    "final_gear": 0,
+    "final_book": 1,
+    "final_x": 1
+  },
+  "pass1_bucket_b": [],
+  "pass3_verdicts": [],
+  "papers": [
+    {
+      "title": "Probabilistic Dreaming for World Models",
+      "date": "2026-03-07",
+      "url": "https://tldr.takara.ai/p/2603.04715",
+      "source": "hf-papers",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "\"Dreaming\" enables agents to learn from imagined experiences, enabling more robust and sample-efficient learning of world models. In this work, we consider innovations to the state-of-the-art Dreamer model using probabilistic methods that enable: (1) the parallel exploration of many latent states; and (2) maintaining distinct hypotheses for mutually exclusive futures while retaining the desirable gradient properties of continuous latents. Evaluating on the MPE SimpleTag domain, our method outper",
+      "bucket": "A",
+      "pass1_reason": "",
+      "rating": "❌",
+      "reason": "Dreamer 概率化改进，支持多 latent 状态并行探索。仅在 MPE SimpleTag 验证，无视觉/语言/机器人实验，不符合 VLA 具身智能范畴 [💧灌水]",
+      "affiliation": "",
+      "pass3_note": "",
+      "full_abstract": "\"Dreaming\" enables agents to learn from imagined experiences, enabling more robust and sample-efficient learning of world models. In this work, we consider innovations to the state-of-the-art Dreamer model using probabilistic methods that enable: (1) the parallel exploration of many latent states; and (2) maintaining distinct hypotheses for mutually exclusive futures while retaining the desirable gradient properties of continuous latents. Evaluating on the MPE SimpleTag domain, our method outperforms standard Dreamer with a 4.5% score improvement and 28% lower variance in episode returns. We also discuss limitations and directions for future work, including how optimal hyperparameters (e.g. particle count K) scale with environmental complexity, and methods to capture epistemic uncertainty in world models."
+    },
+    {
+      "title": "Beyond the Patch: Exploring Vulnerabilities of Visuomotor Policies via Viewpoint-Consistent 3D Adversarial Object",
+      "date": "2026-03-07",
+      "url": "https://tldr.takara.ai/p/2603.04913",
+      "source": "hf-papers",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "Neural network-based visuomotor policies enable robots to perform manipulation tasks but remain susceptible to perceptual attacks. For example, conventional 2D adversarial patches are effective under fixed-camera setups, where appearance is relatively consistent; however, their efficacy often diminishes under dynamic viewpoints from moving cameras, such as wrist-mounted setups, due to perspective distortions. To proactively investigate potential vulnerabilities beyond 2D patches, this work propo",
+      "bucket": "A",
+      "pass1_reason": "",
+      "rating": "📖",
+      "reason": "提出 viewpoint-consistent 3D 对抗纹理优化，解决 2D 补丁在腕部相机动态视角失效问题。采用 EOT 与 C2F 课程学习，为 VLA 策略鲁棒性评估新工具。",
+      "affiliation": "[KAIST]",
+      "pass3_note": "",
+      "full_abstract": "Neural network-based visuomotor policies enable robots to perform manipulation tasks but remain susceptible to perceptual attacks. For example, conventional 2D adversarial patches are effective under fixed-camera setups, where appearance is relatively consistent; however, their efficacy often diminishes under dynamic viewpoints from moving cameras, such as wrist-mounted setups, due to perspective distortions. To proactively investigate potential vulnerabilities beyond 2D patches, this work proposes a viewpoint-consistent adversarial texture optimization method for 3D objects through differentiable rendering. As optimization strategies, we employ Expectation over Transformation (EOT) with a Coarse-to-Fine (C2F) curriculum, exploiting distance-dependent frequency characteristics to induce textures effective across varying camera-object distances. We further integrate saliency-guided perturbations to redirect policy attention and design a targeted loss that persistently drives robots toward adversarial objects. Our comprehensive experiments show that the proposed method is effective under various environmental conditions, while confirming its black-box transferability and real-world applicability."
+    }
+  ]
+}
