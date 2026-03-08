@@ -185,7 +185,13 @@ const MOCK_SOCIAL = [
 // ---------------------------------------------------------------------------
 const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 const displayDate = todayPicks.date;
-const todayVLA    = recentVLA[0]?.date === displayDate ? recentVLA[0] : undefined;
+// Fall back to most recent VLA data within 3 days (weekends have no VLA ratings)
+const todayVLA    = (() => {
+  const v = recentVLA[0];
+  if (!v) return undefined;
+  const diff = Math.abs(new Date(displayDate).getTime() - new Date(v.date).getTime());
+  return diff <= 3 * 86400000 ? v : undefined;  // within 3 days
+})();
 
 const heroAI  = todayPicks.items[0];
 const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
