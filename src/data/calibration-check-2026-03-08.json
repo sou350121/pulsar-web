@@ -1,0 +1,53 @@
+{
+  "date": "2026-03-08",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "LIBERO/CALVIN 双榜饱和 (99.1%/4.8%) 使评测基准局限性凸显；机械预评分 counter_evidence:moderate 确认存在挑战性信号，但 diffusion 仍占主导，未达失效条件"
+    },
+    "V-005": {
+      "score": 0.25,
+      "reason": "method_competition:moderate — RL 微调方法族存在竞争信号，但无直接 VLA RL 退化证据"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LIBERO 开源榜 99.1% 饱和使开源 vs 闭源对比基准受限，但实际信号支持开源竞争力"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak (3D spatial 关键词 7d 内消失) + benchmark_relevance:weak — 早期预警信号，远未达失效条件"
+    },
+    "A-002": {
+      "score": 0.25,
+      "reason": "early_warning — 'Verification debt' 文章 + 'LLM writes plausible code not correct code' 讨论揭示 agentic coding 当前局限性，但属赛道成长信号而非假设挑战"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 20,
+  "ai_signals_scanned": 63,
+  "triggers": [],
+  "note": "5 个假设有信号：V-001 approaching (0.50，机械预评分确认 + 基准饱和); V-005/V-008/V-010/A-002 early_warning (0.25)。无强触发 (1.00)。",
+  "method_trends_summary": {
+    "cross_embodiment": "stable",
+    "dexterous_hand": "stable",
+    "diffusion_policy": "stable",
+    "flow_matching": "stable",
+    "instruction_tuning": "accelerating",
+    "rl_finetuning": "stable",
+    "tactile": "stable",
+    "world_model": "stable"
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": [
+    "CALVIN/ABC-D (4.8%)",
+    "CALVIN/ABCD-D (4.8%)",
+    "CALVIN/D-D (4.3%)",
+    "LIBERO/non-standard (97.3%)",
+    "LIBERO/standard-closed (98.6%)",
+    "LIBERO/standard-opensource (99.1%)"
+  ]
+}
