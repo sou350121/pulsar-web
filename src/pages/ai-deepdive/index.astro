@@ -2,7 +2,7 @@
 /**
  * src/pages/ai-deepdive/index.astro — 學習導向重設計
  * 問題：93 篇全落入「最近 2 週」，讀者被 93 張卡片轟炸，不知從何入手。
- * 解法：入門路徑 → 精選必讀 8 篇 → PULSAR 深度分析 → 模塊過濾 + 緊湊列表。
+ * 解法：入門路徑 → 精選必讀 8 篇 → PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span> → 模塊過濾 + 緊湊列表。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadAIGitHubArticles, loadAIDeepDive } from '../../utils/data';
@@ -15,13 +15,13 @@ const gh = (mod: string, slug: string) => `${GITHUB_REPO}/blob/main/theory/${mod
 
 // ── Module metadata ─────────────────────────────────────────────────────────
 const MODULE_ORDER = ['01-principles','02-agent-design','03-engineering','04-paradigm','05-strategy','06-frontier'];
-const MM: Record<string, { label: string; accent: string; star?: boolean }> = {
-  '01-principles':   { label: '底層原理',   accent: 'blue' },
-  '02-agent-design': { label: 'Agent 設計', accent: 'purple' },
-  '03-engineering':  { label: '工程實戰',   accent: 'amber', star: true },
-  '04-paradigm':     { label: '範式轉變',   accent: 'green' },
-  '05-strategy':     { label: '戰略生存',   accent: 'red' },
-  '06-frontier':     { label: '前沿研究',   accent: 'cyan' },
+const MM: Record<string, { label: string; labelSC: string; accent: string; star?: boolean }> = {
+  '01-principles':   { label: '底層原理',   labelSC: '底层原理',   accent: 'blue' },
+  '02-agent-design': { label: 'Agent 設計', labelSC: 'Agent 设计', accent: 'purple' },
+  '03-engineering':  { label: '工程實戰',   labelSC: '工程实战',   accent: 'amber', star: true },
+  '04-paradigm':     { label: '範式轉變',   labelSC: '范式转变',   accent: 'green' },
+  '05-strategy':     { label: '戰略生存',   labelSC: '战略生存',   accent: 'red' },
+  '06-frontier':     { label: '前沿研究',   labelSC: '前沿研究',   accent: 'cyan' },
 };
 
 // Group by module, sort alphabetically within each
@@ -32,21 +32,21 @@ for (const m of MODULE_ORDER) { byModule[m]?.sort((a, b) => a.title.localeCompar
 // ── Curated pinned articles (8 must-reads) ──────────────────────────────────
 const PINNED = [
   { mod: '03-engineering', slug: '00-glossary-for-beginners.md',
-    title: '新手詞彙表',        desc: '掌握 Agent 工程核心術語，第一篇必讀' },
+    title: '新手詞彙表',        titleSC: '新手词汇表',        desc: '掌握 Agent 工程核心術語，第一篇必讀', descSC: '掌握 Agent 工程核心术语，第一篇必读' },
   { mod: '01-principles',  slug: 'agent-mental-model.md',
-    title: 'Agent 心智模型',    desc: '理解 Agent 如何「思考」的底層認知框架' },
+    title: 'Agent 心智模型',    titleSC: 'Agent 心智模型',    desc: '理解 Agent 如何「思考」的底層認知框架', descSC: '理解 Agent 如何"思考"的底层认知框架' },
   { mod: '03-engineering', slug: 'context-engineering-field-guide.md',
-    title: 'Context 工程手冊',  desc: '從壓縮到結構化注入的完整方法論' },
+    title: 'Context 工程手冊',  titleSC: 'Context 工程手册',  desc: '從壓縮到結構化注入的完整方法論', descSC: '从压缩到结构化注入的完整方法论' },
   { mod: '03-engineering', slug: 'agent-failure-taxonomy.md',
-    title: 'T1–T6 故障分類法', desc: '生產部署前必讀的 Agent 失敗模式大全' },
+    title: 'T1–T6 故障分類法', titleSC: 'T1–T6 故障分类法', desc: '生產部署前必讀的 Agent 失敗模式大全', descSC: '生产部署前必读的 Agent 失败模式大全' },
   { mod: '03-engineering', slug: 'trust-tier-design.md',
-    title: '信任分層設計',       desc: '防止 Agent 越權的多層級權限架構' },
+    title: '信任分層設計',       titleSC: '信任分层设计',       desc: '防止 Agent 越權的多層級權限架構', descSC: '防止 Agent 越权的多层级权限架构' },
   { mod: '03-engineering', slug: 'eval-loop-as-production-practice.md',
-    title: '評估環路即生產實踐', desc: '把評估從測試階段提升為持續生產實踐' },
+    title: '評估環路即生產實踐', titleSC: '评估环路即生产实践', desc: '把評估從測試階段提升為持續生產實踐', descSC: '把评估从测试阶段提升为持续生产实践' },
   { mod: '03-engineering', slug: 'delegation-not-automation-engineering-principles.md',
-    title: '委托而非自動化',     desc: '重新定義 Agent 與人類協作的工程邊界' },
+    title: '委托而非自動化',     titleSC: '委托而非自动化',     desc: '重新定義 Agent 與人類協作的工程邊界', descSC: '重新定义 Agent 与人类协作的工程边界' },
   { mod: '05-strategy',    slug: 'agent-native-org-roles.md',
-    title: 'Agent 原生組織角色', desc: 'Agent 時代的職能重構與角色設計' },
+    title: 'Agent 原生組織角色', titleSC: 'Agent 原生组织角色', desc: 'Agent 時代的職能重構與角色設計', descSC: 'Agent 时代的职能重构与角色设计' },
 ].map((p, i) => ({
   ...p,
   url: gh(p.mod, p.slug),
@@ -58,48 +58,48 @@ const PINNED = [
 // ── Learning paths ───────────────────────────────────────────────────────────
 const PATHS = [
   {
-    role: '工程師入門', icon: '⚙',
-    desc: '從零建立完整的 Agentic 工程認知',
+    role: '工程師入門', roleSC: '工程师入门', icon: '⚙',
+    desc: '從零建立完整的 Agentic 工程認知', descSC: '从零建立完整的 Agentic 工程认知',
     accent: 'amber',
     steps: [
-      { label: '新手詞彙表',        url: gh('03-engineering', '00-glossary-for-beginners.md') },
-      { label: 'Agent 心智模型',     url: gh('01-principles',  'agent-mental-model.md') },
-      { label: 'Context 工程手冊',   url: gh('03-engineering', 'context-engineering-field-guide.md') },
-      { label: 'T1–T6 故障分類法',  url: gh('03-engineering', 'agent-failure-taxonomy.md') },
-      { label: 'Agent 記憶系統',     url: gh('02-agent-design','agent-memory-system-short-to-long.md') },
+      { label: '新手詞彙表', labelSC: '新手词汇表',        url: gh('03-engineering', '00-glossary-for-beginners.md') },
+      { label: 'Agent 心智模型', labelSC: 'Agent 心智模型',     url: gh('01-principles',  'agent-mental-model.md') },
+      { label: 'Context 工程手冊', labelSC: 'Context 工程手册',   url: gh('03-engineering', 'context-engineering-field-guide.md') },
+      { label: 'T1–T6 故障分類法', labelSC: 'T1–T6 故障分类法',  url: gh('03-engineering', 'agent-failure-taxonomy.md') },
+      { label: 'Agent 記憶系統', labelSC: 'Agent 记忆系统',     url: gh('02-agent-design','agent-memory-system-short-to-long.md') },
     ],
   },
   {
-    role: '系統架構師', icon: '⬡',
-    desc: '設計可靠的多 Agent 控制平面與治理',
+    role: '系統架構師', roleSC: '系统架构师', icon: '⬡',
+    desc: '設計可靠的多 Agent 控制平面與治理', descSC: '设计可靠的多 Agent 控制平面与治理',
     accent: 'purple',
     steps: [
-      { label: '信任分層設計',        url: gh('03-engineering', 'trust-tier-design.md') },
-      { label: '控制平面設計',        url: gh('03-engineering', 'agentic-control-plane-design.md') },
-      { label: '委托而非自動化',      url: gh('03-engineering', 'delegation-not-automation-engineering-principles.md') },
-      { label: 'Agentic 編排元系統', url: gh('02-agent-design', 'agentic-orchestration-meta-system.md') },
-      { label: 'Agent 原生組織角色',  url: gh('05-strategy',    'agent-native-org-roles.md') },
+      { label: '信任分層設計', labelSC: '信任分层设计',        url: gh('03-engineering', 'trust-tier-design.md') },
+      { label: '控制平面設計', labelSC: '控制平面设计',        url: gh('03-engineering', 'agentic-control-plane-design.md') },
+      { label: '委托而非自動化', labelSC: '委托而非自动化',      url: gh('03-engineering', 'delegation-not-automation-engineering-principles.md') },
+      { label: 'Agentic 編排元系統', labelSC: 'Agentic 编排元系统', url: gh('02-agent-design', 'agentic-orchestration-meta-system.md') },
+      { label: 'Agent 原生組織角色', labelSC: 'Agent 原生组织角色',  url: gh('05-strategy',    'agent-native-org-roles.md') },
     ],
   },
   {
-    role: '產品 / 戰略', icon: '◎',
-    desc: '把握範式轉變，制定 AI 時代競爭策略',
+    role: '產品 / 戰略', roleSC: '产品 / 战略', icon: '◎',
+    desc: '把握範式轉變，制定 AI 時代競爭策略', descSC: '把握范式转变，制定 AI 时代竞争策略',
     accent: 'green',
     steps: [
-      { label: 'Vibe Coding 範式',   url: gh('04-paradigm', 'vibe-coding-paradigm.md') },
-      { label: '智能作為資源',        url: gh('04-paradigm', 'intelligence-as-a-resource.md') },
-      { label: 'Agent 原生組織角色',  url: gh('05-strategy', 'agent-native-org-roles.md') },
-      { label: '評估環路即生產實踐',  url: gh('03-engineering','eval-loop-as-production-practice.md') },
+      { label: 'Vibe Coding 範式', labelSC: 'Vibe Coding 范式',   url: gh('04-paradigm', 'vibe-coding-paradigm.md') },
+      { label: '智能作為資源', labelSC: '智能作为资源',        url: gh('04-paradigm', 'intelligence-as-a-resource.md') },
+      { label: 'Agent 原生組織角色', labelSC: 'Agent 原生组织角色',  url: gh('05-strategy', 'agent-native-org-roles.md') },
+      { label: '評估環路即生產實踐', labelSC: '评估环路即生产实践',  url: gh('03-engineering','eval-loop-as-production-practice.md') },
     ],
   },
 ];
 
 // ── Deep dive signal_type mapping ────────────────────────────────────────────
 const SIGNAL_MAP: Record<string, { label: string; accent: string }> = {
-  product_release:   { label: '新發布',     accent: 'amber' },
-  breaking_change:   { label: '破壞性變更', accent: 'red' },
-  framework_update:  { label: '框架更新',   accent: 'purple' },
-  blog_post:         { label: '深度文章',   accent: 'cyan' },
+  product_release:   { label: '新發布',     labelSC: '新发布',     accent: 'amber' },
+  breaking_change:   { label: '破壞性變更', labelSC: '破坏性变更', accent: 'red' },
+  framework_update:  { label: '框架更新',   labelSC: '框架更新',   accent: 'purple' },
+  blog_post:         { label: '深度文章',   labelSC: '深度文章',   accent: 'cyan' },
 };
 
 // Initial display limit for deep dive articles
@@ -122,7 +122,7 @@ function artNewBadge(dateStr: string): string | null {
 
 <BaseLayout
   title="AI 理論文章庫"
-  description="Agentic Engineering 學習指南 — 93 篇深度文章，從入門到架構師"
+  description="Agentic Engineering 学习指南 — 深度文章，从入门到架构师"
 >
 <div class="dd-page page-container">
 
@@ -136,12 +136,12 @@ function artNewBadge(dateStr: string): string | null {
   <!-- ── Masthead ── -->
   <header class="masthead">
     <div class="masthead-overline">AGENT-PLAYBOOK · THEORY ARCHIVE</div>
-    <h1 class="masthead-title">Agentic Engineering<br/>學習知識庫</h1>
+    <h1 class="masthead-title">Agentic Engineering<br/><span data-tc>學習知識庫</span><span data-sc>学习知识库</span></h1>
     <div class="masthead-bar"></div>
     <div class="masthead-stats">
-      <span class="stat"><strong>{MODULE_ORDER.filter(m => byModule[m]).length}</strong> 個模塊</span>
+      <span class="stat"><strong>{MODULE_ORDER.filter(m => byModule[m]).length}</strong> <span data-tc>個模塊</span><span data-sc>个模块</span></span>
       <span class="stat-div">·</span>
-      <span class="stat"><strong>{articles.length}</strong> 篇文章</span>
+      <span class="stat"><strong>{articles.length}</strong> <span data-tc>篇文章</span><span data-sc>篇文章</span></span>
       <span class="stat-div">·</span>
       <span class="stat">Pulsar 每日自動更新</span>
       <a href={`${GITHUB_REPO}/tree/main/theory`} target="_blank" rel="noopener noreferrer" class="masthead-gh">
@@ -154,15 +154,15 @@ function artNewBadge(dateStr: string): string | null {
        SECTION A: 入門路徑
   ══════════════════════════════ -->
   <section class="start-here">
-    <div class="sh-label">✦ 不知道從哪裡開始？選一條路徑</div>
+    <div class="sh-label">✦ <span data-tc>不知道從哪裡開始？選一條路徑</span><span data-sc>不知道从哪里开始？选一条路径</span></div>
     <div class="path-grid">
       {PATHS.map(path => (
         <div class={`path-card path-card--${path.accent}`}>
           <div class="path-head">
             <span class="path-icon">{path.icon}</span>
             <div>
-              <div class="path-role">{path.role}</div>
-              <div class="path-desc">{path.desc}</div>
+              <div class="path-role"><span data-tc>{path.role}</span><span data-sc>{path.roleSC}</span></div>
+              <div class="path-desc"><span data-tc>{path.desc}</span><span data-sc>{path.descSC}</span></div>
             </div>
           </div>
           <ol class="path-steps">
@@ -170,7 +170,7 @@ function artNewBadge(dateStr: string): string | null {
               <li class="path-step">
                 <span class="step-n">{i + 1}</span>
                 <a href={step.url} target="_blank" rel="noopener noreferrer" class="step-link">
-                  {step.label}
+                  <span data-tc>{step.label}</span><span data-sc>{step.labelSC ?? step.label}</span>
                   <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                     <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
                   </svg>
@@ -188,17 +188,17 @@ function artNewBadge(dateStr: string): string | null {
   ══════════════════════════════ -->
   <section class="pinned-section">
     <div class="section-hd">
-      <h2 class="section-title">精選必讀</h2>
-      <span class="section-sub">建立 Agentic 工程直覺的 8 篇核心文章</span>
+      <h2 class="section-title"><span data-tc>精選必讀</span><span data-sc>精选必读</span></h2>
+      <span class="section-sub"><span data-tc>建立 Agentic 工程直覺的 8 篇核心文章</span><span data-sc>建立 Agentic 工程直觉的 8 篇核心文章</span></span>
     </div>
     <div class="pinned-grid">
       {PINNED.map(p => (
         <a href={p.url} target="_blank" rel="noopener noreferrer" class={`pinned-card pinned-card--${p.accent}`}>
           <div class="pinned-num">{p.num}</div>
           <div class="pinned-body">
-            <span class={`pinned-mod pinned-mod--${p.accent}`}>{p.modLabel}</span>
-            <div class="pinned-title">{p.title}</div>
-            <div class="pinned-desc">{p.desc}</div>
+            <span class={`pinned-mod pinned-mod--${p.accent}`}><span data-tc>{p.modLabel}</span><span data-sc>{MM[p.mod]?.labelSC ?? p.modLabel}</span></span>
+            <div class="pinned-title"><span data-tc>{p.title}</span><span data-sc>{p.titleSC}</span></div>
+            <div class="pinned-desc"><span data-tc>{p.desc}</span><span data-sc>{p.descSC}</span></div>
           </div>
           <span class="pinned-arrow" aria-hidden="true">→</span>
         </a>
@@ -207,17 +207,17 @@ function artNewBadge(dateStr: string): string | null {
   </section>
 
   <!-- ══════════════════════════════
-       SECTION B2: PULSAR 深度分析
+       SECTION B2: PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span>
   ══════════════════════════════ -->
   {deepDiveArticles.length > 0 && (
     <section class="dd-section">
       <div class="section-hd">
-        <h2 class="section-title">PULSAR 深度分析</h2>
-        <span class="section-sub">{deepDiveArticles.length} 篇 · Pipeline 自動生成</span>
+        <h2 class="section-title">PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span></h2>
+        <span class="section-sub">{deepDiveArticles.length} <span data-tc>篇 · Pipeline 自動生成</span><span data-sc>篇 · Pipeline 自动生成</span></span>
       </div>
       <div class="dd-list" id="dd-list">
         {deepDiveArticles.map((article, idx) => {
-          const sig = SIGNAL_MAP[article.signal_type] ?? { label: article.signal_type, accent: 'cyan' };
+          const sig = SIGNAL_MAP[article.signal_type] ?? { label: article.signal_type, labelSC: article.signal_type, accent: 'cyan' };
           return (
             <a
               href={article.html_url || article.url}
@@ -227,7 +227,7 @@ function artNewBadge(dateStr: string): string | null {
               data-dd-idx={idx}
             >
               <time class="dd-date">{article.date}</time>
-              <span class={`dd-signal dd-signal--${sig.accent}`}>{sig.label}</span>
+              <span class={`dd-signal dd-signal--${sig.accent}`}><span data-tc>{sig.label}</span><span data-sc>{sig.labelSC ?? sig.label}</span></span>
               <span class="dd-title">{article.title}</span>
               <svg class="dd-ext" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                 <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
@@ -238,7 +238,7 @@ function artNewBadge(dateStr: string): string | null {
       </div>
       {deepDiveArticles.length > DD_INITIAL && (
         <button class="dd-expand-btn" id="dd-expand-btn" type="button">
-          展開全部（{deepDiveArticles.length} 篇）
+          <span data-tc>展開全部</span><span data-sc>展开全部</span>（{deepDiveArticles.length} <span data-tc>篇</span><span data-sc>篇</span>）
         </button>
       )}
     </section>
@@ -250,17 +250,17 @@ function artNewBadge(dateStr: string): string | null {
   <section class="browse-section">
     <div class="section-hd">
       <h2 class="section-title">全部文章</h2>
-      <span class="section-sub">{articles.length} 篇 · 點擊模塊過濾</span>
+      <span class="section-sub">{articles.length} <span data-tc>篇 · 點擊模塊過濾</span><span data-sc>篇 · 点击模块过滤</span></span>
     </div>
 
     <!-- Module filter -->
-    <div class="mod-filter" id="mod-filter" role="tablist" aria-label="模塊過濾">
+    <div class="mod-filter" id="mod-filter" role="tablist" aria-label="模块过滤">
       <button class="mf-btn mf-btn--all active" data-mod="all" role="tab" aria-selected="true">
         全部 <span class="mf-ct">{articles.length}</span>
       </button>
       {MODULE_ORDER.filter(m => byModule[m]).map(m => (
         <button class={`mf-btn mf-btn--${MM[m].accent}`} data-mod={m} role="tab" aria-selected="false">
-          {MM[m].label}{MM[m].star ? ' ★' : ''}
+          <span data-tc>{MM[m].label}</span><span data-sc>{MM[m].labelSC}</span>{MM[m].star ? ' ★' : ''}
           <span class="mf-ct">{byModule[m].length}</span>
         </button>
       ))}
@@ -272,10 +272,10 @@ function artNewBadge(dateStr: string): string | null {
         <div class="mod-group" data-mod={m}>
           <div class="mod-group-hd">
             <span class={`mod-label mod-label--${MM[m].accent}`}>
-              {MM[m].label}
-              {MM[m].star && <span class="mod-star-badge">核心模塊</span>}
+              <span data-tc>{MM[m].label}</span><span data-sc>{MM[m].labelSC}</span>
+              {MM[m].star && <span class="mod-star-badge"><span data-tc>核心模塊</span><span data-sc>核心模块</span></span>}
             </span>
-            <span class="mod-ct">{byModule[m].length} 篇</span>
+            <span class="mod-ct">{byModule[m].length} <span data-tc>篇</span><span data-sc>篇</span></span>
           </div>
           <div class="art-list">
             {byModule[m].map(article => (
