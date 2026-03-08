@@ -34,7 +34,7 @@ const allCombined = [
   ...dedupedGh.map(a => ({
     title:    a.title,
     date:     a.date,
-    html_url: a.html_url,
+    html_url: a.html_url || a.url,
     topic:    a.topic,
     source:   'github' as const,
   })),
@@ -232,7 +232,7 @@ const base = import.meta.env.BASE_URL;
                     </div>
                     <h3 class="vdd-card-title">{article.title}</h3>
                     <a
-                      href={article.html_url}
+                      href={article.html_url || article.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="vdd-card-cta"
@@ -266,7 +266,7 @@ const base = import.meta.env.BASE_URL;
                     <div class="vdd-art-list">
                       {byTopicAll[topic].map((article, i) => (
                         <a
-                          href={article.html_url}
+                          href={article.html_url || article.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           class="vdd-art-row"

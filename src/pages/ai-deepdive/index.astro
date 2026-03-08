@@ -280,7 +280,7 @@ function artNewBadge(dateStr: string): string | null {
           <div class="art-list">
             {byModule[m].map(article => (
               <a
-                href={article.html_url}
+                href={article.html_url || article.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="art-row"
