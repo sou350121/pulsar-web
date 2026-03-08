@@ -251,7 +251,7 @@ let lastMonth = '';
                     : `${base}/vla/${date}`;
                   return (
                     <a
-                      href={item.url ?? href}
+                      href={item.url || href}
                       target={item.url ? '_blank' : undefined}
                       rel={item.url ? 'noopener noreferrer' : undefined}
                       class:list={['recent-item', `recent-item--${item.domain}`]}

@@ -8,7 +8,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
 import DigestFeed from '../../components/DigestFeed.astro';
-import { loadAIDailyPicks } from '../../utils/data';
+import { loadAIDailyPicks, loadVLADailyPicks } from '../../utils/data';
+
+// VLA dates that have pages (for conditional cross-link)
+const vlaDates = new Set(loadVLADailyPicks(90).map(d => d.date));
 
 // getStaticPaths — required for Astro static output
 export async function getStaticPaths() {
@@ -64,7 +67,9 @@ function formatDateDisplay(d: string): string {
   <div class="detail-domain-bar page-container">
     <span class="ddb-label">AI App 線</span>
     <span class="ddb-sep">·</span>
-    <a href={`${base}/vla/${date}`} class="ddb-cross"><span data-tc>查看同日 VLA 報告 →</span><span data-sc>查看同日 VLA 报告 →</span></a>
+    {vlaDates.has(date) && (
+      <a href={`${base}/vla/${date}`} class="ddb-cross"><span data-tc>查看同日 VLA 報告 →</span><span data-sc>查看同日 VLA 报告 →</span></a>
+    )}
   </div>
 
   <!-- Telegram-style digest at top — all items in a dense list -->
