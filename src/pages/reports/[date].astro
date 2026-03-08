@@ -94,7 +94,7 @@ function formatPeriod(iso: string): string {
     <nav class="detail-breadcrumb" aria-label="麵包屑">
       <a href={`${base}`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">›</span>
-      <a href={`${base}reports`} class="bc-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
+      <a href={`${base}/reports`} class="bc-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
       <span class="bc-sep">›</span>
       <span class="bc-current">{date}</span>
     </nav>
@@ -116,13 +116,13 @@ function formatPeriod(iso: string): string {
     <!-- ── Prev / next report pagination ── -->
     <div class="report-pagination">
       {prevDate ? (
-        <a href={`${base}reports/${prevDate}`} class="rpag-btn rpag-btn--prev">
+        <a href={`${base}/reports/${prevDate}`} class="rpag-btn rpag-btn--prev">
           ← {prevDate}
         </a>
       ) : <span />}
-      <a href={`${base}reports`} class="rpag-btn rpag-btn--list"><span data-tc>報告列表</span><span data-sc>报告列表</span></a>
+      <a href={`${base}/reports`} class="rpag-btn rpag-btn--list"><span data-tc>報告列表</span><span data-sc>报告列表</span></a>
       {nextDate ? (
-        <a href={`${base}reports/${nextDate}`} class="rpag-btn rpag-btn--next">
+        <a href={`${base}/reports/${nextDate}`} class="rpag-btn rpag-btn--next">
           {nextDate} →
         </a>
       ) : <span />}
@@ -130,7 +130,7 @@ function formatPeriod(iso: string): string {
 
     <!-- ── Back link ── -->
     <div class="back-row">
-      <a href={`${base}reports`} class="back-link">
+      <a href={`${base}/reports`} class="back-link">
         <span class="back-arrow">←</span> <span data-tc>返回報告列表</span><span data-sc>返回报告列表</span>
       </a>
     </div>
