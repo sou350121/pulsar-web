@@ -220,7 +220,7 @@ function artNewBadge(dateStr: string): string | null {
           const sig = SIGNAL_MAP[article.signal_type] ?? { label: article.signal_type, accent: 'cyan' };
           return (
             <a
-              href={article.html_url ?? article.url}
+              href={article.html_url || article.url}
               target="_blank"
               rel="noopener noreferrer"
               class={`dd-row ${idx >= DD_INITIAL ? 'dd-row--hidden' : ''}`}

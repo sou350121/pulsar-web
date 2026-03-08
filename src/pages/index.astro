@@ -61,8 +61,8 @@ const aiDeepDiveRaw = loadAIDeepDive(60).filter(a => a.date >= deepDiveCutoff);
 // deduplicated by URL, filtered to the 2-day cutoff.
 const vlaTheoryRaw   = loadVLATheory(200).filter(a => a.date >= deepDiveCutoff);
 const vlaGitHubRaw   = loadVLAGitHubArticles(300).filter(a => a.date >= deepDiveCutoff);
-const seenVlaUrls    = new Set(vlaTheoryRaw.map(a => a.html_url ?? a.url));
-const vlaGitHubExtra = vlaGitHubRaw.filter(a => !seenVlaUrls.has(a.html_url ?? a.url));
+const seenVlaUrls    = new Set(vlaTheoryRaw.map(a => a.html_url || a.url));
+const vlaGitHubExtra = vlaGitHubRaw.filter(a => !seenVlaUrls.has(a.html_url || a.url));
 
 const deepDiveItems = [
   ...aiDeepDiveRaw.map(a => ({
@@ -70,7 +70,7 @@ const deepDiveItems = [
     summary: a.signal_type?.replace(/_/g, ' ') ?? 'deep dive',
     rating:  SIGNAL_EMOJI[a.signal_type ?? ''] ?? '📖',
     source:  (a.source ?? 'AI').replace(/^social-/, '').slice(0, 10),
-    url:     a.html_url ?? a.url,
+    url:     a.html_url || a.url,
     domain:  'ai' as const,
   })),
   // Pipeline-tracked VLA theory articles
@@ -79,7 +79,7 @@ const deepDiveItems = [
     summary: a.target_dir?.replace('theory/', '') ?? 'theory',
     rating:  '📐',
     source:  'VLA-THEORY',
-    url:     a.html_url ?? a.url,
+    url:     a.html_url || a.url,
     domain:  'vla' as const,
   })),
   // Manually added VLA GitHub articles not already in pipeline list
@@ -88,7 +88,7 @@ const deepDiveItems = [
     summary: a.topic ?? 'theory',
     rating:  '📐',
     source:  'VLA-GITHUB',
-    url:     a.html_url ?? a.url,
+    url:     a.html_url || a.url,
     domain:  'vla' as const,
   })),
 ];
@@ -100,7 +100,7 @@ const digestDeepDiveItems = [
     summary: `${relativeDay(a.date)} · ${a.signal_type?.replace(/_/g, ' ') ?? 'deep dive'}`,
     rating:  SIGNAL_EMOJI[a.signal_type ?? ''] ?? '📖',
     source:  (a.source ?? 'AI').replace(/^social-/, '').slice(0, 10),
-    url:     a.html_url ?? a.url,
+    url:     a.html_url || a.url,
     domain:  'ai' as const,
   })),
   ...vlaTheoryRaw.map(a => ({
@@ -108,7 +108,7 @@ const digestDeepDiveItems = [
     summary: `${relativeDay(a.date)} · ${a.target_dir?.replace('theory/', '') ?? 'theory'}`,
     rating:  '📐',
     source:  'VLA-THEORY',
-    url:     a.html_url ?? a.url,
+    url:     a.html_url || a.url,
     domain:  'vla' as const,
   })),
 ];
@@ -116,10 +116,10 @@ const digestDeepDiveItems = [
 // Deep dive URL lookup: source URL → GitHub doc URL (for 🔬 discovery badge)
 // Uses all available articles (not date-filtered) to match older deep dives too.
 const aiDeepDiveLookup = new Map<string, string>(
-  loadAIDeepDive(500).map(a => [a.url, a.html_url ?? a.url]).filter(([k]) => !!k)
+  loadAIDeepDive(500).map(a => [a.url, a.html_url || a.url]).filter(([k]) => !!k)
 );
 const vlaTheoryLookup = new Map<string, string>(
-  loadVLATheory(500).map(a => [a.url, a.html_url ?? a.url]).filter(([k]) => !!k)
+  loadVLATheory(500).map(a => [a.url, a.html_url || a.url]).filter(([k]) => !!k)
 );
 
 // Knowledge base totals for ticker (GitHub repo totals, not filtered by date)

@@ -236,7 +236,7 @@ function formatPeriod(iso: string): string {
       ) : (
         <div class="dd-list">
           {aiDeepDives.map((article, i) => (
-            <a href={article.html_url ?? article.url} target="_blank" rel="noopener noreferrer"
+            <a href={article.html_url || article.url} target="_blank" rel="noopener noreferrer"
                class="dd-row dd-row--ai" style={`animation-delay:${i*0.04}s`}>
               <time class="dd-row-date">{formatDateNumeric(article.date)}</time>
               <div class="dd-row-body">
@@ -279,7 +279,7 @@ function formatPeriod(iso: string): string {
           <h3 class="dd-sub-title"><span data-tc>📐 理論深挖</span><span data-sc>📐 理论深挖</span></h3>
           <div class="dd-list">
             {vlaTheory.map((article, i) => (
-              <a href={article.html_url ?? article.url} target="_blank" rel="noopener noreferrer"
+              <a href={article.html_url || article.url} target="_blank" rel="noopener noreferrer"
                  class="dd-row dd-row--vla" style={`animation-delay:${i*0.04}s`}>
                 <time class="dd-row-date">{formatDateNumeric(article.date)}</time>
                 <div class="dd-row-body">

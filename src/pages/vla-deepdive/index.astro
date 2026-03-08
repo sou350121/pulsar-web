@@ -27,7 +27,7 @@ const allCombined = [
   ...theory.map(a => ({
     title:    a.title,
     date:     a.date,
-    html_url: a.html_url ?? a.url,
+    html_url: a.html_url || a.url,
     topic:    a.target_dir?.replace('theory/', '') ?? 'general',
     source:   'pipeline' as const,
   })),
