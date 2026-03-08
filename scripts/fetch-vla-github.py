@@ -5,10 +5,10 @@ scripts/fetch-vla-github.py
 Fetches ALL theory articles from the sou350121/VLA-Handbook GitHub repo
 and writes them to /home/admin/clawd/memory/vla-github-theory.json.
 
-Uses only stdlib urllib.request — no external dependencies.
+Date logic: preserves dates from previous runs for unchanged files (by SHA).
+New or modified files get today's date. This avoids the "all files = today" bug.
 
-Usage:
-    sudo python3.11 /home/claudeuser/pulsar-web/scripts/fetch-vla-github.py
+Uses only stdlib urllib.request — no external dependencies.
 """
 
 import json
@@ -72,15 +72,12 @@ def extract_title(content_b64: str, filename: str) -> str:
         for line in raw.splitlines():
             stripped = line.strip()
             if stripped.startswith("#"):
-                # Strip leading hashes and whitespace
                 title = re.sub(r"^#+\s*", "", stripped).strip()
                 if title:
                     return title
     except Exception:
         pass
-    # Fallback: derive from filename
     stem = Path(filename).stem
-    # Replace underscores/hyphens with spaces, title-case
     return stem.replace("_", " ").replace("-", " ").title()
 
 
@@ -97,11 +94,8 @@ def derive_topic(path_str: str) -> str:
          'theory/diffusion/dp.md' → 'diffusion'
     """
     parts = path_str.split("/")
-    # parts[0] == 'theory'
     if len(parts) >= 3:
-        # subdirectory present
         return parts[1]
-    # direct file: theory/filename.md
     if len(parts) == 2:
         return Path(parts[1]).stem
     return "general"
@@ -126,6 +120,28 @@ def should_include(path_str: str) -> bool:
     return True
 
 
+def load_previous_output() -> dict[str, dict]:
+    """
+    Load previous output file to build path -> {date, sha, title} map.
+    Used for date preservation on unchanged files.
+    """
+    prev: dict[str, dict] = {}
+    try:
+        if OUTPUT_FILE.exists():
+            data = json.loads(OUTPUT_FILE.read_text())
+            for a in data.get("articles", []):
+                path = a.get("path", "")
+                if path:
+                    prev[path] = {
+                        "date":  a.get("date", ""),
+                        "sha":   a.get("sha", ""),
+                        "title": a.get("title", ""),
+                    }
+    except Exception as e:
+        print(f"WARN: could not load previous output: {e}")
+    return prev
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -139,6 +155,13 @@ def main():
         print("ERROR: GITHUB_TOKEN not found in env file")
         raise SystemExit(1)
     print(f"  Token: {token[:8]}...")
+
+    # Load previous output for date preservation
+    prev = load_previous_output()
+    if prev:
+        print(f"  Previous output: {len(prev)} articles (for date preservation)")
+    else:
+        print(f"  No previous output — all files get today's date")
 
     # Step 1: fetch full tree
     print(f"\nStep 1: fetching repo tree (recursive)...")
@@ -158,23 +181,52 @@ def main():
     ]
     print(f"  Found {len(theory_files)} theory .md files (before cap)")
 
-    # Cap to MAX_FILES (sorted alphabetically for determinism)
+    # Cap to MAX_FILES
     theory_files = sorted(theory_files, key=lambda x: x["path"])[:MAX_FILES]
     print(f"  Processing {len(theory_files)} files (cap={MAX_FILES})")
 
     # Step 2: fetch each file's metadata
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     articles = []
+    reused_dates = 0
+    new_dates = 0
 
     for i, item in enumerate(theory_files, 1):
         path_str = item["path"]
+        blob_sha = item.get("sha", "")
         filename = path_str.split("/")[-1]
-        print(f"  [{i:2d}/{len(theory_files)}] {path_str}", end="", flush=True)
+        print(f"  [{i:3d}/{len(theory_files)}] {path_str}", end="", flush=True)
 
         # Rate limiting
         if i > 1:
             time.sleep(RATE_SLEEP)
 
+        # Date logic: preserve from previous run if SHA unchanged
+        prev_entry = prev.get(path_str, {})
+        prev_sha = prev_entry.get("sha", "")
+        prev_date = prev_entry.get("date", "")
+        prev_title = prev_entry.get("title", "")
+
+        # If SHA matches previous and we have a valid date → skip content fetch, reuse
+        if blob_sha and prev_sha == blob_sha and prev_date and prev_title:
+            date = prev_date
+            title = prev_title
+            reused_dates += 1
+            topic = derive_topic(path_str)
+            html_url = f"https://github.com/{REPO}/blob/main/{path_str}"
+            articles.append({
+                "path":     path_str,
+                "title":    title,
+                "url":      html_url,
+                "html_url": html_url,
+                "date":     date,
+                "topic":    topic,
+                "sha":      blob_sha,
+            })
+            print(f" → [cached] {title[:48]}")
+            continue
+
+        # Fetch file content for title extraction
         try:
             file_data = github_api(
                 f"repos/{REPO}/contents/{path_str}",
@@ -193,8 +245,9 @@ def main():
         # Extract title from content
         title = extract_title(content_b64, filename)
 
-        # Extract date
-        date = extract_date_from_filename(filename) or today
+        # Date: filename date > previous date (for changed files) > today
+        date = extract_date_from_filename(filename) or prev_date or today
+        new_dates += 1
 
         # Derive topic
         topic = derive_topic(path_str)
@@ -206,6 +259,7 @@ def main():
             "html_url": html_url,
             "date":     date,
             "topic":    topic,
+            "sha":      blob_sha,
         })
         print(f" → {title[:48]}")
 
@@ -218,6 +272,7 @@ def main():
     OUTPUT_FILE.write_text(json.dumps(output, indent=2, ensure_ascii=False))
 
     print(f"\nDone: {len(articles)} articles written to {OUTPUT_FILE}")
+    print(f"  Reused dates: {reused_dates}, New/changed: {new_dates}")
 
 
 if __name__ == "__main__":
