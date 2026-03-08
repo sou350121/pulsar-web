@@ -167,7 +167,8 @@ export interface UpstreamSignal {
   domain:  'vla' | 'ai_app';
   title:   string;
   url:     string;
-  keyword: string;
+  keyword?: string;
+  keywords_matched?: string[];
   arxiv_id?: string;
 }
 

@@ -50,7 +50,10 @@ const maxAI  = Math.max(1, ...last14.map(d => d.ai));
 
 const kwCounts: Record<string, number> = {};
 for (const sig of upstream) {
-  kwCounts[sig.keyword] = (kwCounts[sig.keyword] ?? 0) + 1;
+  const kws = sig.keywords_matched ?? (sig.keyword ? [sig.keyword] : []);
+  for (const kw of kws) {
+    kwCounts[kw] = (kwCounts[kw] ?? 0) + 1;
+  }
 }
 const topKeywords = Object.entries(kwCounts)
   .sort((a, b) => b[1] - a[1])
