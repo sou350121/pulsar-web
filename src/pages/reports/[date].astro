@@ -9,11 +9,18 @@ import { loadBiweeklyReports } from '../../utils/data';
 
 // getStaticPaths — required for Astro static output
 export async function getStaticPaths() {
-  const reports = loadBiweeklyReports(60, false);
-  return reports.map(r => ({
-    params: { date: r.date },
-    props:  { report: r },
-  }));
+  const reports     = loadBiweeklyReports(60, false);
+  const reflections = loadBiweeklyReports(60, true);
+  return [
+    ...reports.map(r => ({
+      params: { date: r.date },
+      props:  { report: r },
+    })),
+    ...reflections.map(r => ({
+      params: { date: `${r.date}-reflection` },
+      props:  { report: { ...r, date: `${r.date}-reflection` } },
+    })),
+  ];
 }
 
 const { report } = Astro.props;
