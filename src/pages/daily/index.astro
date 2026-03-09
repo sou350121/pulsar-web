@@ -25,6 +25,13 @@ const flatAll = [...flatAI, ...flatVLA];
 
 const aiTotal    = flatAI.length;
 const vlaTotal   = flatVLA.length;
+
+// Detect arxiv weekend gap — VLA relies on arxiv which doesn't publish Fri night–Mon
+const vlaLatestDate = sevenVLA[0]?.date ?? '';
+const vlaDaysSince  = vlaLatestDate
+  ? Math.floor((Date.now() - new Date(vlaLatestDate + 'T00:00:00+08:00').getTime()) / 86400000)
+  : 99;
+const arxivGap = vlaTotal === 0 || vlaDaysSince >= 2;
 const flashCount = flatAll.filter(i => i.rating === '⚡').length;
 const wrenchCount= flatAll.filter(i => i.rating === '🔧').length;
 const bookCount  = flatAll.filter(i => i.rating === '📖').length;
@@ -156,6 +163,12 @@ let lastMonth = '';
             <span class="stat-num">{vlaTotal}</span>
             <span class="stat-lbl"><span data-tc>VLA論文</span><span data-sc>VLA论文</span></span>
           </div>
+          {arxivGap && (
+            <div class="arxiv-gap-note">
+              <span data-tc>arXiv 週末休刊，VLA 論文將於下個工作日更新</span>
+              <span data-sc>arXiv 周末休刊，VLA 论文将于下个工作日更新</span>
+            </div>
+          )}
           <div class="stat-chip stat-chip--flash">
             <span class="stat-num">⚡ {flashCount}</span>
             <span class="stat-lbl">突破</span>
@@ -502,6 +515,18 @@ let lastMonth = '';
 .stat-chip--flash  { border-color: rgba(212, 145, 10, 0.20); }
 .stat-chip--wrench { border-color: rgba(43, 142, 199, 0.20); }
 .stat-chip--book   { border-color: rgba(61, 139, 94, 0.20); }
+
+.arxiv-gap-note {
+  width: 100%;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-secondary, #8b949e);
+  padding: 6px 12px;
+  background: rgba(15, 143, 160, 0.06);
+  border: 1px dashed rgba(15, 143, 160, 0.20);
+  border-radius: 6px;
+  margin-top: 2px;
+}
 
 .stat-num {
   font-family: 'Menlo', 'Consolas', monospace;
