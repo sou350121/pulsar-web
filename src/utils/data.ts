@@ -877,3 +877,112 @@ export function loadLatestFieldState(): FieldStateFile | null {
   if (files.length === 0) return null;
   return readJson<FieldStateFile>(files[0]);
 }
+
+// ---------------------------------------------------------------------------
+// FamilyTimeSeries — time-series view across multiple field-state snapshots
+// Used by the financial terminal dashboard on vla-deepdive.
+// ---------------------------------------------------------------------------
+export interface FamilyTimeSeries {
+  family: string;
+  dates:  string[];    // aligned date axis
+  shares: number[];    // share_7d per day
+  counts: number[];    // count_7d per day
+  accels: number[];    // acceleration per day
+  latest: { share: number; count: number; accel: number; status: string };
+  delta:  number;      // shares[last] - shares[first] (pp change over window)
+}
+
+export interface FieldStateHistory {
+  families:    FamilyTimeSeries[];
+  dates:       string[];
+  latestDate:  string;
+  totalPapers: number;
+  confidence:  string;
+}
+
+// Competition pair definition (from METHOD_COMPETITION in _vla_method_families.py)
+export interface CompetitionPair {
+  familyA: string;
+  familyB: string;
+  label:   string;
+}
+
+export const COMPETITION_PAIRS: CompetitionPair[] = [
+  { familyA: 'diffusion_policy', familyB: 'flow_matching',      label: 'ACTION HEAD ROUTE' },
+  { familyA: 'instruction_tuning', familyB: 'rl_finetuning',    label: 'POST-TRAINING ROUTE' },
+];
+
+// ---------------------------------------------------------------------------
+// loadFieldStateHistory
+// Reads all field-state-YYYY-MM-DD.json files and builds per-family time series.
+// ---------------------------------------------------------------------------
+export function loadFieldStateHistory(): FieldStateHistory | null {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('field-state-') && f.endsWith('.json'))
+      .sort();   // ascending by date
+  } catch {
+    return null;
+  }
+  if (files.length < 2) return null;  // need >=2 points for a trend
+
+  const snapshots: FieldStateFile[] = [];
+  for (const f of files) {
+    const data = readJson<FieldStateFile>(f);
+    if (data?.method_trends?.length) snapshots.push(data);
+  }
+  if (snapshots.length < 2) return null;
+
+  const dates = snapshots.map(s => s.date);
+  const latest = snapshots[snapshots.length - 1];
+
+  // Collect all family names across all snapshots
+  const familySet = new Set<string>();
+  for (const s of snapshots) {
+    for (const m of s.method_trends) familySet.add(m.family);
+  }
+
+  const families: FamilyTimeSeries[] = [];
+  for (const family of familySet) {
+    const shares: number[] = [];
+    const counts: number[] = [];
+    const accels: number[] = [];
+    for (const s of snapshots) {
+      const m = s.method_trends.find(t => t.family === family);
+      shares.push(m?.share_7d ?? 0);
+      counts.push(m?.count_7d ?? 0);
+      accels.push(m?.acceleration ?? 1);
+    }
+    const latestTrend = latest.method_trends.find(t => t.family === family);
+    families.push({
+      family,
+      dates,
+      shares,
+      counts,
+      accels,
+      latest: {
+        share:  latestTrend?.share_7d ?? 0,
+        count:  latestTrend?.count_7d ?? 0,
+        accel:  latestTrend?.acceleration ?? 1,
+        status: latestTrend?.status ?? 'stable',
+      },
+      delta: (shares[shares.length - 1] ?? 0) - (shares[0] ?? 0),
+    });
+  }
+
+  // Sort by latest share descending
+  families.sort((a, b) => b.latest.share - a.latest.share);
+
+  // data_confidence may be missing on older files; fall back to 'low'
+  const confidence = (latest as any).data_confidence ?? 'low';
+
+  return {
+    families,
+    dates,
+    latestDate:  latest.date,
+    totalPapers: latest.total_papers_scanned,
+    confidence,
+  };
+}

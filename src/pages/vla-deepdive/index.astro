@@ -1,15 +1,17 @@
 ---
 /**
  * src/pages/vla-deepdive/index.astro
- * VLA Deep Dive — 統一文章庫 + 方法族趨勢 + SOTA 排行。
+ * VLA Deep Dive — 統一文章庫 + 方法族趨勢金融終端看板 + SOTA 排行。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState } from '../../utils/data';
+import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState, loadFieldStateHistory, COMPETITION_PAIRS } from '../../utils/data';
+import type { FamilyTimeSeries } from '../../utils/data';
 
 const theory   = loadVLATheory(50);
 const sota     = loadVLASOTA(30);
 const ghAll    = loadVLAGitHubArticles(100);
 const fieldState = loadLatestFieldState();
+const history  = loadFieldStateHistory();
 
 const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
 const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
@@ -71,19 +73,24 @@ const FAMILY_NAMES: Record<string, string> = {
   diffusion_policy:   'Diffusion Policy',
   flow_matching:      'Flow Matching',
   rl_finetuning:      'RL Fine-tuning',
-  instruction_tuning: 'Instruction Tuning',
+  instruction_tuning: 'Instr. Tuning',
   world_model:        'World Model',
   tactile:            'Tactile',
   dexterous_hand:     'Dexterous Hand',
   cross_embodiment:   'Cross-Embodiment',
 };
 
-// Acceleration arrow
-function accelArrow(val: number): string {
-  if (val >= 1.15) return '↑';
-  if (val <= 0.85) return '↓';
-  return '→';
-}
+// Short names for gauge/competition
+const FAMILY_SHORT: Record<string, string> = {
+  diffusion_policy:   'Diffusion Pol.',
+  flow_matching:      'Flow Matching',
+  rl_finetuning:      'RL Fine-tune',
+  instruction_tuning: 'Instr. Tuning',
+  world_model:        'World Model',
+  tactile:            'Tactile',
+  dexterous_hand:     'Dext. Hand',
+  cross_embodiment:   'Cross-Embod.',
+};
 
 // Build saturated benchmark set from field-state (prefix match: BENCHMARK/SPLIT → BENCHMARK)
 const saturatedBenchmarks = new Set<string>();
@@ -95,10 +102,119 @@ if (fieldState?.benchmark_health) {
   }
 }
 
-// Max bar width for method trend
-const maxCount7d = fieldState?.method_trends
-  ? Math.max(...fieldState.method_trends.map(m => m.count_7d), 1)
-  : 1;
+// --- Financial terminal helpers ---
+
+// Build SVG sparkline bars for a family's share history
+function buildSparkBars(shares: number[]): { x: number; y: number; h: number; up: boolean }[] {
+  if (shares.length < 2) return [];
+  const min = Math.min(...shares);
+  const max = Math.max(...shares);
+  const range = max - min || 0.001; // avoid division by zero
+  const barW = 8;
+  const gap = 4;
+  const svgH = 36;
+  const padding = 2;
+  const usableH = svgH - padding * 2;
+
+  return shares.map((s, i) => {
+    const norm = (s - min) / range; // 0..1
+    const h = Math.max(2, norm * usableH);
+    const y = svgH - padding - h;
+    const up = i === 0 ? true : s >= shares[i - 1];
+    return { x: i * (barW + gap), y, h, up };
+  });
+}
+
+// MA line points for sparkline
+function buildMALine(shares: number[], window: number = 3): { x: number; y: number }[] {
+  if (shares.length < window) return [];
+  const min = Math.min(...shares);
+  const max = Math.max(...shares);
+  const range = max - min || 0.001;
+  const barW = 8;
+  const gap = 4;
+  const svgH = 36;
+  const padding = 2;
+  const usableH = svgH - padding * 2;
+
+  const points: { x: number; y: number }[] = [];
+  for (let i = 0; i < shares.length; i++) {
+    const start = Math.max(0, i - window + 1);
+    const slice = shares.slice(start, i + 1);
+    const avg = slice.reduce((a, b) => a + b, 0) / slice.length;
+    const norm = (avg - min) / range;
+    const y = svgH - padding - norm * usableH;
+    points.push({ x: i * (barW + gap) + barW / 2, y });
+  }
+  return points;
+}
+
+// Sparkline SVG width
+function sparkWidth(n: number): number {
+  return n * 8 + (n - 1) * 4;
+}
+
+// Status dot and label
+function statusInfo(accel: number, status: string): { dot: string; label: string; cls: string } {
+  if (status === 'accelerating' || accel >= 1.5) return { dot: '◉', label: 'SURGE', cls: 'fin-surge' };
+  if (accel >= 1.15) return { dot: '●', label: 'ACCEL', cls: 'fin-accel-dot' };
+  if (!(accel > 0.85)) return { dot: '●', label: 'DECEL', cls: 'fin-decel-dot' };
+  return { dot: '●', label: 'STABLE', cls: 'fin-stable-dot' };
+}
+
+// Format share as percentage
+function fmtPct(v: number): string {
+  return (v * 100).toFixed(1) + '%';
+}
+
+// Format delta (pp change)
+function fmtDelta(v: number): string {
+  const pp = v * 100;
+  return (pp >= 0 ? '+' : '') + pp.toFixed(1);
+}
+
+// Momentum gauge: position of thumb (0..100), center = 50 (accel=1.0)
+// Maps accel range [0.5, 2.0] → [0, 100]
+function gaugePos(accel: number): number {
+  const clamped = Math.max(0.5, Math.min(2.0, accel));
+  return ((clamped - 0.5) / 1.5) * 100;
+}
+
+// Gauge thumb color class
+function gaugeColorCls(accel: number): string {
+  if (accel > 1.5)  return 'fin-gauge-glow';
+  if (accel > 1.2)  return 'fin-gauge-up';
+  if (accel < 0.8)  return 'fin-gauge-down';
+  return 'fin-gauge-neutral';
+}
+
+
+// Helpers to avoid <= in JSX templates (Astro compiler treats < as tag)
+function accelCls(val: number): string {
+  if (val >= 1.15) return 'fin-up';
+  if (val >= 0.86) return 'fin-flat';  // > 0.85
+  return 'fin-down';
+}
+
+function isDecel(val: number): boolean {
+  return val >= 0 && val < 0.71; // <= 0.7
+}
+
+// Sort families by latest share desc (already done in history loader)
+const sortedFamilies = history?.families ?? [];
+// Sort by accel desc for gauge
+const sortedByAccel = [...sortedFamilies].sort((a, b) => b.latest.accel - a.latest.accel);
+
+// Competition pairs data
+const pairsData = history ? COMPETITION_PAIRS.map(pair => {
+  const a = history.families.find(f => f.family === pair.familyA);
+  const b = history.families.find(f => f.family === pair.familyB);
+  if (!a || !b) return null;
+  const total = a.latest.share + b.latest.share;
+  const pctA = total > 0 ? (a.latest.share / total) * 100 : 50;
+  const ratio = b.latest.share > 0 ? (a.latest.share / b.latest.share).toFixed(2) : '—';
+  return { ...pair, a, b, pctA, ratio };
+}).filter(Boolean) : [];
 
 const base = import.meta.env.BASE_URL;
 ---
@@ -162,39 +278,137 @@ const base = import.meta.env.BASE_URL;
     </header>
 
     <!-- ══════════════════════════════════════════
-         FIELD-STATE: Method Trend Panel
+         FINANCIAL TERMINAL: Method Family Trends
     ══════════════════════════════════════════ -->
-    {fieldState && (
-      <section class="fs-panel" aria-label="方法族趨勢">
-        <div class="fs-header">
-          <h2 class="fs-title">方法族趨勢</h2>
-          <span class="fs-meta">
-            {fieldState.date} · {fieldState.total_papers_scanned} 篇掃描 ·
-            <span class={`fs-confidence fs-confidence--${fieldState.data_confidence}`}>
-              {fieldState.data_confidence}
+    {history && (
+      <section class="fin-panel" aria-label="方法族趨勢看板">
+        <!-- Gradient top bar via ::before -->
+
+        <!-- Header -->
+        <div class="fin-header">
+          <div class="fin-header-left">
+            <h2 class="fin-title">METHOD FAMILY TRENDS</h2>
+            <span class="fin-meta">
+              {history.latestDate} · {history.totalPapers} papers · {history.dates.length}d window
             </span>
+          </div>
+          <span class={`fin-confidence fin-confidence--${history.confidence}`}>
+            confidence: {history.confidence}
           </span>
         </div>
-        <div class="fs-grid">
-          {fieldState.method_trends
-            .sort((a, b) => b.count_7d - a.count_7d)
-            .map(m => {
-              const barPct = Math.round((m.count_7d / maxCount7d) * 100);
-              const arrow = accelArrow(m.acceleration);
-              const arrowClass = arrow === '↑' ? 'fs-up' : arrow === '↓' ? 'fs-down' : 'fs-flat';
-              return (
-                <div class="fs-row">
-                  <span class="fs-family">{FAMILY_NAMES[m.family] ?? m.family}</span>
-                  <div class="fs-bar-wrap">
-                    <div class="fs-bar" style={`width:${barPct}%`}></div>
-                  </div>
-                  <span class="fs-count">{m.count_7d}</span>
-                  <span class={`fs-arrow ${arrowClass}`}>{arrow}</span>
-                </div>
-              );
-            })
-          }
+
+        <!-- A: Ticker Table -->
+        <div class="fin-ticker-header">
+          <span class="fin-th fin-th-name">FAMILY</span>
+          <span class="fin-th fin-th-chart">{history.dates.length}D CHART</span>
+          <span class="fin-th fin-th-share">SHARE</span>
+          <span class="fin-th fin-th-delta">&Delta;</span>
+          <span class="fin-th fin-th-accel">MOM</span>
+          <span class="fin-th fin-th-vol">VOL</span>
+          <span class="fin-th fin-th-status">ST</span>
         </div>
+        <div class="fin-ticker">
+          {sortedFamilies.map(fam => {
+            const bars = buildSparkBars(fam.shares);
+            const maLine = buildMALine(fam.shares);
+            const maPath = maLine.length > 1
+              ? 'M' + maLine.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L')
+              : '';
+            const svgW = sparkWidth(fam.shares.length);
+            const si = statusInfo(fam.latest.accel, fam.latest.status);
+            const deltaCls = fam.delta >= 0 ? 'fin-up' : 'fin-down';
+            const accelClsVal = accelCls(fam.latest.accel);
+            return (
+              <div class="fin-row">
+                <span class="fin-name">{FAMILY_NAMES[fam.family] ?? fam.family}</span>
+                <svg class="fin-spark" viewBox={`0 0 ${svgW} 36`} width={svgW} height="36" aria-hidden="true">
+                  {bars.map(b => (
+                    <rect
+                      x={b.x} y={b.y} width="8" height={b.h} rx="1"
+                      fill={b.up ? 'var(--fin-up)' : 'var(--fin-down)'}
+                      opacity="0.85"
+                    />
+                  ))}
+                  {maPath && (
+                    <path d={maPath} fill="none" stroke="var(--text-tertiary)" stroke-width="1"
+                      stroke-dasharray="3,2" opacity="0.5" />
+                  )}
+                </svg>
+                <span class="fin-share">{fmtPct(fam.latest.share)}</span>
+                <span class={`fin-delta ${deltaCls}`}>{fmtDelta(fam.delta)}</span>
+                <span class={`fin-accel ${accelClsVal}`}>{fam.latest.accel.toFixed(2)}</span>
+                <span class="fin-vol">{fam.latest.count}</span>
+                <span class={`fin-status-dot ${si.cls}`} title={si.label}>{si.dot}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- B: Momentum Gauge -->
+        <div class="fin-gauge-panel">
+          <h3 class="fin-sub-title">MOMENTUM GAUGE</h3>
+          <div class="fin-gauge-axis">
+            <span class="fin-gauge-label-left">decel</span>
+            <span class="fin-gauge-label-center">1.0</span>
+            <span class="fin-gauge-label-right">accel</span>
+          </div>
+          {sortedByAccel.map(fam => {
+            const pos = gaugePos(fam.latest.accel);
+            const centerPos = gaugePos(1.0);
+            const colorCls = gaugeColorCls(fam.latest.accel);
+            const isAccel = fam.latest.accel >= 1.0;
+            const fillLeft = isAccel ? centerPos : pos;
+            const fillWidth = isAccel ? pos - centerPos : centerPos - pos;
+            return (
+              <div class="fin-gauge-row">
+                <span class="fin-gauge-name">{FAMILY_SHORT[fam.family] ?? fam.family}</span>
+                <div class="fin-gauge-track">
+                  <div class="fin-gauge-center-line" style={`left:${centerPos}%`}></div>
+                  <div
+                    class={`fin-gauge-fill ${isAccel ? 'fin-gauge-fill-right' : 'fin-gauge-fill-left'}`}
+                    style={`left:${fillLeft}%;width:${Math.max(fillWidth, 0.5)}%`}
+                  ></div>
+                  <div class={`fin-gauge-thumb ${colorCls}`} style={`left:${pos}%`}></div>
+                </div>
+                <span class={`fin-gauge-val ${accelCls(fam.latest.accel)}`}>
+                  {fam.latest.accel.toFixed(2)}
+                </span>
+                {fam.latest.accel >= 1.5 && <span class="fin-gauge-tag fin-up">ACCEL</span>}
+                {isDecel(fam.latest.accel) && <span class="fin-gauge-tag fin-down">DECEL</span>}
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- C: Competition Pairs -->
+        {pairsData.length > 0 && (
+          <div class="fin-competition">
+            <h3 class="fin-sub-title">COMPETITION PAIRS</h3>
+            {pairsData.map(pair => pair && (
+              <div class="fin-pair">
+                <div class="fin-pair-label">{pair.label}</div>
+                <div class="fin-pair-names">
+                  <span class="fin-pair-name-left">{FAMILY_SHORT[pair.familyA] ?? pair.familyA}</span>
+                  <span class="fin-pair-vs">vs</span>
+                  <span class="fin-pair-name-right">{FAMILY_SHORT[pair.familyB] ?? pair.familyB}</span>
+                </div>
+                <div class="fin-pair-bar">
+                  <div class="fin-pair-left" style={`width:${pair.pctA}%`}>
+                    <span class="fin-pair-pct">{pair.pctA.toFixed(0)}%</span>
+                  </div>
+                  <div class="fin-pair-right" style={`width:${100 - pair.pctA}%`}>
+                    <span class="fin-pair-pct">{(100 - pair.pctA).toFixed(0)}%</span>
+                  </div>
+                </div>
+                <div class="fin-pair-stats">
+                  <span class="fin-pair-stat">{fmtPct(pair.a.latest.share)} · x{pair.a.latest.accel.toFixed(2)}</span>
+                  <span class="fin-pair-ratio">ratio {pair.ratio}</span>
+                  <span class="fin-pair-stat">{fmtPct(pair.b.latest.share)} · x{pair.b.latest.accel.toFixed(2)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     )}
 
@@ -437,63 +651,251 @@ const base = import.meta.env.BASE_URL;
 .vdd-stat-lbl { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--text-tertiary); text-transform: uppercase; }
 .vdd-stat-sep { color: var(--border); font-size: 1rem; }
 
-/* ══ Field-State Panel ══ */
-.fs-panel {
-  margin-bottom: 8px; padding: 24px;
+/* ══════════════════════════════════════════════
+   FINANCIAL TERMINAL PANEL
+   ══════════════════════════════════════════════ */
+.fin-panel {
+  --fin-up:   #22c55e;
+  --fin-down: #ef4444;
+  --fin-flat: var(--text-tertiary);
+
+  position: relative;
+  margin-bottom: 8px; padding: 20px 22px;
   border: 1px solid var(--border);
-  border-left: 4px solid var(--accent-cyan);
   border-radius: 12px; background: var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  overflow: hidden;
 }
-.fs-header {
+.fin-panel::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber));
+}
+
+/* Header */
+.fin-header {
   display: flex; align-items: baseline; justify-content: space-between;
-  gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+  gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
 }
-.fs-title {
-  font-family: 'Menlo','Consolas',monospace;
-  font-size: 0.7rem; font-weight: 700;
+.fin-header-left { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.fin-title {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.62rem; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--accent-cyan); margin: 0;
 }
-.fs-meta {
-  font-family: 'Menlo','Consolas',monospace;
+.fin-meta {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.6rem; color: var(--text-tertiary); letter-spacing: 0.06em;
 }
-.fs-confidence {
-  padding: 1px 6px; border-radius: 8px;
-  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.08em;
+.fin-confidence {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  padding: 2px 8px; border-radius: 8px;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em;
 }
-.fs-confidence--high { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
-.fs-confidence--moderate { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
-.fs-confidence--low { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
-.fs-grid { display: flex; flex-direction: column; gap: 8px; }
-.fs-row {
-  display: grid; grid-template-columns: 140px 1fr 36px 20px;
-  gap: 10px; align-items: center;
+.fin-confidence--high { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+.fin-confidence--moderate { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
+.fin-confidence--low { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Ticker Table Header */
+.fin-ticker-header {
+  display: grid;
+  grid-template-columns: 130px 1fr 56px 52px 52px 36px 32px;
+  gap: 8px; align-items: center;
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
 }
-@media (max-width: 520px) { .fs-row { grid-template-columns: 100px 1fr 30px 18px; } }
-.fs-family {
-  font-family: 'Menlo','Consolas',monospace;
+.fin-th {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.52rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.fin-th-share, .fin-th-delta, .fin-th-accel, .fin-th-vol, .fin-th-status { text-align: right; }
+
+/* Ticker rows */
+.fin-ticker { display: flex; flex-direction: column; }
+.fin-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 56px 52px 52px 36px 32px;
+  gap: 8px; align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
+  transition: background 0.12s;
+}
+.fin-row:hover { background: rgba(255,255,255,0.02); }
+.fin-row:last-child { border-bottom: none; }
+
+.fin-name {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.72rem; color: var(--text-secondary);
   letter-spacing: 0.02em; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
-.fs-bar-wrap {
-  height: 14px; background: var(--border-subtle, rgba(0,0,0,0.06));
-  border-radius: 3px; overflow: hidden;
-}
-.fs-bar {
-  height: 100%; background: var(--accent-cyan); border-radius: 3px;
-  min-width: 4px; transition: width 0.3s ease;
-}
-.fs-count {
-  font-family: 'Menlo','Consolas',monospace;
+.fin-spark { flex-shrink: 0; }
+.fin-share {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.72rem; font-weight: 700; color: var(--text-primary);
   text-align: right;
 }
-.fs-arrow { font-size: 0.82rem; text-align: center; }
-.fs-up   { color: #22c55e; }
-.fs-down { color: #ef4444; }
-.fs-flat { color: var(--text-tertiary); }
+.fin-delta {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; font-weight: 600; text-align: right;
+}
+.fin-accel {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; font-weight: 600; text-align: right;
+}
+.fin-vol {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; color: var(--text-tertiary);
+  text-align: right;
+}
+.fin-status-dot { font-size: 0.6rem; text-align: center; }
+
+/* Color classes */
+.fin-up   { color: var(--fin-up); }
+.fin-down { color: var(--fin-down); }
+.fin-flat { color: var(--fin-flat); }
+
+/* Status dot variants */
+.fin-surge     { color: var(--fin-up); animation: finPulse 1.5s ease-in-out infinite; }
+.fin-accel-dot { color: var(--fin-up); }
+.fin-decel-dot { color: var(--fin-down); }
+.fin-stable-dot { color: var(--fin-flat); }
+
+@keyframes finPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Momentum Gauge ── */
+.fin-gauge-panel {
+  margin-top: 24px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.fin-sub-title {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.56rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-tertiary); margin: 0 0 12px;
+}
+.fin-gauge-axis {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px; padding: 0 130px 0 0;
+  margin-left: 110px;
+}
+.fin-gauge-label-left, .fin-gauge-label-right, .fin-gauge-label-center {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.5rem; color: var(--text-tertiary);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.fin-gauge-label-center { position: absolute; left: 50%; transform: translateX(-50%); }
+
+.fin-gauge-row {
+  display: grid; grid-template-columns: 110px 1fr 48px auto;
+  gap: 10px; align-items: center;
+  padding: 5px 0;
+}
+.fin-gauge-name {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fin-gauge-track {
+  position: relative; height: 10px;
+  background: var(--border-subtle, rgba(255,255,255,0.06));
+  border-radius: 5px; overflow: visible;
+}
+.fin-gauge-center-line {
+  position: absolute; top: -2px; bottom: -2px; width: 1px;
+  background: var(--text-tertiary); opacity: 0.4;
+}
+.fin-gauge-fill {
+  position: absolute; top: 1px; bottom: 1px;
+  border-radius: 4px;
+}
+.fin-gauge-fill-right { background: rgba(34,197,94,0.2); }
+.fin-gauge-fill-left  { background: rgba(239,68,68,0.2); }
+
+.fin-gauge-thumb {
+  position: absolute; top: 50%; width: 8px; height: 8px;
+  border-radius: 50%; transform: translate(-50%, -50%);
+  transition: left 0.3s ease;
+}
+.fin-gauge-neutral { background: var(--text-tertiary); }
+.fin-gauge-up      { background: var(--fin-up); }
+.fin-gauge-down    { background: var(--fin-down); }
+.fin-gauge-glow    { background: var(--fin-up); box-shadow: 0 0 6px rgba(34,197,94,0.6); }
+
+.fin-gauge-val {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; font-weight: 600; text-align: right;
+}
+.fin-gauge-tag {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.5rem; font-weight: 700; letter-spacing: 0.1em;
+}
+
+/* ── Competition Pairs ── */
+.fin-competition {
+  margin-top: 24px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.fin-pair { margin-bottom: 20px; }
+.fin-pair:last-child { margin-bottom: 0; }
+.fin-pair-label {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.52rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 8px;
+}
+.fin-pair-names {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.fin-pair-name-left, .fin-pair-name-right {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem; font-weight: 600; color: var(--text-primary);
+}
+.fin-pair-vs {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.52rem; color: var(--text-tertiary);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.fin-pair-bar {
+  display: flex; height: 20px; border-radius: 4px; overflow: hidden;
+  gap: 2px;
+}
+.fin-pair-left {
+  background: var(--accent-amber); border-radius: 4px 0 0 4px;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 28px; transition: width 0.3s ease;
+}
+.fin-pair-right {
+  background: var(--accent-cyan); border-radius: 0 4px 4px 0;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 28px; transition: width 0.3s ease;
+}
+.fin-pair-pct {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.52rem; font-weight: 700; color: var(--bg, #000);
+  letter-spacing: 0.04em;
+}
+.fin-pair-stats {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 6px;
+}
+.fin-pair-stat {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.58rem; color: var(--text-tertiary);
+}
+.fin-pair-ratio {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.58rem; color: var(--text-secondary);
+  font-weight: 600;
+}
 
 /* ── Sections ── */
 .vdd-section { margin-top: 56px; padding-top: 40px; border-top: 1px solid var(--border); }
@@ -703,7 +1105,47 @@ const base = import.meta.env.BASE_URL;
 .xdomain-link svg { transition: transform 0.15s; }
 .xdomain-link:hover svg { transform: translateX(3px); }
 
-/* ── Mobile ── */
+/* ═══════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════ */
+
+/* Medium: hide VOL, shrink sparkline */
+@media (max-width: 768px) {
+  .fin-ticker-header {
+    grid-template-columns: 110px 1fr 48px 48px 48px 0px 0px;
+  }
+  .fin-row {
+    grid-template-columns: 110px 1fr 48px 48px 48px 0px 0px;
+  }
+  .fin-vol, .fin-th-vol,
+  .fin-status-dot, .fin-th-status { display: none; }
+  .fin-spark { max-width: 80px; }
+  .fin-gauge-axis { margin-left: 90px; padding-right: 90px; }
+  .fin-gauge-row { grid-template-columns: 90px 1fr 44px auto; }
+}
+
+/* Small: card stack layout for ticker */
+@media (max-width: 520px) {
+  .fin-ticker-header { display: none; }
+  .fin-ticker { gap: 8px; }
+  .fin-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 12px 0;
+    align-items: center;
+  }
+  .fin-name { flex: 0 0 100%; font-size: 0.68rem; font-weight: 600; color: var(--text-primary); }
+  .fin-spark { flex: 1 1 auto; max-width: 100%; }
+  .fin-share { font-size: 0.78rem; }
+  .fin-delta { font-size: 0.62rem; }
+  .fin-accel { font-size: 0.62rem; }
+  .fin-vol, .fin-status-dot { display: none; }
+
+  .fin-gauge-axis { margin-left: 0; padding-right: 60px; display: none; }
+  .fin-gauge-row { grid-template-columns: 80px 1fr 40px auto; gap: 6px; }
+  .fin-gauge-name { font-size: 0.6rem; }
+}
+
+/* Mobile */
 @media (max-width: 640px) {
   .vdd-card-grid { grid-template-columns: 1fr; }
   .vdd-art-row {
