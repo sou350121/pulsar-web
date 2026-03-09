@@ -104,54 +104,52 @@ if (fieldState?.benchmark_health) {
 
 // --- Financial terminal helpers ---
 
-// Build SVG sparkline bars for a family's share history
-function buildSparkBars(shares: number[]): { x: number; y: number; h: number; up: boolean }[] {
-  if (shares.length < 2) return [];
-  const min = Math.min(...shares);
-  const max = Math.max(...shares);
-  const range = max - min || 0.001; // avoid division by zero
-  const barW = 8;
-  const gap = 4;
-  const svgH = 36;
-  const padding = 2;
-  const usableH = svgH - padding * 2;
-
-  return shares.map((s, i) => {
-    const norm = (s - min) / range; // 0..1
-    const h = Math.max(2, norm * usableH);
-    const y = svgH - padding - h;
-    const up = i === 0 ? true : s >= shares[i - 1];
-    return { x: i * (barW + gap), y, h, up };
-  });
+// Adaptive sparkline dimensions — fixed total width, bars narrow as days grow
+const SPARK_TOTAL_W = 140;  // fixed SVG width in px
+const SPARK_H = 32;
+function sparkDims(n: number) {
+  const gap = n > 20 ? 1 : n > 14 ? 2 : 3;
+  const barW = Math.max(2, Math.floor((SPARK_TOTAL_W - (n - 1) * gap) / n));
+  return { barW, gap };
 }
 
-// MA line points for sparkline
-function buildMALine(shares: number[], window: number = 3): { x: number; y: number }[] {
-  if (shares.length < window) return [];
+function buildSparkBars(shares: number[]): { x: number; y: number; h: number; up: boolean }[] {
+  if (shares.length < 2) return [];
+  const { barW, gap } = sparkDims(shares.length);
   const min = Math.min(...shares);
   const max = Math.max(...shares);
   const range = max - min || 0.001;
-  const barW = 8;
-  const gap = 4;
-  const svgH = 36;
-  const padding = 2;
-  const usableH = svgH - padding * 2;
+  const pad = 2;
+  const usableH = SPARK_H - pad * 2;
+  return shares.map((s, i) => {
+    const norm = (s - min) / range;
+    const h = Math.max(2, norm * usableH);
+    return { x: i * (barW + gap), y: SPARK_H - pad - h, h, up: i === 0 ? true : s >= shares[i - 1] };
+  });
+}
 
+function buildMALine(shares: number[], window: number = 3): { x: number; y: number }[] {
+  if (shares.length < window) return [];
+  const { barW, gap } = sparkDims(shares.length);
+  const min = Math.min(...shares);
+  const max = Math.max(...shares);
+  const range = max - min || 0.001;
+  const pad = 2;
+  const usableH = SPARK_H - pad * 2;
   const points: { x: number; y: number }[] = [];
   for (let i = 0; i < shares.length; i++) {
     const start = Math.max(0, i - window + 1);
     const slice = shares.slice(start, i + 1);
     const avg = slice.reduce((a, b) => a + b, 0) / slice.length;
     const norm = (avg - min) / range;
-    const y = svgH - padding - norm * usableH;
-    points.push({ x: i * (barW + gap) + barW / 2, y });
+    points.push({ x: i * (barW + gap) + barW / 2, y: SPARK_H - pad - norm * usableH });
   }
   return points;
 }
 
-// Sparkline SVG width
 function sparkWidth(n: number): number {
-  return n * 8 + (n - 1) * 4;
+  const { barW, gap } = sparkDims(n);
+  return n * barW + (n - 1) * gap;
 }
 
 // Status dot and label
@@ -311,6 +309,7 @@ const base = import.meta.env.BASE_URL;
           {sortedFamilies.map(fam => {
             const bars = buildSparkBars(fam.shares);
             const maLine = buildMALine(fam.shares);
+            const { barW } = sparkDims(fam.shares.length);
             const maPath = maLine.length > 1
               ? 'M' + maLine.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L')
               : '';
@@ -321,10 +320,10 @@ const base = import.meta.env.BASE_URL;
             return (
               <div class="fin-row">
                 <span class="fin-name">{FAMILY_NAMES[fam.family] ?? fam.family}</span>
-                <svg class="fin-spark" viewBox={`0 0 ${svgW} 36`} width={svgW} height="36" aria-hidden="true">
+                <svg class="fin-spark" viewBox={`0 0 ${svgW} ${SPARK_H}`} width={svgW} height={SPARK_H} aria-hidden="true">
                   {bars.map(b => (
                     <rect
-                      x={b.x} y={b.y} width="8" height={b.h} rx="1"
+                      x={b.x} y={b.y} width={barW} height={b.h} rx="1"
                       fill={b.up ? 'var(--fin-up)' : 'var(--fin-down)'}
                       opacity="0.85"
                     />
@@ -660,7 +659,7 @@ const base = import.meta.env.BASE_URL;
   --fin-flat: var(--text-tertiary);
 
   position: relative;
-  margin-bottom: 8px; padding: 20px 22px;
+  margin-bottom: 8px; padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: 12px; background: var(--surface);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
@@ -675,7 +674,7 @@ const base = import.meta.env.BASE_URL;
 /* Header */
 .fin-header {
   display: flex; align-items: baseline; justify-content: space-between;
-  gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+  gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
 }
 .fin-header-left { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .fin-title {
@@ -700,11 +699,11 @@ const base = import.meta.env.BASE_URL;
 /* Ticker Table Header */
 .fin-ticker-header {
   display: grid;
-  grid-template-columns: 130px 1fr 56px 52px 52px 36px 32px;
-  gap: 8px; align-items: center;
-  padding: 0 0 6px;
+  grid-template-columns: 128px 140px 54px 48px 48px 32px 28px;
+  gap: 6px; align-items: center;
+  padding: 0 0 3px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .fin-th {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
@@ -719,8 +718,8 @@ const base = import.meta.env.BASE_URL;
 .fin-row {
   display: grid;
   grid-template-columns: 130px 1fr 56px 52px 52px 36px 32px;
-  gap: 8px; align-items: center;
-  padding: 6px 0;
+  gap: 6px; align-items: center;
+  padding: 2px 0;
   border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
   transition: background 0.12s;
 }
@@ -772,18 +771,18 @@ const base = import.meta.env.BASE_URL;
 
 /* ── Momentum Gauge ── */
 .fin-gauge-panel {
-  margin-top: 24px; padding-top: 20px;
+  margin-top: 14px; padding-top: 10px;
   border-top: 1px solid var(--border);
 }
 .fin-sub-title {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.56rem; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--text-tertiary); margin: 0 0 12px;
+  color: var(--text-tertiary); margin: 0 0 6px;
 }
 .fin-gauge-axis {
   display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 8px; padding: 0 130px 0 0;
+  margin-bottom: 3px; padding: 0 130px 0 0;
   margin-left: 110px;
 }
 .fin-gauge-label-left, .fin-gauge-label-right, .fin-gauge-label-center {
@@ -795,8 +794,8 @@ const base = import.meta.env.BASE_URL;
 
 .fin-gauge-row {
   display: grid; grid-template-columns: 110px 1fr 48px auto;
-  gap: 10px; align-items: center;
-  padding: 5px 0;
+  gap: 8px; align-items: center;
+  padding: 2px 0;
 }
 .fin-gauge-name {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
@@ -804,7 +803,7 @@ const base = import.meta.env.BASE_URL;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .fin-gauge-track {
-  position: relative; height: 10px;
+  position: relative; height: 8px;
   background: var(--border-subtle, rgba(255,255,255,0.06));
   border-radius: 5px; overflow: visible;
 }
@@ -820,7 +819,7 @@ const base = import.meta.env.BASE_URL;
 .fin-gauge-fill-left  { background: rgba(239,68,68,0.2); }
 
 .fin-gauge-thumb {
-  position: absolute; top: 50%; width: 8px; height: 8px;
+  position: absolute; top: 50%; width: 7px; height: 7px;
   border-radius: 50%; transform: translate(-50%, -50%);
   transition: left 0.3s ease;
 }
@@ -840,20 +839,20 @@ const base = import.meta.env.BASE_URL;
 
 /* ── Competition Pairs ── */
 .fin-competition {
-  margin-top: 24px; padding-top: 20px;
+  margin-top: 14px; padding-top: 10px;
   border-top: 1px solid var(--border);
 }
-.fin-pair { margin-bottom: 20px; }
+.fin-pair { margin-bottom: 12px; }
 .fin-pair:last-child { margin-bottom: 0; }
 .fin-pair-label {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.52rem; font-weight: 600;
   letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--text-tertiary); margin-bottom: 8px;
+  color: var(--text-tertiary); margin-bottom: 3px;
 }
 .fin-pair-names {
   display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 .fin-pair-name-left, .fin-pair-name-right {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
@@ -865,7 +864,7 @@ const base = import.meta.env.BASE_URL;
   letter-spacing: 0.12em; text-transform: uppercase;
 }
 .fin-pair-bar {
-  display: flex; height: 20px; border-radius: 4px; overflow: hidden;
+  display: flex; height: 16px; border-radius: 4px; overflow: hidden;
   gap: 2px;
 }
 .fin-pair-left {
@@ -885,7 +884,7 @@ const base = import.meta.env.BASE_URL;
 }
 .fin-pair-stats {
   display: flex; justify-content: space-between; align-items: center;
-  margin-top: 6px;
+  margin-top: 3px;
 }
 .fin-pair-stat {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
