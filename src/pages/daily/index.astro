@@ -7,7 +7,7 @@
  *               (3) find a specific day → archive list below.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadAIDailyPicks, loadVLADailyPicks } from '../../utils/data';
+import { loadAIDailyPicks, loadVLADailyPicks, loadSocialIntel } from '../../utils/data';
 
 const base = import.meta.env.BASE_URL;
 
@@ -61,6 +61,35 @@ const threeDayDates = [...new Set([
 function srcTag(s: string): string {
   return (s ?? 'SRC').toUpperCase().slice(0, 8);
 }
+
+
+// ── VLA social intel (daily, even weekends) ──────────────────────────────────
+const vlaSocial = loadSocialIntel('vla', 3);
+interface SocialSnippet {
+  date: string;
+  items: string[];
+  trend: string;
+}
+const vlaSocialSnips: SocialSnippet[] = vlaSocial
+  .filter(f => f.content.trim().length > 30)
+  .map(f => {
+    const items: string[] = [];
+    let trend = '';
+    for (const line of f.content.split('\n')) {
+      const trimmed = line.trim();
+      // Extract bullet points from 📊 section
+      if (/^[-*•]\s*\[/.test(trimmed) || /^[-*•]\s*\S/.test(trimmed)) {
+        const clean = trimmed.replace(/^[-*•]\s*/, '').replace(/https?:\/\/\S+/g, '').trim();
+        if (clean.length > 15 && !clean.startsWith('本報告')) items.push(clean);
+      }
+      // Extract trend observation
+      if (trend === '' && !/^[-*•#📊📡🔭]/.test(trimmed) && trimmed.length > 20 && !trimmed.startsWith('*本') && !trimmed.startsWith('http')) {
+        trend = trimmed.length > 100 ? trimmed.slice(0, 100) + '…' : trimmed;
+      }
+    }
+    return { date: f.date, items: items.slice(0, 3), trend };
+  })
+  .filter(s => s.items.length > 0);
 
 // ── Merged archive ────────────────────────────────────────────────────────────
 type DomainDay = {
@@ -282,6 +311,36 @@ let lastMonth = '';
           );
         })}
 
+      </section>
+    )}
+
+    <!-- ── VLA Social Intel ── -->
+    {vlaSocialSnips.length > 0 && (
+      <section class="social-block" aria-label="VLA 社交動態">
+        <div class="social-header">
+          <span class="social-eyebrow">📡 <span data-tc>VLA 社交動態</span><span data-sc>VLA 社交动态</span></span>
+          <a href={`${base}/social`} class="social-more">
+            <span data-tc>更多</span><span data-sc>更多</span> →
+          </a>
+        </div>
+        <div class="social-cards">
+          {vlaSocialSnips.map(day => (
+            <div class="social-card">
+              <div class="social-card-hd">
+                <span class="social-card-date">{day.date.slice(5)}</span>
+                <span class="social-card-count">{day.items.length} <span data-tc>條</span><span data-sc>条</span></span>
+              </div>
+              <ul class="social-card-items" role="list">
+                {day.items.map(item => (
+                  <li class="social-card-li">{item}</li>
+                ))}
+              </ul>
+              {day.trend && (
+                <p class="social-card-trend">🔭 {day.trend}</p>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
     )}
 
@@ -1045,6 +1104,116 @@ let lastMonth = '';
   }
   .day-date {
     font-size: max(12px, 0.75rem);
+  }
+}
+
+/* ── VLA Social Intel ── */
+.social-block {
+  margin-bottom: 40px;
+}
+
+.social-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.social-eyebrow {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.social-more {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  color: var(--accent-cyan);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: opacity 0.15s;
+}
+.social-more:hover { opacity: 0.7; }
+
+.social-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.social-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px 12px;
+  border-left: 2px solid var(--accent-cyan);
+  transition: border-color 0.15s;
+}
+.social-card:hover {
+  border-color: var(--accent-cyan);
+}
+
+.social-card-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.social-card-date {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+.social-card-count {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.55rem;
+  color: var(--text-tertiary);
+}
+
+.social-card-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.social-card-li {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  padding-left: 12px;
+  position: relative;
+}
+.social-card-li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+.social-card-trend {
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  line-height: 1.55;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .social-cards {
+    grid-template-columns: 1fr;
   }
 }
 </style>
