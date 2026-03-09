@@ -1,0 +1,49 @@
+{
+  "date": "2026-03-09",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "LIBERO 三榜饱和 (97.3-99.1%) 削弱评测基准区分度；counter_evidence 命中 1 篇 (flow-matching outperform TD learning)，但非直接针对 VLA action head 范式"
+    },
+    "V-005": {
+      "score": 0.25,
+      "reason": "method_competition: instruction_tuning 加速 (1.53x) 而 rl_finetuning 稳定 (1.29x)，可能暗示替代路径兴起"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和使开源 vs 闭源能力对比基准受限，难以追踪 30% gap 失效条件"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "keyword_decline: 3D spatial 关键词 7d 内 0 命中 (14d 内 1 篇 UniLACT)；LIBERO 饱和影响评测基准"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 20,
+  "ai_signals_scanned": 53,
+  "triggers": [],
+  "note": "4 个假设有 early warning (机械预评分确认)：V-001 approaching (0.50), V-005/V-008/V-010 early_warning (0.25)。无强触发 (1.00)。",
+  "method_trends_summary": {
+    "cross_embodiment": "stable",
+    "dexterous_hand": "stable",
+    "diffusion_policy": "stable",
+    "flow_matching": "stable",
+    "instruction_tuning": "accelerating",
+    "rl_finetuning": "stable",
+    "tactile": "stable",
+    "world_model": "stable"
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": [
+    "CALVIN/ABC-D (4.8%)",
+    "CALVIN/ABCD-D (4.8%)",
+    "CALVIN/D-D (4.3%)",
+    "LIBERO/non-standard (97.3%)",
+    "LIBERO/standard-closed (98.6%)",
+    "LIBERO/standard-opensource (99.1%)"
+  ]
+}
