@@ -1,0 +1,57 @@
+{
+  "date": "2026-03-10",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "Mechanical floor 0.50 (counter_evidence:moderate + benchmark_relevance:weak). LIBERO 多榜饱和 (98-99%) 限制评测区分度，但 diffusion/flow matching 仍主导今日信号 (Generative Predictive Control, LATO, Self-Supervised Flow Matching 均为 flow-based)。counter_evidence 来源待查，当前无明确非 diffusion 架构超越证据。"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "Mechanical floor 0.25 (benchmark_relevance:weak x3)。LIBERO 饱和影响开源 vs 闭源对比基准有效性。正面信号：LeRobot v0.5.0 大规模升级、Octo v1.5 发布，开源生态活跃。"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "Mechanical floor 0.25 (keyword_decline:weak + benchmark_relevance:weak)。3D 关键词 7d 内出现频率下降，但 OmniDP (Omnidirectional 3D Perception) 等论文仍支持 3D 理解必要性。LIBERO 饱和使精度任务评测受限。"
+    },
+    "A-001": {
+      "score": 0.25,
+      "reason": "Early warning: HumanMCP benchmark 论文出现 (arXiv:2602.23367)，Context Gateway 产品发布。MCP 生态活跃但尚未见 incompatible private protocol 挑战信号。"
+    },
+    "A-003": {
+      "score": 0.25,
+      "reason": "Early warning: 今日 3 篇多智能体论文 (MetaMind, Graph-theoretic Agreement, Emergent Coordination) 均支持 multi-agent 成熟度提升。无框架停滞或成本超收益报告。"
+    },
+    "A-006": {
+      "score": 0.25,
+      "reason": "Early warning: AI 社交情报显示 Anthropic/Pentagon 谈判恢复 (3/6 报道)，Dario Amodei 立场反转引发伦理争论。支持 geopolitical pressure 假设持续有效。"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 65,
+  "ai_signals_scanned": 64,
+  "triggers": [],
+  "note": "6 个假设有 early warning (3 个 VLA 机械预评分确认 + 3 个 AI Agent 支持性信号)。无触发 (score=1.00) 条目。",
+  "method_trends_summary": {
+    "diffusion_policy": "stable",
+    "flow_matching": "stable",
+    "tactile": "stable",
+    "world_model": "stable",
+    "rl_finetuning": "stable",
+    "cross_embodiment": "stable",
+    "dexterous_hand": "stable",
+    "instruction_tuning": "stable"
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": [
+    "LIBERO/non-standard (99.2%)",
+    "LIBERO/standard-closed (98.6%)",
+    "LIBERO/standard-opensource (99.2%)",
+    "CALVIN/ABC-D (4.8%)",
+    "CALVIN/ABCD-D (4.8%)",
+    "CALVIN/D-D (4.3%)"
+  ]
+}
