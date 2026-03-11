@@ -263,13 +263,13 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
-  title="VLA 深度追蹤"
-  description="Vision-Language-Action 理論深挖與 SOTA 排行 — VLA-Handbook 庫"
+  title="VLA 深度追踪"
+  description="Vision-Language-Action 理论深挖与 SOTA 排行 — VLA-Handbook 库"
 >
   <div class="vdd-page page-container">
 
     <!-- ── Breadcrumb ── -->
-    <nav class="dd-breadcrumb" aria-label="麵包屑">
+    <nav class="dd-breadcrumb" aria-label="面包屑">
       <a href={`${base}/`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">›</span>
       <span class="bc-current"><span data-tc>VLA 深度追蹤</span><span data-sc>VLA 深度追踪</span></span>
@@ -304,7 +304,7 @@ const base = import.meta.env.BASE_URL;
           </svg>
         </a>
         <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-github-secondary">
-          Evo-SOTA 排行榜 →
+          <span data-tc>Evo-SOTA 排行榜</span><span data-sc>Evo-SOTA 排行榜</span> →
         </a>
         <div class="vdd-stats-row">
           <span class="vdd-stat">
@@ -324,7 +324,7 @@ const base = import.meta.env.BASE_URL;
          FINANCIAL TERMINAL: Method Family Trends
     ══════════════════════════════════════════ -->
     {history && (
-      <section class="fin-panel" aria-label="方法族趨勢看板">
+      <section class="fin-panel" aria-label="方法族趋势看板">
 
         <!-- Header -->
         <div class="fin-header">
@@ -464,7 +464,7 @@ const base = import.meta.env.BASE_URL;
          EMERGING SIGNALS: Emerging Method Terms
     ══════════════════════════════════════════ -->
     {emergingData && emergingData.candidates.length > 0 && (
-      <section class="fin-panel fin-emerging-panel" aria-label="新興方法訊號">
+      <section class="fin-panel fin-emerging-panel" aria-label="新兴方法信号">
         <div class="fin-header">
           <div class="fin-header-left">
             <h2 class="fin-title">EMERGING SIGNALS</h2>
@@ -544,7 +544,7 @@ const base = import.meta.env.BASE_URL;
     <!-- ══════════════════════════════════════════
          UNIFIED: Theory Articles (merged)
     ══════════════════════════════════════════ -->
-    <section class="vdd-section" aria-label="VLA 理論文章庫">
+    <section class="vdd-section" aria-label="VLA 理论文章库">
       <div class="vdd-section-header">
         <h2 class="vdd-section-title"><span data-tc>📐 理論文章庫</span><span data-sc>📐 理论文章库</span></h2>
         <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
@@ -561,7 +561,7 @@ const base = import.meta.env.BASE_URL;
             <div class="vdd-subsection">
               <div class="vdd-subsection-label">
                 <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
-                <span class="vdd-sublabel-count">{recentAll.length} 篇</span>
+                <span class="vdd-sublabel-count">{recentAll.length} <span data-tc>篇</span><span data-sc>篇</span></span>
               </div>
               <div class="vdd-card-grid">
                 {recentAll.map((article) => (
@@ -596,15 +596,15 @@ const base = import.meta.env.BASE_URL;
             <div class="vdd-subsection">
               {recentAll.length > 0 && (
                 <div class="vdd-subsection-label">
-                  <span class="vdd-sublabel">更多文章 · 全部在 GitHub</span>
-                  <span class="vdd-sublabel-count">{olderAll.length} 篇</span>
+                  <span class="vdd-sublabel"><span data-tc>更多文章 · 全部在 GitHub</span><span data-sc>更多文章 · 全部在 GitHub</span></span>
+                  <span class="vdd-sublabel-count">{olderAll.length} <span data-tc>篇</span><span data-sc>篇</span></span>
                 </div>
               )}
               <div class="vdd-topics">
                 {topics.map(topic => (
                   <div class="vdd-topic-group">
                     <div class="vdd-topic-label">
-                      {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} 篇
+                      {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} <span data-tc>篇</span><span data-sc>篇</span>
                     </div>
                     <div class="vdd-art-list">
                       {byTopicAll[topic].map((article, i) => (
@@ -617,7 +617,7 @@ const base = import.meta.env.BASE_URL;
                         >
                           <time class="vdd-art-date">{dotDate(article.date)}</time>
                           <span class="vdd-art-title">{article.title}</span>
-                          <span class="vdd-art-ext" aria-label="在 GitHub 閱讀">
+                          <span class="vdd-art-ext" aria-label="在 GitHub 阅读">
                             <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
                               stroke="currentColor" stroke-width="2" stroke-linecap="round">
                               <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
@@ -641,9 +641,9 @@ const base = import.meta.env.BASE_URL;
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="SOTA 排行">
       <div class="vdd-section-header">
-        <h2 class="vdd-section-title">🏆 SOTA 排行</h2>
+        <h2 class="vdd-section-title">🏆 <span data-tc>SOTA 排行</span><span data-sc>SOTA 排行</span></h2>
         <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
-          Evo-SOTA 完整榜 →
+          <span data-tc>Evo-SOTA 完整榜</span><span data-sc>Evo-SOTA 完整榜</span> →
         </a>
       </div>
 
@@ -666,7 +666,7 @@ const base = import.meta.env.BASE_URL;
                       }
                     </span>
                     {top.split && <span class="sota-bench-split">{top.split}</span>}
-                    {isSaturated && <span class="sota-saturated-badge">飽和</span>}
+                    {isSaturated && <span class="sota-saturated-badge"><span data-tc>飽和</span><span data-sc>饱和</span></span>}
                   </div>
                   <span class="sota-bench-metric">{top.metric}</span>
                 </div>
