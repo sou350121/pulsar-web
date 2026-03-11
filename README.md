@@ -10,9 +10,9 @@ Live: **https://sou350121.github.io/pulsar-web/**
 
 | Layer       | Technology                              |
 |-------------|----------------------------------------|
-| Framework   | Astro 5 (static SSG)                   |
+| Framework   | Astro 5 (static SSG) + React islands   |
 | Styling     | Tailwind CSS 4 (`@tailwindcss/vite`)   |
-| Language    | TypeScript (strict)                    |
+| Language    | TypeScript (strict) + JSX              |
 | Fonts       | System only — PingFang SC / Menlo / Microsoft YaHei (no Google Fonts; GFW-safe) |
 | Deployment  | GitHub Pages via Actions               |
 | Data sync   | Python 3.11 script                     |
@@ -24,6 +24,7 @@ pulsar-web/
 ├── src/
 │   ├── components/
 │   │   ├── DigestFeed.astro      # Homepage daily digest component
+│   │   ├── PaperAtlas.jsx        # React island — VLA paper atlas (130+ papers)
 │   │   ├── Header.astro
 │   │   ├── Footer.astro
 │   │   └── ThemeToggle.astro
@@ -42,6 +43,7 @@ pulsar-web/
 │   │   ├── reports/
 │   │   │   ├── index.astro       # Biweekly reports list
 │   │   │   └── [date].astro      # Individual report view + pagination
+│   │   ├── atlas/index.astro         # Paper Atlas — VLA panorama (React island)
 │   │   ├── ai-deepdive/index.astro   # AI Agent deep-dive archive
 │   │   ├── vla-deepdive/index.astro  # VLA theory deep-dive + SOTA
 │   │   └── dashboard/index.astro     # Pipeline mission control
@@ -49,8 +51,10 @@ pulsar-web/
 │   │   └── global.css            # CSS custom properties + base styles
 │   ├── utils/
 │   │   └── data.ts               # Build-time data loaders
-│   └── data/                     # Synced pipeline data (git-ignored)
+│   └── data/                     # Synced pipeline data (git-ignored, except atlas-curated.json)
+│       └── atlas-curated.json    # Human-curated paper base (committed)
 ├── scripts/
+│   ├── build-atlas-data.py       # Merges curated + momentum + recent papers → atlas-papers.json
 │   └── sync-data.py              # Copies data from pipeline memory dir
 ├── .github/workflows/
 │   └── deploy.yml                # GitHub Pages CI/CD
@@ -70,6 +74,7 @@ pulsar-web/
 | `/social`             | Social intel — 72h window, AI + VLA domain split           |
 | `/reports`            | Biweekly reports list with summaries                       |
 | `/reports/[date]`     | Full report view with prev/next navigation                 |
+| `/atlas`              | Paper Atlas — 130+ VLA papers across 11 categories with momentum |
 | `/ai-deepdive`        | AI Agent deep-dive article archive (Agent-Playbook)        |
 | `/vla-deepdive`       | VLA theory deep-dive + SOTA leaderboard (VLA-Handbook)     |
 | `/dashboard`          | Pipeline mission control — drift, entities, upstream signals |
@@ -110,7 +115,7 @@ sudo python3.11 scripts/sync-data.py --verbose
 python3.11 scripts/sync-data.py --dry-run --verbose
 ```
 
-Synced files include: `ai-daily-pick.json`, `drift-metrics.json`, `drift-state.json`, `entity-index.json`, `upstream-signals.json`, recent `_ai_social_*.md`, `_vla_social_*.md`, `_biweekly_*.md`.
+Synced files include: `atlas-papers.json`, `ai-daily-pick.json`, `drift-metrics.json`, `drift-state.json`, `entity-index.json`, `upstream-signals.json`, recent `_ai_social_*.md`, `_vla_social_*.md`, `_biweekly_*.md`.
 
 ### Development
 
@@ -156,9 +161,10 @@ Dark mode: toggle `.dark` class on `<html>`, stored in `localStorage`.
 ```
 Pipeline server: /home/admin/clawd/memory/
         │
-        │  scripts/sync-data.py  (SSH + copy)
+        │  build-atlas-data.py   (curated + momentum + recent → atlas-papers.json)
+        │  sync-data.py          (copy all JSON to src/data/)
         ▼
-  src/data/          (local, git-ignored)
+  src/data/          (local, git-ignored except atlas-curated.json)
         │
         │  Astro build (SSG, build-time only)
         ▼
@@ -171,8 +177,20 @@ Pipeline server: /home/admin/clawd/memory/
 
 All data loading happens at **build time** — no runtime server, no browser API calls. Fully static.
 
+### Paper Atlas Data Pipeline
+
+`build-atlas-data.py` runs daily before `sync-data.py` and produces `atlas-papers.json`:
+1. Reads `atlas-curated.json` (human-curated base, 116 papers across 11 categories)
+2. Reads `field-state-*.json` method_trends → computes per-category momentum scores
+3. Scans last 7 days of `vla-daily-rating-out-*.json` → auto-injects recent papers
+4. Outputs merged JSON with categories, stats, momentum, and updated date
+
+Method family → Atlas category mapping comes from `_vla_method_families.py`.
+
 ## Key Engineering Notes
 
 - `base: '/pulsar-web'` in `astro.config.mjs` is **required** — all internal links must use `import.meta.env.BASE_URL` prefix
 - `DriftMetricsFile` is a **flat array** `DriftMetricsEntry[]` with fields `date`, `vla_papers_scanned`, `aiapp_items_scanned`
 - Navigation pattern: domain tabs (`/daily`↔`/ai-daily`↔`/vla`) + breadcrumbs on all other sections
+- Paper Atlas uses `client:only="react"` (no SSR) to avoid hydration mismatches with localStorage
+- Atlas data has fallback: `loadAtlasData()` tries `atlas-papers.json` first, falls back to `atlas-curated.json`
