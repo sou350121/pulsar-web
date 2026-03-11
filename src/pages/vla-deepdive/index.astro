@@ -171,21 +171,32 @@ function fmtDelta(v: number): string {
   return (pp >= 0 ? '+' : '') + pp.toFixed(1);
 }
 
-// Momentum gauge: position of thumb (0..100), center = 50 (accel=1.0)
-// Maps accel range [0.5, 2.0] → [0, 100]
+// Sort families by latest share desc (already done in history loader)
+const sortedFamilies = history?.families ?? [];
+// Sort by accel desc for gauge
+const sortedByAccel = [...sortedFamilies].sort((a, b) => b.latest.accel - a.latest.accel);
+
+// Adaptive momentum gauge: center at 1.0, split-linear scale.
+// Left: [0, 1.0] → [0%, CENTER%], Right: [1.0, maxAccel] → [CENTER%, 100%]
+const GAUGE_CENTER_PCT = 25; // center line at 25% — gives 75% room for acceleration
+const maxAccelVal = sortedByAccel.length > 0 ? Math.max(sortedByAccel[0]?.latest.accel ?? 2, 2) : 2;
+
 function gaugePos(accel: number): number {
-  const clamped = Math.max(0.5, Math.min(2.0, accel));
-  return ((clamped - 0.5) / 1.5) * 100;
+  if (accel <= 1.0) {
+    const ratio = Math.max(0, accel) / 1.0;
+    return ratio * GAUGE_CENTER_PCT;
+  }
+  const ratio = Math.min((accel - 1.0) / (maxAccelVal - 1.0), 1.0);
+  return GAUGE_CENTER_PCT + ratio * (100 - GAUGE_CENTER_PCT);
 }
 
-// Gauge thumb color class
+// Gauge thumb color class (adaptive thresholds)
 function gaugeColorCls(accel: number): string {
-  if (accel > 1.5)  return 'fin-gauge-glow';
-  if (accel > 1.2)  return 'fin-gauge-up';
-  if (accel < 0.8)  return 'fin-gauge-down';
+  if (accel >= 3.0)  return 'fin-gauge-glow';
+  if (accel >= 1.5)  return 'fin-gauge-up';
+  if (accel < 0.8)   return 'fin-gauge-down';
   return 'fin-gauge-neutral';
 }
-
 
 // Helpers to avoid <= in JSX templates (Astro compiler treats < as tag)
 function accelCls(val: number): string {
@@ -198,10 +209,13 @@ function isDecel(val: number): boolean {
   return val >= 0 && val < 0.71; // <= 0.7
 }
 
-// Sort families by latest share desc (already done in history loader)
-const sortedFamilies = history?.families ?? [];
-// Sort by accel desc for gauge
-const sortedByAccel = [...sortedFamilies].sort((a, b) => b.latest.accel - a.latest.accel);
+// Competition pair context descriptions
+const PAIR_DESC: Record<string, string> = {
+  'ACTION HEAD ROUTE':      'Continuous action generation: denoising vs optimal transport',
+  'POST-TRAINING ROUTE':    'Model adaptation: supervised tuning vs reward optimization',
+  'LEARNING SIGNAL':        'Training paradigm: imagination-based vs reward-based',
+  'MANIPULATION SENSING':   'Manipulation approach: tactile feedback vs dexterous control',
+};
 
 // Competition pairs data
 const pairsData = history ? COMPETITION_PAIRS.map(pair => {
@@ -343,13 +357,15 @@ const base = import.meta.env.BASE_URL;
           })}
         </div>
 
-        <!-- B: Momentum Gauge -->
+        <!-- B: Momentum Gauge (adaptive scale) -->
         <div class="fin-gauge-panel">
-          <h3 class="fin-sub-title">MOMENTUM GAUGE</h3>
+          <h3 class="fin-sub-title">MOMENTUM GAUGE
+            <span class="fin-gauge-range-label">scale 0 — {maxAccelVal.toFixed(1)}x</span>
+          </h3>
           <div class="fin-gauge-axis">
-            <span class="fin-gauge-label-left">decel</span>
+            <span class="fin-gauge-label-left">0.0</span>
             <span class="fin-gauge-label-center">1.0</span>
-            <span class="fin-gauge-label-right">accel</span>
+            <span class="fin-gauge-label-right">{maxAccelVal.toFixed(1)}x</span>
           </div>
           {sortedByAccel.map(fam => {
             const pos = gaugePos(fam.latest.accel);
@@ -372,20 +388,27 @@ const base = import.meta.env.BASE_URL;
                 <span class={`fin-gauge-val ${accelCls(fam.latest.accel)}`}>
                   {fam.latest.accel.toFixed(2)}
                 </span>
-                {fam.latest.accel >= 1.5 && <span class="fin-gauge-tag fin-up">ACCEL</span>}
+                {fam.latest.accel >= 3.0 && <span class="fin-gauge-tag fin-up">SURGE</span>}
+                {fam.latest.accel >= 1.5 && fam.latest.accel < 3.0 && <span class="fin-gauge-tag fin-up">ACCEL</span>}
                 {isDecel(fam.latest.accel) && <span class="fin-gauge-tag fin-down">DECEL</span>}
               </div>
             );
           })}
         </div>
 
-        <!-- C: Competition Pairs -->
+        <!-- C: Competition Pairs (2-col grid) -->
         {pairsData.length > 0 && (
           <div class="fin-competition">
-            <h3 class="fin-sub-title">COMPETITION PAIRS</h3>
+            <h3 class="fin-sub-title">COMPETITION PAIRS
+              <span class="fin-gauge-range-label">{pairsData.length} matchups</span>
+            </h3>
+            <div class="fin-pairs-grid">
             {pairsData.map(pair => pair && (
               <div class="fin-pair">
                 <div class="fin-pair-label">{pair.label}</div>
+                {PAIR_DESC[pair.label] && (
+                  <div class="fin-pair-desc">{PAIR_DESC[pair.label]}</div>
+                )}
                 <div class="fin-pair-names">
                   <span class="fin-pair-name-left">{FAMILY_SHORT[pair.familyA] ?? pair.familyA}</span>
                   <span class="fin-pair-vs">vs</span>
@@ -406,6 +429,7 @@ const base = import.meta.env.BASE_URL;
                 </div>
               </div>
             ))}
+            </div>
           </div>
         )}
       </section>
@@ -781,16 +805,22 @@ const base = import.meta.env.BASE_URL;
   color: var(--text-tertiary); margin: 0 0 6px;
 }
 .fin-gauge-axis {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; align-items: center;
   margin-bottom: 3px; padding: 0 130px 0 0;
-  margin-left: 110px;
+  margin-left: 110px; position: relative;
 }
 .fin-gauge-label-left, .fin-gauge-label-right, .fin-gauge-label-center {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.5rem; color: var(--text-tertiary);
   letter-spacing: 0.1em; text-transform: uppercase;
 }
-.fin-gauge-label-center { position: absolute; left: 50%; transform: translateX(-50%); }
+.fin-gauge-label-left { position: absolute; left: 0; }
+.fin-gauge-label-center { position: absolute; left: 25%; transform: translateX(-50%); }
+.fin-gauge-label-right { position: absolute; right: 0; }
+.fin-gauge-range-label {
+  font-size: 0.48rem; color: var(--text-tertiary); opacity: 0.6;
+  font-weight: 400; letter-spacing: 0.08em; margin-left: 8px;
+}
 
 .fin-gauge-row {
   display: grid; grid-template-columns: 110px 1fr 48px auto;
@@ -842,8 +872,12 @@ const base = import.meta.env.BASE_URL;
   margin-top: 14px; padding-top: 10px;
   border-top: 1px solid var(--border);
 }
-.fin-pair { margin-bottom: 12px; }
-.fin-pair:last-child { margin-bottom: 0; }
+.fin-pairs-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px;
+}
+@media (max-width: 640px) { .fin-pairs-grid { grid-template-columns: 1fr; } }
+.fin-pair { }
+.fin-pair:last-child { }
 .fin-pair-label {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.52rem; font-weight: 600;
@@ -894,6 +928,12 @@ const base = import.meta.env.BASE_URL;
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.58rem; color: var(--text-secondary);
   font-weight: 600;
+}
+.fin-pair-desc {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.52rem; color: var(--text-tertiary);
+  margin-bottom: 4px; opacity: 0.7;
+  letter-spacing: 0.02em;
 }
 
 /* ── Sections ── */

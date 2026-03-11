@@ -908,8 +908,10 @@ export interface CompetitionPair {
 }
 
 export const COMPETITION_PAIRS: CompetitionPair[] = [
-  { familyA: 'diffusion_policy', familyB: 'flow_matching',      label: 'ACTION HEAD ROUTE' },
+  { familyA: 'diffusion_policy',   familyB: 'flow_matching',    label: 'ACTION HEAD ROUTE' },
   { familyA: 'instruction_tuning', familyB: 'rl_finetuning',    label: 'POST-TRAINING ROUTE' },
+  { familyA: 'world_model',        familyB: 'rl_finetuning',    label: 'LEARNING SIGNAL' },
+  { familyA: 'tactile',            familyB: 'dexterous_hand',   label: 'MANIPULATION SENSING' },
 ];
 
 // ---------------------------------------------------------------------------
