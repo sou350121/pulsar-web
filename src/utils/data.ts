@@ -1043,6 +1043,50 @@ export interface AtlasData {
   updated?:   string;
 }
 
+// ---------------------------------------------------------------------------
+// Emerging Terms types and loader
+// ---------------------------------------------------------------------------
+
+export interface EmergingTerm {
+  term:          string;
+  normalized:    string;
+  first_seen:    string;
+  last_seen:     string;
+  daily_counts:  Record<string, number>;
+  total_count:   number;
+  days_active:   number;
+  velocity:      number;
+  acceleration:  number;
+  status:        'new' | 'rising' | 'candidate' | 'promoted' | string;
+  sample_titles: string[];
+  llm_verified:  boolean | null;
+  llm_verdict:   string | null;
+}
+
+export interface EmergingTermsData {
+  date:                 string;
+  window_days:          number;
+  total_papers_scanned: number;
+  unmatched_papers:     number;
+  candidates:           EmergingTerm[];
+  promoted:             EmergingTerm[];
+  archive:              EmergingTerm[];
+  stats: {
+    total_ngrams_extracted: number;
+    after_stopword_filter:  number;
+    candidates_count:       number;
+    promoted_count:         number;
+  };
+  updated_at: string;
+}
+
+/**
+ * Load emerging terms data for the VLA deep dive page.
+ */
+export function loadEmergingTerms(): EmergingTermsData | null {
+  return readJson<EmergingTermsData>('emerging-terms.json');
+}
+
 /**
  * Load Paper Atlas data.
  * Prefers the auto-generated atlas-papers.json (with momentum + recentPapers).

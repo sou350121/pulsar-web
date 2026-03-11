@@ -62,6 +62,8 @@ JSON_FILES = [
     "atlas-papers.json",
     "vla-daily-hotspots.json",
     "ai-github-theory.json",
+    # Emerging method family detection
+    "emerging-terms.json",
 ]
 
 # Markdown file patterns — (prefix, how_many_recent_to_copy)

@@ -4,14 +4,15 @@
  * VLA Deep Dive — 統一文章庫 + 方法族趨勢金融終端看板 + SOTA 排行。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState, loadFieldStateHistory, COMPETITION_PAIRS } from '../../utils/data';
-import type { FamilyTimeSeries } from '../../utils/data';
+import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState, loadFieldStateHistory, COMPETITION_PAIRS, loadEmergingTerms } from '../../utils/data';
+import type { FamilyTimeSeries, EmergingTerm } from '../../utils/data';
 
 const theory   = loadVLATheory(50);
 const sota     = loadVLASOTA(30);
 const ghAll    = loadVLAGitHubArticles(100);
 const fieldState = loadLatestFieldState();
 const history  = loadFieldStateHistory();
+const emergingData = loadEmergingTerms();
 
 const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
 const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
@@ -432,6 +433,87 @@ const base = import.meta.env.BASE_URL;
             </div>
           </div>
         )}
+      </section>
+    )}
+
+    <!-- ══════════════════════════════════════════
+         EMERGING SIGNALS: Emerging Method Terms
+    ══════════════════════════════════════════ -->
+    {emergingData && emergingData.candidates.length > 0 && (
+      <section class="fin-panel fin-emerging-panel" aria-label="新興方法訊號">
+        <div class="fin-header">
+          <div class="fin-header-left">
+            <h2 class="fin-title">EMERGING SIGNALS</h2>
+            <span class="fin-meta">
+              {emergingData.date} · {emergingData.unmatched_papers}/{emergingData.total_papers_scanned} unmatched · {emergingData.window_days}d window
+            </span>
+          </div>
+          <span class="fin-emerging-badge">
+            {emergingData.candidates.length} candidates
+          </span>
+        </div>
+
+        <!-- Emerging terms table -->
+        <div class="fin-emerging-grid-header fin-emerging-grid">
+          <span class="fin-th">TERM</span>
+          <span class="fin-th" style="text-align:right">COUNT</span>
+          <span class="fin-th" style="text-align:right">DAYS</span>
+          <span class="fin-th" style="text-align:center">VELOCITY</span>
+          <span class="fin-th" style="text-align:center">STATUS</span>
+          <span class="fin-th">SAMPLE</span>
+        </div>
+        <div class="fin-emerging-rows">
+          {emergingData.candidates
+            .sort((a, b) => b.acceleration - a.acceleration)
+            .map((term) => {
+              const statusCls = term.status === 'rising' ? 'fin-es-rising'
+                : term.status === 'new' ? 'fin-es-new'
+                : term.status === 'candidate' ? 'fin-es-candidate'
+                : 'fin-es-promoted';
+              const velArrow = term.velocity > 0.5 ? '++' : term.velocity > 0 ? '+' : term.velocity < -0.3 ? '--' : term.velocity < 0 ? '-' : '~';
+              const velCls = term.velocity > 0.5 ? 'fin-up' : term.velocity > 0 ? 'fin-up' : term.velocity < 0 ? 'fin-down' : 'fin-flat';
+              // Mini spark: daily counts as tiny bars
+              const dailyEntries = Object.entries(term.daily_counts).sort(([a],[b]) => a.localeCompare(b));
+              const maxDay = Math.max(...dailyEntries.map(([,v]) => v), 1);
+              return (
+                <div class="fin-emerging-row fin-emerging-grid">
+                  <div class="fin-emerging-term">
+                    <span class="fin-emerging-term-text">{term.term}</span>
+                    <svg class="fin-emerging-spark" width={dailyEntries.length * 6} height="14" viewBox={`0 0 ${dailyEntries.length * 6} 14`}>
+                      {dailyEntries.map(([, count], i) => (
+                        <rect
+                          x={i * 6}
+                          y={14 - (count / maxDay) * 12}
+                          width="4"
+                          height={Math.max(1, (count / maxDay) * 12)}
+                          fill={i === dailyEntries.length - 1 ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.15)'}
+                          rx="1"
+                        />
+                      ))}
+                    </svg>
+                  </div>
+                  <span class="fin-emerging-count">{term.total_count}</span>
+                  <span class="fin-emerging-days">{term.days_active}d</span>
+                  <span class={`fin-emerging-vel ${velCls}`}>{velArrow} x{term.acceleration.toFixed(1)}</span>
+                  <span class={`fin-emerging-status ${statusCls}`}>{term.status.toUpperCase()}</span>
+                  <span class="fin-emerging-sample" title={term.sample_titles.join(' · ')}>
+                    {term.sample_titles[0]?.substring(0, 50)}{(term.sample_titles[0]?.length ?? 0) > 50 ? '...' : ''}
+                  </span>
+                </div>
+              );
+            })}
+        </div>
+
+        <!-- Coverage stats footer -->
+        <div class="fin-emerging-footer">
+          <span class="fin-emerging-stat">
+            {emergingData.stats.total_ngrams_extracted} n-grams
+            <span class="fin-emerging-stat-sep">|</span>
+            {emergingData.stats.after_stopword_filter} after filter
+            <span class="fin-emerging-stat-sep">|</span>
+            coverage gap: {((emergingData.unmatched_papers / emergingData.total_papers_scanned) * 100).toFixed(0)}%
+          </span>
+        </div>
       </section>
     )}
 
@@ -935,6 +1017,102 @@ const base = import.meta.env.BASE_URL;
   font-size: 0.52rem; color: var(--text-tertiary);
   margin-bottom: 4px; opacity: 0.7;
   letter-spacing: 0.02em;
+}
+
+/* ── Emerging Signals ── */
+.fin-emerging-panel {
+  margin-top: 28px;
+}
+.fin-emerging-badge {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  padding: 2px 8px; border-radius: 8px;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em;
+  background: rgba(6,182,212,0.12); color: var(--accent-cyan);
+  border: 1px solid rgba(6,182,212,0.25);
+}
+.fin-emerging-grid {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.2fr) 44px 36px 72px 72px 1fr;
+  gap: 6px; align-items: center;
+}
+.fin-emerging-grid-header {
+  padding: 0 0 3px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+.fin-emerging-row {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
+  transition: background 0.12s;
+}
+.fin-emerging-row:hover { background: rgba(255,255,255,0.02); }
+.fin-emerging-row:last-child { border-bottom: none; }
+
+.fin-emerging-term {
+  display: flex; align-items: center; gap: 6px;
+}
+.fin-emerging-term-text {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem; font-weight: 600; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fin-emerging-spark { flex-shrink: 0; }
+.fin-emerging-count {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem; font-weight: 700; color: var(--text-primary);
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.fin-emerging-days {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; color: var(--text-tertiary);
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.fin-emerging-vel {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.62rem; font-weight: 600; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.fin-emerging-status {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.5rem; font-weight: 700; letter-spacing: 0.1em;
+  text-align: center; padding: 1px 4px; border-radius: 4px;
+}
+.fin-es-new {
+  background: rgba(6,182,212,0.12); color: var(--accent-cyan);
+}
+.fin-es-rising {
+  background: rgba(34,197,94,0.12); color: #22c55e;
+  animation: finPulse 2s ease-in-out infinite;
+}
+.fin-es-candidate {
+  background: rgba(212,145,10,0.12); color: var(--accent-amber);
+}
+.fin-es-promoted {
+  background: rgba(168,85,247,0.15); color: #a855f7;
+}
+.fin-emerging-sample {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.56rem; color: var(--text-tertiary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+.fin-emerging-footer {
+  margin-top: 8px; padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.fin-emerging-stat {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.52rem; color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+}
+.fin-emerging-stat-sep {
+  margin: 0 6px; opacity: 0.4;
+}
+@media (max-width: 640px) {
+  .fin-emerging-grid {
+    grid-template-columns: 1fr 40px 32px 60px 56px;
+  }
+  .fin-emerging-sample { display: none; }
 }
 
 /* ── Sections ── */
