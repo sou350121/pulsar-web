@@ -835,12 +835,14 @@ export function relativeDay(dateStr: string): string {
 // Field-State — method trend + benchmark health from compute-field-state.py
 // ---------------------------------------------------------------------------
 export interface MethodTrend {
-  family:       string;
-  count_7d:     number;
-  count_14d:    number;
-  share_7d?:    number;   // v1 only; v2 drops this — compute from count_7d / total_papers_scanned
-  acceleration: number;
-  status:       string;
+  family:           string;
+  count_7d:         number;
+  count_14d:        number;
+  share_7d?:        number;   // v1 only; v2 drops this — compute from count_7d / total_papers_scanned
+  acceleration:     number;
+  acceleration_14d?: number;  // v3: supplementary 14d acceleration
+  status:           string;
+  new_family_since?: string;  // v3: date when family was added (suppressed <14d)
 }
 
 export interface BenchmarkHealth {
@@ -888,7 +890,7 @@ export interface FamilyTimeSeries {
   shares: number[];    // share_7d per day
   counts: number[];    // count_7d per day
   accels: number[];    // acceleration per day
-  latest: { share: number; count: number; accel: number; status: string };
+  latest: { share: number; count: number; accel: number; accel14d: number; status: string; isNew: boolean };
   delta:  number;      // shares[last] - shares[first] (pp change over window)
 }
 
@@ -912,6 +914,7 @@ export const COMPETITION_PAIRS: CompetitionPair[] = [
   { familyA: 'instruction_tuning', familyB: 'rl_finetuning',    label: 'POST-TRAINING ROUTE' },
   { familyA: 'world_model',        familyB: 'rl_finetuning',    label: 'LEARNING SIGNAL' },
   { familyA: 'tactile',            familyB: 'dexterous_hand',   label: 'MANIPULATION SENSING' },
+  { familyA: 'sim_to_real',        familyB: 'cross_embodiment', label: 'TRANSFER APPROACH' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -972,10 +975,12 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
       counts,
       accels,
       latest: {
-        share:  getShare(latestTrend, latest.total_papers_scanned),
-        count:  latestTrend?.count_7d ?? 0,
-        accel:  latestTrend?.acceleration ?? 1,
-        status: latestTrend?.status ?? 'stable',
+        share:   getShare(latestTrend, latest.total_papers_scanned),
+        count:   latestTrend?.count_7d ?? 0,
+        accel:   latestTrend?.acceleration ?? 1,
+        accel14d: latestTrend?.acceleration_14d ?? latestTrend?.acceleration ?? 1,
+        status:  latestTrend?.status ?? 'stable',
+        isNew:   latestTrend?.status === 'new_family',
       },
       delta: (shares[shares.length - 1] ?? 0) - (shares[0] ?? 0),
     });

@@ -69,28 +69,42 @@ const sotaByBenchmark: Record<string, typeof sota> = {};
 for (const s of sota) { (sotaByBenchmark[s.benchmark] ??= []).push(s); }
 const benchmarks = Object.keys(sotaByBenchmark).sort();
 
-// Method family display names
+// Method family display names (15 families)
 const FAMILY_NAMES: Record<string, string> = {
-  diffusion_policy:   'Diffusion Policy',
-  flow_matching:      'Flow Matching',
-  rl_finetuning:      'RL Fine-tuning',
-  instruction_tuning: 'Instr. Tuning',
-  world_model:        'World Model',
-  tactile:            'Tactile',
-  dexterous_hand:     'Dexterous Hand',
-  cross_embodiment:   'Cross-Embodiment',
+  diffusion_policy:     'Diffusion Policy',
+  flow_matching:        'Flow Matching',
+  rl_finetuning:        'RL Fine-tuning',
+  instruction_tuning:   'Instr. Tuning',
+  world_model:          'World Model',
+  tactile:              'Tactile',
+  dexterous_hand:       'Dexterous Hand',
+  cross_embodiment:     'Cross-Embodiment',
+  sim_to_real:          'Sim-to-Real',
+  long_horizon:         'Long Horizon',
+  multi_task:           'Multi-Task',
+  mobile_manipulation:  'Mobile Manip.',
+  human_robot:          'Human-Robot',
+  '3d_representation':  '3D Repr.',
+  language_grounding:   'Lang. Grounding',
 };
 
-// Short names for gauge/competition
+// Short names for competition pairs
 const FAMILY_SHORT: Record<string, string> = {
-  diffusion_policy:   'Diffusion Pol.',
-  flow_matching:      'Flow Matching',
-  rl_finetuning:      'RL Fine-tune',
-  instruction_tuning: 'Instr. Tuning',
-  world_model:        'World Model',
-  tactile:            'Tactile',
-  dexterous_hand:     'Dext. Hand',
-  cross_embodiment:   'Cross-Embod.',
+  diffusion_policy:     'Diffusion Pol.',
+  flow_matching:        'Flow Matching',
+  rl_finetuning:        'RL Fine-tune',
+  instruction_tuning:   'Instr. Tuning',
+  world_model:          'World Model',
+  tactile:              'Tactile',
+  dexterous_hand:       'Dext. Hand',
+  cross_embodiment:     'Cross-Embod.',
+  sim_to_real:          'Sim2Real',
+  long_horizon:         'Long Horizon',
+  multi_task:           'Multi-Task',
+  mobile_manipulation:  'Mobile Man.',
+  human_robot:          'Human-Robot',
+  '3d_representation':  '3D Repr.',
+  language_grounding:   'Lang. Ground.',
 };
 
 // Build saturated benchmark set from field-state (prefix match: BENCHMARK/SPLIT → BENCHMARK)
@@ -154,7 +168,8 @@ function sparkWidth(n: number): number {
 }
 
 // Status dot and label
-function statusInfo(accel: number, status: string): { dot: string; label: string; cls: string } {
+function statusInfo(accel: number, status: string, isNew: boolean): { dot: string; label: string; cls: string } {
+  if (isNew) return { dot: '◇', label: 'NEW', cls: 'fin-new-dot' };
   if (status === 'accelerating' || accel >= 1.5) return { dot: '◉', label: 'SURGE', cls: 'fin-surge' };
   if (accel >= 1.15) return { dot: '●', label: 'ACCEL', cls: 'fin-accel-dot' };
   if (!(accel > 0.85)) return { dot: '●', label: 'DECEL', cls: 'fin-decel-dot' };
@@ -172,32 +187,8 @@ function fmtDelta(v: number): string {
   return (pp >= 0 ? '+' : '') + pp.toFixed(1);
 }
 
-// Sort families by latest share desc (already done in history loader)
-const sortedFamilies = history?.families ?? [];
-// Sort by accel desc for gauge
-const sortedByAccel = [...sortedFamilies].sort((a, b) => b.latest.accel - a.latest.accel);
-
-// Adaptive momentum gauge: center at 1.0, split-linear scale.
-// Left: [0, 1.0] → [0%, CENTER%], Right: [1.0, maxAccel] → [CENTER%, 100%]
-const GAUGE_CENTER_PCT = 25; // center line at 25% — gives 75% room for acceleration
-const maxAccelVal = sortedByAccel.length > 0 ? Math.max(sortedByAccel[0]?.latest.accel ?? 2, 2) : 2;
-
-function gaugePos(accel: number): number {
-  if (accel <= 1.0) {
-    const ratio = Math.max(0, accel) / 1.0;
-    return ratio * GAUGE_CENTER_PCT;
-  }
-  const ratio = Math.min((accel - 1.0) / (maxAccelVal - 1.0), 1.0);
-  return GAUGE_CENTER_PCT + ratio * (100 - GAUGE_CENTER_PCT);
-}
-
-// Gauge thumb color class (adaptive thresholds)
-function gaugeColorCls(accel: number): string {
-  if (accel >= 3.0)  return 'fin-gauge-glow';
-  if (accel >= 1.5)  return 'fin-gauge-up';
-  if (accel < 0.8)   return 'fin-gauge-down';
-  return 'fin-gauge-neutral';
-}
+// Sort families by latest 7d count desc (primary sort)
+const sortedFamilies = (history?.families ?? []).slice().sort((a, b) => b.latest.count - a.latest.count);
 
 // Helpers to avoid <= in JSX templates (Astro compiler treats < as tag)
 function accelCls(val: number): string {
@@ -206,8 +197,18 @@ function accelCls(val: number): string {
   return 'fin-down';
 }
 
-function isDecel(val: number): boolean {
-  return val >= 0 && val < 0.71; // <= 0.7
+// Summary stats
+const accelFamilies = sortedFamilies.filter(f => !f.latest.isNew && f.latest.accel >= 1.15).length;
+const declFamilies = sortedFamilies.filter(f => !f.latest.isNew && f.latest.accel < 0.71).length;
+const newFamilies = sortedFamilies.filter(f => f.latest.isNew).length;
+const totalCoverage = history ? (sortedFamilies.reduce((s, f) => s + f.latest.count, 0)) : 0;
+
+// Inline momentum gauge (6 segments, each = 0.5x accel)
+function gaugeSegments(accel: number, isNew: boolean): { filled: number; color: string } {
+  if (isNew) return { filled: 0, color: 'var(--accent-cyan)' };
+  const filled = Math.min(6, Math.round(accel / 0.5));
+  const color = accel >= 2.0 ? 'var(--fin-up)' : accel >= 1.0 ? 'var(--accent-amber)' : 'var(--fin-down)';
+  return { filled, color };
 }
 
 // Competition pair context descriptions
@@ -216,6 +217,7 @@ const PAIR_DESC: Record<string, string> = {
   'POST-TRAINING ROUTE':    'Model adaptation: supervised tuning vs reward optimization',
   'LEARNING SIGNAL':        'Training paradigm: imagination-based vs reward-based',
   'MANIPULATION SENSING':   'Manipulation approach: tactile feedback vs dexterous control',
+  'TRANSFER APPROACH':      'Domain bridging: simulation transfer vs cross-embodiment',
 };
 
 // Competition pairs data
@@ -295,109 +297,88 @@ const base = import.meta.env.BASE_URL;
     ══════════════════════════════════════════ -->
     {history && (
       <section class="fin-panel" aria-label="方法族趨勢看板">
-        <!-- Gradient top bar via ::before -->
 
         <!-- Header -->
         <div class="fin-header">
           <div class="fin-header-left">
             <h2 class="fin-title">METHOD FAMILY TRENDS</h2>
             <span class="fin-meta">
-              {history.latestDate} · {history.totalPapers} papers · {history.dates.length}d window
+              {history.latestDate} · {history.totalPapers} papers · {history.dates.length}d window · {sortedFamilies.length} families
             </span>
           </div>
           <span class={`fin-confidence fin-confidence--${history.confidence}`}>
-            confidence: {history.confidence}
+            {history.confidence}
           </span>
         </div>
 
-        <!-- A: Ticker Table -->
-        <div class="fin-ticker-header fin-ticker-grid">
-          <span class="fin-th fin-th-name">FAMILY</span>
-          <span class="fin-th fin-th-chart">{history.dates.length}D CHART</span>
-          <span class="fin-th fin-th-share">SHARE</span>
-          <span class="fin-th fin-th-delta">&Delta;</span>
-          <span class="fin-th fin-th-accel">MOM</span>
-          <span class="fin-th fin-th-vol">VOL</span>
-          <span class="fin-th fin-th-status">ST</span>
-        </div>
-        <div class="fin-ticker">
-          {sortedFamilies.map(fam => {
-            const bars = buildSparkBars(fam.shares);
-            const maLine = buildMALine(fam.shares);
-            const { barW } = sparkDims(fam.shares.length);
-            const maPath = maLine.length > 1
-              ? 'M' + maLine.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L')
-              : '';
-            const svgW = sparkWidth(fam.shares.length);
-            const si = statusInfo(fam.latest.accel, fam.latest.status);
-            const deltaCls = fam.delta >= 0 ? 'fin-up' : 'fin-down';
-            const accelClsVal = accelCls(fam.latest.accel);
-            return (
-              <div class="fin-row fin-ticker-grid">
-                <span class="fin-name">{FAMILY_NAMES[fam.family] ?? fam.family}</span>
-                <svg class="fin-spark" viewBox={`0 0 ${svgW} ${SPARK_H}`} width={svgW} height={SPARK_H} aria-hidden="true">
-                  {bars.map(b => (
-                    <rect
-                      x={b.x} y={b.y} width={barW} height={b.h} rx="1"
-                      fill={b.up ? 'var(--fin-up)' : 'var(--fin-down)'}
-                      opacity="0.85"
-                    />
-                  ))}
-                  {maPath && (
-                    <path d={maPath} fill="none" stroke="var(--text-tertiary)" stroke-width="1"
-                      stroke-dasharray="3,2" opacity="0.5" />
-                  )}
-                </svg>
-                <span class="fin-share">{fmtPct(fam.latest.share)}</span>
-                <span class={`fin-delta ${deltaCls}`}>{fmtDelta(fam.delta)}</span>
-                <span class={`fin-accel ${accelClsVal}`}>{fam.latest.accel.toFixed(2)}</span>
-                <span class="fin-vol">{fam.latest.count}</span>
-                <span class={`fin-status-dot ${si.cls}`} title={si.label}>{si.dot}</span>
-              </div>
-            );
-          })}
+        <!-- Summary line -->
+        <div class="fin-summary-line">
+          {accelFamilies > 0 && <span class="fin-summary-tag fin-up">&#9650; {accelFamilies} accelerating</span>}
+          {declFamilies > 0 && <span class="fin-summary-tag fin-down">&#9660; {declFamilies} declining</span>}
+          {newFamilies > 0 && <span class="fin-summary-tag fin-new-tag">&#9671; {newFamilies} new</span>}
+          <span class="fin-summary-stat">{sortedFamilies.length} families</span>
+          <span class="fin-summary-sep">&middot;</span>
+          <span class="fin-summary-stat">{totalCoverage} papers covered</span>
         </div>
 
-        <!-- B: Momentum Gauge (adaptive scale) -->
-        <div class="fin-gauge-panel">
-          <h3 class="fin-sub-title">MOMENTUM GAUGE
-            <span class="fin-gauge-range-label">scale 0 — {maxAccelVal.toFixed(1)}x</span>
-          </h3>
-          <div class="fin-gauge-axis">
-            <span class="fin-gauge-label-left">0.0</span>
-            <span class="fin-gauge-label-center">1.0</span>
-            <span class="fin-gauge-label-right">{maxAccelVal.toFixed(1)}x</span>
+        <!-- Unified ticker table (gauge merged in) -->
+        <div class="fin-ticker-wrap">
+          <div class="fin-ticker-header fin-ticker-grid-v3">
+            <span class="fin-th fin-th-name">FAMILY</span>
+            <span class="fin-th fin-th-gauge">MOM</span>
+            <span class="fin-th fin-th-vol">7d</span>
+            <span class="fin-th fin-th-accel">&Delta;7d</span>
+            <span class="fin-th fin-th-chart">CHART</span>
+            <span class="fin-th fin-th-status">ST</span>
           </div>
-          {sortedByAccel.map(fam => {
-            const pos = gaugePos(fam.latest.accel);
-            const centerPos = gaugePos(1.0);
-            const colorCls = gaugeColorCls(fam.latest.accel);
-            const isAccel = fam.latest.accel >= 1.0;
-            const fillLeft = isAccel ? centerPos : pos;
-            const fillWidth = isAccel ? pos - centerPos : centerPos - pos;
-            return (
-              <div class="fin-gauge-row">
-                <span class="fin-gauge-name">{FAMILY_SHORT[fam.family] ?? fam.family}</span>
-                <div class="fin-gauge-track">
-                  <div class="fin-gauge-center-line" style={`left:${centerPos}%`}></div>
-                  <div
-                    class={`fin-gauge-fill ${isAccel ? 'fin-gauge-fill-right' : 'fin-gauge-fill-left'}`}
-                    style={`left:${fillLeft}%;width:${Math.max(fillWidth, 0.5)}%`}
-                  ></div>
-                  <div class={`fin-gauge-thumb ${colorCls}`} style={`left:${pos}%`}></div>
+          <div class="fin-ticker">
+            {sortedFamilies.map(fam => {
+              const bars = buildSparkBars(fam.shares);
+              const maLine = buildMALine(fam.shares);
+              const { barW } = sparkDims(fam.shares.length);
+              const maPath = maLine.length > 1
+                ? 'M' + maLine.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L')
+                : '';
+              const svgW = Math.max(sparkWidth(fam.shares.length), 90);
+              const si = statusInfo(fam.latest.accel, fam.latest.status, fam.latest.isNew);
+              const accelClsVal = fam.latest.isNew ? 'fin-new-text' : accelCls(fam.latest.accel);
+              const gs = gaugeSegments(fam.latest.accel, fam.latest.isNew);
+              return (
+                <div class={`fin-row fin-ticker-grid-v3 ${fam.latest.isNew ? 'fin-row-new' : ''}`}>
+                  <span class="fin-name" title={fam.family}>{FAMILY_NAMES[fam.family] ?? fam.family}</span>
+                  <span class="fin-mini-gauge" aria-label={`momentum ${fam.latest.accel.toFixed(2)}x`}>
+                    {[0,1,2,3,4,5].map(i => (
+                      <span
+                        class={`fin-gauge-seg ${i < gs.filled ? 'fin-gauge-seg-on' : ''}`}
+                        style={i < gs.filled ? `background:${gs.color}` : ''}
+                      />
+                    ))}
+                  </span>
+                  <span class="fin-vol tabular-nums">{fam.latest.count}</span>
+                  <span class={`fin-accel tabular-nums ${accelClsVal}`}>
+                    {fam.latest.isNew ? 'NEW' : fam.latest.accel.toFixed(2) + 'x'}
+                  </span>
+                  <svg class="fin-spark" viewBox={`0 0 ${svgW} ${SPARK_H}`} width={svgW} height={SPARK_H} aria-hidden="true">
+                    {bars.map(b => (
+                      <rect
+                        x={b.x} y={b.y} width={barW} height={b.h} rx="1"
+                        fill={b.up ? 'var(--fin-up)' : 'var(--fin-down)'}
+                        opacity="0.85"
+                      />
+                    ))}
+                    {maPath && (
+                      <path d={maPath} fill="none" stroke="var(--text-tertiary)" stroke-width="1"
+                        stroke-dasharray="3,2" opacity="0.5" />
+                    )}
+                  </svg>
+                  <span class={`fin-status-dot ${si.cls}`} title={si.label}>{si.dot}</span>
                 </div>
-                <span class={`fin-gauge-val ${accelCls(fam.latest.accel)}`}>
-                  {fam.latest.accel.toFixed(2)}
-                </span>
-                {fam.latest.accel >= 3.0 && <span class="fin-gauge-tag fin-up">SURGE</span>}
-                {fam.latest.accel >= 1.5 && fam.latest.accel < 3.0 && <span class="fin-gauge-tag fin-up">ACCEL</span>}
-                {isDecel(fam.latest.accel) && <span class="fin-gauge-tag fin-down">DECEL</span>}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
-        <!-- C: Competition Pairs (2-col grid) -->
+        <!-- Competition Pairs (2-col grid) — only show pairs where both sides have data -->
         {pairsData.length > 0 && (
           <div class="fin-competition">
             <h3 class="fin-sub-title">COMPETITION PAIRS
@@ -802,12 +783,55 @@ const base = import.meta.env.BASE_URL;
 .fin-confidence--moderate { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
 .fin-confidence--low { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
 
-/* Shared ticker grid — single source of truth for header + rows */
+/* Legacy ticker grid (kept for compat, unused in v3) */
 .fin-ticker-grid {
   display: grid;
   grid-template-columns: 130px 1fr 54px 50px 50px 34px 28px;
   gap: 6px; align-items: center;
 }
+/* v3 merged ticker+gauge grid: FAMILY | GAUGE | 7d | Δ7d | CHART | ST */
+.fin-ticker-grid-v3 {
+  display: grid;
+  grid-template-columns: 120px 56px 36px 50px 1fr 24px;
+  gap: 6px; align-items: center;
+}
+.fin-ticker-wrap { overflow-x: auto; }
+.fin-ticker-wrap > .fin-ticker-header,
+.fin-ticker-wrap > .fin-ticker { min-width: 480px; }
+
+/* Summary line */
+.fin-summary-line {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 5px 0 8px; margin-bottom: 2px;
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.58rem; letter-spacing: 0.05em;
+}
+.fin-summary-tag {
+  padding: 1px 6px; border-radius: 6px; font-weight: 600;
+  font-size: 0.52rem; letter-spacing: 0.08em;
+}
+.fin-summary-tag.fin-up { background: rgba(34,197,94,0.10); color: var(--fin-up); }
+.fin-summary-tag.fin-down { background: rgba(239,68,68,0.10); color: var(--fin-down); }
+.fin-summary-tag.fin-new-tag { background: rgba(6,182,212,0.10); color: var(--accent-cyan); }
+.fin-summary-stat { color: var(--text-tertiary); }
+.fin-summary-sep { color: var(--text-tertiary); opacity: 0.4; }
+
+/* Mini inline momentum gauge (6 segments) */
+.fin-mini-gauge {
+  display: flex; gap: 2px; align-items: center; height: 100%;
+}
+.fin-gauge-seg {
+  display: inline-block; width: 6px; height: 10px;
+  background: var(--border-subtle, rgba(255,255,255,0.06));
+  border-radius: 1px;
+}
+.fin-gauge-seg-on {
+  opacity: 0.85;
+}
+/* New family row styling */
+.fin-row-new { border-left: 2px solid var(--accent-cyan); padding-left: 4px; }
+.fin-new-text { color: var(--accent-cyan); font-size: 0.58rem; }
+.fin-new-dot { color: var(--accent-cyan); }
 
 /* Ticker Table Header */
 .fin-ticker-header {
@@ -876,78 +900,16 @@ const base = import.meta.env.BASE_URL;
   50% { opacity: 0.4; }
 }
 
-/* ── Momentum Gauge ── */
-.fin-gauge-panel {
-  margin-top: 14px; padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
+/* ── Sub-section title (competition pairs) ── */
 .fin-sub-title {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.56rem; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--text-tertiary); margin: 0 0 6px;
 }
-.fin-gauge-axis {
-  display: flex; align-items: center;
-  margin-bottom: 3px; padding: 0 130px 0 0;
-  margin-left: 110px; position: relative;
-}
-.fin-gauge-label-left, .fin-gauge-label-right, .fin-gauge-label-center {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.5rem; color: var(--text-tertiary);
-  letter-spacing: 0.1em; text-transform: uppercase;
-}
-.fin-gauge-label-left { position: absolute; left: 0; }
-.fin-gauge-label-center { position: absolute; left: 25%; transform: translateX(-50%); }
-.fin-gauge-label-right { position: absolute; right: 0; }
 .fin-gauge-range-label {
   font-size: 0.48rem; color: var(--text-tertiary); opacity: 0.6;
   font-weight: 400; letter-spacing: 0.08em; margin-left: 8px;
-}
-
-.fin-gauge-row {
-  display: grid; grid-template-columns: 110px 1fr 48px auto;
-  gap: 8px; align-items: center;
-  padding: 2px 0;
-}
-.fin-gauge-name {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.66rem; color: var(--text-secondary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.fin-gauge-track {
-  position: relative; height: 8px;
-  background: var(--border-subtle, rgba(255,255,255,0.06));
-  border-radius: 5px; overflow: visible;
-}
-.fin-gauge-center-line {
-  position: absolute; top: -2px; bottom: -2px; width: 1px;
-  background: var(--text-tertiary); opacity: 0.4;
-}
-.fin-gauge-fill {
-  position: absolute; top: 1px; bottom: 1px;
-  border-radius: 4px;
-}
-.fin-gauge-fill-right { background: rgba(34,197,94,0.2); }
-.fin-gauge-fill-left  { background: rgba(239,68,68,0.2); }
-
-.fin-gauge-thumb {
-  position: absolute; top: 50%; width: 7px; height: 7px;
-  border-radius: 50%; transform: translate(-50%, -50%);
-  transition: left 0.3s ease;
-}
-.fin-gauge-neutral { background: var(--text-tertiary); }
-.fin-gauge-up      { background: var(--fin-up); }
-.fin-gauge-down    { background: var(--fin-down); }
-.fin-gauge-glow    { background: var(--fin-up); box-shadow: 0 0 6px rgba(34,197,94,0.6); }
-
-.fin-gauge-val {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.66rem; font-weight: 600; text-align: right;
-}
-.fin-gauge-tag {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.5rem; font-weight: 700; letter-spacing: 0.1em;
 }
 
 /* ── Competition Pairs ── */
@@ -1327,40 +1289,30 @@ const base = import.meta.env.BASE_URL;
    RESPONSIVE
    ═══════════════════════════════════ */
 
-/* Medium: hide VOL, shrink sparkline */
+/* Medium: shrink v3 grid */
 @media (max-width: 768px) {
-  .fin-ticker-header {
-    grid-template-columns: 110px 1fr 48px 48px 48px 0px 0px;
+  .fin-ticker-grid-v3 {
+    grid-template-columns: 100px 48px 32px 44px 1fr 22px;
+    gap: 4px;
   }
-  .fin-row {
-    grid-template-columns: 110px 1fr 48px 48px 48px 0px 0px;
-  }
-  .fin-vol, .fin-th-vol,
-  .fin-status-dot, .fin-th-status { display: none; }
   .fin-spark { max-width: 80px; }
-  .fin-gauge-axis { margin-left: 90px; padding-right: 90px; }
-  .fin-gauge-row { grid-template-columns: 90px 1fr 44px auto; }
 }
 
 /* Small: card stack layout for ticker */
 @media (max-width: 520px) {
   .fin-ticker-header { display: none; }
   .fin-ticker { gap: 8px; }
-  .fin-row {
+  .fin-row.fin-ticker-grid-v3 {
     display: flex; flex-wrap: wrap; gap: 6px;
-    padding: 12px 0;
+    padding: 8px 0;
     align-items: center;
   }
-  .fin-name { flex: 0 0 100%; font-size: 0.68rem; font-weight: 600; color: var(--text-primary); }
+  .fin-name { flex: 0 0 auto; font-size: 0.68rem; font-weight: 600; color: var(--text-primary); }
+  .fin-mini-gauge { flex: 0 0 auto; }
+  .fin-vol { flex: 0 0 auto; }
+  .fin-accel { flex: 0 0 auto; }
   .fin-spark { flex: 1 1 auto; max-width: 100%; }
-  .fin-share { font-size: 0.78rem; }
-  .fin-delta { font-size: 0.62rem; }
-  .fin-accel { font-size: 0.62rem; }
-  .fin-vol, .fin-status-dot { display: none; }
-
-  .fin-gauge-axis { margin-left: 0; padding-right: 60px; display: none; }
-  .fin-gauge-row { grid-template-columns: 80px 1fr 40px auto; gap: 6px; }
-  .fin-gauge-name { font-size: 0.6rem; }
+  .fin-status-dot { display: none; }
 }
 
 /* Mobile */
