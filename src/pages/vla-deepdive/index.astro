@@ -1401,21 +1401,62 @@ const base = import.meta.env.BASE_URL;
   .fin-spark { max-width: 80px; }
 }
 
-/* Small: card stack layout for ticker */
+/* Small: compact 2-line card layout for ticker */
 @media (max-width: 520px) {
+  .fin-ticker-wrap > .fin-ticker-header,
+  .fin-ticker-wrap > .fin-ticker { min-width: 100%; }
   .fin-ticker-header { display: none; }
-  .fin-ticker { gap: 8px; }
+  .fin-ticker { gap: 4px; }
   .fin-row.fin-ticker-grid-v3 {
-    display: flex; flex-wrap: wrap; gap: 6px;
-    padding: 8px 0;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 4px 6px;
+    padding: 6px 0;
     align-items: center;
   }
-  .fin-name { flex: 0 0 auto; font-size: 0.68rem; font-weight: 600; color: var(--text-primary); }
-  .fin-mini-gauge { flex: 0 0 auto; }
-  .fin-vol { flex: 0 0 auto; }
-  .fin-accel { flex: 0 0 auto; }
-  .fin-spark { flex: 1 1 auto; max-width: 100%; }
+  .fin-name { font-size: 0.68rem; font-weight: 600; color: var(--text-primary); grid-column: 1; }
+  .fin-mini-gauge { grid-column: 2; }
+  .fin-vol { grid-column: 3; }
+  .fin-accel { grid-column: 4; }
+  .fin-spark { grid-column: 1 / -1; max-width: 100%; width: 100%; }
   .fin-status-dot { display: none; }
+  .fin-row-new { padding-left: 2px; }
+  .fin-summary-line { font-size: 0.54rem; gap: 6px; }
+
+  /* Competition pairs — mobile readability */
+  .fin-pairs-grid { gap: 10px; }
+  .fin-pair-label { font-size: 0.58rem; }
+  .fin-pair-desc { font-size: 0.54rem; }
+  .fin-pair-name-left, .fin-pair-name-right { font-size: 0.66rem; }
+  .fin-pair-stat { font-size: 0.54rem; }
+  .fin-pair-tooltip {
+    position: fixed;
+    left: 12px; right: 12px; top: auto; bottom: 12px;
+    max-height: 60vh; overflow-y: auto;
+  }
+
+  /* Emerging signals — collapse DAYS + VELOCITY columns */
+  .fin-emerging-grid {
+    grid-template-columns: 1fr 36px 56px;
+  }
+  .fin-emerging-days, .fin-emerging-vel { display: none; }
+  .fin-emerging-grid-header .fin-th:nth-child(3),
+  .fin-emerging-grid-header .fin-th:nth-child(4) { display: none; }
+  .fin-emerging-term-text { font-size: 0.64rem; }
+  .fin-emerging-count, .fin-emerging-status { font-size: 0.56rem; }
+  .fin-emerging-footer { font-size: 0.5rem; flex-wrap: wrap; }
+}
+
+/* Extra-small phones */
+@media (max-width: 380px) {
+  .fin-name { font-size: 0.62rem; max-width: 90px; }
+  .fin-vol, .fin-accel { font-size: 0.58rem; }
+  .vdd-title { font-size: clamp(1.4rem, 6vw, 2rem); }
+  .vdd-desc { font-size: 0.72rem; }
+  .page-container { padding-inline: 0.75rem; }
+  .vdd-card-grid { gap: 10px; }
+  .fin-pair-bar { height: 14px; }
+  .fin-pair-pct { font-size: 0.48rem; }
 }
 
 /* Mobile */
@@ -1431,6 +1472,27 @@ const base = import.meta.env.BASE_URL;
   .vdd-art-title { grid-column: 1 / -1; grid-row: 2; }
   .vdd-stats-row { margin-left: 0; }
   .vdd-cta-row { gap: 10px; }
+  .sota-table { min-width: 100%; font-size: 0.62rem; }
+  .sota-table th:nth-child(4),
+  .sota-table td:nth-child(4) { display: none; }
+}
+
+/* Narrow phones */
+@media (max-width: 480px) {
+  .vdd-card { padding: 14px; }
+  .vdd-card-title { font-size: 0.82rem; }
+  .vdd-overline { font-size: 0.58rem; }
+  .vdd-github-sub { font-size: 0.56rem; }
+  .vdd-accent-bar { width: clamp(40px, 12vw, 80px); }
+  .fin-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .fin-meta { font-size: 0.54rem; }
+  .fin-confidence { font-size: 0.5rem; }
+  .vdd-section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .sota-table-wrap { margin: 0 -8px; }
+  .sota-table th,
+  .sota-table td { padding: 6px 6px 6px 0; }
+  .sota-table th:nth-child(5),
+  .sota-table td:nth-child(5) { display: none; }
 }
 @media (max-width: 900px) and (min-width: 641px) {
   .vdd-card-grid { grid-template-columns: repeat(2, 1fr); }
