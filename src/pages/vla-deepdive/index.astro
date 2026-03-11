@@ -211,7 +211,7 @@ function gaugeSegments(accel: number, isNew: boolean): { filled: number; color: 
   return { filled, color };
 }
 
-// Competition pair context descriptions
+// Competition pair context descriptions (short, shown inline)
 const PAIR_DESC: Record<string, string> = {
   'ACTION HEAD ROUTE':      'Continuous action generation: denoising vs optimal transport',
   'POST-TRAINING ROUTE':    'Model adaptation: supervised tuning vs reward optimization',
@@ -219,6 +219,34 @@ const PAIR_DESC: Record<string, string> = {
   'MANIPULATION SENSING':   'Manipulation approach: tactile feedback vs dexterous control',
   'TRANSFER APPROACH':      'Domain bridging: simulation transfer vs cross-embodiment',
 };
+
+// Detailed hover explanations for each family and why they compete
+const FAMILY_EXPLAIN: Record<string, string> = {
+  diffusion_policy:     'Diffusion Policy: iterative denoising process (DDPM) to generate continuous robot actions; strong on multi-modal action distributions',
+  flow_matching:        'Flow Matching: optimal-transport-based generative model (e.g. Pi0); faster inference than diffusion with comparable quality',
+  rl_finetuning:        'RL Fine-tuning: post-training with PPO/DPO/GRPO reward signals; enables online improvement beyond demonstration data',
+  instruction_tuning:   'Instruction Tuning: supervised fine-tuning (SFT) on language-action pairs; simpler but limited to offline data distribution',
+  world_model:          'World Model: learned environment simulator (Dreamer, UniSim); enables planning via imagination without real-world interaction',
+  tactile:              'Tactile Sensing: force/torque and GelSight contact sensors; provides direct manipulation feedback for delicate tasks',
+  dexterous_hand:       'Dexterous Hand: multi-finger manipulation control; achieves fine-grained object interaction without dedicated sensors',
+  cross_embodiment:     'Cross-Embodiment: transfer policies across different robot morphologies; aims for universal robot foundation models',
+  sim_to_real:          'Sim-to-Real: train in simulation, deploy on real hardware; uses domain randomization to bridge the reality gap',
+  long_horizon:         'Long Horizon: multi-step task planning with temporal abstraction; decomposes complex goals into executable sub-tasks',
+  multi_task:           'Multi-Task: generalist robot models trained on diverse tasks; pursues open-vocabulary, general-purpose capability',
+  mobile_manipulation:  'Mobile Manipulation: combined navigation + arm control; whole-body coordination for household/warehouse tasks',
+  human_robot:          'Human-Robot Interaction: teleoperation and learning from demonstration; shared autonomy between human and robot',
+  '3d_representation':  '3D Representation: point clouds, NeRF, Gaussian splatting for scene understanding; spatial awareness for manipulation',
+  language_grounding:   'Language Grounding: connecting natural language instructions to robot actions; vision-language-action alignment',
+};
+
+const PAIR_EXPLAIN: Record<string, string> = {
+  'ACTION HEAD ROUTE':      'Both generate continuous actions from the same VLA backbone but take different mathematical routes: diffusion iteratively denoises random noise into actions (slow, expressive), while flow matching uses optimal transport for a direct trajectory (fast, efficient). If flow matching matches diffusion quality, it could replace it as the default action head.',
+  'POST-TRAINING ROUTE':    'After pretraining a VLA, two competing strategies exist: SFT directly imitates expert demonstrations (simple, stable), while RL fine-tuning (GRPO/DPO) optimizes a reward signal to go beyond the demonstration distribution. RL can discover novel strategies but is harder to stabilize.',
+  'LEARNING SIGNAL':        'World models learn by predicting the future (imagination-based planning), while RL learns from reward feedback. If world models become accurate enough, they could reduce the need for expensive real-world RL exploration.',
+  'MANIPULATION SENSING':   'Two approaches to dexterous manipulation: tactile sensing adds explicit touch feedback (hardware cost, rich signal), while dexterous hand control relies on proprioception and vision alone (simpler hardware, harder control). The winner depends on sensor cost-to-performance ratio.',
+  'TRANSFER APPROACH':      'Sim-to-Real trains one robot in simulation then transfers (cheap data, reality gap risk), while Cross-Embodiment trains across multiple real robots directly (expensive data, natural generalization). The approaches represent different bets on where generalization should happen.',
+};
+
 
 // Competition pairs data
 const pairsData = history ? COMPETITION_PAIRS.map(pair => {
@@ -378,23 +406,23 @@ const base = import.meta.env.BASE_URL;
           </div>
         </div>
 
-        <!-- Competition Pairs (2-col grid) — only show pairs where both sides have data -->
+        <!-- Competition Pairs with hover explanations -->
         {pairsData.length > 0 && (
           <div class="fin-competition">
             <h3 class="fin-sub-title">COMPETITION PAIRS
-              <span class="fin-gauge-range-label">{pairsData.length} matchups</span>
+              <span class="fin-gauge-range-label">{pairsData.length} matchups · hover for details</span>
             </h3>
             <div class="fin-pairs-grid">
             {pairsData.map(pair => pair && (
-              <div class="fin-pair">
+              <div class="fin-pair fin-pair-hover-wrap">
                 <div class="fin-pair-label">{pair.label}</div>
                 {PAIR_DESC[pair.label] && (
                   <div class="fin-pair-desc">{PAIR_DESC[pair.label]}</div>
                 )}
                 <div class="fin-pair-names">
-                  <span class="fin-pair-name-left">{FAMILY_SHORT[pair.familyA] ?? pair.familyA}</span>
+                  <span class="fin-pair-name-left" title={FAMILY_EXPLAIN[pair.familyA] ?? ''}>{FAMILY_SHORT[pair.familyA] ?? pair.familyA}</span>
                   <span class="fin-pair-vs">vs</span>
-                  <span class="fin-pair-name-right">{FAMILY_SHORT[pair.familyB] ?? pair.familyB}</span>
+                  <span class="fin-pair-name-right" title={FAMILY_EXPLAIN[pair.familyB] ?? ''}>{FAMILY_SHORT[pair.familyB] ?? pair.familyB}</span>
                 </div>
                 <div class="fin-pair-bar">
                   <div class="fin-pair-left" style={`width:${pair.pctA}%`}>
@@ -408,6 +436,21 @@ const base = import.meta.env.BASE_URL;
                   <span class="fin-pair-stat">{fmtPct(pair.a.latest.share)} · x{pair.a.latest.accel.toFixed(2)}</span>
                   <span class="fin-pair-ratio">ratio {pair.ratio}</span>
                   <span class="fin-pair-stat">{fmtPct(pair.b.latest.share)} · x{pair.b.latest.accel.toFixed(2)}</span>
+                </div>
+                <!-- Hover tooltip with detailed explanation -->
+                <div class="fin-pair-tooltip">
+                  <div class="fin-pair-tooltip-section">
+                    <strong>{FAMILY_NAMES[pair.familyA] ?? pair.familyA}</strong>
+                    <p>{FAMILY_EXPLAIN[pair.familyA] ?? ''}</p>
+                  </div>
+                  <div class="fin-pair-tooltip-section">
+                    <strong>{FAMILY_NAMES[pair.familyB] ?? pair.familyB}</strong>
+                    <p>{FAMILY_EXPLAIN[pair.familyB] ?? ''}</p>
+                  </div>
+                  <div class="fin-pair-tooltip-why">
+                    <strong>Why they compete</strong>
+                    <p>{PAIR_EXPLAIN[pair.label] ?? PAIR_DESC[pair.label] ?? ''}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -979,6 +1022,66 @@ const base = import.meta.env.BASE_URL;
   font-size: 0.52rem; color: var(--text-tertiary);
   margin-bottom: 4px; opacity: 0.7;
   letter-spacing: 0.02em;
+}
+
+/* Hover name underline hint */
+.fin-pair-name-left, .fin-pair-name-right {
+  cursor: help;
+  border-bottom: 1px dotted rgba(255,255,255,0.15);
+  transition: border-color 0.15s;
+}
+.fin-pair-name-left:hover, .fin-pair-name-right:hover {
+  border-bottom-color: var(--accent-cyan);
+}
+
+/* Competition pair hover tooltip */
+.fin-pair-hover-wrap {
+  position: relative;
+}
+.fin-pair-tooltip {
+  display: none;
+  position: absolute; z-index: 50;
+  left: 0; right: 0; top: 100%;
+  margin-top: 6px; padding: 12px 14px;
+  background: rgba(20, 20, 25, 0.97);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+}
+.fin-pair-hover-wrap:hover .fin-pair-tooltip {
+  display: block;
+}
+.fin-pair-tooltip-section {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.fin-pair-tooltip-section:last-of-type {
+  margin-bottom: 8px;
+}
+.fin-pair-tooltip-section strong {
+  font-size: 0.62rem; font-weight: 700;
+  color: var(--accent-amber); letter-spacing: 0.04em;
+  display: block; margin-bottom: 3px;
+}
+.fin-pair-tooltip-section p {
+  font-size: 0.56rem; color: var(--text-secondary);
+  line-height: 1.5; margin: 0;
+}
+.fin-pair-tooltip-why {
+  padding-top: 4px;
+}
+.fin-pair-tooltip-why strong {
+  font-size: 0.58rem; font-weight: 700;
+  color: var(--accent-cyan); letter-spacing: 0.06em;
+  display: block; margin-bottom: 3px;
+  text-transform: uppercase;
+}
+.fin-pair-tooltip-why p {
+  font-size: 0.56rem; color: var(--text-primary);
+  line-height: 1.6; margin: 0;
 }
 
 /* ── Emerging Signals ── */
