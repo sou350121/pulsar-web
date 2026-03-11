@@ -100,18 +100,18 @@ def load_momentum(cat_map: dict[str, str]) -> dict[str, float]:
         return {}
 
     # Aggregate acceleration by atlas category
+    # method_trends is a list of {"family": str, "acceleration": float, ...}
     cat_scores: dict[str, list[float]] = {}
-    trends = state.get("method_trends", {})
-    for family_id, trend_data in trends.items():
+    trends = state.get("method_trends", [])
+    if isinstance(trends, dict):
+        trends = [{"family": k, **v} if isinstance(v, dict) else {"family": k, "acceleration": v}
+                  for k, v in trends.items()]
+    for trend_data in trends:
+        family_id = trend_data.get("family", "")
         cat_id = cat_map.get(family_id)
         if not cat_id:
             continue
-        # Extract acceleration score (daily_avg or trend_score)
-        score = 0.0
-        if isinstance(trend_data, dict):
-            score = trend_data.get("acceleration", trend_data.get("daily_avg", 0.0))
-        elif isinstance(trend_data, (int, float)):
-            score = float(trend_data)
+        score = trend_data.get("acceleration", trend_data.get("daily_avg", 0.0))
         if score:
             cat_scores.setdefault(cat_id, []).append(score)
 
