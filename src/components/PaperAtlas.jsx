@@ -1,5 +1,21 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 
+// ─── Momentum status helpers ────────────────────────────────────────────────
+function momentumStatus(m) {
+  if (m == null) return { label: "—", arrow: "", cls: "text-zinc-600" };
+  if (m >= 4) return { label: "SURGE", arrow: "↑↑", cls: "text-red-400" };
+  if (m >= 2.5) return { label: "ACCEL", arrow: "↑", cls: "text-amber-400" };
+  if (m >= 1.2) return { label: "STABLE", arrow: "→", cls: "text-zinc-400" };
+  return { label: "COOL", arrow: "↓", cls: "text-blue-400" };
+}
+
+function momentumColor(m, opacity = 1) {
+  if (m == null) return `rgba(113,113,122,${opacity})`;
+  if (m > 4) return `rgba(239,68,68,${opacity})`;
+  if (m > 2) return `rgba(234,179,8,${opacity})`;
+  return `rgba(59,130,246,${opacity})`;
+}
+
 // ─── Segmented Momentum Gauge ───────────────────────────────────────────────
 function MomentumGauge({ m, size = "sm" }) {
   if (m == null) return <span className="text-[8px] text-zinc-700 font-mono tracking-wider">—</span>;
@@ -11,11 +27,10 @@ function MomentumGauge({ m, size = "sm" }) {
   const isSm = size === "sm";
   const segW = isSm ? 3 : 6;
   const segH = isSm ? 3 : 5;
-  const gap = 1;
 
   return (
     <div className="flex items-center gap-1.5" title={`Momentum ${m.toFixed(1)}/6.0`}>
-      <div className="flex items-center" style={{ gap: `${gap}px` }}>
+      <div className="flex items-center" style={{ gap: "1px" }}>
         {Array.from({ length: segments }, (_, i) => {
           const isFilled = i < filled;
           const isLast = i === Math.floor(filled) - 1 || (filled >= 6 && i === 5);
@@ -59,7 +74,7 @@ function Row({ p, idx }) {
   const isFeatured = !!p.f;
   return (
     <tr className={`
-      group/row border-b transition-all duration-200 text-[11px]
+      group/row border-b transition-colors duration-150 text-[11px]
       ${isFeatured
         ? "border-amber-900/15 hover:bg-amber-950/15"
         : idx % 2 === 0
@@ -69,7 +84,7 @@ function Row({ p, idx }) {
       ${isNew ? "bg-sky-950/10" : ""}
     `}>
       {/* Star */}
-      <td className="py-[5px] px-1 text-center align-middle">
+      <td className="py-1.5 px-1 text-center align-middle">
         {isFeatured ? (
           <span className="text-amber-400/90 text-[10px] drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]">★</span>
         ) : (
@@ -77,14 +92,14 @@ function Row({ p, idx }) {
         )}
       </td>
       {/* Name */}
-      <td className="py-[5px] px-1.5 align-middle">
-        <div className="flex items-center gap-1.5 relative">
+      <td className="py-1.5 px-1.5 align-middle">
+        <div className="flex items-center gap-1.5 relative overflow-hidden">
           {isFeatured && (
             <div className="absolute -left-[7px] top-1 bottom-1 w-[2px] rounded-full bg-amber-500/60" />
           )}
-          <span className={`font-bold font-mono whitespace-nowrap group-hover/row:text-red-300 transition-colors ${
+          <span className={`font-bold font-mono overflow-hidden text-ellipsis whitespace-nowrap group-hover/row:text-red-300 transition-colors ${
             isFeatured ? "text-red-400" : "text-red-400/70"
-          }`}>{p.n}</span>
+          }`} title={p.n}>{p.n}</span>
           {isNew && (
             <span className="text-[7px] px-1 py-[1px] rounded-sm font-bold tracking-wider shrink-0
               bg-sky-500/12 text-sky-400 border border-sky-500/15 backdrop-blur-sm
@@ -95,24 +110,25 @@ function Row({ p, idx }) {
         </div>
       </td>
       {/* Description */}
-      <td className="py-[5px] px-1.5 align-middle">
+      <td className="py-1.5 px-1.5 align-middle">
         <div className="overflow-hidden text-ellipsis whitespace-nowrap text-zinc-500 group-hover/row:text-zinc-400 transition-colors" title={p.t}>
           {p.o}
         </div>
       </td>
       {/* Venue */}
-      <td className="py-[5px] px-1 whitespace-nowrap text-zinc-600 font-mono text-[10px] tracking-tight align-middle">
+      <td className="py-1.5 px-1 whitespace-nowrap text-zinc-500 font-mono text-[10px] tracking-tight align-middle">
         {p.v}
       </td>
       {/* Links */}
-      <td className="py-[5px] px-1 whitespace-nowrap text-right align-middle">
+      <td className="py-1.5 px-1 whitespace-nowrap text-right align-middle">
         <span className="inline-flex gap-[3px] opacity-60 group-hover/row:opacity-100 transition-opacity">
           {p.ax && (
             <a href={`https://arxiv.org/abs/${p.ax}`} target="_blank" rel="noopener noreferrer"
               className="text-[8px] px-1 py-[1px] rounded-sm
                 bg-red-500/8 text-red-400/70 border border-red-500/15
                 no-underline hover:bg-red-500/15 hover:text-red-300 hover:border-red-500/30
-                transition-all font-mono tabular-nums tracking-tight">
+                transition-all font-mono tabular-nums tracking-tight
+                focus-visible:ring-1 focus-visible:ring-red-500/40 outline-none">
               {p.ax}
             </a>
           )}
@@ -121,7 +137,8 @@ function Row({ p, idx }) {
               className="text-[8px] px-1.5 py-[1px] rounded-sm font-bold
                 bg-emerald-500/10 text-emerald-400/70 border border-emerald-500/15
                 no-underline hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/30
-                transition-all tabular-nums">
+                transition-all tabular-nums
+                focus-visible:ring-1 focus-visible:ring-emerald-500/40 outline-none">
               C
             </a>
           )}
@@ -130,7 +147,8 @@ function Row({ p, idx }) {
               className="text-[8px] px-1.5 py-[1px] rounded-sm font-bold
                 bg-blue-500/10 text-blue-400/70 border border-blue-500/15
                 no-underline hover:bg-blue-500/20 hover:text-blue-300 hover:border-blue-500/30
-                transition-all tabular-nums">
+                transition-all tabular-nums
+                focus-visible:ring-1 focus-visible:ring-blue-500/40 outline-none">
               W
             </a>
           )}
@@ -138,14 +156,6 @@ function Row({ p, idx }) {
       </td>
     </tr>
   );
-}
-
-// ─── Momentum color helper ──────────────────────────────────────────────────
-function momentumColor(m, opacity = 1) {
-  if (m == null) return `rgba(113,113,122,${opacity})`;
-  if (m > 4) return `rgba(239,68,68,${opacity})`;
-  if (m > 2) return `rgba(234,179,8,${opacity})`;
-  return `rgba(59,130,246,${opacity})`;
 }
 
 // ─── Main component ─────────────────────────────────────────────────────────
@@ -249,11 +259,16 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
   const subCount = categories.reduce((a, c) => a + c.subs.length, 0);
   const dateStr = updated || new Date().toISOString().slice(0, 10);
 
-  // Compute total momentum average
+  // Compute total momentum average + sorted list
   const avgMomentum = useMemo(() => {
     const vals = categories.map(c => c.momentum).filter(m => m != null);
     return vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : "—";
   }, [categories]);
+
+  const sortedByMomentum = useMemo(() =>
+    categories.filter(c => c.momentum != null).sort((a, b) => b.momentum - a.momentum),
+    [categories]
+  );
 
   return (
     <div className={`min-h-screen bg-zinc-950 text-zinc-200 transition-opacity duration-700 ${mounted ? "opacity-100" : "opacity-0"}`}
@@ -263,7 +278,7 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
         *{box-sizing:border-box;margin:0}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#27272a;border-radius:2px}
         ::-webkit-scrollbar-thumb:hover{background:#3f3f46}
-        html{scroll-behavior:smooth}table{border-collapse:collapse;width:100%}td{vertical-align:middle}
+        html{scroll-behavior:smooth}table{border-collapse:collapse;width:100%}td,th{vertical-align:middle}
         @keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
         @keyframes segPulse{0%,100%{opacity:0.7}50%{opacity:1}}
         @keyframes breathe{0%,100%{opacity:0.7;box-shadow:0 0 3px rgba(56,189,248,0.15)}50%{opacity:1;box-shadow:0 0 8px rgba(56,189,248,0.3)}}
@@ -271,15 +286,20 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
         .atlas-section-enter{animation:fadeSlideIn 0.3s ease-out both}
         .cat-reveal{animation:catReveal 0.35s ease-out both}
         .section-expand{overflow:hidden;transition:max-height 0.3s ease-out,opacity 0.2s ease-out}
+        @media(prefers-reduced-motion:reduce){
+          .cat-reveal,.atlas-section-enter{animation:none!important}
+          .section-expand{transition:none!important}
+          *{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+        }
       `}</style>
 
-      {/* ── Organic noise overlay (B6: replaces scanline) ── */}
+      {/* ── Organic noise overlay ── */}
       <svg className="fixed inset-0 pointer-events-none z-[60] w-full h-full" style={{ opacity: 0.012 }}>
         <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter>
         <rect width="100%" height="100%" filter="url(#noise)"/>
       </svg>
 
-      {/* ══════════ HEADER (A4: presence + depth) ══════════ */}
+      {/* ══════════ HEADER ══════════ */}
       <header className="border-b border-zinc-800/60 bg-zinc-950/97 backdrop-blur-xl sticky top-0 z-50"
         style={{
           backgroundImage: "linear-gradient(180deg, rgba(239,68,68,0.02) 0%, transparent 100%)",
@@ -287,7 +307,6 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
           boxShadow: "inset 0 -1px 0 rgba(239,68,68,0.06), 0 1px 3px rgba(0,0,0,0.3)",
         }}>
         <div className="max-w-[1440px] mx-auto px-4 py-2 flex items-center gap-3">
-          {/* Logo cluster */}
           <a href={baseUrl} className="text-zinc-600 hover:text-red-400 no-underline text-[10px] shrink-0 transition-colors">
             ‹ PULSAR
           </a>
@@ -312,7 +331,7 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
             <StatPill label="動能" value={avgMomentum} color="red" />
           </div>
 
-          {/* Filter + Search (A9: active indicator bar) */}
+          {/* Filter + Search */}
           <div className="flex items-center gap-1 ml-auto md:ml-0">
             {[["all", "ALL"], ["featured", "★ FEATURED"], ["code", "</> CODE"]].map(([k, l]) => (
               <button key={k} onClick={() => setFilter(k)}
@@ -332,7 +351,7 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
                 className="w-24 bg-zinc-900/60 border border-zinc-800/40 rounded-md px-2 py-[3px] text-[10px]
                   text-zinc-400 placeholder-zinc-700 outline-none
                   focus:border-red-500/20 focus:ring-1 focus:ring-red-500/20
-                  focus:w-44 focus:bg-zinc-900/80 focus:shadow-[0_0_12px_rgba(239,68,68,0.06)] focus:scale-[1.01]
+                  focus:w-44 focus:bg-zinc-900/80 focus:shadow-[0_0_12px_rgba(239,68,68,0.06)]
                   transition-all duration-300" />
             </div>
           </div>
@@ -355,8 +374,8 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
       </header>
 
       <div className="max-w-[1440px] mx-auto flex">
-        {/* ══════════ SIDE NAV (A5: refined active state) ══════════ */}
-        <nav className="hidden lg:flex flex-col sticky top-[52px] self-start w-44 shrink-0 pt-4 pl-3 pb-8 gap-[2px]"
+        {/* ══════════ SIDE NAV ══════════ */}
+        <nav className="hidden lg:flex flex-col sticky top-[52px] self-start w-48 shrink-0 pt-4 pl-3 pb-8 gap-[2px]"
           style={{ maxHeight: "calc(100vh - 52px)", overflowY: "auto" }}>
           <div className="text-[8px] text-zinc-700 tracking-[0.2em] uppercase mb-2 pl-2">
             CATEGORIES
@@ -378,16 +397,51 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
             );
           })}
 
-          {/* Nav momentum overview (A5: card style) */}
-          <div className="mt-3 pt-3 border-t border-zinc-800/30 pl-1">
-            <div className="bg-zinc-900/30 rounded-lg p-2">
-              <div className="text-[8px] text-zinc-700 tracking-[0.2em] uppercase mb-2">MOMENTUM</div>
-              {categories.filter(c => c.momentum != null).sort((a, b) => b.momentum - a.momentum).slice(0, 5).map(c => (
-                <div key={c.id} className="flex items-center gap-1.5 py-[2px]">
-                  <span className="text-[8px] text-zinc-600 w-12 truncate">{c.label.split(" ")[0]}</span>
-                  <MomentumGauge m={c.momentum} size="sm" />
-                </div>
-              ))}
+          {/* ── MOMENTUM PANEL (expanded) ── */}
+          <div className="mt-3 pt-3 border-t border-zinc-800/30">
+            <div className="bg-zinc-900/30 rounded-lg p-2.5">
+              {/* Header with avg */}
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="text-[8px] text-zinc-700 tracking-[0.2em] uppercase">MOMENTUM</div>
+                <span className="text-[9px] font-mono tabular-nums font-bold text-zinc-400" title="Average momentum">
+                  avg {avgMomentum}
+                </span>
+              </div>
+
+              {/* All categories sorted by momentum */}
+              <div className="flex flex-col gap-[3px]">
+                {sortedByMomentum.map((c, i) => {
+                  const st = momentumStatus(c.momentum);
+                  const cnt = c.subs.reduce((a, s) => a + s.papers.length + (s.recentPapers?.length || 0), 0);
+                  return (
+                    <a key={c.id} href={`#${c.id}`}
+                      className="flex items-center gap-1 py-[3px] px-1 rounded no-underline hover:bg-white/[0.03] transition-colors group/m">
+                      {/* Rank */}
+                      <span className="text-[7px] text-zinc-700 font-mono tabular-nums w-3 shrink-0">{i + 1}</span>
+                      {/* Icon */}
+                      <span className="text-[8px] shrink-0 grayscale-[0.3] group-hover/m:grayscale-0 transition-all">{c.icon}</span>
+                      {/* Label - full name */}
+                      <span className="text-[8px] text-zinc-500 group-hover/m:text-zinc-300 truncate flex-1 transition-colors">
+                        {c.label}
+                      </span>
+                      {/* Gauge */}
+                      <MomentumGauge m={c.momentum} size="sm" />
+                      {/* Status arrow */}
+                      <span className={`text-[7px] font-mono font-bold w-3 text-right shrink-0 ${st.cls}`}>
+                        {st.arrow}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+
+              {/* Momentum legend */}
+              <div className="mt-2.5 pt-2 border-t border-zinc-800/20 flex items-center gap-2 text-[7px] text-zinc-700">
+                <span className="text-red-400/60">↑↑SURGE</span>
+                <span className="text-amber-400/60">↑ACCEL</span>
+                <span className="text-zinc-500/60">→STABLE</span>
+                <span className="text-blue-400/60">↓COOL</span>
+              </div>
             </div>
           </div>
         </nav>
@@ -414,7 +468,7 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
               return (
                 <section key={cat.id} id={cat.id}
                   className={`mb-5 ${isRevealed ? "cat-reveal" : "opacity-0"}`}>
-                  {/* ── Category header (A2: frosted glass + depth) ── */}
+                  {/* ── Category header ── */}
                   <button onClick={() => toggle(cat.id)}
                     className="w-full text-left flex items-center gap-2.5 py-2 px-2 -mx-2 rounded-lg cursor-pointer
                       bg-transparent border-none group/h hover:bg-white/[0.015] transition-all duration-200
@@ -423,17 +477,14 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
                       background: "rgba(24,24,27,0.4)",
                       boxShadow: "0 1px 2px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.02)",
                     }}>
-                    {/* Icon with momentum-tinted background */}
                     <span className="text-base w-7 h-7 flex items-center justify-center rounded-md"
                       style={{ background: momentumColor(cat.momentum, 0.06) }}>
                       {cat.icon}
                     </span>
 
-                    {/* Title cluster */}
                     <div className="flex flex-col min-w-0">
                       <div className="flex items-baseline gap-2">
                         <span className="text-[12px] font-bold text-zinc-200 transition-colors tracking-tight"
-                          style={{ "--hover-color": mCol }}
                           onMouseEnter={e => e.target.style.color = mCol}
                           onMouseLeave={e => e.target.style.color = ""}>
                           {cat.label}
@@ -445,7 +496,6 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
                       </span>
                     </div>
 
-                    {/* Right: momentum + counts + chevron */}
                     <span className="ml-auto flex items-center gap-3 shrink-0">
                       <MomentumGauge m={cat.momentum} size="md" />
                       <div className="flex items-center gap-1.5 text-[9px] font-mono">
@@ -459,19 +509,18 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
                     </span>
                   </button>
 
-                  {/* Bottom gradient separator (A2) */}
+                  {/* Gradient separator */}
                   <div className="h-px mx-2" style={{ background: `linear-gradient(90deg, transparent, ${momentumColor(cat.momentum, 0.12)}, transparent)` }} />
 
-                  {/* ── Category body (B3: absolute div replaces borderImage) ── */}
+                  {/* ── Category body ── */}
                   <div className={`section-expand ${isOpen ? "max-h-[9999px] opacity-100" : "max-h-0 opacity-0"}`}>
                     <div className="relative ml-1 pl-3">
-                      {/* Left border as positioned div (B3 fix) */}
                       <div className="absolute left-0 top-0 bottom-0 w-px"
                         style={{ background: `linear-gradient(to bottom, ${momentumColor(cat.momentum, 0.2)}, transparent)` }} />
 
                       {cat.subs.map((sub) => (
                         <div key={sub.id} className="mb-3">
-                          {/* Subcategory header (A6: short bar + refined) */}
+                          {/* Subcategory header */}
                           <div className="flex items-center gap-2 py-1.5 mt-1">
                             <div className="w-[2px] h-2 rounded-full" style={{ background: momentumColor(cat.momentum, 0.5) }} />
                             <span className="text-[10px] font-semibold text-zinc-300 uppercase tracking-[0.12em]">
@@ -481,19 +530,27 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
                             <span className="text-[8px] text-zinc-700 font-mono tabular-nums">{sub.papers.length}</span>
                           </div>
 
-                          {/* Paper table (B1+B5: table-fixed + colgroup + mobile scroll) */}
-                          <div className="overflow-x-auto">
-                            <table className="table-fixed min-w-[520px]"
-                              style={{ background: "rgba(9,9,11,0.5)", borderRadius: 4 }}>
+                          {/* Paper table — fixed columns + thead + mobile scroll */}
+                          <div className="overflow-x-auto rounded" style={{ background: "rgba(9,9,11,0.5)" }}>
+                            <table className="table-fixed min-w-[600px]">
                               <colgroup>
-                                <col style={{ width: "3%" }} />
-                                <col style={{ width: "18%" }} />
-                                <col style={{ width: "45%" }} />
-                                <col style={{ width: "12%" }} />
+                                <col style={{ width: "28px" }} />
                                 <col style={{ width: "22%" }} />
+                                <col style={{ width: "40%" }} />
+                                <col style={{ width: "10%" }} />
+                                <col style={{ width: "28%" }} />
                               </colgroup>
+                              <thead>
+                                <tr className="text-[8px] text-zinc-700 uppercase tracking-[0.15em] border-b border-zinc-800/20">
+                                  <th className="py-1 px-1 font-normal text-center">★</th>
+                                  <th className="py-1 px-1.5 font-normal text-left">Name</th>
+                                  <th className="py-1 px-1.5 font-normal text-left">Description</th>
+                                  <th className="py-1 px-1 font-normal text-left">Venue</th>
+                                  <th className="py-1 px-1 font-normal text-right">Links</th>
+                                </tr>
+                              </thead>
                               <tbody>
-                                {sub.papers.map((p, i) => <Row key={p.n} p={p} idx={i} />)}
+                                {sub.papers.map((p, i) => <Row key={p.ax || p.n} p={p} idx={i} />)}
                               </tbody>
                             </table>
                           </div>
@@ -506,14 +563,11 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
             })
           )}
 
-          {/* ── Footer (A8: gradient + shadow) ── */}
+          {/* ── Footer ── */}
           <footer className="mt-10 pt-4"
-            style={{
-              borderTop: "none",
-              boxShadow: "0 -1px 3px rgba(0,0,0,0.2)",
-            }}>
+            style={{ boxShadow: "0 -1px 3px rgba(0,0,0,0.2)" }}>
             <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, rgba(239,68,68,0.12) 30%, rgba(239,68,68,0.12) 70%, transparent)" }} />
-            <div className="flex items-center justify-between text-[9px] text-zinc-700 font-mono">
+            <div className="flex items-center justify-between text-[9px] text-zinc-600 font-mono">
               <div className="flex items-center gap-2">
                 <span className="text-red-500/60 font-bold tracking-wider" style={{ letterSpacing: "0.05em" }}>PAPER ATLAS</span>
                 <span className="text-zinc-800">·</span>
@@ -531,7 +585,7 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
             </div>
             <div className="mt-4 mb-2 h-px"
               style={{ background: "linear-gradient(90deg, transparent, rgba(239,68,68,0.1) 20%, rgba(239,68,68,0.1) 80%, transparent)" }} />
-            <div className="text-center text-[8px] text-zinc-800 tracking-[0.3em] uppercase pb-2 tabular-nums">
+            <div className="text-center text-[8px] text-zinc-700 tracking-[0.3em] uppercase pb-2 tabular-nums">
               {dateStr} · {S.cats} categories · {subCount} subcategories
             </div>
           </footer>
