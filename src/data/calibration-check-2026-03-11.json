@@ -1,0 +1,42 @@
+{
+  "date": "2026-03-11",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "counter_evidence:moderate (1 hit); diffusion/flow-matching acceleration supports hypothesis but LIBERO saturation limits benchmark discriminability"
+    },
+    "V-005": {
+      "score": 0.25,
+      "reason": "method_acceleration:strong for rl_finetuning actually supports hypothesis; mechanical floor applies (π-StepNFT, GRPO survey confirm active research)"
+    },
+    "V-006": {
+      "score": 0.25,
+      "reason": "method_acceleration:strong for world_model supports hypothesis; 6+ world model papers today (Vid2World, LiveWorld, DreamSAC, MWM, SPIRAL, Dreamer-CDP)"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "LeRobot v0.5.0 + Octo v1.5 releases support open-source competitiveness; LIBERO saturation limits evaluation resolution"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "3D papers (UniGround, ClearDepth, TrianguLang) support hypothesis; benchmark_relevance:weak due to LIBERO saturation affecting 3D evaluation benchmarks"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 77,
+  "ai_signals_scanned": 68,
+  "triggers": [],
+  "note": "5 assumptions at early_warning level (all at mechanical floor). V-001 highest at 0.50 due to counter-evidence hit. No hypotheses approaching invalidation (score >= 1.00). AI/System domains show no challenge signals.",
+  "method_trends_summary": {
+    "surging": ["diffusion_policy", "flow_matching", "rl_finetuning", "world_model"],
+    "accelerating": ["tactile"],
+    "stable": ["cross_embodiment", "dexterous_hand", "instruction_tuning"]
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (98.6%)", "LIBERO/standard-opensource (99.2%)", "CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)"],
+  "notification_status": "attempted_brief_for_V-001_score_0.50; telegram_target_resolution_failed; sessions_send_timeout"
+}
