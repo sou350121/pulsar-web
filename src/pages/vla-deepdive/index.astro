@@ -306,8 +306,19 @@ const base = import.meta.env.BASE_URL;
         <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-github-secondary">
           <span data-tc>Evo-SOTA 排行榜</span><span data-sc>Evo-SOTA 排行榜</span> →
         </a>
-        <a href={`${base}/vla-deepdive/atlas/`} class="vdd-github-secondary vdd-atlas-btn">
-          <span data-tc>論文全景圖</span><span data-sc>论文全景图</span> →
+        <a href={`${base}/vla-deepdive/atlas/`} class="vdd-atlas-btn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="1" y="1" width="14" height="14" rx="2"/>
+            <line x1="1" y1="5.5" x2="15" y2="5.5"/>
+            <line x1="5.5" y1="1" x2="5.5" y2="15"/>
+            <line x1="10.5" y1="1" x2="10.5" y2="15"/>
+            <line x1="1" y1="10.5" x2="15" y2="10.5"/>
+          </svg>
+          <span data-tc>論文全景圖</span><span data-sc>论文全景图</span>
+          <span class="vdd-atlas-count">130+</span>
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M2 6h8M6 2l4 4-4 4"/>
+          </svg>
         </a>
         <div class="vdd-stats-row">
           <span class="vdd-stat">
@@ -802,6 +813,28 @@ const base = import.meta.env.BASE_URL;
   text-decoration: none; letter-spacing: 0.06em; opacity: 0.85; transition: opacity 0.15s;
 }
 .vdd-github-secondary:hover { opacity: 1; }
+.vdd-atlas-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.74rem; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--accent-amber);
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 30%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 6%, transparent);
+  padding: 6px 14px; border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.vdd-atlas-btn:hover {
+  background: color-mix(in srgb, var(--accent-amber) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent-amber) 50%, transparent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--accent-amber) 15%, transparent);
+}
+.vdd-atlas-count {
+  font-size: 0.6rem; font-weight: 400; opacity: 0.7;
+  background: color-mix(in srgb, var(--accent-amber) 12%, transparent);
+  padding: 1px 5px; border-radius: 3px;
+}
 .vdd-stats-row { display: flex; align-items: baseline; gap: 8px; font-family: 'Menlo','Consolas',monospace; margin-left: auto; }
 .vdd-stat { display: flex; align-items: baseline; gap: 4px; }
 .vdd-stat-num { font-size: 1.3rem; font-weight: 700; color: var(--accent-amber); line-height: 1; }
