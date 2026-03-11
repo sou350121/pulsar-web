@@ -75,7 +75,19 @@ ACADEMIC_STOPWORDS: set[str] = {
     "foundation model", "foundation models", "robot learning", "robotic manipulation",
     "autonomous driving", "action prediction", "action predictions", "multi modal",
     "multimodal", "vision language", "vision language action", "vision language model",
-    "vision language models",
+    "vision language models", "data augmentation", "training pipeline", "model performance",
+    "existing methods", "previous work", "significant improvement", "significantly outperforms",
+    "extensive experiments", "demonstrate effectiveness", "achieves superior", "outperforms existing",
+    "task completion", "success rate", "success rates", "action space", "action spaces",
+    "object manipulation", "manipulation tasks", "robotic tasks", "robot control",
+    "announce type", "type cross", "type abstract", "cross abstract",
+    "arxiv v1", "v1 announce", "language action", "action vla",
+    "language action vla", "large scale", "large language",
+    "end end", "end to", "real time", "high level", "low level",
+    "recent advances", "progress vision", "progress vision language",
+    "remains underexplored", "robots perform", "recent progress",
+    "significantly improves", "achieves state", "state art",
+    "we demonstrate", "results show", "results demonstrate",
 }
 
 # Single-word stops filtered before n-gram assembly
@@ -95,6 +107,15 @@ _WORD_STOPS: set[str] = {
 }
 
 _TOKEN_RE = re.compile(r"[a-z][a-z0-9]{1,25}")
+# Strip arXiv boilerplate: "arXiv:XXXX.XXXXvN Announce Type: new/cross \nAbstract: ..."
+_ARXIV_PREFIX_RE = re.compile(
+    r"arxiv:\s*\d{4}\.\d+v?\d*\s*announce\s+type:\s*\w+\s*(?:abstract:\s*)?",
+    re.IGNORECASE,
+)
+
+def _clean_snippet(text: str) -> str:
+    """Remove arXiv abstract boilerplate prefix."""
+    return _ARXIV_PREFIX_RE.sub("", text).strip()
 
 def tokenize(text: str) -> list[str]:
     return [t for t in _TOKEN_RE.findall(text.lower()) if t not in _WORD_STOPS and len(t) > 1]
@@ -109,11 +130,22 @@ def extract_ngrams(tokens: list[str], ns: tuple[int, ...] = (2, 3)) -> list[str]
 # ---------------------------------------------------------------------------
 # Data loading
 # ---------------------------------------------------------------------------
+def _get_classify_fn():
+    """Try to import classify_text from _vla_method_families for accurate matching."""
+    try:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+        from _vla_method_families import classify_text
+        return classify_text
+    except Exception:
+        return None
+
 def load_rating_files(memory_tmp: Path, window_days: int) -> tuple[list[dict], int, int]:
     """Load VLA daily rating-out files within the window.
-    Returns (all_papers, total_count, unmatched_count)."""
+    Returns (all_papers, total_count, unmatched_count).
+    Uses classify_text() to determine matched/unmatched (rating files lack keywords_matched)."""
     cutoff = (datetime.now() - timedelta(days=window_days)).strftime("%Y-%m-%d")
     files = sorted(glob.glob(str(memory_tmp / "vla-daily-rating-out-*.json")), reverse=True)
+    classify_fn = _get_classify_fn()
     all_papers: list[dict] = []
     total = unmatched = 0
     for filepath in files:
@@ -129,13 +161,22 @@ def load_rating_files(memory_tmp: Path, window_days: int) -> tuple[list[dict], i
             continue
         for paper in data.get("papers", []):
             total += 1
-            kw = paper.get("keywords_matched", [])
-            if not kw:
+            title = paper.get("title", "")
+            snippet = paper.get("abstract_snippet", "")
+            # Determine if paper matches a known method family
+            matched = False
+            if classify_fn:
+                families = classify_fn(f"{title} {snippet}")
+                matched = bool(families)
+            else:
+                kw = paper.get("keywords_matched", [])
+                matched = bool(kw)
+            if not matched:
                 unmatched += 1
             all_papers.append({
-                "date": date_str, "title": paper.get("title", ""),
-                "abstract_snippet": paper.get("abstract_snippet", ""),
-                "rating": paper.get("rating", ""), "keywords_matched": kw,
+                "date": date_str, "title": title,
+                "abstract_snippet": snippet,
+                "rating": paper.get("rating", ""), "matched": matched,
             })
     return all_papers, total, unmatched
 
@@ -160,10 +201,10 @@ def compute_candidates(
     all_stops = ACADEMIC_STOPWORDS | family_terms
 
     for paper in papers:
-        if paper.get("keywords_matched"):
+        if paper.get("matched"):
             continue  # skip matched papers
         date = paper["date"]
-        tokens = tokenize(f"{paper['title']} {paper.get('abstract_snippet', '')}")
+        tokens = tokenize(f"{paper['title']} {_clean_snippet(paper.get('abstract_snippet', ''))}")
         ngrams = extract_ngrams(tokens)
         total_ngrams += len(ngrams)
         for gram in ngrams:
