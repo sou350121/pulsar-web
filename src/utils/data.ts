@@ -986,3 +986,77 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
     confidence,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Atlas types and loader
+// ---------------------------------------------------------------------------
+
+export interface AtlasPaper {
+  n:  string;          // short name
+  t:  string;          // full title
+  ax?: string;         // arxiv ID
+  v?: string;          // venue
+  c?: string;          // code URL
+  w?: string;          // website URL
+  f?: number;          // featured flag (1 = featured)
+  o?: string;          // one-line Chinese description
+  isNew?: boolean;     // auto-injected recent paper
+}
+
+export interface AtlasSub {
+  id:    string;
+  label: string;
+  papers:       AtlasPaper[];
+  recentPapers?: AtlasPaper[];
+}
+
+export interface AtlasCategory {
+  id:       string;
+  label:    string;
+  labelZh:  string;
+  icon:     string;
+  momentum: number | null;
+  desc:     string;
+  subs:     AtlasSub[];
+}
+
+export interface AtlasStats {
+  total:    number;
+  featured: number;
+  code:     number;
+  cats:     number;
+}
+
+export interface AtlasData {
+  categories: AtlasCategory[];
+  stats?:     AtlasStats;
+  momentum?:  Record<string, number>;
+  updated?:   string;
+}
+
+/**
+ * Load Paper Atlas data.
+ * Prefers the auto-generated atlas-papers.json (with momentum + recentPapers).
+ * Falls back to atlas-curated.json (static curated data) if the generated file is missing.
+ */
+export function loadAtlasData(): AtlasData | null {
+  // Try generated file first
+  const generated = readJson<AtlasData>('atlas-papers.json');
+  if (generated?.categories) return generated;
+
+  // Fallback to curated base
+  const curated = readJson<{ categories: AtlasCategory[] }>('atlas-curated.json');
+  if (!curated?.categories) return null;
+
+  // Compute stats from curated data
+  const flat = curated.categories.flatMap(c => c.subs.flatMap(s => s.papers));
+  return {
+    categories: curated.categories,
+    stats: {
+      total:    flat.length,
+      featured: flat.filter(p => p.f).length,
+      code:     flat.filter(p => p.c).length,
+      cats:     curated.categories.length,
+    },
+  };
+}

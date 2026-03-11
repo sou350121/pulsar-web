@@ -55,8 +55,10 @@ jobs:
           for attempt in 1 2 3; do
             echo "SSH attempt $attempt/3..."
             if ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" \
-                "sudo timeout 90 python3.11 /home/admin/clawd/scripts/fetch-ai-github.py 2>&1 | tail -3 && \
+                "cd /home/admin/clawd/pulsar-web && sudo -u admin git pull --rebase origin main 2>&1 | tail -3 && \
+                 sudo timeout 90 python3.11 /home/admin/clawd/scripts/fetch-ai-github.py 2>&1 | tail -3 && \
                  sudo timeout 30 python3.11 /home/admin/clawd/scripts/build-graph-data.py 2>&1 | tail -5 && \
+                 sudo timeout 30 python3.11 /home/admin/clawd/pulsar-web/scripts/build-atlas-data.py 2>&1 | tail -5 && \
                  sudo python3.11 /home/admin/clawd/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
                  cd /home/admin/clawd/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"; then
               echo "SSH sync succeeded on attempt $attempt"
