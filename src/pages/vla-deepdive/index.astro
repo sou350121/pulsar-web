@@ -325,19 +325,22 @@ const base = import.meta.env.BASE_URL;
     ══════════════════════════════════════════ -->
     {history && (
       <section class="fin-panel" aria-label="方法族趋势看板">
-
-        <!-- Header -->
-        <div class="fin-header">
-          <div class="fin-header-left">
-            <h2 class="fin-title">METHOD FAMILY TRENDS</h2>
-            <span class="fin-meta">
-              {history.latestDate} · {history.totalPapers} papers · {history.dates.length}d window · {sortedFamilies.length} families
-            </span>
-          </div>
-          <span class={`fin-confidence fin-confidence--${history.confidence}`}>
-            {history.confidence}
-          </span>
-        </div>
+        <details class="vdd-fold" open>
+          <summary class="vdd-fold-summary">
+            <div class="fin-header">
+              <div class="fin-header-left">
+                <h2 class="fin-title">METHOD FAMILY TRENDS</h2>
+                <span class="fin-meta">
+                  {history.latestDate} · {history.totalPapers} papers · {history.dates.length}d window · {sortedFamilies.length} families
+                </span>
+              </div>
+              <span class={`fin-confidence fin-confidence--${history.confidence}`}>
+                {history.confidence}
+              </span>
+            </div>
+            <span class="vdd-fold-chevron"></span>
+          </summary>
+          <div class="vdd-fold-body">
 
         <!-- Summary line -->
         <div class="fin-summary-line">
@@ -406,12 +409,15 @@ const base = import.meta.env.BASE_URL;
           </div>
         </div>
 
-        <!-- Competition Pairs with hover explanations -->
+        <!-- Competition Pairs (collapsible nested fold) -->
         {pairsData.length > 0 && (
-          <div class="fin-competition">
-            <h3 class="fin-sub-title">COMPETITION PAIRS
-              <span class="fin-gauge-range-label">{pairsData.length} matchups · hover for details</span>
-            </h3>
+          <details class="vdd-fold vdd-fold--nested fin-competition" open>
+            <summary class="fin-sub-title">
+              <span class="vdd-fold-chevron"></span>
+              COMPETITION PAIRS
+              <span class="vdd-fold-badge">{pairsData.length}</span>
+              <span class="fin-gauge-range-label">matchups · hover for details</span>
+            </summary>
             <div class="fin-pairs-grid">
             {pairsData.map(pair => pair && (
               <div class="fin-pair fin-pair-hover-wrap">
@@ -455,8 +461,10 @@ const base = import.meta.env.BASE_URL;
               </div>
             ))}
             </div>
-          </div>
+          </details>
         )}
+          </div>
+        </details>
       </section>
     )}
 
@@ -465,79 +473,82 @@ const base = import.meta.env.BASE_URL;
     ══════════════════════════════════════════ -->
     {emergingData && emergingData.candidates.length > 0 && (
       <section class="fin-panel fin-emerging-panel" aria-label="新兴方法信号">
-        <div class="fin-header">
-          <div class="fin-header-left">
-            <h2 class="fin-title">EMERGING SIGNALS</h2>
-            <span class="fin-meta">
-              {emergingData.date} · {emergingData.unmatched_papers}/{emergingData.total_papers_scanned} unmatched · {emergingData.window_days}d window
+        <details class="vdd-fold" open>
+          <summary class="fin-header vdd-fold-summary">
+            <span class="vdd-fold-chevron"></span>
+            <div class="fin-header-left">
+              <h2 class="fin-title">EMERGING SIGNALS</h2>
+              <span class="fin-meta">
+                {emergingData.date} · {emergingData.unmatched_papers}/{emergingData.total_papers_scanned} unmatched · {emergingData.window_days}d window
+              </span>
+            </div>
+            <span class="vdd-fold-badge fin-emerging-badge">
+              {emergingData.candidates.length} candidates
+            </span>
+          </summary>
+
+          <!-- Emerging terms table -->
+          <div class="fin-emerging-grid-header fin-emerging-grid">
+            <span class="fin-th">TERM</span>
+            <span class="fin-th" style="text-align:right">COUNT</span>
+            <span class="fin-th" style="text-align:right">DAYS</span>
+            <span class="fin-th" style="text-align:center">VELOCITY</span>
+            <span class="fin-th" style="text-align:center">STATUS</span>
+            <span class="fin-th">SAMPLE</span>
+          </div>
+          <div class="fin-emerging-rows">
+            {emergingData.candidates
+              .sort((a, b) => b.acceleration - a.acceleration)
+              .map((term) => {
+                const statusCls = term.status === 'rising' ? 'fin-es-rising'
+                  : term.status === 'new' ? 'fin-es-new'
+                  : term.status === 'candidate' ? 'fin-es-candidate'
+                  : 'fin-es-promoted';
+                const velArrow = term.velocity > 0.5 ? '++' : term.velocity > 0 ? '+' : term.velocity < -0.3 ? '--' : term.velocity < 0 ? '-' : '~';
+                const velCls = term.velocity > 0.5 ? 'fin-up' : term.velocity > 0 ? 'fin-up' : term.velocity < 0 ? 'fin-down' : 'fin-flat';
+                // Mini spark: daily counts as tiny bars
+                const dailyEntries = Object.entries(term.daily_counts).sort(([a],[b]) => a.localeCompare(b));
+                const maxDay = Math.max(...dailyEntries.map(([,v]) => v), 1);
+                return (
+                  <div class="fin-emerging-row fin-emerging-grid">
+                    <div class="fin-emerging-term">
+                      <span class="fin-emerging-term-text">{term.term}</span>
+                      <svg class="fin-emerging-spark" width={dailyEntries.length * 6} height="14" viewBox={`0 0 ${dailyEntries.length * 6} 14`}>
+                        {dailyEntries.map(([, count], i) => (
+                          <rect
+                            x={i * 6}
+                            y={14 - (count / maxDay) * 12}
+                            width="4"
+                            height={Math.max(1, (count / maxDay) * 12)}
+                            fill={i === dailyEntries.length - 1 ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.15)'}
+                            rx="1"
+                          />
+                        ))}
+                      </svg>
+                    </div>
+                    <span class="fin-emerging-count">{term.total_count}</span>
+                    <span class="fin-emerging-days">{term.days_active}d</span>
+                    <span class={`fin-emerging-vel ${velCls}`}>{velArrow} x{term.acceleration.toFixed(1)}</span>
+                    <span class={`fin-emerging-status ${statusCls}`}>{term.status.toUpperCase()}</span>
+                    <span class="fin-emerging-sample" title={term.sample_titles.join(' · ')}>
+                      {term.sample_titles[0]?.substring(0, 50)}{(term.sample_titles[0]?.length ?? 0) > 50 ? '...' : ''}
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
+
+          <!-- Coverage stats footer -->
+          <div class="fin-emerging-footer">
+            <span class="fin-emerging-stat">
+              {emergingData.stats.total_ngrams_extracted} n-grams
+              <span class="fin-emerging-stat-sep">|</span>
+              {emergingData.stats.after_stopword_filter} after filter
+              <span class="fin-emerging-stat-sep">|</span>
+              coverage gap: {((emergingData.unmatched_papers / emergingData.total_papers_scanned) * 100).toFixed(0)}%
             </span>
           </div>
-          <span class="fin-emerging-badge">
-            {emergingData.candidates.length} candidates
-          </span>
-        </div>
-
-        <!-- Emerging terms table -->
-        <div class="fin-emerging-grid-header fin-emerging-grid">
-          <span class="fin-th">TERM</span>
-          <span class="fin-th" style="text-align:right">COUNT</span>
-          <span class="fin-th" style="text-align:right">DAYS</span>
-          <span class="fin-th" style="text-align:center">VELOCITY</span>
-          <span class="fin-th" style="text-align:center">STATUS</span>
-          <span class="fin-th">SAMPLE</span>
-        </div>
-        <div class="fin-emerging-rows">
-          {emergingData.candidates
-            .sort((a, b) => b.acceleration - a.acceleration)
-            .map((term) => {
-              const statusCls = term.status === 'rising' ? 'fin-es-rising'
-                : term.status === 'new' ? 'fin-es-new'
-                : term.status === 'candidate' ? 'fin-es-candidate'
-                : 'fin-es-promoted';
-              const velArrow = term.velocity > 0.5 ? '++' : term.velocity > 0 ? '+' : term.velocity < -0.3 ? '--' : term.velocity < 0 ? '-' : '~';
-              const velCls = term.velocity > 0.5 ? 'fin-up' : term.velocity > 0 ? 'fin-up' : term.velocity < 0 ? 'fin-down' : 'fin-flat';
-              // Mini spark: daily counts as tiny bars
-              const dailyEntries = Object.entries(term.daily_counts).sort(([a],[b]) => a.localeCompare(b));
-              const maxDay = Math.max(...dailyEntries.map(([,v]) => v), 1);
-              return (
-                <div class="fin-emerging-row fin-emerging-grid">
-                  <div class="fin-emerging-term">
-                    <span class="fin-emerging-term-text">{term.term}</span>
-                    <svg class="fin-emerging-spark" width={dailyEntries.length * 6} height="14" viewBox={`0 0 ${dailyEntries.length * 6} 14`}>
-                      {dailyEntries.map(([, count], i) => (
-                        <rect
-                          x={i * 6}
-                          y={14 - (count / maxDay) * 12}
-                          width="4"
-                          height={Math.max(1, (count / maxDay) * 12)}
-                          fill={i === dailyEntries.length - 1 ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.15)'}
-                          rx="1"
-                        />
-                      ))}
-                    </svg>
-                  </div>
-                  <span class="fin-emerging-count">{term.total_count}</span>
-                  <span class="fin-emerging-days">{term.days_active}d</span>
-                  <span class={`fin-emerging-vel ${velCls}`}>{velArrow} x{term.acceleration.toFixed(1)}</span>
-                  <span class={`fin-emerging-status ${statusCls}`}>{term.status.toUpperCase()}</span>
-                  <span class="fin-emerging-sample" title={term.sample_titles.join(' · ')}>
-                    {term.sample_titles[0]?.substring(0, 50)}{(term.sample_titles[0]?.length ?? 0) > 50 ? '...' : ''}
-                  </span>
-                </div>
-              );
-            })}
-        </div>
-
-        <!-- Coverage stats footer -->
-        <div class="fin-emerging-footer">
-          <span class="fin-emerging-stat">
-            {emergingData.stats.total_ngrams_extracted} n-grams
-            <span class="fin-emerging-stat-sep">|</span>
-            {emergingData.stats.after_stopword_filter} after filter
-            <span class="fin-emerging-stat-sep">|</span>
-            coverage gap: {((emergingData.unmatched_papers / emergingData.total_papers_scanned) * 100).toFixed(0)}%
-          </span>
-        </div>
+        </details>
       </section>
     )}
 
@@ -545,167 +556,182 @@ const base = import.meta.env.BASE_URL;
          UNIFIED: Theory Articles (merged)
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="VLA 理论文章库">
-      <div class="vdd-section-header">
-        <h2 class="vdd-section-title"><span data-tc>📐 理論文章庫</span><span data-sc>📐 理论文章库</span></h2>
-        <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
-          <span data-tc>查看 GitHub 全庫</span><span data-sc>查看 GitHub 全库</span> →
-        </a>
-      </div>
+      <details class="vdd-fold" open>
+        <summary class="vdd-fold-summary">
+          <span class="vdd-fold-chevron" aria-hidden="true"></span>
+          <h2 class="vdd-section-title" style="margin:0"><span data-tc>📐 理論文章庫</span><span data-sc>📐 理论文章库</span></h2>
+          <span class="vdd-fold-badge vdd-fold-badge--cyan">{allCombined.length} <span data-tc>篇</span><span data-sc>篇</span></span>
+          <a href={GITHUB_THEORY_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link" onclick="event.stopPropagation()">
+            <span data-tc>查看 GitHub 全庫</span><span data-sc>查看 GitHub 全库</span> →
+          </a>
+        </summary>
 
-      {allCombined.length === 0 ? (
-        <p class="vdd-empty"><span data-tc>尚無理論文章資料</span><span data-sc>尚无理论文章资料</span></p>
-      ) : (
-        <>
-          {/* --- Recent cards with NEW badge --- */}
-          {recentAll.length > 0 && (
-            <div class="vdd-subsection">
-              <div class="vdd-subsection-label">
-                <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
-                <span class="vdd-sublabel-count">{recentAll.length} <span data-tc>篇</span><span data-sc>篇</span></span>
-              </div>
-              <div class="vdd-card-grid">
-                {recentAll.map((article) => (
-                  <article class="vdd-card">
-                    <div class="vdd-card-top">
-                      <time class="vdd-card-date">{dotDate(article.date)}</time>
-                      <span class="vdd-card-recency">{vddRecency(article.date)}</span>
-                      <span class="vdd-card-tag vdd-card-tag--cyan">
-                        {article.topic.replace(/-/g, ' ')}
-                      </span>
-                    </div>
-                    <h3 class="vdd-card-title">{article.title}</h3>
-                    <a
-                      href={article.html_url || article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="vdd-card-cta"
-                    >
-                      <span data-tc>在 GitHub 閱讀</span><span data-sc>在 GitHub 阅读</span>
-                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M2 6h8M6 2l4 4-4 4"/>
-                      </svg>
-                    </a>
-                  </article>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* --- Older articles grouped by topic --- */}
-          {olderAll.length > 0 && (
-            <div class="vdd-subsection">
+        <div class="vdd-fold-body">
+          {allCombined.length === 0 ? (
+            <p class="vdd-empty"><span data-tc>尚無理論文章資料</span><span data-sc>尚无理论文章资料</span></p>
+          ) : (
+            <>
+              {/* --- Recent cards with NEW badge --- */}
               {recentAll.length > 0 && (
-                <div class="vdd-subsection-label">
-                  <span class="vdd-sublabel"><span data-tc>更多文章 · 全部在 GitHub</span><span data-sc>更多文章 · 全部在 GitHub</span></span>
-                  <span class="vdd-sublabel-count">{olderAll.length} <span data-tc>篇</span><span data-sc>篇</span></span>
-                </div>
-              )}
-              <div class="vdd-topics">
-                {topics.map(topic => (
-                  <div class="vdd-topic-group">
-                    <div class="vdd-topic-label">
-                      {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} <span data-tc>篇</span><span data-sc>篇</span>
-                    </div>
-                    <div class="vdd-art-list">
-                      {byTopicAll[topic].map((article, i) => (
+                <div class="vdd-subsection">
+                  <div class="vdd-subsection-label">
+                    <span class="vdd-sublabel"><span data-tc>最近 2 週</span><span data-sc>最近 2 周</span></span>
+                    <span class="vdd-sublabel-count">{recentAll.length} <span data-tc>篇</span><span data-sc>篇</span></span>
+                  </div>
+                  <div class="vdd-card-grid">
+                    {recentAll.map((article) => (
+                      <article class="vdd-card">
+                        <div class="vdd-card-top">
+                          <time class="vdd-card-date">{dotDate(article.date)}</time>
+                          <span class="vdd-card-recency">{vddRecency(article.date)}</span>
+                          <span class="vdd-card-tag vdd-card-tag--cyan">
+                            {article.topic.replace(/-/g, ' ')}
+                          </span>
+                        </div>
+                        <h3 class="vdd-card-title">{article.title}</h3>
                         <a
                           href={article.html_url || article.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="vdd-art-row"
-                          style={`animation-delay:${i * 0.03}s`}
+                          class="vdd-card-cta"
                         >
-                          <time class="vdd-art-date">{dotDate(article.date)}</time>
-                          <span class="vdd-art-title">{article.title}</span>
-                          <span class="vdd-art-ext" aria-label="在 GitHub 阅读">
-                            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
-                              stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                              <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
-                              <path d="M8 1h3v3M11 1L6 6"/>
-                            </svg>
-                          </span>
+                          <span data-tc>在 GitHub 閱讀</span><span data-sc>在 GitHub 阅读</span>
+                          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M2 6h8M6 2l4 4-4 4"/>
+                          </svg>
                         </a>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* --- Older articles grouped by topic (nested collapsible, closed by default) --- */}
+              {olderAll.length > 0 && (
+                <details class="vdd-fold vdd-fold--nested">
+                  <summary class="vdd-fold-summary">
+                    <span class="vdd-fold-chevron" aria-hidden="true"></span>
+                    <span class="vdd-sublabel"><span data-tc>更多文章 · 全部在 GitHub</span><span data-sc>更多文章 · 全部在 GitHub</span></span>
+                    <span class="vdd-fold-badge vdd-fold-badge--cyan">{olderAll.length} <span data-tc>篇</span><span data-sc>篇</span></span>
+                  </summary>
+                  <div class="vdd-fold-body">
+                    <div class="vdd-topics">
+                      {topics.map(topic => (
+                        <div class="vdd-topic-group">
+                          <div class="vdd-topic-label">
+                            {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} <span data-tc>篇</span><span data-sc>篇</span>
+                          </div>
+                          <div class="vdd-art-list">
+                            {byTopicAll[topic].map((article, i) => (
+                              <a
+                                href={article.html_url || article.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="vdd-art-row"
+                                style={`animation-delay:${i * 0.03}s`}
+                              >
+                                <time class="vdd-art-date">{dotDate(article.date)}</time>
+                                <span class="vdd-art-title">{article.title}</span>
+                                <span class="vdd-art-ext" aria-label="在 GitHub 阅读">
+                                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+                                    <path d="M8 1h3v3M11 1L6 6"/>
+                                  </svg>
+                                </span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                </details>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </details>
     </section>
 
     <!-- ══════════════════════════════════════════
-         SOTA Leaderboard
+         SOTA Leaderboard (collapsible)
     ══════════════════════════════════════════ -->
     <section class="vdd-section" aria-label="SOTA 排行">
-      <div class="vdd-section-header">
-        <h2 class="vdd-section-title">🏆 <span data-tc>SOTA 排行</span><span data-sc>SOTA 排行</span></h2>
-        <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link">
-          <span data-tc>Evo-SOTA 完整榜</span><span data-sc>Evo-SOTA 完整榜</span> →
-        </a>
-      </div>
-
-      {sota.length === 0 ? (
-        <p class="vdd-empty"><span data-tc>尚無 SOTA 數據</span><span data-sc>尚无 SOTA 数据</span></p>
-      ) : (
-        <div class="vdd-sota-groups">
-          {benchmarks.map(bench => {
-            const entries = sotaByBenchmark[bench].sort((a, b) => b.value - a.value);
-            const top = entries[0];
-            const isSaturated = saturatedBenchmarks.has(bench);
-            return (
-              <div class="sota-bench-block">
-                <div class="sota-bench-header">
-                  <div class="sota-bench-left">
-                    <span class="sota-bench-name">
-                      {top.leaderboard_url
-                        ? <a href={top.leaderboard_url} target="_blank" rel="noopener noreferrer">{bench}</a>
-                        : bench
-                      }
-                    </span>
-                    {top.split && <span class="sota-bench-split">{top.split}</span>}
-                    {isSaturated && <span class="sota-saturated-badge"><span data-tc>飽和</span><span data-sc>饱和</span></span>}
-                  </div>
-                  <span class="sota-bench-metric">{top.metric}</span>
-                </div>
-                <div class="sota-table-wrap">
-                  <table class="sota-table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Model</th>
-                        <th>Score</th>
-                        <th>vs Prev</th>
-                        <th>Date</th>
-                        <th>Paper</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {entries.map((e, rank) => (
-                        <tr class:list={['sota-row', rank === 0 && 'sota-row--top']}>
-                          <td class="sota-rank">{rank + 1}</td>
-                          <td class="sota-model">{e.model}</td>
-                          <td class="sota-score">{e.value}</td>
-                          <td class="sota-baseline">{e.baseline ?? '—'}</td>
-                          <td class="sota-date">{e.date}</td>
-                          <td class="sota-paper">
-                            {e.paper_url
-                              ? <a href={e.paper_url} target="_blank" rel="noopener noreferrer">arxiv →</a>
-                              : '—'
-                            }
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            );
-          })}
+      <details class="vdd-fold vdd-fold--section" open>
+        <summary class="vdd-fold-summary vdd-fold-summary--section">
+          <span class="vdd-fold-chevron" aria-hidden="true"></span>
+          <h2 class="vdd-section-title">🏆 <span data-tc>SOTA 排行</span><span data-sc>SOTA 排行</span></h2>
+          <a href={GITHUB_SOTA_PATH} target="_blank" rel="noopener noreferrer" class="vdd-section-link"
+            onclick="event.stopPropagation()">
+            <span data-tc>Evo-SOTA 完整榜</span><span data-sc>Evo-SOTA 完整榜</span> →
+          </a>
+          <span class="vdd-fold-badge vdd-fold-badge--cyan">{sota.length}</span>
+        </summary>
+        <div class="vdd-fold-body">
+          {sota.length === 0 ? (
+            <p class="vdd-empty"><span data-tc>尚無 SOTA 數據</span><span data-sc>尚无 SOTA 数据</span></p>
+          ) : (
+            <div class="vdd-sota-groups">
+              {benchmarks.map(bench => {
+                const entries = sotaByBenchmark[bench].sort((a, b) => b.value - a.value);
+                const top = entries[0];
+                const isSaturated = saturatedBenchmarks.has(bench);
+                return (
+                  <details class="vdd-fold vdd-fold--nested" open>
+                    <summary class="vdd-fold-summary">
+                      <span class="vdd-fold-chevron" aria-hidden="true"></span>
+                      <span class="sota-bench-name">
+                        {top.leaderboard_url
+                          ? <a href={top.leaderboard_url} target="_blank" rel="noopener noreferrer"
+                              onclick="event.stopPropagation()">{bench}</a>
+                          : bench
+                        }
+                      </span>
+                      {top.split && <span class="sota-bench-split">{top.split}</span>}
+                      {isSaturated && <span class="sota-saturated-badge"><span data-tc>飽和</span><span data-sc>饱和</span></span>}
+                      <span class="sota-bench-metric">{top.metric}</span>
+                    </summary>
+                    <div class="vdd-fold-body vdd-fold-body--table">
+                      <div class="sota-table-wrap">
+                        <table class="sota-table">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Model</th>
+                              <th>Score</th>
+                              <th>vs Prev</th>
+                              <th>Date</th>
+                              <th>Paper</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {entries.map((e, rank) => (
+                              <tr class:list={['sota-row', rank === 0 && 'sota-row--top']}>
+                                <td class="sota-rank">{rank + 1}</td>
+                                <td class="sota-model">{e.model}</td>
+                                <td class="sota-score">{e.value}</td>
+                                <td class="sota-baseline">{e.baseline ?? '—'}</td>
+                                <td class="sota-date">{e.date}</td>
+                                <td class="sota-paper">
+                                  {e.paper_url
+                                    ? <a href={e.paper_url} target="_blank" rel="noopener noreferrer">arxiv →</a>
+                                    : '—'
+                                  }
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+      </details>
     </section>
 
     <!-- ── Cross-domain navigation ── -->
@@ -1083,6 +1109,8 @@ const base = import.meta.env.BASE_URL;
   font-size: 0.56rem; color: var(--text-primary);
   line-height: 1.6; margin: 0;
 }
+
+
 
 /* ── Emerging Signals ── */
 .fin-emerging-panel {
@@ -1496,5 +1524,306 @@ const base = import.meta.env.BASE_URL;
 }
 @media (max-width: 900px) and (min-width: 641px) {
   .vdd-card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COLLAPSIBLE FOLD SYSTEM  (vdd-fold)
+   Pure CSS <details>/<summary> — Bloomberg terminal aesthetic
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Container (<details>) ── */
+.vdd-fold {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.vdd-fold:hover {
+  border-color: color-mix(in srgb, var(--border) 60%, var(--accent-cyan) 40%);
+}
+.vdd-fold[open] {
+  border-color: color-mix(in srgb, var(--border) 40%, var(--accent-cyan) 60%);
+}
+
+/* ── Summary (clickable header bar) ── */
+.vdd-fold-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 16px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  list-style: none;               /* kill native marker */
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  transition: background 0.18s ease, border-color 0.18s ease;
+  position: relative;
+}
+/* Remove native disclosure triangle (all browsers) */
+.vdd-fold-summary::-webkit-details-marker { display: none; }
+.vdd-fold-summary::marker { content: ''; display: none; }
+
+/* Hover glow — subtle terminal phosphor effect */
+.vdd-fold-summary:hover {
+  background: rgba(6, 182, 212, 0.04);
+}
+/* Focus-visible ring for keyboard nav */
+.vdd-fold-summary:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: -2px;
+  border-radius: 9px 9px 0 0;
+}
+
+/* When closed: bottom border visible (visual separator) */
+.vdd-fold:not([open]) .vdd-fold-summary {
+  border-bottom-color: transparent;
+  border-radius: 9px;
+}
+/* When open: border stays to separate header from body */
+.vdd-fold[open] .vdd-fold-summary {
+  border-bottom-color: var(--border);
+}
+
+/* ── Chevron indicator ── */
+.vdd-fold-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s ease,
+              border-color 0.2s ease,
+              background 0.2s ease;
+  line-height: 1;
+}
+/* Chevron arrow — using a pure CSS triangle via borders */
+.vdd-fold-chevron::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid var(--text-tertiary);
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+/* Open state: rotate 90deg, accent color */
+.vdd-fold[open] .vdd-fold-chevron {
+  transform: rotate(90deg);
+  color: var(--accent-cyan);
+  border-color: rgba(6, 182, 212, 0.3);
+  background: rgba(6, 182, 212, 0.06);
+}
+.vdd-fold[open] .vdd-fold-chevron::before {
+  border-left-color: var(--accent-cyan);
+}
+
+/* Hover state on summary lifts chevron color */
+.vdd-fold-summary:hover .vdd-fold-chevron {
+  border-color: rgba(6, 182, 212, 0.25);
+  background: rgba(6, 182, 212, 0.04);
+}
+.vdd-fold-summary:hover .vdd-fold-chevron::before {
+  border-left-color: var(--accent-cyan);
+}
+
+/* ── Count badge ── */
+.vdd-fold-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 1px 8px;
+  min-width: 24px;
+  height: 20px;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-amber);
+  background: rgba(212, 145, 10, 0.08);
+  border: 1px solid rgba(212, 145, 10, 0.2);
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.vdd-fold-summary:hover .vdd-fold-badge {
+  background: rgba(212, 145, 10, 0.12);
+  border-color: rgba(212, 145, 10, 0.3);
+}
+/* Cyan variant for count badge */
+.vdd-fold-badge--cyan {
+  color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+.vdd-fold-summary:hover .vdd-fold-badge--cyan {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+/* ── Body wrapper (animated content) ── */
+.vdd-fold-body {
+  padding: 14px 16px 16px;
+  /* max-height animation for smooth expand/collapse.
+     Generous ceiling — content should never exceed this.
+     The transition is on the grid-template-rows trick below. */
+}
+
+/*
+ * Smooth open/close animation using the CSS grid row trick:
+ * The <details> content wrapper transitions grid-template-rows
+ * from 0fr (collapsed) to 1fr (expanded). This avoids the
+ * max-height hack and works with variable content height.
+ *
+ * Browser support: Chrome 120+, Safari 17.2+, Firefox 131+.
+ * Fallback: instant open/close (still fully functional).
+ */
+.vdd-fold[open] .vdd-fold-body {
+  animation: vddFoldOpen 0.3s ease-out;
+}
+@keyframes vddFoldOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Nested variant (panel inside a panel) ── */
+.vdd-fold--nested {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.015);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.vdd-fold--nested:hover {
+  border-color: rgba(255, 255, 255, 0.10);
+}
+.vdd-fold--nested[open] {
+  border-color: rgba(6, 182, 212, 0.15);
+}
+.vdd-fold--nested .vdd-fold-summary {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 0.62rem;
+}
+.vdd-fold--nested .vdd-fold-chevron {
+  width: 16px;
+  height: 16px;
+  font-size: 0.5rem;
+}
+.vdd-fold--nested .vdd-fold-chevron::before {
+  border-left-width: 3.5px;
+  border-top-width: 2.5px;
+  border-bottom-width: 2.5px;
+}
+.vdd-fold--nested .vdd-fold-badge {
+  height: 18px;
+  font-size: 0.5rem;
+  padding: 1px 6px;
+}
+.vdd-fold--nested .vdd-fold-body {
+  padding: 10px 12px 12px;
+}
+
+/* ── Section-level variant (transparent card, inherits section spacing) ── */
+.vdd-fold--section {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  margin-bottom: 0;
+  overflow: visible;
+}
+.vdd-fold--section::before { display: none; }
+.vdd-fold--section:hover { border-color: transparent; }
+.vdd-fold--section[open] { border-color: transparent; }
+.vdd-fold-summary--section {
+  padding: 0 0 16px;
+  border-bottom: none;
+  gap: 12px;
+}
+.vdd-fold--section:not([open]) .vdd-fold-summary--section {
+  padding-bottom: 0;
+}
+.vdd-fold--section .vdd-fold-body {
+  padding: 0;
+}
+
+/* ── Table body variant (tighter padding for tables) ── */
+.vdd-fold-body--table {
+  padding: 8px 12px 12px;
+}
+
+/* ── Topline accent (matches fin-panel::before) ── */
+.vdd-fold::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 0px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber));
+  transition: height 0.2s ease;
+}
+.vdd-fold {
+  position: relative;
+  overflow: hidden;
+}
+.vdd-fold[open]::before {
+  height: 2px;
+}
+/* Nested variant does not get the topline */
+.vdd-fold--nested::before {
+  display: none;
+}
+
+/* ═══════════════════════════════════
+   FOLD: RESPONSIVE
+   ═══════════════════════════════════ */
+@media (max-width: 640px) {
+  .vdd-fold-summary {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .vdd-fold-body {
+    padding: 10px 12px 14px;
+  }
+  .vdd-fold-badge {
+    font-size: 0.5rem;
+    padding: 1px 6px;
+  }
+}
+@media (max-width: 380px) {
+  .vdd-fold-summary {
+    padding: 8px 10px;
+    min-height: 40px;
+    gap: 6px;
+  }
+  .vdd-fold-chevron {
+    width: 18px;
+    height: 18px;
+  }
+  .vdd-fold-body {
+    padding: 8px 10px 12px;
+  }
 }
 </style>
