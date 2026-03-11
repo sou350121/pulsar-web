@@ -838,7 +838,7 @@ export interface MethodTrend {
   family:       string;
   count_7d:     number;
   count_14d:    number;
-  share_7d:     number;
+  share_7d?:    number;   // v1 only; v2 drops this — compute from count_7d / total_papers_scanned
   acceleration: number;
   status:       string;
 }
@@ -944,6 +944,13 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
     for (const m of s.method_trends) familySet.add(m.family);
   }
 
+  // Helper: get share_7d, computing from count_7d / total if absent (v2 schema)
+  const getShare = (m: MethodTrend | undefined, totalPapers: number): number => {
+    if (!m) return 0;
+    if (m.share_7d != null) return m.share_7d;
+    return totalPapers > 0 ? +(m.count_7d / totalPapers).toFixed(4) : 0;
+  };
+
   const families: FamilyTimeSeries[] = [];
   for (const family of familySet) {
     const shares: number[] = [];
@@ -951,7 +958,7 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
     const accels: number[] = [];
     for (const s of snapshots) {
       const m = s.method_trends.find(t => t.family === family);
-      shares.push(m?.share_7d ?? 0);
+      shares.push(getShare(m, s.total_papers_scanned));
       counts.push(m?.count_7d ?? 0);
       accels.push(m?.acceleration ?? 1);
     }
@@ -963,7 +970,7 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
       counts,
       accels,
       latest: {
-        share:  latestTrend?.share_7d ?? 0,
+        share:  getShare(latestTrend, latest.total_papers_scanned),
         count:  latestTrend?.count_7d ?? 0,
         accel:  latestTrend?.acceleration ?? 1,
         status: latestTrend?.status ?? 'stable',
