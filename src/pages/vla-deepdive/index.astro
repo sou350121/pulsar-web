@@ -310,7 +310,7 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <!-- A: Ticker Table -->
-        <div class="fin-ticker-header">
+        <div class="fin-ticker-header fin-ticker-grid">
           <span class="fin-th fin-th-name">FAMILY</span>
           <span class="fin-th fin-th-chart">{history.dates.length}D CHART</span>
           <span class="fin-th fin-th-share">SHARE</span>
@@ -332,7 +332,7 @@ const base = import.meta.env.BASE_URL;
             const deltaCls = fam.delta >= 0 ? 'fin-up' : 'fin-down';
             const accelClsVal = accelCls(fam.latest.accel);
             return (
-              <div class="fin-row">
+              <div class="fin-row fin-ticker-grid">
                 <span class="fin-name">{FAMILY_NAMES[fam.family] ?? fam.family}</span>
                 <svg class="fin-spark" viewBox={`0 0 ${svgW} ${SPARK_H}`} width={svgW} height={SPARK_H} aria-hidden="true">
                   {bars.map(b => (
@@ -720,11 +720,15 @@ const base = import.meta.env.BASE_URL;
 .fin-confidence--moderate { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
 .fin-confidence--low { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
 
+/* Shared ticker grid — single source of truth for header + rows */
+.fin-ticker-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr 54px 50px 50px 34px 28px;
+  gap: 6px; align-items: center;
+}
+
 /* Ticker Table Header */
 .fin-ticker-header {
-  display: grid;
-  grid-template-columns: 128px 140px 54px 48px 48px 32px 28px;
-  gap: 6px; align-items: center;
   padding: 0 0 3px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 2px;
@@ -740,9 +744,6 @@ const base = import.meta.env.BASE_URL;
 /* Ticker rows */
 .fin-ticker { display: flex; flex-direction: column; }
 .fin-row {
-  display: grid;
-  grid-template-columns: 130px 1fr 56px 52px 52px 36px 32px;
-  gap: 6px; align-items: center;
   padding: 2px 0;
   border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
   transition: background 0.12s;
