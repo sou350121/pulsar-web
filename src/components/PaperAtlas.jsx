@@ -159,7 +159,7 @@ function Row({ p, idx }) {
 }
 
 // ─── Main component ─────────────────────────────────────────────────────────
-export default function PaperAtlas({ categories = [], stats: propStats, updated, baseUrl = "/" }) {
+export default function PaperAtlas({ categories = [], stats: propStats, updated, baseUrl = "/", parentUrl = "" }) {
   const [filter, setFilter] = useState("all");
   const [q, setQ] = useState("");
   const [activeId, setActiveId] = useState(categories[0]?.id ?? "");
@@ -307,9 +307,19 @@ export default function PaperAtlas({ categories = [], stats: propStats, updated,
           boxShadow: "inset 0 -1px 0 rgba(239,68,68,0.06), 0 1px 3px rgba(0,0,0,0.3)",
         }}>
         <div className="max-w-[1440px] mx-auto px-4 py-2 flex items-center gap-3">
-          <a href={baseUrl} className="text-zinc-600 hover:text-red-400 no-underline text-[10px] shrink-0 transition-colors">
-            ‹ PULSAR
-          </a>
+          {parentUrl ? (
+            <nav className="flex items-center gap-1.5 text-[10px] shrink-0 font-mono tracking-wide">
+              <a href={baseUrl} className="text-zinc-600 hover:text-red-400 no-underline transition-colors">PULSAR</a>
+              <span className="text-zinc-700/50">›</span>
+              <a href={parentUrl} className="text-zinc-600 hover:text-red-400 no-underline transition-colors">VLA 深度追蹤</a>
+              <span className="text-zinc-700/50">›</span>
+              <span className="text-zinc-500">Atlas</span>
+            </nav>
+          ) : (
+            <a href={baseUrl} className="text-zinc-600 hover:text-red-400 no-underline text-[10px] shrink-0 transition-colors">
+              ‹ PULSAR
+            </a>
+          )}
           <div className="w-px h-4 bg-zinc-800/60" />
           <h1 className="text-[13px] font-black shrink-0 flex items-baseline gap-1"
             style={{ letterSpacing: "0.05em" }}>

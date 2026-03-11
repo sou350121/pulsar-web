@@ -1,0 +1,46 @@
+---
+/**
+ * Paper Atlas — VLA 論文全景圖
+ * Sub-page of VLA Deep Dive.
+ * React island rendering 130+ curated VLA papers across 11 categories.
+ * Data comes from atlas-papers.json (auto-generated) or atlas-curated.json (fallback).
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PaperAtlas from '../../../components/PaperAtlas.jsx';
+import { loadAtlasData } from '../../../utils/data';
+
+const atlas = loadAtlasData();
+const cats = atlas?.categories ?? [];
+
+// Overlay auto-computed momentum onto categories
+if (atlas?.momentum) {
+  for (const c of cats) {
+    if (atlas.momentum[c.id] != null) {
+      c.momentum = atlas.momentum[c.id];
+    }
+  }
+}
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Paper Atlas — VLA 論文全景"
+  description="130+ 篇 VLA 前沿論文全景圖：11 類別 × 動態 momentum × 每日自動更新"
+>
+  {/* Atlas uses its own dark theme with zinc-950 background — override page background */}
+  <style>
+    /* Atlas page: suppress BaseLayout default styling on main content area */
+    #main-content { padding: 0 !important; }
+    body { background: #09090b !important; }
+  </style>
+
+  <PaperAtlas
+    client:only="react"
+    categories={cats}
+    stats={atlas?.stats}
+    updated={atlas?.updated}
+    baseUrl={base}
+    parentUrl={`${base}/vla-deepdive/`}
+  />
+</BaseLayout>
