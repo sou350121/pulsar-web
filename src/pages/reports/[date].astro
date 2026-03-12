@@ -3,6 +3,10 @@
  * src/pages/reports/[date].astro
  * Dynamic route — individual biweekly report view.
  * Generates one page per date found via loadBiweeklyReports().
+ *
+ * DESIGN: "Intelligence Briefing Dossier" — editorial magazine meets
+ * classified briefing. Section-aware styling, pull-quote blockquotes,
+ * prediction cards, and actionable callouts with distinct visual identity.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadBiweeklyReports } from '../../utils/data';
@@ -40,31 +44,46 @@ function formatDateZh(iso: string): string {
   return `${year}年${month}月${day}日`;
 }
 
-// Format ISO date as numeric with dots: "2026.02.25"
-function formatDateNumeric(iso: string): string {
-  const [y, m, d] = iso.split('-');
-  return `${y}.${m}.${d}`;
+// ─────────────────────────────────────────────────────────────
+// Section classification — determines visual treatment
+// ─────────────────────────────────────────────────────────────
+type SectionKind = 'action' | 'prediction' | 'prediction-review' | 'gap' | 'default';
+
+function classifySection(heading: string): SectionKind {
+  if (/如果你是|行动|建议|负责人/.test(heading))                  return 'action';
+  if (/本期预测|预测$/.test(heading))                             return 'prediction';
+  if (/预测回顾|上期预测|回顾/.test(heading))                     return 'prediction-review';
+  if (/知识缺口|缺口|盲区|风险/.test(heading))                    return 'gap';
+  return 'default';
 }
 
-// Markdown → HTML for report content
+let currentSection: SectionKind = 'default';
+let sectionCounter = 0;
+
+// ─────────────────────────────────────────────────────────────
+// Markdown → HTML  (editorial-grade parser)
+// ─────────────────────────────────────────────────────────────
 function mdToHtml(md: string): string {
   const lines = md.split('\n');
   const out: string[] = [];
-  let inList = false;
+  let inList: 'ul' | 'ol' | false = false;
+  let inSection = false;
+  sectionCounter = 0;
 
-  for (const raw of lines) {
-    const line = raw;
-    const trimmed = line.trim();
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
+    const trimmed = raw.trim();
 
     // Empty line
     if (!trimmed) {
-      if (inList) { out.push('</ul>'); inList = false; }
+      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
       continue;
     }
 
-    // Horizontal rule
-    if (/^[-*_]{3,}\s*$/.test(trimmed)) {
-      if (inList) { out.push('</ul>'); inList = false; }
+    // Horizontal rule — section break ornament
+    if (/^[-*_]{3,}\s*$/.test(trimmed) || /^━{3,}/.test(trimmed)) {
+      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+      if (inSection) { out.push('</section>'); inSection = false; }
       out.push('<hr class="rb-hr" />');
       continue;
     }
@@ -72,50 +91,130 @@ function mdToHtml(md: string): string {
     // Headings
     const hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
     if (hMatch) {
-      if (inList) { out.push('</ul>'); inList = false; }
+      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
       const level = hMatch[1].length;
-      const text = inlineFormat(hMatch[2]);
-      const id = hMatch[2].replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '-').toLowerCase().slice(0, 40);
-      out.push(`<h${level} class="rb-h${level}" id="${id}">${text}</h${level}>`);
+      const rawText = hMatch[2];
+      const text = inlineFormat(rawText);
+      const id = rawText.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '-').toLowerCase().slice(0, 50);
+
+      if (level === 1) {
+        // H1: report title — the big serif headline
+        out.push(`<h1 class="rb-h1" id="${id}">${text}</h1>`);
+      } else if (level === 2) {
+        // Close previous section wrapper
+        if (inSection) { out.push('</section>'); }
+        sectionCounter++;
+        currentSection = classifySection(rawText);
+        const sectionClass = `rb-section rb-section--${currentSection}`;
+        inSection = true;
+        out.push(`<section class="${sectionClass}" data-section="${sectionCounter}">`);
+        out.push(`<div class="rb-h2-wrap">`);
+        out.push(`<span class="rb-section-num" aria-hidden="true">${String(sectionCounter).padStart(2, '0')}</span>`);
+        out.push(`<h2 class="rb-h2" id="${id}">${text}</h2>`);
+        out.push(`</div>`);
+      } else {
+        out.push(`<h${level} class="rb-h${level}" id="${id}">${text}</h${level}>`);
+      }
       continue;
     }
 
-    // Blockquote
+    // Blockquote — editorial pull quote
     if (trimmed.startsWith('>')) {
-      if (inList) { out.push('</ul>'); inList = false; }
+      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
       const text = inlineFormat(trimmed.replace(/^>\s*/, ''));
-      out.push(`<blockquote class="rb-bq">${text}</blockquote>`);
+      out.push(`<blockquote class="rb-bq"><span class="rb-bq-mark" aria-hidden="true">"</span><span class="rb-bq-text">${text}</span></blockquote>`);
       continue;
     }
 
-    // List item
+    // Prediction checklist items (✅ ⏳ ❌)
+    if (/^[-*•]\s*(✅|⏳|❌)\s/.test(trimmed)) {
+      if (inList && inList !== 'ul') { out.push('</ol>'); inList = false; }
+      if (!inList) { out.push('<ul class="rb-predictions">'); inList = 'ul'; }
+      const emoji = trimmed.match(/^[-*•]\s*(✅|⏳|❌)/)?.[1] ?? '';
+      const statusClass = emoji === '✅' ? 'confirmed' : emoji === '❌' ? 'wrong' : 'pending';
+      const statusLabel = emoji === '✅' ? 'CONFIRMED' : emoji === '❌' ? 'INVALIDATED' : 'TRACKING';
+      const text = inlineFormat(trimmed.replace(/^[-*•]\s*(✅|⏳|❌)\s*/, ''));
+      out.push(`<li class="rb-prediction-item rb-prediction--${statusClass}">`);
+      out.push(`<span class="rb-prediction-status">${statusLabel}</span>`);
+      out.push(`<span class="rb-prediction-text">${text}</span>`);
+      out.push(`</li>`);
+      continue;
+    }
+
+    // Ordered list (1. 2. 3. or (1) (2) (3))
+    const olMatch = trimmed.match(/^(?:(\d+)[.)]\s+|\((\d+)\)\s+)(.+)$/);
+    if (olMatch) {
+      if (inList && inList !== 'ol') { out.push('</ul>'); inList = false; }
+      if (!inList) { out.push('<ol class="rb-ol">'); inList = 'ol'; }
+      const num = olMatch[1] || olMatch[2];
+      const text = inlineFormat(olMatch[3]);
+      out.push(`<li value="${num}">${text}</li>`);
+      continue;
+    }
+
+    // Unordered list — bullet items (prediction items with bold leads)
     if (/^[-*•]\s/.test(trimmed)) {
-      if (!inList) { out.push('<ul class="rb-ul">'); inList = true; }
+      if (inList && inList !== 'ul') { out.push('</ol>'); inList = false; }
+      const listClass = currentSection === 'prediction' ? 'rb-predictions' : 'rb-ul';
+      if (!inList) { out.push(`<ul class="${listClass}">`); inList = 'ul'; }
       const text = inlineFormat(trimmed.replace(/^[-*•]\s*/, ''));
-      out.push(`<li>${text}</li>`);
+
+      if (currentSection === 'prediction') {
+        out.push(`<li class="rb-prediction-item rb-prediction--new">`);
+        out.push(`<span class="rb-prediction-status">FORECAST</span>`);
+        out.push(`<span class="rb-prediction-text">${text}</span>`);
+        out.push(`</li>`);
+      } else {
+        out.push(`<li>${text}</li>`);
+      }
       continue;
     }
 
-    // Paragraph
-    if (inList) { out.push('</ul>'); inList = false; }
+    // Emoji-prefixed lines (1️⃣ 2️⃣ etc. from reflections)
+    const emojiNumMatch = trimmed.match(/^(\d️⃣|🔬|🤔)\s*(.+)$/);
+    if (emojiNumMatch) {
+      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+      const emoji = emojiNumMatch[1];
+      const text = inlineFormat(emojiNumMatch[2]);
+      out.push(`<div class="rb-callout-line"><span class="rb-callout-emoji" aria-hidden="true">${emoji}</span><p class="rb-p">${text}</p></div>`);
+      continue;
+    }
+
+    // Paragraph — the main prose block
+    if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
     out.push(`<p class="rb-p">${inlineFormat(trimmed)}</p>`);
   }
 
-  if (inList) out.push('</ul>');
+  if (inList) out.push(inList === 'ol' ? '</ol>' : '</ul>');
+  if (inSection) out.push('</section>');
   return out.join('\n');
 }
 
-// Inline formatting: bold, italic, inline code, links
+// ─────────────────────────────────────────────────────────────
+// Inline formatting — bold, italic, code, links, stat highlights
+// ─────────────────────────────────────────────────────────────
 function inlineFormat(text: string): string {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    // Bold
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    // Italic (markdown *text* or _text_)
+    .replace(/(?<!\w)\*([^*]+)\*(?!\w)/g, '<em>$1</em>')
+    .replace(/(?<!\w)_([^_]+)_(?!\w)/g, '<em>$1</em>')
+    // Inline code
     .replace(/`([^`]+)`/g, '<code class="rb-code">$1</code>')
+    // Markdown links
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="rb-link">$1</a>');
+    // Bare URLs
+    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="rb-link">$1</a>')
+    // Stat highlights — dollar amounts, percentages, multipliers
+    .replace(/(\$[\d,.]+[BMK]?\b)/g, '<span class="rb-stat">$1</span>')
+    .replace(/(\d+(?:\.\d+)?%\+?)/g, '<span class="rb-stat">$1</span>')
+    .replace(/(\d+(?:\.\d+)?x\b)/g, '<span class="rb-stat">$1</span>')
+    // Chinese book quotes 「…」 → subtle emphasis
+    .replace(/「([^」]+)」/g, '<span class="rb-cjk-quote">$1</span>');
 }
 
 const reportHtml = content ? mdToHtml(content) : '';
@@ -171,12 +270,12 @@ function formatPeriod(iso: string): string {
       <hr class="report-rule" />
     </header>
 
-    <!-- ── Detail breadcrumb (replaces domain-nav; reports span both domains) ── -->
-    <nav class="detail-breadcrumb" aria-label="麵包屑">
+    <!-- ── Detail breadcrumb ── -->
+    <nav class="detail-breadcrumb" aria-label="Breadcrumb">
       <a href={`${base}`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
-      <span class="bc-sep">›</span>
+      <span class="bc-sep">&rsaquo;</span>
       <a href={`${base}/reports`} class="bc-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
-      <span class="bc-sep">›</span>
+      <span class="bc-sep">&rsaquo;</span>
       <span class="bc-current">{date}</span>
     </nav>
 
@@ -198,13 +297,13 @@ function formatPeriod(iso: string): string {
     <div class="report-pagination">
       {prevDate ? (
         <a href={`${base}/reports/${prevDate}`} class="rpag-btn rpag-btn--prev">
-          ← {prevDate}
+          &larr; {prevDate}
         </a>
       ) : <span />}
       <a href={`${base}/reports`} class="rpag-btn rpag-btn--list"><span data-tc>報告列表</span><span data-sc>报告列表</span></a>
       {nextDate ? (
         <a href={`${base}/reports/${nextDate}`} class="rpag-btn rpag-btn--next">
-          {nextDate} →
+          {nextDate} &rarr;
         </a>
       ) : <span />}
     </div>
@@ -212,7 +311,7 @@ function formatPeriod(iso: string): string {
     <!-- ── Back link ── -->
     <div class="back-row">
       <a href={`${base}/reports`} class="back-link">
-        <span class="back-arrow">←</span> <span data-tc>返回報告列表</span><span data-sc>返回报告列表</span>
+        <span class="back-arrow">&larr;</span> <span data-tc>返回報告列表</span><span data-sc>返回报告列表</span>
       </a>
     </div>
 
@@ -221,8 +320,9 @@ function formatPeriod(iso: string): string {
 
 <style>
 /* ============================================================
-   REPORT DETAIL PAGE
-   Scoped CSS: only affects this page
+   REPORT DETAIL PAGE — "Intelligence Briefing Dossier"
+   Scoped CSS: only affects this page.
+   Design: editorial magazine meets classified briefing.
 ============================================================ */
 
 /* ── Page wrapper ── */
@@ -300,7 +400,6 @@ function formatPeriod(iso: string): string {
 }
 
 .report-title {
-  /* Override global h1 with serif style matching reports/index */
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif !important;
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 700;
@@ -362,7 +461,7 @@ function formatPeriod(iso: string): string {
   background: var(--accent-amber);
 }
 
-/* ── Detail breadcrumb (replaces domain-nav on report detail pages) ── */
+/* ── Detail breadcrumb ── */
 .detail-breadcrumb {
   display: flex;
   align-items: center;
@@ -432,113 +531,352 @@ function formatPeriod(iso: string): string {
 
 /* ── Report article ── */
 .report-article {
-  max-width: 720px;
+  max-width: 740px;
   margin-bottom: 48px;
 }
 
-/* ── Report body — rendered markdown ── */
+/* ============================================================
+   REPORT BODY — Editorial-grade rendered markdown
+   Typography: CJK-optimized with generous vertical rhythm.
+============================================================ */
 .report-body {
-  max-width: 720px;
-  line-height: 1.85;
-  font-size: 0.92rem;
+  max-width: 740px;
+  line-height: 1.95;
+  font-size: 0.94rem;
   color: var(--text-secondary);
   font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  counter-reset: rb-section;
 }
 
-/* H1: report title — large serif with amber underline */
+/* ── H1: Report title — cinematic serif headline ── */
 .report-body .rb-h1 {
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 0.6em;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--border);
+  margin: 0 0 0.5em;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
   position: relative;
-  line-height: 1.3;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
 .report-body .rb-h1::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   left: 0;
-  width: 60px;
-  height: 2px;
-  background: var(--accent-amber);
+  width: 72px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-amber), transparent);
+  border-radius: 2px;
 }
 
-/* H2: section headers — serif with left accent bar */
+/* ── Sections — semantic wrapper for each ## block ── */
+.report-body .rb-section {
+  margin-top: 3em;
+  padding-top: 0;
+  position: relative;
+}
+
+/* Subtle top border between sections */
+.report-body .rb-section + .rb-section {
+  border-top: 1px solid var(--border-subtle, var(--border));
+  padding-top: 2.5em;
+}
+
+/* ── H2: Section headers with counter ── */
+.report-body .rb-h2-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 1.4em;
+}
+
+.report-body .rb-section-num {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  border: 1px solid rgba(212,145,10,0.2);
+  padding: 2px 7px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  position: relative;
+  top: -1px;
+}
+
 .report-body .rb-h2 {
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 2.5em 0 0.8em;
-  padding: 8px 0 8px 14px;
-  border-left: 3px solid var(--accent-amber);
-  line-height: 1.3;
+  line-height: 1.35;
+  margin: 0;
+  letter-spacing: 0.01em;
 }
 
-/* H3: subsection */
+/* ── Section kind: ACTION — callout box ── */
+.report-body .rb-section--action {
+  background: var(--accent-amber-bg);
+  border: 1px solid rgba(212,145,10,0.18);
+  border-radius: 10px;
+  padding: 28px 28px 20px;
+  margin-top: 3em;
+}
+
+.report-body .rb-section--action + .rb-section {
+  border-top: none;
+}
+
+.report-body .rb-section--action .rb-section-num {
+  background: var(--accent-amber);
+  color: #fff;
+  border-color: var(--accent-amber);
+}
+
+html.dark .report-body .rb-section--action .rb-section-num {
+  color: #07090E;
+}
+
+.report-body .rb-section--action .rb-h2 {
+  color: var(--accent-amber);
+}
+
+/* ── Section kind: GAP — warning stripe ── */
+.report-body .rb-section--gap {
+  border-left: 3px solid var(--rating-x, #C94040);
+  padding-left: 24px;
+}
+
+.report-body .rb-section--gap .rb-section-num {
+  background: var(--rating-x-bg, rgba(201,64,64,0.12));
+  color: var(--rating-x, #C94040);
+  border-color: rgba(201,64,64,0.25);
+}
+
+/* ── Section kind: PREDICTION / PREDICTION-REVIEW ── */
+.report-body .rb-section--prediction,
+.report-body .rb-section--prediction-review {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 28px 20px;
+  margin-top: 3em;
+}
+
+.report-body .rb-section--prediction + .rb-section,
+.report-body .rb-section--prediction-review + .rb-section {
+  border-top: none;
+}
+
+.report-body .rb-section--prediction .rb-section-num,
+.report-body .rb-section--prediction-review .rb-section-num {
+  background: var(--accent-cyan-bg);
+  color: var(--accent-cyan);
+  border-color: rgba(14,165,179,0.25);
+}
+
+/* ── H3, H4: subsections ── */
 .report-body .rb-h3 {
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
-  font-size: 1.02rem;
+  font-size: 1.04rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 1.8em 0 0.5em;
-  line-height: 1.3;
+  margin: 2em 0 0.6em;
+  line-height: 1.35;
 }
 
 .report-body .rb-h4 {
-  font-size: 0.95rem;
+  font-size: 0.96rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 1.4em 0 0.4em;
+  margin: 1.6em 0 0.4em;
 }
 
-/* Paragraphs */
+/* ── Paragraphs ── */
 .report-body .rb-p {
-  margin: 0 0 1.1em;
+  margin: 0 0 1.3em;
   text-align: justify;
+  text-justify: inter-ideograph;
+  hanging-punctuation: allow-end;
 }
 
-/* Blockquote — italic with amber bar */
+/* First paragraph after H2 — slightly larger lead */
+.report-body .rb-h2-wrap + .rb-p {
+  font-size: 0.96rem;
+}
+
+/* ── Blockquote — editorial pull quote ── */
 .report-body .rb-bq {
+  position: relative;
+  margin: 2em 0;
+  padding: 24px 28px 20px 32px;
+  border: none;
   border-left: 3px solid var(--accent-amber);
-  padding: 10px 18px;
-  margin: 1.2em 0;
-  color: var(--text-tertiary);
-  font-style: italic;
-  font-size: 0.88rem;
   background: var(--accent-amber-bg);
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.85;
 }
 
-/* Lists */
+.report-body .rb-bq-mark {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  font-family: 'Georgia', serif;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: var(--accent-amber);
+  opacity: 0.25;
+  pointer-events: none;
+  user-select: none;
+}
+
+.report-body .rb-bq-text {
+  position: relative;
+  z-index: 1;
+  font-style: italic;
+}
+
+/* ── Lists: unordered ── */
 .report-body .rb-ul {
-  padding-left: 1.3em;
-  margin: 0.5em 0 1.2em;
+  padding-left: 0;
+  margin: 0.8em 0 1.5em;
   list-style: none;
 }
 
 .report-body .rb-ul li {
   position: relative;
-  padding-left: 14px;
-  margin-bottom: 0.5em;
-  line-height: 1.75;
+  padding-left: 20px;
+  margin-bottom: 0.7em;
+  line-height: 1.85;
 }
 
 .report-body .rb-ul li::before {
-  content: '▸';
+  content: '';
   position: absolute;
-  left: 0;
-  color: var(--accent-amber);
-  font-size: 0.75em;
-  top: 2px;
+  left: 2px;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  opacity: 0.6;
 }
 
-/* Inline code */
+/* ── Lists: ordered ── */
+.report-body .rb-ol {
+  padding-left: 0;
+  margin: 0.8em 0 1.5em;
+  list-style: none;
+  counter-reset: rb-ol;
+}
+
+.report-body .rb-ol li {
+  position: relative;
+  padding-left: 32px;
+  margin-bottom: 0.8em;
+  line-height: 1.85;
+  counter-increment: rb-ol;
+}
+
+.report-body .rb-ol li::before {
+  content: counter(rb-ol);
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-amber-bg);
+  border: 1px solid rgba(212,145,10,0.2);
+  color: var(--accent-amber);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ── Prediction cards ── */
+.report-body .rb-predictions {
+  padding-left: 0;
+  margin: 0.8em 0 1.5em;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.report-body .rb-prediction-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.report-body .rb-prediction-item:hover {
+  border-color: var(--accent-cyan);
+}
+
+.report-body .rb-prediction-status {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 1px 8px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+.report-body .rb-prediction--confirmed .rb-prediction-status {
+  background: var(--rating-book-bg);
+  color: var(--rating-book);
+  border: 1px solid rgba(129,199,132,0.25);
+}
+
+.report-body .rb-prediction--wrong .rb-prediction-status {
+  background: var(--rating-x-bg);
+  color: var(--rating-x);
+  border: 1px solid rgba(201,64,64,0.25);
+}
+
+.report-body .rb-prediction--pending .rb-prediction-status {
+  background: var(--accent-amber-bg);
+  color: var(--accent-amber);
+  border: 1px solid rgba(212,145,10,0.25);
+}
+
+.report-body .rb-prediction--new .rb-prediction-status {
+  background: var(--accent-cyan-bg);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(14,165,179,0.25);
+}
+
+.report-body .rb-prediction-text {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.report-body .rb-prediction-text strong {
+  color: var(--text-primary);
+}
+
+/* ── Inline code ── */
 .report-body .rb-code {
   font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
   font-size: 0.82em;
@@ -548,7 +886,7 @@ function formatPeriod(iso: string): string {
   padding: 1px 5px;
 }
 
-/* Links */
+/* ── Links ── */
 .report-body a {
   color: var(--accent-amber);
   text-decoration: none;
@@ -567,34 +905,85 @@ function formatPeriod(iso: string): string {
   word-break: break-all;
 }
 
-/* Bold emphasis highlight */
+/* ── Bold emphasis — elevated color ── */
 .report-body strong {
   color: var(--text-primary);
   font-weight: 700;
 }
 
-/* Horizontal rule */
+/* ── Stat highlights — numbers that pop ── */
+.report-body .rb-stat {
+  color: var(--accent-amber);
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.88em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── CJK book quotes 「…」 ── */
+.report-body .rb-cjk-quote {
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* ── Emoji callout lines (reflections: 1️⃣ 🔬 🤔) ── */
+.report-body .rb-callout-line {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 1.5em;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.report-body .rb-callout-emoji {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.report-body .rb-callout-line .rb-p {
+  margin-bottom: 0;
+}
+
+/* ── Horizontal rule — section break ── */
 .report-body .rb-hr {
   border: none;
-  border-top: 1px solid var(--border);
-  margin: 2.5em 0;
+  margin: 3em 0;
   position: relative;
+  height: 1px;
+  background: var(--border);
+}
+
+.report-body .rb-hr::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 1px;
+  background: var(--accent-amber);
 }
 
 .report-body .rb-hr::after {
-  content: '◆';
+  content: '///';
   position: absolute;
-  top: -8px;
+  top: -7px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg, #fff);
-  padding: 0 8px;
-  color: var(--border);
-  font-size: 0.6rem;
+  padding: 0 12px;
+  color: var(--text-tertiary);
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  opacity: 0.5;
 }
 
 html.dark .report-body .rb-hr::after {
-  background: var(--bg, #0a0a0a);
+  background: var(--bg, #070B14);
 }
 
 /* ── Empty state ── */
@@ -633,7 +1022,7 @@ html.dark .report-body .rb-hr::after {
 /* ── Back link ── */
 .back-row {
   padding-top: 20px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border-subtle, var(--border));
 }
 
 .back-link {
@@ -669,9 +1058,44 @@ html.dark .report-body .rb-hr::after {
     font-size: clamp(1.4rem, 7vw, 2rem);
   }
 
-  .report-pre {
-    padding: 16px 16px;
-    font-size: 0.75rem;
+  .report-body {
+    font-size: 0.9rem;
+    line-height: 1.85;
+  }
+
+  .report-body .rb-h1 {
+    font-size: 1.3rem;
+  }
+
+  .report-body .rb-h2 {
+    font-size: 1.08rem;
+  }
+
+  .report-body .rb-bq {
+    padding: 18px 16px 14px 22px;
+  }
+
+  .report-body .rb-bq-mark {
+    font-size: 2.5rem;
+    top: -4px;
+    left: 6px;
+  }
+
+  .report-body .rb-section--action,
+  .report-body .rb-section--prediction,
+  .report-body .rb-section--prediction-review {
+    padding: 20px 16px 14px;
+    border-radius: 8px;
+  }
+
+  .report-body .rb-prediction-item {
+    padding: 12px 14px;
+  }
+
+  .report-body .rb-callout-line {
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
   }
 
   .report-pagination {
