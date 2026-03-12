@@ -21,16 +21,18 @@ const vlaTheory   = loadVLATheory(12);
 interface ReportEntry {
   date:            string;
   summary:         string;
+  domain:          'vla' | 'ai';
   hasReflection:   boolean;
   reflectionDate?: string;
   reflectionSummary?: string;
 }
 
 const entries: ReportEntry[] = reports.map(r => {
-  const refObj  = reflections.find(ref => ref.date >= r.date);
+  const refObj  = reflections.find(ref => ref.date >= r.date && ref.domain === r.domain);
   return {
     date:              r.date,
-    summary:           extractMarkdownSummary(r.content, 180),
+    summary:           extractMarkdownSummary(r.content, 280),
+    domain:            r.domain,
     hasReflection:     !!refObj,
     reflectionDate:    refObj?.date,
     reflectionSummary: refObj ? extractMarkdownSummary(refObj.content, 120) : undefined,
@@ -42,6 +44,7 @@ const MOCK_ENTRIES: ReportEntry[] = [
   {
     date: '2026-03-01',
     summary: '本期整合 VLA 研究進展、AI 應用趨勢與社交情報。涵蓋 flow matching 突破（5篇 ⚡），Karpathy Software 3.0 論述，DeepSeek-V3 開源影響分析，前期 8 項預測驗證（6 ✅ / 1 ❌ / 1 ⏳）。',
+    domain: 'vla',
     hasReflection: true,
     reflectionDate: '2026-03-01',
     reflectionSummary: '本期反思：flow matching 優勢或被高估；agentic IDE 滲透速度超出預期；下期關注 embodied reasoning 與 cursor-style tooling 的交叉點。',
@@ -49,6 +52,7 @@ const MOCK_ENTRIES: ReportEntry[] = [
   {
     date: '2026-02-15',
     summary: '聚焦世界模型與具身推理的理論突破。JEPA vs autoregressive 路線分歧加深，Meta FAIR 和 DeepMind 各自佔據不同賭注。AI 應用端：Cursor 月活突破100萬。',
+    domain: 'vla',
     hasReflection: true,
     reflectionDate: '2026-02-16',
     reflectionSummary: '反思：對 world model convergence timeline 過於樂觀，修正假設 A-07 信心值 −0.08。',
@@ -56,6 +60,7 @@ const MOCK_ENTRIES: ReportEntry[] = [
   {
     date: '2026-02-01',
     summary: '二月首期雙週：VLA scaling law 實驗結果喜憂參半。30B+ 參數確見推理湧現，但 action precision 仍需視覺-運動訓練。AI 側：DeepSeek-R1 開源衝擊持續。',
+    domain: 'vla',
     hasReflection: false,
   },
 ];
@@ -165,13 +170,19 @@ function formatPeriod(iso: string): string {
             <!-- Report block -->
             <div class="dispatch-report">
               <div class="dispatch-meta-row">
+                <span class={`dispatch-type-badge ${entry.domain === 'ai' ? 'dispatch-type-ai' : 'dispatch-type-report'}`}>
+                  {entry.domain === 'ai'
+                    ? <><span data-tc>AI 應用</span><span data-sc>AI 应用</span></>
+                    : 'VLA'
+                  }
+                </span>
                 <span class="dispatch-type-badge dispatch-type-report"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
                 <span class="dispatch-period">{formatPeriod(entry.date)}</span>
               </div>
 
               <h2 class="dispatch-title">
-                <a href={`${base}/reports/${entry.date}`} class="dispatch-title-link">
-                  深度分析 · {formatDateZh(entry.date)}
+                <a href={`${base}/reports/${entry.domain === 'ai' ? `ai-${entry.date}` : entry.date}`} class="dispatch-title-link">
+                  {entry.domain === 'ai' ? 'AI App ' : 'VLA '}深度分析 · {formatDateZh(entry.date)}
                   <span class="dispatch-arrow" aria-hidden="true">→</span>
                 </a>
               </h2>
@@ -179,7 +190,7 @@ function formatPeriod(iso: string): string {
               <p class="dispatch-excerpt">{entry.summary}</p>
 
               <div class="dispatch-action-row">
-                <a href={`${base}/reports/${entry.date}`} class="dispatch-read-link">
+                <a href={`${base}/reports/${entry.domain === 'ai' ? `ai-${entry.date}` : entry.date}`} class="dispatch-read-link">
                   <span data-tc>閱讀全文</span><span data-sc>阅读全文</span>
                   <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M2 6h8M6 2l4 4-4 4"/>
@@ -201,7 +212,7 @@ function formatPeriod(iso: string): string {
                 {entry.reflectionSummary && (
                   <p class="reflection-excerpt">{entry.reflectionSummary}</p>
                 )}
-                <a href={`${base}/reports/${entry.reflectionDate}-reflection`} class="reflection-link">
+                <a href={`${base}/reports/${entry.domain === 'ai' ? `ai-${entry.reflectionDate}` : entry.reflectionDate}-reflection`} class="reflection-link">
                   查看反思 →
                 </a>
               </div>
@@ -606,6 +617,12 @@ function formatPeriod(iso: string): string {
 }
 
 .dispatch-type-report {
+  color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  border-color: rgba(212,145,10,0.3);
+}
+
+.dispatch-type-ai {
   color: var(--accent-amber);
   background: var(--accent-amber-bg);
   border-color: rgba(212,145,10,0.3);

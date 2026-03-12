@@ -480,20 +480,30 @@ export function loadSocialIntel(
 export function loadBiweeklyReports(
   n:           number  = 6,
   reflections: boolean = false,
-): Array<{ date: string; content: string; filename: string; isReflection: boolean }> {
-  const prefix = reflections ? '_biweekly_reflection_' : '_biweekly_';
-  const files  = listMdFiles(prefix).slice(0, n);
+): Array<{ date: string; content: string; filename: string; isReflection: boolean; domain: 'vla' | 'ai' }> {
+  const vlaPfx = reflections ? '_biweekly_reflection_' : '_biweekly_';
+  const aiPfx  = reflections ? '_ai_biweekly_reflection_' : '_ai_biweekly_';
 
-  return files.map(filename => {
+  const vlaFiles = listMdFiles(vlaPfx).filter(f => !f.startsWith('_ai_'));
+  const aiFiles  = listMdFiles(aiPfx);
+
+  const toEntry = (filename: string, domain: 'vla' | 'ai') => {
     const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
     const date      = dateMatch?.[1] ?? 'unknown';
     try {
       const content = fs.readFileSync(path.join(DATA_DIR, filename), 'utf-8');
-      return { date, content, filename, isReflection: reflections };
+      return { date, content, filename, isReflection: reflections, domain };
     } catch {
-      return { date, content: '', filename, isReflection: reflections };
+      return { date, content: '', filename, isReflection: reflections, domain };
     }
-  });
+  };
+
+  const all = [
+    ...vlaFiles.map(f => toEntry(f, 'vla')),
+    ...aiFiles.map(f => toEntry(f, 'ai')),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+
+  return all.slice(0, n);
 }
 
 // ---------------------------------------------------------------------------

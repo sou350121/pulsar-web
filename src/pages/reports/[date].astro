@@ -13,12 +13,12 @@ export async function getStaticPaths() {
   const reflections = loadBiweeklyReports(60, true);
   return [
     ...reports.map(r => ({
-      params: { date: r.date },
+      params: { date: r.domain === 'ai' ? `ai-${r.date}` : r.date },
       props:  { report: r },
     })),
     ...reflections.map(r => ({
-      params: { date: `${r.date}-reflection` },
-      props:  { report: { ...r, date: `${r.date}-reflection` } },
+      params: { date: r.domain === 'ai' ? `ai-${r.date}-reflection` : `${r.date}-reflection` },
+      props:  { report: { ...r, date: r.domain === 'ai' ? `ai-${r.date}-reflection` : `${r.date}-reflection` } },
     })),
   ];
 }
