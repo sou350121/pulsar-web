@@ -248,7 +248,20 @@ def main():
     # ── 4. Manifest ────────────────────────────────────────────────────────
     write_manifest(DATA_DIR, copied, args.dry_run)
 
-    # ── 4. Summary ─────────────────────────────────────────────────────────
+    # ── 5. Fix ownership ──────────────────────────────────────────────────
+    # When run via sudo, files are root-owned. Fix to admin:admin so
+    # non-root processes (CI tar, Astro build) can read them.
+    if os.getuid() == 0 and not args.dry_run:
+        import pwd
+        try:
+            pw = pwd.getpwnam("admin")
+            for f in DATA_DIR.iterdir():
+                if f.stat().st_uid == 0:
+                    os.chown(f, pw.pw_uid, pw.pw_gid)
+        except (KeyError, OSError):
+            pass  # non-admin system, skip
+
+    # ── 6. Summary ─────────────────────────────────────────────────────────
     log(f"\nDone: {len(copied)} copied, {len(errors)} errors")
     if errors:
         log(f"Errors: {', '.join(errors)}")
