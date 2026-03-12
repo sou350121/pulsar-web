@@ -425,9 +425,41 @@ html.dark .digest-social-domain-tag--vla {
   font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
   font-size: 0.74rem;
   color: var(--text-secondary);
-  line-height: 1.75;
+  line-height: 1.7;
   margin: 0;
-  white-space: pre-line;
+  padding: 0;
+  list-style: none;
+}
+
+.digest-social-bullet {
+  position: relative;
+  padding-left: 14px;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.digest-social-bullet:last-child { margin-bottom: 0; }
+
+.digest-social-bullet::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.digest-social-block--ai .digest-social-bullet::before {
+  background: var(--accent-amber);
+}
+
+.digest-social-block--vla .digest-social-bullet::before {
+  background: var(--accent-cyan);
 }
 
 .digest-social-block-link {

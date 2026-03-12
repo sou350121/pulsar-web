@@ -213,10 +213,32 @@ const digestAiItems = todayPicks.items
 const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
   .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
+// Extract top bullet points from social intel markdown for digest display
+function extractSocialBullets(md: string, maxItems: number = 4): string {
+  const bullets: string[] = [];
+  for (const line of md.split('\n')) {
+    const trimmed = line.trim();
+    if (/^[-*•]\s/.test(trimmed)) {
+      // Strip markdown links, keep text only, trim to reasonable length
+      const clean = trimmed
+        .replace(/^[-*•]\s*/, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/https?:\/\/\S+/g, '')
+        .replace(/[*_`~]/g, '')
+        .trim();
+      if (clean.length > 15) {
+        bullets.push(clean.length > 120 ? clean.slice(0, 117) + '...' : clean);
+      }
+      if (bullets.length >= maxItems) break;
+    }
+  }
+  return bullets.join('\n');
+}
+
 const digestSocialItems = [
   ...aiSocial.map(s => ({
     title:   `AI App · ${s.date.slice(5)}`,
-    summary: extractMarkdownSummary(s.content, 5000),
+    summary: extractSocialBullets(s.content, 4),
     rating:  '📡',
     source:  'social',
     url:     `${import.meta.env.BASE_URL}social`,
@@ -224,7 +246,7 @@ const digestSocialItems = [
   })),
   ...vlaSocial.map(s => ({
     title:   `VLA · ${s.date.slice(5)}`,
-    summary: extractMarkdownSummary(s.content, 5000),
+    summary: extractSocialBullets(s.content, 4),
     rating:  '📡',
     source:  'social',
     url:     `${import.meta.env.BASE_URL}social`,

@@ -345,7 +345,11 @@ const wordmark = title ?? 'PULSAR DIGEST';
                     {item.domain === 'vla' ? 'VLA' : 'AI'}
                   </span>
                 </div>
-                <p class="digest-social-block-body">{item.summary}</p>
+                <ul class="digest-social-block-body">
+                  {item.summary.split('\n').filter(Boolean).map((line: string) => (
+                    <li class="digest-social-bullet">{line}</li>
+                  ))}
+                </ul>
                 {showLinks && (
                   <a class="digest-social-block-link" href={item.url}>
                     <span data-tc>查看完整情報</span><span data-sc>查看完整情报</span> →
