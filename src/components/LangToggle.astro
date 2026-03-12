@@ -67,6 +67,33 @@
   const lblTC = document.getElementById('lang-label-tc');
   const lblSC = document.getElementById('lang-label-sc');
 
+  // Lazy-load opencc-js only when report-body exists (avoids 1MB on all pages)
+  let converterPromise: Promise<{ s2t: (s: string) => string; t2s: (s: string) => string }> | null = null;
+
+  function getConverters() {
+    if (!converterPromise) {
+      converterPromise = import('opencc-js').then((OpenCC) => ({
+        s2t: OpenCC.Converter({ from: 'cn', to: 'tw' }),
+        t2s: OpenCC.Converter({ from: 'tw', to: 'cn' }),
+      }));
+    }
+    return converterPromise;
+  }
+
+  // Convert text nodes inside report-body (preserves HTML structure)
+  async function convertBody(toSC: boolean) {
+    const body = document.querySelector('.report-body');
+    if (!body) return;
+    const { s2t, t2s } = await getConverters();
+    const converter = toSC ? t2s : s2t;
+    const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+    let node: Text | null;
+    while ((node = walker.nextNode() as Text | null)) {
+      const converted = converter(node.data);
+      if (converted !== node.data) node.data = converted;
+    }
+  }
+
   function applyLang(sc: boolean) {
     if (sc) {
       document.documentElement.classList.add('lang-sc');
@@ -80,11 +107,17 @@
   }
 
   // Initialise from storage
-  applyLang(localStorage.getItem('pulsar-lang') === 'sc');
+  const initSC = localStorage.getItem('pulsar-lang') === 'sc';
+  applyLang(initSC);
+  // If TC is selected, convert report body (source is SC) to TC on load
+  if (!initSC && document.querySelector('.report-body')) {
+    convertBody(false);
+  }
 
   btn?.addEventListener('click', () => {
     const nowSC = !document.documentElement.classList.contains('lang-sc');
     applyLang(nowSC);
+    convertBody(nowSC);
     localStorage.setItem('pulsar-lang', nowSC ? 'sc' : 'tc');
   });
 })();
