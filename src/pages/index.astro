@@ -216,7 +216,7 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
 const digestSocialItems = [
   ...aiSocial.map(s => ({
     title:   `AI App · ${s.date.slice(5)}`,
-    summary: extractMarkdownSummary(s.content, 200),
+    summary: extractMarkdownSummary(s.content, 5000),
     rating:  '📡',
     source:  'social',
     url:     `${import.meta.env.BASE_URL}social`,
@@ -224,7 +224,7 @@ const digestSocialItems = [
   })),
   ...vlaSocial.map(s => ({
     title:   `VLA · ${s.date.slice(5)}`,
-    summary: extractMarkdownSummary(s.content, 200),
+    summary: extractMarkdownSummary(s.content, 5000),
     rating:  '📡',
     source:  'social',
     url:     `${import.meta.env.BASE_URL}social`,

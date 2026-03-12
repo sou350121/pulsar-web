@@ -335,6 +335,115 @@ html.dark .digest-item--wrench .digest-rating { filter: drop-shadow(0 0 5px rgba
 html.dark .digest-item--book   .digest-rating { filter: drop-shadow(0 0 4px rgba(129, 199, 132, 0.45)); }
 html.dark .digest-item--social .digest-rating { filter: drop-shadow(0 0 5px rgba( 74, 222, 128, 0.50)); }
 
+/* ============================================================
+   SOCIAL INTEL BLOCKS — expanded full-text layout
+   ============================================================ */
+.digest-social-blocks {
+  display: flex;
+  flex-direction: column;
+}
+
+.digest-social-block {
+  padding: 12px 16px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s ease;
+}
+
+.digest-social-block:last-child { border-bottom: none; }
+
+html.dark .digest-social-block {
+  border-bottom-color: #0F1A2A;
+}
+
+.digest-social-block:hover {
+  background: var(--bg-alt);
+}
+
+html.dark .digest-social-block--ai:hover {
+  background: linear-gradient(90deg, rgba(245,183,49,0.03) 0%, transparent 40%);
+}
+
+html.dark .digest-social-block--vla:hover {
+  background: linear-gradient(90deg, rgba(62,207,207,0.03) 0%, transparent 40%);
+}
+
+.digest-social-block--ai  { border-left: 3px solid var(--accent-amber); }
+.digest-social-block--vla { border-left: 3px solid var(--accent-cyan); }
+
+html.dark .digest-social-block--ai  { border-left-color: rgba(245,183,49,0.5); }
+html.dark .digest-social-block--vla { border-left-color: rgba(62,207,207,0.5); }
+
+.digest-social-block-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.digest-social-block-title {
+  font-family: "IBM Plex Mono", "Menlo", "Consolas", "Courier New", monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+html.dark .digest-social-block--ai .digest-social-block-title  { color: var(--accent-amber); }
+html.dark .digest-social-block--vla .digest-social-block-title { color: var(--accent-cyan); }
+
+.digest-social-domain-tag {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: auto;
+}
+
+.digest-social-domain-tag--ai {
+  color: var(--accent-amber);
+  background: rgba(212,145,10,0.08);
+  border: 1px solid rgba(212,145,10,0.2);
+}
+.digest-social-domain-tag--vla {
+  color: var(--accent-cyan);
+  background: rgba(15,143,160,0.08);
+  border: 1px solid rgba(15,143,160,0.2);
+}
+html.dark .digest-social-domain-tag--ai {
+  background: rgba(245,183,49,0.06);
+  border-color: rgba(245,183,49,0.15);
+}
+html.dark .digest-social-domain-tag--vla {
+  background: rgba(62,207,207,0.06);
+  border-color: rgba(62,207,207,0.15);
+}
+
+.digest-social-block-body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.digest-social-block-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.15s;
+}
+
+.digest-social-block--ai .digest-social-block-link:hover  { color: var(--accent-amber); }
+.digest-social-block--vla .digest-social-block-link:hover { color: var(--accent-cyan); }
+
 /* ── Content column ── */
 .digest-content {
   display: flex;

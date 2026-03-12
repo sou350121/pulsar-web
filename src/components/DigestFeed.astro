@@ -333,41 +333,28 @@ const wordmark = title ?? 'PULSAR DIGEST';
             {socialSlice.length}&thinsp;條
           </span>
         </div>
-        <ul class="digest-list" role="list">
+        <div class="digest-social-blocks">
           {socialSlice.map((item) => {
-            const emoji    = ratingEmoji(item.rating);
-            const modifier = ratingModifier(item.rating);
-            const tag      = sourceTag(item.source);
-            const domainMod = item.domain === 'vla' ? 'digest-item--vla' : 'digest-item--ai';
-            const rowClass = `digest-item ${domainMod} ${modifier} digest-item--social-row`;
+            const domainMod = item.domain === 'vla' ? 'digest-social-block--vla' : 'digest-social-block--ai';
             return (
-              <li class={rowClass}>
-                {showLinks ? (
-                  <a class="digest-item-link" href={item.url} title={item.title}
-                     aria-label={`${emoji} ${item.title} — ${item.summary}`}>
-                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                    <span class="digest-content">
-                      <span class="digest-title">{item.title}</span>
-                      <span class="digest-sep" aria-hidden="true">—</span>
-                      <span class="digest-summary">{item.summary}</span>
-                    </span>
-                    <span class="digest-source" aria-label={`來源: ${item.source}`}>{tag}</span>
+              <div class={`digest-social-block ${domainMod}`}>
+                <div class="digest-social-block-header">
+                  <span class="digest-rating" aria-hidden="true">📡</span>
+                  <span class="digest-social-block-title">{item.title}</span>
+                  <span class={`digest-social-domain-tag ${item.domain === 'vla' ? 'digest-social-domain-tag--vla' : 'digest-social-domain-tag--ai'}`}>
+                    {item.domain === 'vla' ? 'VLA' : 'AI'}
+                  </span>
+                </div>
+                <p class="digest-social-block-body">{item.summary}</p>
+                {showLinks && (
+                  <a class="digest-social-block-link" href={item.url}>
+                    <span data-tc>查看完整情報</span><span data-sc>查看完整情报</span> →
                   </a>
-                ) : (
-                  <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
-                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
-                    <span class="digest-content">
-                      <span class="digest-title">{item.title}</span>
-                      <span class="digest-sep" aria-hidden="true">—</span>
-                      <span class="digest-summary">{item.summary}</span>
-                    </span>
-                    <span class="digest-source" aria-label={`來源: ${item.source}`}>{tag}</span>
-                  </div>
                 )}
-              </li>
+              </div>
             );
           })}
-        </ul>
+        </div>
       </section>
     )}
 
