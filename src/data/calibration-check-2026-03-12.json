@@ -1,0 +1,44 @@
+{
+  "date": "2026-03-12",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "LIBERO 多榜饱和 (99.2%/98.6%) 限制评测基准区分度；counter-evidence 论文 'What Does Flow Matching Bring To TD Learning?' 显示 flow-matching 优势，实为支持性证据但机械评分已计入"
+    },
+    "V-005": {
+      "score": 0.50,
+      "reason": "counter-evidence 模式匹配 'PlayWorld' 论文含 'fine-grained fail' 短语，实为误报 (指世界模型细粒度失败检测，非 RL 失效)；机械评分 floor 必须尊重"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和使开源 vs 闭源对比基准受限；开源 VLA 活动稳定 (8 hits/7d) 无实质挑战"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和影响 3D 表示评测基准；信号活动偏低 (2 hits/7d) 但 GST-VLA 等论文仍推进 3D depth-aware 方向"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 61,
+  "ai_signals_scanned": 74,
+  "triggers": [],
+  "note": "4 个假设有 early warning (机械预评分确认)；无 score≥0.50 实质挑战，全部为 benchmark 饱和或误报触发的 floor",
+  "method_trends_summary": {
+    "sim_to_real": "declining (唯一衰退方法族，但未直接挑战 V-003 假设)",
+    "all_others": "stable (14 个方法族稳定，diffusion_policy/flow_matching/rl_finetuning/world_model 活动强劲)"
+  },
+  "benchmark_saturation_noted": true,
+  "expert_analysis": {
+    "false_positives_identified": 2,
+    "details": "V-001 counter-evidence (flow-matching outperform 实为支持 diffusion 范式); V-005 counter-evidence (fine-grained fail 为世界模型语境，非 RL 失效)"
+  },
+  "notification_status": {
+    "attempted": true,
+    "delivered": false,
+    "reason": "Telegram channel @clawd_vla_daily not found - bot may not be added to channel or channel ID changed"
+  }
+}
