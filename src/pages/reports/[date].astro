@@ -60,6 +60,12 @@ function classifySection(heading: string): SectionKind {
 let currentSection: SectionKind = 'default';
 let sectionCounter = 0;
 
+// Section labels for action/gap headers
+const SECTION_LABELS: Record<string, string> = {
+  action: '行动建议 ACTION BRIEF',
+  gap: '注意 ATTENTION REQUIRED',
+};
+
 // ─────────────────────────────────────────────────────────────
 // Markdown → HTML  (editorial-grade parser)
 // ─────────────────────────────────────────────────────────────
@@ -68,46 +74,63 @@ function mdToHtml(md: string): string {
   const out: string[] = [];
   let inList: 'ul' | 'ol' | false = false;
   let inSection = false;
+  let paragraphInSection = 0;
   sectionCounter = 0;
+
+  function closeList() {
+    if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+  }
 
   for (let i = 0; i < lines.length; i++) {
     const raw = lines[i];
     const trimmed = raw.trim();
 
     // Empty line
-    if (!trimmed) {
-      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
-      continue;
-    }
+    if (!trimmed) { closeList(); continue; }
 
-    // Horizontal rule — section break ornament
+    // Horizontal rule — terminal-style section divider
     if (/^[-*_]{3,}\s*$/.test(trimmed) || /^━{3,}/.test(trimmed)) {
-      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+      closeList();
       if (inSection) { out.push('</section>'); inSection = false; }
-      out.push('<hr class="rb-hr" />');
+      out.push('<div class="rb-divider" role="separator"><span class="rb-divider-line"></span><span class="rb-divider-glyph">///</span><span class="rb-divider-line"></span></div>');
       continue;
     }
 
     // Headings
     const hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
     if (hMatch) {
-      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+      closeList();
       const level = hMatch[1].length;
       const rawText = hMatch[2];
       const text = inlineFormat(rawText);
       const id = rawText.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '-').toLowerCase().slice(0, 50);
 
       if (level === 1) {
-        // H1: report title — the big serif headline
-        out.push(`<h1 class="rb-h1" id="${id}">${text}</h1>`);
+        // H1: parse "Title | date-range" pattern
+        const titleParts = rawText.split('|').map(s => s.trim());
+        if (titleParts.length >= 2) {
+          out.push(`<header class="rb-title-block">`);
+          out.push(`<span class="rb-title-overline">${inlineFormat(titleParts[1])}</span>`);
+          out.push(`<h1 class="rb-h1" id="${id}">${inlineFormat(titleParts[0])}</h1>`);
+          out.push(`</header>`);
+        } else {
+          out.push(`<header class="rb-title-block"><h1 class="rb-h1" id="${id}">${text}</h1></header>`);
+        }
       } else if (level === 2) {
-        // Close previous section wrapper
         if (inSection) { out.push('</section>'); }
         sectionCounter++;
+        paragraphInSection = 0;
         currentSection = classifySection(rawText);
         const sectionClass = `rb-section rb-section--${currentSection}`;
         inSection = true;
         out.push(`<section class="${sectionClass}" data-section="${sectionCounter}">`);
+
+        // Action/gap sections get a label bar
+        const label = SECTION_LABELS[currentSection];
+        if (label) {
+          out.push(`<div class="rb-section-label">${label}</div>`);
+        }
+
         out.push(`<div class="rb-h2-wrap">`);
         out.push(`<span class="rb-section-num" aria-hidden="true">${String(sectionCounter).padStart(2, '0')}</span>`);
         out.push(`<h2 class="rb-h2" id="${id}">${text}</h2>`);
@@ -118,11 +141,14 @@ function mdToHtml(md: string): string {
       continue;
     }
 
-    // Blockquote — editorial pull quote
+    // Blockquote — dramatic pull quote
     if (trimmed.startsWith('>')) {
-      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+      closeList();
       const text = inlineFormat(trimmed.replace(/^>\s*/, ''));
-      out.push(`<blockquote class="rb-bq"><span class="rb-bq-mark" aria-hidden="true">"</span><span class="rb-bq-text">${text}</span></blockquote>`);
+      out.push(`<blockquote class="rb-bq">`);
+      out.push(`<span class="rb-bq-mark" aria-hidden="true">\u300C</span>`);
+      out.push(`<p class="rb-bq-text">${text}</p>`);
+      out.push(`</blockquote>`);
       continue;
     }
 
@@ -134,9 +160,9 @@ function mdToHtml(md: string): string {
       const statusClass = emoji === '✅' ? 'confirmed' : emoji === '❌' ? 'wrong' : 'pending';
       const statusLabel = emoji === '✅' ? 'CONFIRMED' : emoji === '❌' ? 'INVALIDATED' : 'TRACKING';
       const text = inlineFormat(trimmed.replace(/^[-*•]\s*(✅|⏳|❌)\s*/, ''));
-      out.push(`<li class="rb-prediction-item rb-prediction--${statusClass}">`);
-      out.push(`<span class="rb-prediction-status">${statusLabel}</span>`);
-      out.push(`<span class="rb-prediction-text">${text}</span>`);
+      out.push(`<li class="rb-pred rb-pred--${statusClass}">`);
+      out.push(`<div class="rb-pred-badge"><span class="rb-pred-dot"></span>${statusLabel}</div>`);
+      out.push(`<div class="rb-pred-body">${text}</div>`);
       out.push(`</li>`);
       continue;
     }
@@ -152,6 +178,14 @@ function mdToHtml(md: string): string {
       continue;
     }
 
+    // Footer stats line (- 日报：N 条 | 社交：N 条)
+    if (/^[-*•]\s*日报[：:]/.test(trimmed)) {
+      closeList();
+      const statsText = trimmed.replace(/^[-*•]\s*/, '');
+      out.push(`<div class="rb-footer-stats">${inlineFormat(statsText)}</div>`);
+      continue;
+    }
+
     // Unordered list — bullet items (prediction items with bold leads)
     if (/^[-*•]\s/.test(trimmed)) {
       if (inList && inList !== 'ul') { out.push('</ol>'); inList = false; }
@@ -160,9 +194,9 @@ function mdToHtml(md: string): string {
       const text = inlineFormat(trimmed.replace(/^[-*•]\s*/, ''));
 
       if (currentSection === 'prediction') {
-        out.push(`<li class="rb-prediction-item rb-prediction--new">`);
-        out.push(`<span class="rb-prediction-status">FORECAST</span>`);
-        out.push(`<span class="rb-prediction-text">${text}</span>`);
+        out.push(`<li class="rb-pred rb-pred--forecast">`);
+        out.push(`<div class="rb-pred-badge"><span class="rb-pred-dot"></span>FORECAST</div>`);
+        out.push(`<div class="rb-pred-body">${text}</div>`);
         out.push(`</li>`);
       } else {
         out.push(`<li>${text}</li>`);
@@ -173,19 +207,21 @@ function mdToHtml(md: string): string {
     // Emoji-prefixed lines (1️⃣ 2️⃣ etc. from reflections)
     const emojiNumMatch = trimmed.match(/^(\d️⃣|🔬|🤔)\s*(.+)$/);
     if (emojiNumMatch) {
-      if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
+      closeList();
       const emoji = emojiNumMatch[1];
       const text = inlineFormat(emojiNumMatch[2]);
-      out.push(`<div class="rb-callout-line"><span class="rb-callout-emoji" aria-hidden="true">${emoji}</span><p class="rb-p">${text}</p></div>`);
+      out.push(`<div class="rb-callout"><span class="rb-callout-icon">${emoji}</span><p class="rb-p">${text}</p></div>`);
       continue;
     }
 
-    // Paragraph — the main prose block
-    if (inList) { out.push(inList === 'ol' ? '</ol>' : '</ul>'); inList = false; }
-    out.push(`<p class="rb-p">${inlineFormat(trimmed)}</p>`);
+    // Paragraph
+    closeList();
+    paragraphInSection++;
+    const isLead = paragraphInSection === 1;
+    out.push(`<p class="rb-p${isLead ? ' rb-p--lead' : ''}">${inlineFormat(trimmed)}</p>`);
   }
 
-  if (inList) out.push(inList === 'ol' ? '</ol>' : '</ul>');
+  closeList();
   if (inSection) out.push('</section>');
   return out.join('\n');
 }
@@ -200,7 +236,7 @@ function inlineFormat(text: string): string {
     .replace(/>/g, '&gt;')
     // Bold
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    // Italic (markdown *text* or _text_)
+    // Italic
     .replace(/(?<!\w)\*([^*]+)\*(?!\w)/g, '<em>$1</em>')
     .replace(/(?<!\w)_([^_]+)_(?!\w)/g, '<em>$1</em>')
     // Inline code
@@ -209,12 +245,16 @@ function inlineFormat(text: string): string {
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     // Bare URLs
     .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="rb-link">$1</a>')
-    // Stat highlights — dollar amounts, percentages, multipliers
+    // Stat highlights — dollar amounts
     .replace(/(\$[\d,.]+[BMK]?\b)/g, '<span class="rb-stat">$1</span>')
+    // Large numbers with commas (15,540 etc)
+    .replace(/\b(\d{1,3}(?:,\d{3})+)\b/g, '<span class="rb-stat">$1</span>')
+    // Percentages
     .replace(/(\d+(?:\.\d+)?%\+?)/g, '<span class="rb-stat">$1</span>')
+    // Multipliers
     .replace(/(\d+(?:\.\d+)?x\b)/g, '<span class="rb-stat">$1</span>')
-    // Chinese book quotes 「…」 → subtle emphasis
-    .replace(/「([^」]+)」/g, '<span class="rb-cjk-quote">$1</span>');
+    // Chinese book quotes 「…」
+    .replace(/「([^」]+)」/g, '<span class="rb-cjk-q">\u300C$1\u300D</span>');
 }
 
 const reportHtml = content ? mdToHtml(content) : '';
@@ -320,27 +360,28 @@ function formatPeriod(iso: string): string {
 
 <style>
 /* ============================================================
-   REPORT DETAIL PAGE — "Intelligence Briefing Dossier"
-   Scoped CSS: only affects this page.
-   Design: editorial magazine meets classified briefing.
+   REPORT DETAIL PAGE — "Intelligence Dossier × 端傳媒"
+   Premium editorial typesetting for classified intelligence briefs.
+   Dark-first: amber glow, generous whitespace, CJK-optimized.
 ============================================================ */
 
 /* ── Page wrapper ── */
 .report-page {
   padding-top: 60px;
-  padding-bottom: 80px;
+  padding-bottom: 100px;
 }
 
 /* ── Breadcrumb ── */
 .breadcrumb {
-  margin-bottom: 2rem;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.72rem;
+  margin-bottom: 2.5rem;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
   color: var(--text-tertiary);
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
   flex-wrap: wrap;
+  letter-spacing: 0.04em;
 }
 
 .breadcrumb-link {
@@ -349,34 +390,25 @@ function formatPeriod(iso: string): string {
   transition: color 0.2s;
 }
 
-.breadcrumb-link:hover {
-  color: var(--text-secondary);
-  opacity: 1;
-}
+.breadcrumb-link:hover { color: var(--accent-amber); opacity: 1; }
 
-.breadcrumb-sep {
-  color: var(--border);
-  margin: 0 0.2rem;
-}
+.breadcrumb-sep { color: var(--border); margin: 0 0.15rem; }
 
-.breadcrumb-current {
-  color: var(--text-secondary);
-  font-weight: 600;
-}
+.breadcrumb-current { color: var(--text-secondary); font-weight: 600; }
 
 /* ── Page header ── */
 .report-header {
-  margin-bottom: 28px;
+  margin-bottom: 40px;
 }
 
 .report-overline {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 14px;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
+  margin-bottom: 20px;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
@@ -384,43 +416,41 @@ function formatPeriod(iso: string): string {
   color: var(--accent-amber);
   background: var(--accent-amber-bg);
   border: 1px solid rgba(212,145,10,0.25);
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 3px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.overline-sep {
-  color: var(--border);
-  opacity: 0.5;
-}
+.overline-sep { color: var(--border); opacity: 0.4; }
 
 .overline-period {
   color: var(--text-tertiary);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
 }
 
 .report-title {
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif !important;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .report-meta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .meta-tag {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 2px 8px;
   border-radius: 3px;
@@ -447,32 +477,24 @@ function formatPeriod(iso: string): string {
 
 .report-rule {
   border: none;
-  border-top: 1px solid var(--border);
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-amber) 0%, var(--accent-amber) 72px, var(--border) 72px, var(--border) 100%);
   position: relative;
-}
-
-.report-rule::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  width: 60px;
-  height: 1px;
-  background: var(--accent-amber);
 }
 
 /* ── Detail breadcrumb ── */
 .detail-breadcrumb {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
   flex-wrap: wrap;
-  margin-bottom: 32px;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.72rem;
+  margin-bottom: 40px;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
   color: var(--text-tertiary);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 14px;
+  letter-spacing: 0.03em;
 }
 
 .bc-link {
@@ -481,20 +503,9 @@ function formatPeriod(iso: string): string {
   transition: color 0.2s;
 }
 
-.bc-link:hover {
-  color: var(--accent-amber);
-  opacity: 1;
-}
-
-.bc-sep {
-  color: var(--border);
-  margin: 0 0.2rem;
-}
-
-.bc-current {
-  color: var(--text-secondary);
-  font-weight: 600;
-}
+.bc-link:hover { color: var(--accent-amber); opacity: 1; }
+.bc-sep { color: var(--border); margin: 0 0.15rem; }
+.bc-current { color: var(--text-secondary); font-weight: 600; }
 
 /* ── Prev / next pagination ── */
 .report-pagination {
@@ -502,21 +513,21 @@ function formatPeriod(iso: string): string {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin: 32px 0 16px;
+  margin: 48px 0 20px;
   flex-wrap: wrap;
 }
 
 .rpag-btn {
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.66rem;
   letter-spacing: 0.06em;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 6px;
   text-decoration: none;
   color: var(--text-secondary);
   background: var(--surface);
-  transition: border-color 0.15s, color 0.15s;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 .rpag-btn:hover {
@@ -525,93 +536,148 @@ function formatPeriod(iso: string): string {
   opacity: 1;
 }
 
-.rpag-btn--list {
-  border-style: dashed;
+html.dark .rpag-btn:hover {
+  box-shadow: 0 0 12px rgba(245,183,49,0.08);
 }
+
+.rpag-btn--list { border-style: dashed; }
 
 /* ── Report article ── */
 .report-article {
-  max-width: 740px;
-  margin-bottom: 48px;
+  max-width: 720px;
+  margin-bottom: 56px;
 }
 
 /* ============================================================
-   REPORT BODY — Editorial-grade rendered markdown
-   Typography: CJK-optimized with generous vertical rhythm.
+   REPORT BODY — Premium editorial rendered markdown
+   CJK-optimized. Generous vertical rhythm. Dark-mode glow.
 ============================================================ */
 .report-body {
-  max-width: 740px;
-  line-height: 1.95;
+  max-width: 720px;
+  line-height: 2.0;
   font-size: 0.94rem;
   color: var(--text-secondary);
   font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
-  counter-reset: rb-section;
 }
 
-/* ── H1: Report title — cinematic serif headline ── */
-.report-body .rb-h1 {
-  font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
-  font-size: 1.55rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 0.5em;
-  padding-bottom: 20px;
+/* ── H1: Title block — magazine cover feel ── */
+.report-body .rb-title-block {
+  margin-bottom: 3.5em;
+  padding-bottom: 2em;
   border-bottom: 1px solid var(--border);
   position: relative;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
 }
 
-.report-body .rb-h1::after {
+.report-body .rb-title-block::after {
   content: '';
   position: absolute;
   bottom: -1px;
   left: 0;
-  width: 72px;
+  width: 80px;
   height: 3px;
   background: linear-gradient(90deg, var(--accent-amber), transparent);
   border-radius: 2px;
 }
 
-/* ── Sections — semantic wrapper for each ## block ── */
+.report-body .rb-title-overline {
+  display: block;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-body .rb-h1 {
+  font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* ── Sections — each ## block ── */
 .report-body .rb-section {
-  margin-top: 3em;
+  margin-top: 4em;
   padding-top: 0;
   position: relative;
 }
 
-/* Subtle top border between sections */
 .report-body .rb-section + .rb-section {
-  border-top: 1px solid var(--border-subtle, var(--border));
-  padding-top: 2.5em;
+  padding-top: 3.5em;
 }
 
-/* ── H2: Section headers with counter ── */
+/* Subtle separator line between sections */
+.report-body .rb-section + .rb-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
+
+/* ── Section label bar (action/gap only) ── */
+.report-body .rb-section-label {
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding: 4px 12px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+.report-body .rb-section--action .rb-section-label {
+  color: #070B14;
+  background: var(--accent-amber);
+}
+
+html:not(.dark) .report-body .rb-section--action .rb-section-label {
+  color: #fff;
+}
+
+.report-body .rb-section--gap .rb-section-label {
+  color: var(--rating-x);
+  background: var(--rating-x-bg);
+  border: 1px solid rgba(239,83,80,0.2);
+}
+
+/* ── H2: Section headers ── */
 .report-body .rb-h2-wrap {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 1.4em;
+  gap: 14px;
+  margin-bottom: 1.6em;
 }
 
 .report-body .rb-section-num {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: var(--accent-amber);
-  background: var(--accent-amber-bg);
-  border: 1px solid rgba(212,145,10,0.2);
-  padding: 2px 7px;
-  border-radius: 3px;
   flex-shrink: 0;
   position: relative;
   top: -1px;
+  opacity: 0.7;
+}
+
+html.dark .report-body .rb-section-num {
+  text-shadow: 0 0 16px rgba(245,183,49,0.35);
 }
 
 .report-body .rb-h2 {
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
-  font-size: 1.2rem;
+  font-size: 1.28rem;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.35;
@@ -619,53 +685,70 @@ function formatPeriod(iso: string): string {
   letter-spacing: 0.01em;
 }
 
-/* ── Section kind: ACTION — callout box ── */
+/* ── Section kind: ACTION — alert card ── */
 .report-body .rb-section--action {
   background: var(--accent-amber-bg);
-  border: 1px solid rgba(212,145,10,0.18);
-  border-radius: 10px;
-  padding: 28px 28px 20px;
-  margin-top: 3em;
+  border: 1px solid rgba(212,145,10,0.15);
+  border-top: 3px solid var(--accent-amber);
+  border-radius: 0 0 12px 12px;
+  padding: 28px 32px 24px;
+  margin-top: 4em;
+  position: relative;
 }
 
-.report-body .rb-section--action + .rb-section {
-  border-top: none;
+html.dark .report-body .rb-section--action {
+  box-shadow: 0 0 40px rgba(245,183,49,0.06), inset 0 1px 0 rgba(245,183,49,0.1);
 }
+
+.report-body .rb-section--action + .rb-section { border-top: none; }
+.report-body .rb-section--action + .rb-section::before { display: none; }
 
 .report-body .rb-section--action .rb-section-num {
-  background: var(--accent-amber);
-  color: #fff;
-  border-color: var(--accent-amber);
-}
-
-html.dark .report-body .rb-section--action .rb-section-num {
-  color: #07090E;
+  color: var(--accent-amber);
+  opacity: 1;
 }
 
 .report-body .rb-section--action .rb-h2 {
   color: var(--accent-amber);
 }
 
-/* ── Section kind: GAP — warning stripe ── */
+/* ── Section kind: GAP — classified warning ── */
 .report-body .rb-section--gap {
   border-left: 3px solid var(--rating-x, #C94040);
-  padding-left: 24px;
+  padding-left: 28px;
+  position: relative;
+}
+
+html.dark .report-body .rb-section--gap {
+  border-left-color: var(--rating-x);
 }
 
 .report-body .rb-section--gap .rb-section-num {
-  background: var(--rating-x-bg, rgba(201,64,64,0.12));
-  color: var(--rating-x, #C94040);
-  border-color: rgba(201,64,64,0.25);
+  color: var(--rating-x);
+  opacity: 1;
+}
+
+html.dark .report-body .rb-section--gap .rb-section-num {
+  text-shadow: 0 0 12px rgba(239,83,80,0.3);
+}
+
+.report-body .rb-section--gap .rb-h2 {
+  color: var(--rating-x);
 }
 
 /* ── Section kind: PREDICTION / PREDICTION-REVIEW ── */
 .report-body .rb-section--prediction,
 .report-body .rb-section--prediction-review {
-  background: var(--surface, #fff);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 28px 28px 20px;
-  margin-top: 3em;
+  border-radius: 12px;
+  padding: 32px 32px 24px;
+  margin-top: 4em;
+}
+
+html.dark .report-body .rb-section--prediction,
+html.dark .report-body .rb-section--prediction-review {
+  box-shadow: 0 0 30px rgba(62,207,207,0.04);
 }
 
 .report-body .rb-section--prediction + .rb-section,
@@ -673,20 +756,34 @@ html.dark .report-body .rb-section--action .rb-section-num {
   border-top: none;
 }
 
-.report-body .rb-section--prediction .rb-section-num,
-.report-body .rb-section--prediction-review .rb-section-num {
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-  border-color: rgba(14,165,179,0.25);
+.report-body .rb-section--prediction + .rb-section::before,
+.report-body .rb-section--prediction-review + .rb-section::before {
+  display: none;
 }
 
-/* ── H3, H4: subsections ── */
+.report-body .rb-section--prediction .rb-section-num,
+.report-body .rb-section--prediction-review .rb-section-num {
+  color: var(--accent-cyan);
+  opacity: 1;
+}
+
+html.dark .report-body .rb-section--prediction .rb-section-num,
+html.dark .report-body .rb-section--prediction-review .rb-section-num {
+  text-shadow: 0 0 14px rgba(62,207,207,0.35);
+}
+
+.report-body .rb-section--prediction .rb-h2,
+.report-body .rb-section--prediction-review .rb-h2 {
+  color: var(--accent-cyan);
+}
+
+/* ── H3, H4 ── */
 .report-body .rb-h3 {
   font-family: 'Georgia', 'Songti SC', 'SimSun', serif;
-  font-size: 1.04rem;
+  font-size: 1.06rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 2em 0 0.6em;
+  margin: 2.5em 0 0.8em;
   line-height: 1.35;
 }
 
@@ -694,45 +791,53 @@ html.dark .report-body .rb-section--action .rb-section-num {
   font-size: 0.96rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 1.6em 0 0.4em;
+  margin: 2em 0 0.5em;
 }
 
 /* ── Paragraphs ── */
 .report-body .rb-p {
-  margin: 0 0 1.3em;
+  margin: 0 0 1.5em;
   text-align: justify;
   text-justify: inter-ideograph;
   hanging-punctuation: allow-end;
 }
 
-/* First paragraph after H2 — slightly larger lead */
-.report-body .rb-h2-wrap + .rb-p {
-  font-size: 0.96rem;
+/* Lead paragraph — first p in each section */
+.report-body .rb-p--lead {
+  font-size: 0.97rem;
+  color: var(--text-primary);
+  opacity: 0.92;
 }
 
-/* ── Blockquote — editorial pull quote ── */
+/* Bold leads within paragraphs — elevated treatment */
+.report-body .rb-p strong:first-child {
+  font-size: 1.02em;
+}
+
+/* ── Blockquote — dramatic pull quote ── */
 .report-body .rb-bq {
   position: relative;
-  margin: 2em 0;
-  padding: 24px 28px 20px 32px;
+  margin: 2.5em 0;
+  padding: 36px 32px 28px 36px;
   border: none;
-  border-left: 3px solid var(--accent-amber);
   background: var(--accent-amber-bg);
-  border-radius: 0 8px 8px 0;
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  line-height: 1.85;
+  border-radius: 0 12px 12px 0;
+  border-left: 3px solid var(--accent-amber);
+}
+
+html.dark .report-body .rb-bq {
+  box-shadow: inset 0 0 40px rgba(245,183,49,0.03);
 }
 
 .report-body .rb-bq-mark {
   position: absolute;
-  top: -8px;
-  left: 12px;
-  font-family: 'Georgia', serif;
-  font-size: 3.5rem;
+  top: 8px;
+  left: 14px;
+  font-family: 'Georgia', 'Songti SC', serif;
+  font-size: 4.5rem;
   line-height: 1;
   color: var(--accent-amber);
-  opacity: 0.25;
+  opacity: 0.18;
   pointer-events: none;
   user-select: none;
 }
@@ -740,48 +845,54 @@ html.dark .report-body .rb-section--action .rb-section-num {
 .report-body .rb-bq-text {
   position: relative;
   z-index: 1;
-  font-style: italic;
+  font-family: 'Georgia', 'Songti SC', serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.9;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
 }
 
-/* ── Lists: unordered ── */
+/* ── Unordered lists ── */
 .report-body .rb-ul {
   padding-left: 0;
-  margin: 0.8em 0 1.5em;
+  margin: 1em 0 1.8em;
   list-style: none;
 }
 
 .report-body .rb-ul li {
   position: relative;
-  padding-left: 20px;
-  margin-bottom: 0.7em;
-  line-height: 1.85;
+  padding-left: 22px;
+  margin-bottom: 0.8em;
+  line-height: 1.9;
 }
 
 .report-body .rb-ul li::before {
   content: '';
   position: absolute;
-  left: 2px;
-  top: 0.65em;
-  width: 6px;
-  height: 6px;
+  left: 3px;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--accent-amber);
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
-/* ── Lists: ordered ── */
+/* ── Ordered lists ── */
 .report-body .rb-ol {
   padding-left: 0;
-  margin: 0.8em 0 1.5em;
+  margin: 1em 0 1.8em;
   list-style: none;
   counter-reset: rb-ol;
 }
 
 .report-body .rb-ol li {
   position: relative;
-  padding-left: 32px;
-  margin-bottom: 0.8em;
-  line-height: 1.85;
+  padding-left: 34px;
+  margin-bottom: 0.9em;
+  line-height: 1.9;
   counter-increment: rb-ol;
 }
 
@@ -789,15 +900,15 @@ html.dark .report-body .rb-section--action .rb-section-num {
   content: counter(rb-ol);
   position: absolute;
   left: 0;
-  top: 0.15em;
+  top: 0.2em;
   width: 22px;
   height: 22px;
   border-radius: 50%;
   background: var(--accent-amber-bg);
-  border: 1px solid rgba(212,145,10,0.2);
+  border: 1px solid rgba(212,145,10,0.18);
   color: var(--accent-amber);
-  font-family: 'Menlo', 'Consolas', monospace;
-  font-size: 0.68rem;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.66rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -808,79 +919,85 @@ html.dark .report-body .rb-section--action .rb-section-num {
 /* ── Prediction cards ── */
 .report-body .rb-predictions {
   padding-left: 0;
-  margin: 0.8em 0 1.5em;
+  margin: 1em 0 2em;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-.report-body .rb-prediction-item {
+.report-body .rb-pred {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 16px 20px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 18px 22px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--surface);
   position: relative;
-  transition: border-color 0.2s;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  border-left: 3px solid;
 }
 
-.report-body .rb-prediction-item:hover {
-  border-color: var(--accent-cyan);
+.report-body .rb-pred:hover {
+  border-color: var(--border);
 }
 
-.report-body .rb-prediction-status {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.58rem;
+/* Left border colors per status */
+.report-body .rb-pred--confirmed { border-left-color: var(--rating-book); }
+.report-body .rb-pred--wrong    { border-left-color: var(--rating-x); }
+.report-body .rb-pred--pending  { border-left-color: var(--accent-amber); }
+.report-body .rb-pred--forecast { border-left-color: var(--accent-cyan); }
+
+/* Hover glow per status (dark mode) */
+html.dark .report-body .rb-pred--confirmed:hover { box-shadow: 0 0 20px rgba(129,199,132,0.08); }
+html.dark .report-body .rb-pred--wrong:hover     { box-shadow: 0 0 20px rgba(239,83,80,0.08); }
+html.dark .report-body .rb-pred--pending:hover   { box-shadow: 0 0 20px rgba(245,183,49,0.08); }
+html.dark .report-body .rb-pred--forecast:hover  { box-shadow: 0 0 20px rgba(62,207,207,0.08); }
+
+.report-body .rb-pred-badge {
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.54rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  padding: 1px 8px;
-  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   width: fit-content;
 }
 
-.report-body .rb-prediction--confirmed .rb-prediction-status {
-  background: var(--rating-book-bg);
-  color: var(--rating-book);
-  border: 1px solid rgba(129,199,132,0.25);
+.report-body .rb-pred-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.report-body .rb-prediction--wrong .rb-prediction-status {
-  background: var(--rating-x-bg);
-  color: var(--rating-x);
-  border: 1px solid rgba(201,64,64,0.25);
-}
+.report-body .rb-pred--confirmed .rb-pred-badge { color: var(--rating-book); }
+.report-body .rb-pred--confirmed .rb-pred-dot   { background: var(--rating-book); }
+.report-body .rb-pred--wrong .rb-pred-badge     { color: var(--rating-x); }
+.report-body .rb-pred--wrong .rb-pred-dot       { background: var(--rating-x); }
+.report-body .rb-pred--pending .rb-pred-badge   { color: var(--accent-amber); }
+.report-body .rb-pred--pending .rb-pred-dot     { background: var(--accent-amber); }
+.report-body .rb-pred--forecast .rb-pred-badge  { color: var(--accent-cyan); }
+.report-body .rb-pred--forecast .rb-pred-dot    { background: var(--accent-cyan); }
 
-.report-body .rb-prediction--pending .rb-prediction-status {
-  background: var(--accent-amber-bg);
-  color: var(--accent-amber);
-  border: 1px solid rgba(212,145,10,0.25);
-}
-
-.report-body .rb-prediction--new .rb-prediction-status {
-  background: var(--accent-cyan-bg);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(14,165,179,0.25);
-}
-
-.report-body .rb-prediction-text {
+.report-body .rb-pred-body {
   font-size: 0.9rem;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--text-secondary);
 }
 
-.report-body .rb-prediction-text strong {
+.report-body .rb-pred-body strong {
   color: var(--text-primary);
 }
 
 /* ── Inline code ── */
 .report-body .rb-code {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
   font-size: 0.82em;
-  background: var(--surface-2, rgba(0,0,0,0.04));
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 3px;
   padding: 1px 5px;
@@ -890,8 +1007,8 @@ html.dark .report-body .rb-section--action .rb-section-num {
 .report-body a {
   color: var(--accent-amber);
   text-decoration: none;
-  border-bottom: 1px dotted rgba(212,145,10,0.4);
-  transition: border-color 0.2s;
+  border-bottom: 1px solid rgba(212,145,10,0.25);
+  transition: border-color 0.2s, color 0.2s;
 }
 
 .report-body a:hover {
@@ -900,113 +1017,119 @@ html.dark .report-body .rb-section--action .rb-section-num {
 }
 
 .report-body .rb-link {
-  font-family: 'Menlo', 'Consolas', monospace;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
   font-size: 0.78em;
   word-break: break-all;
 }
 
-/* ── Bold emphasis — elevated color ── */
+/* ── Bold — elevated color + weight ── */
 .report-body strong {
   color: var(--text-primary);
   font-weight: 700;
 }
 
-/* ── Stat highlights — numbers that pop ── */
+/* ── Stat highlights — numbers that command attention ── */
 .report-body .rb-stat {
   color: var(--accent-amber);
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.88em;
-  font-weight: 600;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.9em;
+  font-weight: 700;
   letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  position: relative;
 }
 
-/* ── CJK book quotes 「…」 ── */
-.report-body .rb-cjk-quote {
+html.dark .report-body .rb-stat {
+  text-shadow: 0 0 10px rgba(245,183,49,0.2);
+}
+
+/* ── CJK quotes 「…」 ── */
+.report-body .rb-cjk-q {
   color: var(--text-primary);
-  font-style: italic;
+  font-style: normal;
 }
 
-/* ── Emoji callout lines (reflections: 1️⃣ 🔬 🤔) ── */
-.report-body .rb-callout-line {
+/* ── Emoji callout lines (reflections) ── */
+.report-body .rb-callout {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   align-items: flex-start;
-  margin-bottom: 1.5em;
-  padding: 16px 20px;
-  border-radius: 8px;
+  margin-bottom: 1.8em;
+  padding: 18px 22px;
+  border-radius: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
 }
 
-.report-body .rb-callout-emoji {
-  font-size: 1.3rem;
+.report-body .rb-callout-icon {
+  font-size: 1.4rem;
   flex-shrink: 0;
   line-height: 1.6;
 }
 
-.report-body .rb-callout-line .rb-p {
-  margin-bottom: 0;
+.report-body .rb-callout .rb-p { margin-bottom: 0; }
+
+/* ── Divider — terminal ornament ── */
+.report-body .rb-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 4em 0 2em;
 }
 
-/* ── Horizontal rule — section break ── */
-.report-body .rb-hr {
-  border: none;
-  margin: 3em 0;
-  position: relative;
+.report-body .rb-divider-line {
+  flex: 1;
   height: 1px;
   background: var(--border);
 }
 
-.report-body .rb-hr::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 40px;
-  height: 1px;
-  background: var(--accent-amber);
-}
-
-.report-body .rb-hr::after {
-  content: '///';
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg, #fff);
-  padding: 0 12px;
-  color: var(--text-tertiary);
-  font-family: 'Menlo', 'Consolas', monospace;
+.report-body .rb-divider-glyph {
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
   font-size: 0.55rem;
-  letter-spacing: 0.2em;
-  opacity: 0.5;
+  letter-spacing: 0.3em;
+  color: var(--text-tertiary);
+  opacity: 0.4;
+  flex-shrink: 0;
 }
 
-html.dark .report-body .rb-hr::after {
-  background: var(--bg, #070B14);
+/* ── Footer stats — terminal readout ── */
+.report-body .rb-footer-stats {
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 20px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+html.dark .report-body .rb-footer-stats {
+  color: var(--text-tertiary);
+  text-shadow: 0 0 8px rgba(245,183,49,0.08);
 }
 
 /* ── Empty state ── */
 .report-empty {
-  padding: 60px 0;
+  padding: 80px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   text-align: center;
 }
 
 .empty-icon {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 2rem;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 2.2rem;
   color: var(--border);
   margin-bottom: 8px;
 }
 
 .empty-title {
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
   font-size: 0.72rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -1021,7 +1144,7 @@ html.dark .report-body .rb-hr::after {
 
 /* ── Back link ── */
 .back-row {
-  padding-top: 20px;
+  padding-top: 24px;
   border-top: 1px solid var(--border-subtle, var(--border));
 }
 
@@ -1029,8 +1152,8 @@ html.dark .report-body .rb-hr::after {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: 0.7rem;
+  font-family: 'IBM Plex Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--text-tertiary);
@@ -1038,21 +1161,18 @@ html.dark .report-body .rb-hr::after {
   transition: color 0.2s;
 }
 
-.back-link:hover {
-  color: var(--accent-amber);
-  opacity: 1;
-}
+.back-link:hover { color: var(--accent-amber); opacity: 1; }
 
 .back-arrow {
   display: inline-block;
   transition: transform 0.2s;
 }
 
-.back-link:hover .back-arrow {
-  transform: translateX(-3px);
-}
+.back-link:hover .back-arrow { transform: translateX(-3px); }
 
-/* ── Responsive ── */
+/* ============================================================
+   RESPONSIVE — Mobile-first reading experience
+============================================================ */
 @media (max-width: 640px) {
   .report-title {
     font-size: clamp(1.4rem, 7vw, 2rem);
@@ -1068,43 +1188,80 @@ html.dark .report-body .rb-hr::after {
   }
 
   .report-body .rb-h2 {
-    font-size: 1.08rem;
+    font-size: 1.1rem;
+  }
+
+  .report-body .rb-section {
+    margin-top: 3em;
+  }
+
+  .report-body .rb-section + .rb-section {
+    padding-top: 2.5em;
   }
 
   .report-body .rb-bq {
-    padding: 18px 16px 14px 22px;
+    padding: 28px 18px 20px 24px;
+    margin: 2em 0;
   }
 
   .report-body .rb-bq-mark {
-    font-size: 2.5rem;
-    top: -4px;
-    left: 6px;
+    font-size: 3rem;
+    top: 4px;
+    left: 8px;
   }
 
-  .report-body .rb-section--action,
+  .report-body .rb-section--action {
+    padding: 22px 18px 18px;
+    border-radius: 0 0 8px 8px;
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  .report-body .rb-section--gap {
+    padding-left: 20px;
+  }
+
   .report-body .rb-section--prediction,
   .report-body .rb-section--prediction-review {
-    padding: 20px 16px 14px;
+    padding: 22px 18px 18px;
     border-radius: 8px;
   }
 
-  .report-body .rb-prediction-item {
-    padding: 12px 14px;
+  .report-body .rb-pred {
+    padding: 14px 16px;
+    border-radius: 8px;
   }
 
-  .report-body .rb-callout-line {
+  .report-body .rb-callout {
     flex-direction: column;
     gap: 8px;
     padding: 14px 16px;
   }
 
-  .report-pagination {
-    gap: 8px;
+  .report-body .rb-title-block {
+    margin-bottom: 2.5em;
+    padding-bottom: 1.5em;
   }
 
+  .report-body .rb-h2-wrap {
+    gap: 10px;
+    margin-bottom: 1.2em;
+  }
+
+  .report-body .rb-section-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+  }
+
+  .report-body .rb-footer-stats {
+    font-size: 0.62rem;
+  }
+
+  .report-pagination { gap: 8px; }
+
   .rpag-btn {
-    font-size: 0.63rem;
-    padding: 5px 10px;
+    font-size: 0.62rem;
+    padding: 6px 12px;
   }
 }
 </style>
