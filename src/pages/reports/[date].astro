@@ -358,11 +358,14 @@ function formatPeriod(iso: string): string {
   </div>
 </BaseLayout>
 
-<style>
+<style is:global>
 /* ============================================================
    REPORT DETAIL PAGE — "Intelligence Dossier × 端傳媒"
    Premium editorial typesetting for classified intelligence briefs.
    Dark-first: amber glow, generous whitespace, CJK-optimized.
+   NOTE: is:global because report-body HTML is injected via set:html
+   and Astro scoped selectors can't match dynamic content.
+   All selectors are scoped by .report-page or .report-body parent.
 ============================================================ */
 
 /* ── Page wrapper ── */
