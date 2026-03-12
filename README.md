@@ -23,7 +23,7 @@ Live: **https://sou350121.github.io/pulsar-web/**
 pulsar-web/
 ├── src/
 │   ├── components/
-│   │   ├── DigestFeed.astro      # Homepage daily digest component
+│   │   ├── DigestFeed.astro      # Homepage daily digest (AI/VLA/Social/DeepDive sections)
 │   │   ├── PaperAtlas.jsx        # React island — VLA paper atlas (130+ papers)
 │   │   ├── Header.astro
 │   │   ├── Footer.astro
@@ -65,7 +65,7 @@ pulsar-web/
 
 | Route                 | Description                                                |
 |-----------------------|------------------------------------------------------------|
-| `/`                   | Homepage — DEEP DIVE digest, top signals, metrics strip    |
+| `/`                   | Homepage — digest (AI/VLA/Social/DeepDive), top signals, metrics |
 | `/daily`              | 全部 archive — 7-day summary card + combined AI+VLA list   |
 | `/ai-daily`           | AI App 線 archive list (last 60 days, month-grouped)       |
 | `/ai-daily/[date]`    | Individual day view, grouped by rating ⚡🔧📖❌            |
@@ -87,6 +87,7 @@ pulsar-web/
 | 🔧     | 技術      | Useful tool, technique, or analysis   |
 | 📖     | 觀點      | Context, survey, or foundational work |
 | ❌     | 低相關    | Off-topic or low signal               |
+| 📡     | 社交動態  | Social intel signal (digest only)      |
 
 **Important**: Emoji ratings are UTF-16 surrogate pairs. Always use `[...str][0]` (not `charAt(0)`) to extract the first character.
 
@@ -121,7 +122,7 @@ Synced files include: `atlas-papers.json`, `ai-daily-pick.json`, `drift-metrics.
 
 ```bash
 pnpm dev      # Dev server at http://localhost:4321
-pnpm build    # Build to dist/ (29 pages)
+pnpm build    # Build to dist/ (57 pages)
 pnpm preview  # Preview built site
 ```
 
@@ -186,6 +187,19 @@ All data loading happens at **build time** — no runtime server, no browser API
 4. Outputs merged JSON with categories, stats, momentum, and updated date
 
 Method family → Atlas category mapping comes from `_vla_method_families.py`.
+
+## DigestFeed Component
+
+The `DigestFeed.astro` component is a Bloomberg Terminal-style unified briefing feed with four sections:
+
+| Section     | Accent Color           | `data-domain` | Content                        |
+|-------------|------------------------|---------------|--------------------------------|
+| AI APP 線   | Amber (`--accent-amber`) | `ai`          | Daily AI picks                 |
+| VLA 線      | Cyan (`--accent-cyan`)   | `vla`         | VLA papers (Qwen3.5-Plus rated)|
+| 社交動態    | Emerald (`#4ADE80`)      | `all`         | AI + VLA social intel (72h)    |
+| DEEP DIVE   | Violet (`#A78BFA`)       | `all`         | Recent deep analysis articles  |
+
+Tab bar filters by domain (`all` / `ai` / `vla`). Sections with `data-domain="all"` are always visible.
 
 ## Key Engineering Notes
 
