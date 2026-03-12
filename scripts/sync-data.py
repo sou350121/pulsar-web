@@ -73,7 +73,7 @@ MARKDOWN_PATTERNS = [
     ("_biweekly_",             12),   # biweekly reports (covers _biweekly_reflection_ too)
     ("_ai_biweekly_",          12),   # AI app biweekly reports
     ("_ai_daily_pick_",        30),   # dated ai daily pick markdown (if exists)
-    ("field-state-",            14),   # field-state mechanical signals
+    ("field-state-",            30),   # field-state mechanical signals
     ("calibration-check-",     14),   # calibration check JSONs
 ]
 
