@@ -34,6 +34,7 @@ interface Props {
   aiItems:         DigestItem[];
   vlaItems:        DigestItem[];
   deepDiveItems?:  DigestItem[];
+  socialItems?:    DigestItem[];
   showLinks?:      boolean;
   maxItems?:       number;
   title?:          string;
@@ -45,6 +46,7 @@ const {
   aiItems,
   vlaItems,
   deepDiveItems = [],
+  socialItems = [],
   showLinks = true,
   maxItems  = 12,
   title,
@@ -71,6 +73,7 @@ function ratingModifier(rating: string): string {
   if (emoji === '⚡') return 'digest-item--flash';
   if (emoji === '🔧') return 'digest-item--wrench';
   if (emoji === '📖') return 'digest-item--book';
+  if (emoji === '📡') return 'digest-item--social';
   return 'digest-item--neutral';
 }
 
@@ -82,10 +85,12 @@ function sourceTag(src: string): string {
 const aiSlice       = aiItems.slice(0, maxItems);
 const vlaSlice      = vlaItems.slice(0, maxItems);
 const deepDiveSlice = deepDiveItems.slice(0, maxItems);
+const socialSlice   = socialItems.slice(0, 6);
 
 const hasAi       = aiSlice.length       > 0;
 const hasVla      = vlaSlice.length      > 0;
 const hasDeepDive = deepDiveSlice.length > 0;
+const hasSocial   = socialSlice.length   > 0;
 
 // Count domains present — only show tabs when multiple domains exist
 const domainCount = (hasAi ? 1 : 0) + (hasVla ? 1 : 0);
@@ -315,6 +320,55 @@ const wordmark = title ?? 'PULSAR DIGEST';
       <div class="digest-empty" role="status" data-domain="vla">
         <span data-tc>— VLA 線今日無資料 —</span><span data-sc>— VLA 线今日无资料 —</span>
       </div>
+    )}
+
+    <!-- ── SOCIAL INTEL LINE ── -->
+    {hasSocial && (
+      <section aria-labelledby="digest-section-social" data-domain="all" class="digest-domain-section">
+        <div class="digest-section-header digest-section--social">
+          <span class="digest-section-label" id="digest-section-social">
+            <span data-tc>社交動態</span><span data-sc>社交动态</span>&nbsp;&middot;&nbsp;<span data-tc>過去 72 小時</span><span data-sc>过去 72 小时</span>
+          </span>
+          <span class="digest-section-meta" aria-hidden="true">
+            {socialSlice.length}&thinsp;條
+          </span>
+        </div>
+        <ul class="digest-list" role="list">
+          {socialSlice.map((item) => {
+            const emoji    = ratingEmoji(item.rating);
+            const modifier = ratingModifier(item.rating);
+            const tag      = sourceTag(item.source);
+            const domainMod = item.domain === 'vla' ? 'digest-item--vla' : 'digest-item--ai';
+            const rowClass = `digest-item ${domainMod} ${modifier} digest-item--social-row`;
+            return (
+              <li class={rowClass}>
+                {showLinks ? (
+                  <a class="digest-item-link" href={item.url} title={item.title}
+                     aria-label={`${emoji} ${item.title} — ${item.summary}`}>
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-sep" aria-hidden="true">—</span>
+                      <span class="digest-summary">{item.summary}</span>
+                    </span>
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>{tag}</span>
+                  </a>
+                ) : (
+                  <div class="digest-item-link" aria-label={`${emoji} ${item.title} — ${item.summary}`}>
+                    <span class="digest-rating" aria-hidden="true">{emoji}</span>
+                    <span class="digest-content">
+                      <span class="digest-title">{item.title}</span>
+                      <span class="digest-sep" aria-hidden="true">—</span>
+                      <span class="digest-summary">{item.summary}</span>
+                    </span>
+                    <span class="digest-source" aria-label={`來源: ${item.source}`}>{tag}</span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
     )}
 
     <!-- ── DEEP DIVE LINE ── -->

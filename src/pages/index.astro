@@ -213,6 +213,25 @@ const digestAiItems = todayPicks.items
 const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
   .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
+const digestSocialItems = [
+  ...aiSocial.map(s => ({
+    title:   `AI App · ${s.date.slice(5)}`,
+    summary: extractMarkdownSummary(s.content, 200),
+    rating:  '📡',
+    source:  'social',
+    url:     `${import.meta.env.BASE_URL}social`,
+    domain:  'ai' as const,
+  })),
+  ...vlaSocial.map(s => ({
+    title:   `VLA · ${s.date.slice(5)}`,
+    summary: extractMarkdownSummary(s.content, 200),
+    rating:  '📡',
+    source:  'social',
+    url:     `${import.meta.env.BASE_URL}social`,
+    domain:  'vla' as const,
+  })),
+].filter(s => s.summary.length > 20);
+
 const todayAICount  = digestAiItems.length;
 const todayVLACount = digestVlaItems.length;
 const crossDomainCount = crossDomain.length;
@@ -332,6 +351,7 @@ const RULE_LABELS: Record<string, string> = {
         aiItems={digestAiItems}
         vlaItems={digestVlaItems}
         deepDiveItems={digestDeepDiveItems}
+        socialItems={digestSocialItems}
       />
     </div>
   </section>
