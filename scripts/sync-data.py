@@ -75,6 +75,8 @@ MARKDOWN_PATTERNS = [
     ("_ai_daily_pick_",        30),   # dated ai daily pick markdown (if exists)
     ("field-state-",            30),   # field-state mechanical signals
     ("calibration-check-",     14),   # calibration check JSONs
+    ("_weekly_",               12),   # VLA weekly recon reports
+    ("_ai_weekly_",            12),   # AI weekly recon reports
 ]
 
 # How many days back to look for markdown files (avoid loading ancient files)

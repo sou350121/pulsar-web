@@ -28,7 +28,8 @@ interface ReportEntry {
 }
 
 const entries: ReportEntry[] = reports.map(r => {
-  const refObj  = reflections.find(ref => ref.date >= r.date && ref.domain === r.domain);
+  const refObj  = reflections.filter(ref => ref.date >= r.date && ref.domain === r.domain)
+    .sort((a, b) => a.date.localeCompare(b.date))[0] ?? null;
   return {
     date:              r.date,
     summary:           extractMarkdownSummary(r.content, 280),

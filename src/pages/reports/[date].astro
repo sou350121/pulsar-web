@@ -48,7 +48,13 @@ const allWeeklies = loadWeeklyReports(60);
 const allSlugs = [
   ...allBiweekly.map(r => r.domain === 'ai' ? `ai-${r.date}` : r.date),
   ...allWeeklies.map(r => r.domain === 'ai' ? `w-ai-${r.date}` : `w-${r.date}`),
-].sort();
+].sort((a, b) => {
+  const da = stripSlugPrefix(a);
+  const db = stripSlugPrefix(b);
+  if (da !== db) return da.localeCompare(db);
+  // Same date: biweekly before weekly
+  return a.startsWith('w') ? 1 : -1;
+});
 const idx = allSlugs.indexOf(date);
 const prevDate = idx > 0 ? allSlugs[idx - 1] : null;
 const nextDate = idx < allSlugs.length - 1 ? allSlugs[idx + 1] : null;
