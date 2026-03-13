@@ -9,25 +9,30 @@
  * prediction cards, and actionable callouts with distinct visual identity.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadBiweeklyReports } from '../../utils/data';
+import { loadBiweeklyReports, loadWeeklyReports } from '../../utils/data';
 
 // getStaticPaths — required for Astro static output
 export async function getStaticPaths() {
   const reports     = loadBiweeklyReports(60, false);
   const reflections = loadBiweeklyReports(60, true);
+  const weeklyReports = loadWeeklyReports(60);
   return [
     ...reports.map(r => ({
       params: { date: r.domain === 'ai' ? `ai-${r.date}` : r.date },
-      props:  { report: r },
+      props:  { report: r, isWeekly: false },
     })),
     ...reflections.map(r => ({
       params: { date: r.domain === 'ai' ? `ai-${r.date}-reflection` : `${r.date}-reflection` },
-      props:  { report: { ...r, date: r.domain === 'ai' ? `ai-${r.date}-reflection` : `${r.date}-reflection` } },
+      props:  { report: { ...r, date: r.domain === 'ai' ? `ai-${r.date}-reflection` : `${r.date}-reflection` }, isWeekly: false },
+    })),
+    ...weeklyReports.map(r => ({
+      params: { date: r.domain === 'ai' ? `w-ai-${r.date}` : `w-${r.date}` },
+      props:  { report: r, isWeekly: true },
     })),
   ];
 }
 
-const { report } = Astro.props;
+const { report, isWeekly = false } = Astro.props;
 const { date, content } = report;
 const base = import.meta.env.BASE_URL;
 
@@ -50,10 +55,10 @@ function formatDateZh(iso: string): string {
 type SectionKind = 'action' | 'prediction' | 'prediction-review' | 'gap' | 'default';
 
 function classifySection(heading: string): SectionKind {
-  if (/如果你是|行动|建议|负责人/.test(heading))                  return 'action';
-  if (/本期预测|预测$/.test(heading))                             return 'prediction';
-  if (/预测回顾|上期预测|回顾/.test(heading))                     return 'prediction-review';
-  if (/知识缺口|缺口|盲区|风险/.test(heading))                    return 'gap';
+  if (/如果你是|行动|建议|负责人/.test(heading))                                       return 'action';
+  if (/本期预测|预测$|觀察清單|观察清单/.test(heading))                                return 'prediction';
+  if (/预测回顾|上期预测|回顾/.test(heading))                                         return 'prediction-review';
+  if (/知识缺口|缺口|盲区|风险|最值得疑|敘事斷裂|叙事断裂/.test(heading))               return 'gap';
   return 'default';
 }
 
@@ -271,10 +276,23 @@ function formatPeriod(iso: string): string {
   const ey = end.getFullYear();
   return `${ey}.${sm}.${sd} – ${em}.${ed}`;
 }
+
+// Compute a weekly period label: e.g. "2026.03.07 – 03.13"
+function formatWeeklyPeriod(iso: string): string {
+  const end   = new Date(iso);
+  const start = new Date(end);
+  start.setDate(start.getDate() - 6);
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const sd = String(start.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const ey = end.getFullYear();
+  return `${ey}.${sm}.${sd} – ${em}.${ed}`;
+}
 ---
 
 <BaseLayout
-  title={`雙週報告 ${date} — PULSAR`}
+  title={`${isWeekly ? '週報偵察' : '雙週報告'} ${date} — PULSAR`}
   description={`PULSAR 雙週報告 ${formatDateZh(date)} — VLA 進展、AI 應用、社交情報與校準分析`}
 >
   <div class="report-page page-container">
@@ -283,7 +301,7 @@ function formatPeriod(iso: string): string {
     <nav aria-label="Breadcrumb" class="breadcrumb">
       <a href={base} class="breadcrumb-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="breadcrumb-sep">/</span>
-      <a href={`${base}/reports`} class="breadcrumb-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
+      <a href={`${base}/reports`} class="breadcrumb-link"><span data-tc>情報報告</span><span data-sc>情报报告</span></a>
       <span class="breadcrumb-sep">/</span>
       <span class="breadcrumb-current">{date}</span>
     </nav>
@@ -291,9 +309,12 @@ function formatPeriod(iso: string): string {
     <!-- ── Page header ── -->
     <header class="report-header fade-in-1">
       <div class="report-overline">
-        <span class="overline-badge"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
+        {isWeekly
+        ? <span class="overline-badge overline-badge--weekly">WEEKLY RECON</span>
+        : <span class="overline-badge"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
+      }
         <span class="overline-sep">|</span>
-        <span class="overline-period">{formatPeriod(date)}</span>
+        <span class="overline-period">{isWeekly ? formatWeeklyPeriod(date) : formatPeriod(date)}</span>
       </div>
 
       <h1 class="report-title">
@@ -314,7 +335,7 @@ function formatPeriod(iso: string): string {
     <nav class="detail-breadcrumb" aria-label="Breadcrumb">
       <a href={`${base}`} class="bc-link"><span data-tc>首頁</span><span data-sc>首页</span></a>
       <span class="bc-sep">&rsaquo;</span>
-      <a href={`${base}/reports`} class="bc-link"><span data-tc>雙週報告</span><span data-sc>双周报告</span></a>
+      <a href={`${base}/reports`} class="bc-link"><span data-tc>情報報告</span><span data-sc>情报报告</span></a>
       <span class="bc-sep">&rsaquo;</span>
       <span class="bc-current">{date}</span>
     </nav>
@@ -422,6 +443,12 @@ function formatPeriod(iso: string): string {
   padding: 3px 10px;
   border-radius: 3px;
   font-weight: 700;
+}
+
+.overline-badge--weekly {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border-color: rgba(14,165,179,0.3);
 }
 
 .overline-sep { color: var(--border); opacity: 0.4; }

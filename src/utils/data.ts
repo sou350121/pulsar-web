@@ -507,6 +507,38 @@ export function loadBiweeklyReports(
 }
 
 // ---------------------------------------------------------------------------
+// loadWeeklyReports
+// Loads the N most recent weekly recon report .md files (VLA + AI).
+// ---------------------------------------------------------------------------
+export function loadWeeklyReports(
+  n: number = 24,
+): Array<{ date: string; content: string; filename: string; domain: 'vla' | 'ai' }> {
+  const vlaPfx = '_weekly_';
+  const aiPfx  = '_ai_weekly_';
+
+  const vlaFiles = listMdFiles(vlaPfx).filter(f => !f.startsWith('_ai_'));
+  const aiFiles  = listMdFiles(aiPfx);
+
+  const toEntry = (filename: string, domain: 'vla' | 'ai') => {
+    const dateMatch = filename.match(/(\d{4}-\d{2}-\d{2})/);
+    const date      = dateMatch?.[1] ?? 'unknown';
+    try {
+      const content = fs.readFileSync(path.join(DATA_DIR, filename), 'utf-8');
+      return { date, content, filename, domain };
+    } catch {
+      return { date, content: '', filename, domain };
+    }
+  };
+
+  const all = [
+    ...vlaFiles.map(f => toEntry(f, 'vla')),
+    ...aiFiles.map(f => toEntry(f, 'ai')),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+
+  return all.slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
 // loadUpstreamSignals
 // Returns the N most recent upstream arxiv signals.
 // ---------------------------------------------------------------------------

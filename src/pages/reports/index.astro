@@ -5,7 +5,7 @@
  * Heavy vertical rhythm, serif typography, dramatic date display.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadBiweeklyReports, extractMarkdownSummary, loadAIDeepDive, loadVLASOTA, loadVLATheory } from '../../utils/data';
+import { loadBiweeklyReports, loadWeeklyReports, extractMarkdownSummary, loadAIDeepDive, loadVLASOTA, loadVLATheory } from '../../utils/data';
 
 const base = import.meta.env.BASE_URL;
 
@@ -65,7 +65,33 @@ const MOCK_ENTRIES: ReportEntry[] = [
   },
 ];
 
-const displayEntries = entries.length > 0 ? entries : MOCK_ENTRIES;
+// Weekly reports (7-day recon)
+const weeklyRaw = loadWeeklyReports(24);
+
+interface WeeklyEntry {
+  date:    string;
+  summary: string;
+  domain:  'vla' | 'ai';
+  isWeekly: true;
+}
+
+const weeklyEntries: WeeklyEntry[] = weeklyRaw.map(r => ({
+  date:     r.date,
+  summary:  extractMarkdownSummary(r.content, 280),
+  domain:   r.domain,
+  isWeekly: true as const,
+}));
+
+// Unified entry type
+type UnifiedEntry = (ReportEntry & { isWeekly?: false }) | WeeklyEntry;
+
+// Merge biweekly + weekly, sort by date desc
+const allEntries: UnifiedEntry[] = [
+  ...entries.map(e => ({ ...e, isWeekly: false as const })),
+  ...weeklyEntries,
+].sort((a, b) => b.date.localeCompare(a.date));
+
+const displayEntries = allEntries.length > 0 ? allEntries : MOCK_ENTRIES.map(e => ({ ...e, isWeekly: false as const }));
 
 // Format ISO date as numeric: "2026.02.12"
 function formatDateNumeric(iso: string): string {
@@ -91,6 +117,19 @@ function formatPeriod(iso: string): string {
   const ey = end.getFullYear();
   return `${ey}.${sm}.${sd} – ${em}.${ed}`;
 }
+
+// Compute a weekly period label: e.g. "2026.03.07 – 03.13"
+function formatWeeklyPeriod(iso: string): string {
+  const end   = new Date(iso);
+  const start = new Date(end);
+  start.setDate(start.getDate() - 6);
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const sd = String(start.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const ey = end.getFullYear();
+  return `${ey}.${sm}.${sd} – ${em}.${ed}`;
+}
 ---
 
 <BaseLayout
@@ -106,13 +145,13 @@ function formatPeriod(iso: string): string {
       <div class="masthead-overline">
         <span class="masthead-classification">CLASSIFIED · RESEARCH INTELLIGENCE</span>
         <span class="masthead-sep">|</span>
-        <span class="masthead-cycle">雙週週期 · BIWEEKLY CYCLE</span>
+        <span class="masthead-cycle">週報 + 雙週 · WEEKLY + BIWEEKLY</span>
       </div>
 
-      <h1 class="masthead-title"><span data-tc>雙週報告</span><span data-sc>双周报告</span></h1>
+      <h1 class="masthead-title"><span data-tc>情報報告</span><span data-sc>情报报告</span></h1>
 
       <p class="masthead-subtitle">
-        PULSAR INTELLIGENCE ARCHIVE &nbsp;·&nbsp; 每兩週深度分析
+        PULSAR INTELLIGENCE ARCHIVE &nbsp;·&nbsp; 週報偵察 + 雙週深度分析
       </p>
 
       <hr class="masthead-rule" />
@@ -123,18 +162,18 @@ function formatPeriod(iso: string): string {
 
       <div class="masthead-stats">
         <div class="stat-item">
+          <span class="stat-num">{displayEntries.filter(e => !e.isWeekly).length}</span>
+          <span class="stat-label">BIWEEKLY</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat-item">
+          <span class="stat-num">{displayEntries.filter(e => e.isWeekly).length}</span>
+          <span class="stat-label">WEEKLY</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat-item">
           <span class="stat-num">{displayEntries.length}</span>
-          <span class="stat-label">DISPATCHES</span>
-        </div>
-        <div class="stat-div"></div>
-        <div class="stat-item">
-          <span class="stat-num">{displayEntries.filter(e => e.hasReflection).length}</span>
-          <span class="stat-label">W/ REFLECTION</span>
-        </div>
-        <div class="stat-div"></div>
-        <div class="stat-item">
-          <span class="stat-num">14D</span>
-          <span class="stat-label">CYCLE</span>
+          <span class="stat-label">TOTAL</span>
         </div>
       </div>
     </header>
@@ -176,13 +215,16 @@ function formatPeriod(iso: string): string {
                     : 'VLA'
                   }
                 </span>
-                <span class="dispatch-type-badge dispatch-type-report"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
-                <span class="dispatch-period">{formatPeriod(entry.date)}</span>
+                {entry.isWeekly
+                  ? <span class="dispatch-type-badge dispatch-type-weekly">7D RECON</span>
+                  : <span class="dispatch-type-badge dispatch-type-report"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
+                }
+                <span class="dispatch-period">{entry.isWeekly ? formatWeeklyPeriod(entry.date) : formatPeriod(entry.date)}</span>
               </div>
 
               <h2 class="dispatch-title">
-                <a href={`${base}/reports/${entry.domain === 'ai' ? `ai-${entry.date}` : entry.date}`} class="dispatch-title-link">
-                  {entry.domain === 'ai' ? 'AI App ' : 'VLA '}深度分析 · {formatDateZh(entry.date)}
+                <a href={`${base}/reports/${entry.isWeekly ? 'w-' : ''}${entry.domain === 'ai' ? `ai-${entry.date}` : entry.date}`} class="dispatch-title-link">
+                  {entry.domain === 'ai' ? 'AI App ' : 'VLA '}{entry.isWeekly ? '偵察報告' : '深度分析'} · {formatDateZh(entry.date)}
                   <span class="dispatch-arrow" aria-hidden="true">→</span>
                 </a>
               </h2>
@@ -190,7 +232,7 @@ function formatPeriod(iso: string): string {
               <p class="dispatch-excerpt">{entry.summary}</p>
 
               <div class="dispatch-action-row">
-                <a href={`${base}/reports/${entry.domain === 'ai' ? `ai-${entry.date}` : entry.date}`} class="dispatch-read-link">
+                <a href={`${base}/reports/${entry.isWeekly ? 'w-' : ''}${entry.domain === 'ai' ? `ai-${entry.date}` : entry.date}`} class="dispatch-read-link">
                   <span data-tc>閱讀全文</span><span data-sc>阅读全文</span>
                   <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M2 6h8M6 2l4 4-4 4"/>
@@ -202,8 +244,8 @@ function formatPeriod(iso: string): string {
               </div>
             </div>
 
-            <!-- Reflection block (indented, if exists) -->
-            {entry.hasReflection && (
+            <!-- Reflection block (indented, if exists; not for weekly) -->
+            {!entry.isWeekly && 'hasReflection' in entry && entry.hasReflection && (
               <div class="dispatch-reflection">
                 <div class="dispatch-reflection-label">
                   <span class="reflection-marker">反思</span>
@@ -626,6 +668,14 @@ function formatPeriod(iso: string): string {
   color: var(--accent-amber);
   background: var(--accent-amber-bg);
   border-color: rgba(212,145,10,0.3);
+}
+
+.dispatch-type-weekly {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border-color: rgba(14,165,179,0.35);
+  font-weight: 800;
+  letter-spacing: 0.12em;
 }
 
 .dispatch-period {

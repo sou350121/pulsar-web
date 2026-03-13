@@ -8,8 +8,8 @@
       "tag": "read-only",
       "repo_url": "",
       "abstract_snippet": "arXiv:2602.01960v2 Announce Type: replace Abstract: Large-scale video generative models have shown emerging capabilities as zero-shot visual planners, yet video-generated plans often violate temporal consistency and physical constraints, leading to failures when mapped to executable actions. To address this, we propose Grounding Video Plans with World Models (GVP-WM), a planning method that grounds video-generated plans into feasible action sequences using a learned action-conditioned world mode",
-      "rating": "📖",
-      "reason": "GVP-WM grounds video-generated plans into feasible action sequences via latent-space trajectory optimization. Adjacent to VLA planning but not direct VLA architecture improvement. World model for robotic planning with video guidance.",
+      "rating": "❌",
+      "reason": "视频世界模型用于规划，非直接VLA控制方法。聚焦视频生成计划的时间一致性，与VLA动作执行关联较弱，属于相邻领域。",
       "affiliation": "[Imperial]"
     },
     {
@@ -69,8 +69,8 @@
       "repo_url": "",
       "abstract_snippet": "arXiv:2509.13389v4 Announce Type: replace Abstract: We study whether next-token prediction can yield world models that truly support planning, in a controlled symbolic setting where propositional STRIPS action models are learned from action traces alone and correctness can be evaluated exactly. We introduce two architectures. The first is the STRIPS Transformer, a symbolically aligned model grounded in theoretical results linking transformers and the formal language structure of STRIPS domains.",
       "rating": "❌",
-      "reason": "Pure symbolic planning (STRIPS) research, not VLA/embodied AI. Next-token prediction for classical planning domains without robot manipulation or physical grounding. Domain mismatch with VLA focus.",
-      "affiliation": "[UPF]"
+      "reason": "Pass 1 快速筛选：领域不相关或明显低质量",
+      "affiliation": ""
     },
     {
       "title": "Cross-embodied Co-design for Dexterous Hands",
@@ -81,7 +81,7 @@
       "repo_url": "",
       "abstract_snippet": "arXiv:2512.03743v3 Announce Type: replace Abstract: Dexterous manipulation is limited by both control and design, without consensus as to what makes manipulators best for performing dexterous tasks. This raises a fundamental challenge: how should we design and control robot manipulators that are optimized for dexterity? We present a co-design framework that learns task-specific hand morphology and complementary dexterous control policies. The framework supports 1) an expansive morphology search",
       "rating": "📖",
-      "reason": "Co-design framework for hand morphology + control policies with real-world fabrication. Dexterous manipulation but not VLA architecture. Morphology-conditioned cross-embodied control is adjacent to VLA research.",
+      "reason": "形态 - 控制协同设计框架，支持真实 fabrication 和部署。虽非直接VLA，但为灵巧操作提供新设计范式，有真实机器人实验验证。",
       "affiliation": "[UCSD|Su]"
     },
     {
@@ -92,8 +92,8 @@
       "tag": "read-only",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10929v1 Announce Type: cross Abstract: We introduce a lifelong imitation learning framework that enables continual policy refinement across sequential tasks under realistic memory and data constraints. Our approach departs from conventional experience replay by operating entirely in a multimodal latent space, where compact representations of visual, linguistic, and robot's state information are stored and reused to support future learning. To further stabilize adaptation, we introduce",
-      "rating": "⚡",
-      "reason": "LIBERO SOTA: 10-17 point AUC gains, 65% less forgetting vs prior methods. Multimodal latent replay + incremental feature adjustment for continual VLA learning. First lifelong imitation learning framework with benchmark validation.",
+      "rating": "📖",
+      "reason": "宣称LIBERO上AUC提升10-17点，遗忘减少65%。但AUC非标准成功率指标，需验证实际意义。持续学习方法对VLA有潜在价值。",
       "affiliation": "[IIT]"
     },
     {
@@ -104,8 +104,8 @@
       "tag": "read-only",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10971v1 Announce Type: new Abstract: Deep Reinforcement learning (DRL) has achieved remarkable success in domains with well-defined reward structures, such as Atari games and locomotion. In contrast, dexterous manipulation lacks general-purpose reward formulations and typically depends on task-specific, handcrafted priors to guide hand-object interactions. We propose Contact Coverage-Guided Exploration (CCGE), a general exploration method designed for general-purpose dexterous manipul",
-      "rating": "📖",
-      "reason": "CCGE exploration method for dexterous manipulation via contact state representation. DRL-based, not VLA-specific. General exploration method lacks direct VLA integration or architecture contribution.",
+      "rating": "❌",
+      "reason": "RL探索方法，非VLA架构。接触覆盖引导属于传统RL范畴，近期同类探索论文较多，无VLA集成或新范式贡献。",
       "affiliation": "[清华]"
     },
     {
@@ -116,8 +116,8 @@
       "tag": "read-only",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10616v1 Announce Type: new Abstract: In densely cluttered environments, physical interference, visual occlusions, and unstable contacts often cause direct dexterous grasping to fail, while aggressive singulation strategies may compromise safety. Enabling robots to adaptively decide whether to clear surrounding objects or directly grasp the target is therefore crucial for robust manipulation. We propose AdaClearGrasp, a closed-loop decision-execution framework for adaptive clearing and",
-      "rating": "🔧",
-      "reason": "VLM-based closed-loop decision framework for adaptive clearing + grasping. Zero-shot dexterous grasping in clutter with high-level decision process. Practical VLA-adjacent method for cluttered environments.",
+      "rating": "❌",
+      "reason": "聚焦抓取前清理决策，VLM仅用于高层推理。非端到端VLA，属于抓取子任务，与VLA核心架构/训练无直接关联。",
       "affiliation": "[浙大]"
     },
     {
@@ -128,9 +128,9 @@
       "tag": "read-only",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10609v1 Announce Type: new Abstract: Robotic cloth manipulation remains challenging due to the high-dimensional state space of fabrics, their deformable nature, and frequent occlusions that limit vision-based sensing. Although dual-arm systems can mitigate some of these issues, they increase hardware and control complexity. This paper presents Touch G.O.G., a compact vision-based tactile gripper and perception/control framework for single-arm bimanual cloth manipulation. The proposed",
-      "rating": "🔧",
-      "reason": "Touch G.O.G.: tactile gripper + VFM-backboned perception for single-arm bimanual cloth manipulation. Novel gripper design with tactile VLA pipeline. Real tactile images enable deformable object handling.",
-      "affiliation": "[Imperial]"
+      "rating": "📖",
+      "reason": "单臂双臂布料操作+触觉感知，真实触觉图像训练。虽非直接VLA，但触觉 - 视觉融合对VLA感知有参考价值，有真实实验。",
+      "affiliation": "[Imperial|Kormushev]"
     },
     {
       "title": "FAR-Dex: Few-shot Data Augmentation and Adaptive Residual Policy Refinement for Dexterous Manipulation",
@@ -140,9 +140,9 @@
       "tag": "read-only",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10451v1 Announce Type: new Abstract: Achieving human-like dexterous manipulation through the collaboration of multi-fingered hands with robotic arms remains a longstanding challenge in robotics, primarily due to the scarcity of high-quality demonstrations and the complexity of high-dimensional action spaces. To address these challenges, we propose FAR-Dex, a hierarchical framework that integrates few-shot data augmentation with adaptive residual refinement to enable robust and precise",
-      "rating": "📖",
-      "reason": "Hierarchical framework with IsaacLab data augmentation + residual policy refinement. Simulation-focused dexterous manipulation without VLA architecture contribution. Few-shot augmentation is incremental.",
-      "affiliation": "[哈工大]"
+      "rating": "❌",
+      "reason": "IsaacLab仿真数据增强+残差优化，仅仿真验证。数据增强方法已有大量工作，无新架构或真实机器人验证，边际改进。",
+      "affiliation": "[清华]"
     },
     {
       "title": "Beam-Plasma Collective Oscillations in Intense Charged-Particle Beams: Dielectric Response Theory, Langmuir Wave Dispersion, and Unsupervised Detection via Prometheus",
@@ -176,9 +176,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2509.26251v2 Announce Type: replace Abstract: Latent Action Models (LAMs) enable Vision- Language-Action (VLA) systems to learn semantic action representations from large-scale unannotated data. Yet, we identify two bottlenecks of LAMs: 1) the commonly adopted end-to-end trained image encoder suffers from poor spatial understanding; 2) LAMs can be fragile when input frames are temporally distant, leading to limited temporal percep- tion. Such factors inevitably hinder stable and clear acti",
-      "rating": "🔧",
-      "reason": "Farsighted-LAM + SSM-VLA: geometry-aware spatial encoding + multi-scale temporal modeling for LAMs. Addresses spatial understanding and temporal perception bottlenecks. Direct VLA architecture improvement.",
-      "affiliation": "[清华]"
+      "rating": "📖",
+      "reason": "Farsighted-LAM+SSM-VLA架构，几何感知空间编码+多尺度时序建模。直接改进LAM瓶颈，可集成到现有VLA系统，架构创新明确。 [Pass3降级: Overlaps significantly with 03-10 Visual Token Pruning and 03-11 DyQ-VLA on temporal/spatial efficiency modules without new paradigm.]",
+      "affiliation": "[上交]"
     },
     {
       "title": "World2Act: Latent Action Post-Training via Skill-Compositional World Models",
@@ -188,9 +188,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10422v1 Announce Type: new Abstract: World Models (WMs) have emerged as a promising approach for post-training Vision-Language-Action (VLA) policies to improve robustness and generalization under environmental changes. However, most WM-based post-training methods rely on pixel-space supervision, making policies sensitive to pixel-level artifacts and hallucination from imperfect WM rollouts. We introduce World2Act, a post-training framework that aligns VLA actions directly with WM vide",
-      "rating": "🔧",
-      "reason": "Post-training VLA via contrastive matching with WM video-dynamics latents (not pixel-space). Automatic LLM-based skill composition for arbitrary-length rollouts. Reduces pixel-dependence in WM post-training.",
-      "affiliation": "[中大]"
+      "rating": "📖",
+      "reason": "VLA后训练框架，对比匹配对齐WM视频动态潜在空间。减少像素依赖，但WM后训练已有较多工作，差异化需进一步验证。",
+      "affiliation": "[UGA|Liang]"
     },
     {
       "title": "EoRA: Fine-tuning-free Compensation for Compressed LLM with Eigenspace Low-Rank Approximation",
@@ -224,8 +224,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2512.05927v2 Announce Type: replace-cross Abstract: Recent advances in generative video models have led to significant breakthroughs in high-fidelity video synthesis, specifically in controllable video generation where the generated video is conditioned on text and action inputs, e.g., in instruction-guided video editing and world modeling in robotics. Despite these exceptional capabilities, controllable video models often hallucinate - generating future video frames that are misaligned wi",
-      "rating": "📖",
-      "reason": "C3 uncertainty quantification for controllable video world models. Addresses hallucination in video generation for robotics. Adjacent to VLA but focused on video model uncertainty calibration.",
+      "rating": "❌",
+      "reason": "视频生成不确定性量化，非VLA策略方法。聚焦WM幻觉检测，与VLA动作执行无直接集成，属于视频生成领域。",
       "affiliation": "[Princeton|Majumdar]"
     },
     {
@@ -236,8 +236,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2512.23162v4 Announce Type: replace Abstract: Data scarcity remains a fundamental barrier to achieving fully autonomous surgical robots. While large scale vision language action (VLA) models have shown impressive generalization in household and industrial manipulation by leveraging paired video action data from diverse domains, surgical robotics suffers from the paucity of datasets that include both visual observations and accurate robot kinematics. In contrast, vast corpora of surgical vi",
-      "rating": "🔧",
-      "reason": "NVIDIA Cosmos-H-Surgical world model for surgical robotics. SATA dataset with action-text alignment for video-only surgical data. Enables VLA training from unlabelled surgical videos via world modeling.",
+      "rating": "❌",
+      "reason": "手术机器人专用世界模型，领域过于垂直。SATA数据集仅针对手术场景，泛化价值有限，与通用VLA研究方向偏离。",
       "affiliation": "[NVIDIA]"
     },
     {
@@ -248,8 +248,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2512.13093v2 Announce Type: replace Abstract: Achieving efficient and robust whole-body control (WBC) is essential for enabling humanoid robots to perform complex tasks in dynamic environments. Despite the success of reinforcement learning (RL) in this domain, its sample inefficiency remains a significant challenge due to the intricate dynamics and partial observability of humanoid robots. To address this limitation, we propose PvP, a Proprioceptive-Privileged contrastive learning framewor",
-      "rating": "📖",
-      "reason": "Proprioceptive-privileged contrastive learning for humanoid whole-body control. SRL4Humanoid evaluation framework. Humanoid RL focus, not directly VLA architecture or training paradigm.",
+      "rating": "❌",
+      "reason": "人形机器人本体感知对比学习，非VLA方法。SRL4Humanoid框架针对WBC，与VLA架构/训练无直接关联，领域相邻但非核心。",
       "affiliation": "[清华]"
     },
     {
@@ -260,8 +260,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2511.18810v2 Announce Type: replace Abstract: Recent Vision-Language-Action (VLA) models reformulate vision-language models by tuning them with millions of robotic demonstrations. While they perform well when fine-tuned for a single embodiment or task family, extending them to multi-skill settings remains challenging: directly merging VLA experts trained on different tasks results in near-zero success rates. This raises a fundamental question: what prevents VLAs from mastering multiple ski",
-      "rating": "⚡",
-      "reason": "Identifies why VLA experts don't merge (LoRA divergence, action expert dependencies). Proposes solution for multi-skill VLA within one model. Fundamental problem for generalist VLA agents with engineering impact.",
+      "rating": "📖",
+      "reason": "识别VLA模型不可合并的两大根源：LoRA方向发散+动作专家块间依赖。解决通用智能体核心问题，方法可复用于多技能VLA集成。 [Pass3降级: High redundancy with 03-12 CORAL on LoRA-based Multi-Task VLA; model merging is a known technique applied to VLA.]",
       "affiliation": "[UQ]"
     },
     {
@@ -272,9 +272,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2509.22652v2 Announce Type: replace Abstract: We present DAWN (Diffusion is All We Need for robot control), a unified diffusion-based framework for language-conditioned robotic manipulation that bridges high-level motion intent and low-level robot action via structured pixel motion representation. In DAWN, both the high-level and low-level controllers are modeled as diffusion processes, yielding a fully trainable, end-to-end system with interpretable intermediate motion abstractions. DAWN",
-      "rating": "🔧",
-      "reason": "DAWN: unified diffusion framework bridging motion intent and low-level actions via pixel motion. Claims CALVIN SOTA with real-world transfer via minimal finetuning. Structured pixel motion representation is interpretable.",
-      "affiliation": "[USC|Ryoo]"
+      "rating": "📖",
+      "reason": "DAWN框架宣称CALVIN SOTA，结构化像素运动表示桥接高层意图与底层动作。端到端扩散系统+真实迁移验证，架构创新显著。 [Pass3降级: Diffusion-based control is saturated pre-2024; pixel motion representation lacks clear differentiation from existing flow-based policies.]",
+      "affiliation": "[DeepMind|Ryoo]"
     },
     {
       "title": "Overcoming Visual Clutter in Vision Language Action Models via Concept-Gated Visual Distillation",
@@ -284,8 +284,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10340v1 Announce Type: cross Abstract: Vision-Language-Action (VLA) models demonstrate impressive zero-shot generalization but frequently suffer from a \"Precision-Reasoning Gap\" in cluttered environments. This failure is driven by background-induced feature dilution, where high-frequency semantic noise corrupts the geometric grounding required for precise manipulation. To bridge this gap, we propose Concept-Gated Visual Distillation (CGVD), a training-free, model-agnostic inference fr",
-      "rating": "🔧",
-      "reason": "CGVD: training-free, model-agnostic inference framework for cluttered environments. Fourier-based inpainting + spatial disambiguation to isolate manipulation targets. Addresses precision-reasoning gap without retraining.",
+      "rating": "❌",
+      "reason": "训练-free推理框架处理视觉杂乱，但方法为已有注意力机制组合。类似推理时优化论文近期≥3篇，无差异化架构创新。",
       "affiliation": "[UTS]"
     },
     {
@@ -296,9 +296,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10980v1 Announce Type: new Abstract: Diffusion policies have shown to be very efficient at learning complex, multi-modal behaviors for robotic manipulation. However, errors in generated action sequences can compound over time which can potentially lead to failure. Some approaches mitigate this by augmenting datasets with expert demonstrations or learning predictive world models which might be computationally expensive. We introduce Performance Predictive Guidance (PPGuide), a lightwei",
-      "rating": "🔧",
-      "reason": "Classifier-based framework steering diffusion policies away from failure modes at inference. Self-supervised success/failure estimation via attention-based MIL. Lightweight, no base policy parameter changes required.",
-      "affiliation": "[Princeton|Qureshi]"
+      "rating": "❌",
+      "reason": "扩散策略推理时引导，与UF-OPS(论文24)高度相似。分类器引导方法已有较多工作，无显著差异化，近期同类论文饱和。",
+      "affiliation": "[MERL]"
     },
     {
       "title": "Learning Adaptive Force Control for Contact-Rich Sample Scraping with Heterogeneous Materials",
@@ -308,9 +308,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10979v1 Announce Type: new Abstract: The increasing demand for accelerated scientific discovery, driven by global challenges, highlights the need for advanced AI-driven robotics. Deploying robotic chemists in human-centric labs is key for the next horizon of autonomous discovery, as complex tasks still demand the dexterity of human scientists. Robotic manipulation in this context is uniquely challenged by handling diverse chemicals (granular, powdery, or viscous liquids), under varyin",
-      "rating": "📖",
-      "reason": "Adaptive force control for robotic chemists scraping samples from vials. Lab automation focus, not VLA architecture. Contact-rich manipulation but lacks VLA integration or generalizable method.",
-      "affiliation": "[]"
+      "rating": "❌",
+      "reason": "实验室自动化刮取任务，过于具体。力控制方法针对单一任务，无通用VLA贡献，不属于具身智能核心研究方向。",
+      "affiliation": ""
     },
     {
       "title": "FG-CLTP: Fine-Grained Contrastive Language Tactile Pretraining for Robotic Manipulation",
@@ -320,9 +320,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10871v1 Announce Type: new Abstract: Recent advancements in integrating tactile sensing into vision-language-action (VLA) models have demonstrated transformative potential for robotic perception. However, existing tactile representations predominantly rely on qualitative descriptors (e.g., texture), neglecting quantitative contact states such as force magnitude, contact geometry, and principal axis orientation, which are indispensable for fine-grained manipulation. To bridge this gap,",
-      "rating": "🔧",
-      "reason": "100k tactile 3D point cloud-language pairs dataset with quantitative contact state tokenization. Fine-grained contrastive pretraining for tactile VLA. Enables force magnitude, contact geometry representation.",
-      "affiliation": "[清华]"
+      "rating": "📖",
+      "reason": "100k触觉3D点云 - 语言对数据集，定量接触状态表示。填补触觉VLA预训练空白，离散化数值tokenization机制有复用价值。 [Pass3降级: Standard contrastive pretraining applied to tactile; dataset contribution is valuable but methodological novelty is low.]",
+      "affiliation": "[中科院]"
     },
     {
       "title": "FutureVLA: Joint Visuomotor Prediction for Vision-Language-Action Model",
@@ -332,8 +332,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10712v1 Announce Type: new Abstract: Predictive foresight is important to intelligent embodied agents. Since the motor execution of a robot is intrinsically constrained by its visual perception of environmental geometry, effectively anticipating the future requires capturing this tightly coupled visuomotor interplay. While recent vision-language-action models attempt to incorporate future guidance, they struggle with this joint modeling. Existing explicit methods divert capacity to ta",
-      "rating": "🔧",
-      "reason": "Joint visuomotor predictive modeling addressing visual domination in existing methods. Temporal continuity + dynamic action intent disentanglement. VLA architecture improvement for predictive foresight.",
+      "rating": "❌",
+      "reason": "联合视觉运动预测，与FUTURE-VLA(已追踪)高度重叠。时序连续性改进无显著差异化，近期同类预测论文已有多篇。",
       "affiliation": "[浙大]"
     },
     {
@@ -344,8 +344,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10565v1 Announce Type: new Abstract: Pose estimation is essential for robotic manipulation, particularly when visual perception is occluded during gripper-object interactions. Existing tactile-based methods generally rely on tactile simulation or pre-trained models, which limits their generalizability and efficiency. In this study, we propose TacLoc, a novel tactile localization framework that formulates the problem as a one-shot point cloud registration task. TacLoc introduces a grap",
-      "rating": "📖",
-      "reason": "Tactile localization via one-shot point cloud registration without rendered data or pre-trained models. Normal-guided graph pruning + hypothesis-verification. Tactile perception, not VLA architecture.",
+      "rating": "❌",
+      "reason": "触觉定位方法，非VLA策略。点云注册方法属于感知子模块，与VLA架构/训练/推理无直接集成，领域相邻但非核心。",
       "affiliation": "[港大]"
     },
     {
@@ -357,8 +357,8 @@
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10469v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models enable generalist robotic manipulation but suffer from high inference latency. This bottleneck stems from the massive number of visual tokens processed by large language backbones. Existing methods either prune or merge tokens uniformly, degrading the spatial reasoning essential for robotic control. We present DepthCache, a training-free framework that leverages depth as a structural prior for visual token compre",
       "rating": "🔧",
-      "reason": "Training-free visual token compression using depth as structural prior. Depth-based region partitioning preserves near-field workspace while compressing background. Addresses VLA inference latency bottleneck.",
-      "affiliation": "[中科院]"
+      "reason": "深度引导训练-free视觉token压缩，保留近场工作区。解决VLA推理延迟瓶颈，空间差异化合并策略可直接集成到现有VLA。",
+      "affiliation": "[北航]"
     },
     {
       "title": "DiT4DiT: Jointly Modeling Video Dynamics and Actions for Generalizable Robot Control",
@@ -369,8 +369,8 @@
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10448v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models have emerged as a promising paradigm for robot learning, but their representations are still largely inherited from static image-text pretraining, leaving physical dynamics to be learned from comparatively limited action data. Generative video models, by contrast, encode rich spatiotemporal structure and implicit physics, making them a compelling foundation for robotic manipulation. But their potentials are not f",
       "rating": "🔧",
-      "reason": "Video Diffusion Transformer + Action Diffusion Transformer in unified cascaded framework. Extracts intermediate denoising features from video generation for action prediction. End-to-end Video-Action Model.",
-      "affiliation": "[港科大]"
+      "reason": "视频Diffusion Transformer+动作Diffusion Transformer级联框架。提取中间去噪特征用于动作生成，视频 - 动作联合建模有新意。",
+      "affiliation": "[科大]"
     },
     {
       "title": "ScanDP: Generalizable 3D Scanning with Diffusion Policy",
@@ -380,9 +380,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10390v1 Announce Type: new Abstract: Learning-based 3D Scanning plays a crucial role in enabling efficient and accurate scanning of target objects. However, recent reinforcement learning-based methods often require large-scale training data and still struggle to generalize to unseen object categories.In this work, we propose a data-efficient 3D scanning framework that uses Diffusion Policy to imitate human-like scanning strategies. To enhance robustness and generalization, we adopt th",
-      "rating": "📖",
-      "reason": "Diffusion Policy for 3D scanning imitating human strategies. Occupancy Grid Mapping for noise resilience. 3D scanning application, not VLA manipulation. Adjacent to diffusion policy research.",
-      "affiliation": "[东大]"
+      "rating": "❌",
+      "reason": "3D扫描任务，非机器人操作/操控。Diffusion Policy应用于扫描路径规划，与VLA操控研究方向偏离，领域不相关。",
+      "affiliation": "[UTokyo]"
     },
     {
       "title": "Update-Free On-Policy Steering via Verifiers",
@@ -392,9 +392,9 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10282v1 Announce Type: new Abstract: In recent years, Behavior Cloning (BC) has become one of the most prevalent methods for enabling robots to mimic human demonstrations. However, despite their successes, BC policies are often brittle and struggle with precise manipulation. To overcome these issues, we propose UF-OPS, an Update-Free On-Policy Steering method that enables the robot to predict the success likelihood of its actions and adapt its strategy at execution time. We accomplish",
-      "rating": "🔧",
-      "reason": "UF-OPS steers BC policies without parameter updates using verifier functions. Predicts action success likelihood and adapts strategy at execution time. Works with black-box diffusion policies, lightweight deployment.",
-      "affiliation": "[ETH]"
+      "rating": "❌",
+      "reason": "验证器引导扩散策略，与PPGuide(论文16)方法高度相似。推理时steering近期同类论文≥3篇，无显著差异化创新。",
+      "affiliation": ""
     },
     {
       "title": "Cross-Hand Latent Representation for Vision-Language-Action Models",
@@ -404,8 +404,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10158v1 Announce Type: new Abstract: Dexterous manipulation is essential for real-world robot autonomy, mirroring the central role of human hand coordination in daily activity. Humans rely on rich multimodal perception--vision, sound, and language-guided intent--to perform dexterous actions, motivating vision-based, language-conditioned manipulation systems for robots. However, training reliable vision-language-action (VLA) models for dexterous manipulation requires large-scale demons",
-      "rating": "🔧",
-      "reason": "XL-VLA: unified latent action space across diverse dexterous hands for cross-embodiment learning. Addresses data collection cost for new dexterous embodiments. Berkeley work on scalable dexterous VLA.",
+      "rating": "⚡",
+      "reason": "XL-VLA统一潜在动作空间跨多种灵巧手。解决跨具身学习核心问题，Berkeley出品，可扩展到新灵巧本体，范式级贡献。",
       "affiliation": "[Berkeley|Duan]"
     },
     {
@@ -416,8 +416,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10126v1 Announce Type: new Abstract: We propose a standalone autoregressive (AR) Action Expert that generates actions as a continuous causal sequence while conditioning on refreshable vision-language prefixes. In contrast to existing Vision-Language-Action (VLA) models and diffusion policies that reset temporal context with each new observation and predict actions reactively, our Action Expert maintains its own history through a long-lived memory and is inherently context-aware. This",
-      "rating": "🔧",
-      "reason": "Standalone AR Action Expert with long-lived memory maintaining history across observations. Addresses frequency mismatch between fast control and slow reasoning. Modular integration with perception backbones.",
+      "rating": "❌",
+      "reason": "自回归动作专家，但类似异步VLA架构已有AsyncVLA等。长时记忆机制无显著差异化，近期同类AR动作生成论文较多。",
       "affiliation": "[ETH]"
     },
     {
@@ -428,8 +428,8 @@
       "tag": "actionable",
       "repo_url": "",
       "abstract_snippet": "arXiv:2603.10052v1 Announce Type: new Abstract: Vision-language-action(VLA) models have shown great promise as generalist policies for a large range of relatively simple tasks. However, they demonstrate limited performance on more complex tasks, such as those requiring complex spatial or semantic understanding, manipulation in clutter, or precise manipulation. We propose OMNIGUIDE, a flexible framework that improves VLA performance on such tasks by leveraging arbitrary sources of guidance, such",
-      "rating": "🔧",
-      "reason": "OMNIGUIDE: differentiable energy functions integrating 3D foundation models, VLMs, human pose models as guidance sources. Task-specific attractors/repellers in 3D space influence VLA action sampling. Flexible framework.",
+      "rating": "❌",
+      "reason": "可微能量函数引导框架，但类似引导方法已有较多工作。声称通用但实验验证有限，近期同类guidance论文饱和。",
       "affiliation": "[UPenn|Liu]"
     },
     {
