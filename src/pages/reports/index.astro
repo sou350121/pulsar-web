@@ -133,8 +133,8 @@ function formatWeeklyPeriod(iso: string): string {
 ---
 
 <BaseLayout
-  title="雙週報告 Biweekly"
-  description="Pulsar AI 研究雙週深度報告 — VLA 進展、AI 應用、社交情報與校準分析"
+  title="情報報告 Intelligence"
+  description="Pulsar AI 研究情報報告 — 週報前瞻偵察 + 雙週深度分析，涵蓋 VLA 進展、AI 應用、社交情報與校準"
 >
   <div class="archive-page page-container">
 
@@ -157,23 +157,23 @@ function formatWeeklyPeriod(iso: string): string {
       <hr class="masthead-rule" />
 
       <p class="masthead-desc">
-        <span data-tc>每兩週由 pipeline 自動生成，涵蓋 VLA 和 AI 應用兩條研究線的深度回顧、前期預測驗證（✅ / ❌ / ⏳）、假設校準，以及下期觀察重點。與純聚合摘要不同，Pulsar 對每條信號評級後跨域比對，並通過反思副本持續自我修正——假設信心值隨每期報告動態調整。</span><span data-sc>每两周由 pipeline 自动生成，涵盖 VLA 和 AI 应用两条研究线的深度回顾、前期预测验证（✅ / ❌ / ⏳）、假设校准，以及下期观察重点。与纯聚合摘要不同，Pulsar 对每条信号评级后跨域比对，并通过反思副本持续自我修正——假设信心值随每期报告动态调整。</span>
+        <span data-tc>週報（RECON）每週自動生成，聚焦意外信號、可證偽命題與觀察清單——前瞻偵察下週動態。雙週報（INTEL）深度回顧兩週研究進展，涵蓋預測驗證（✅ / ❌ / ⏳）、假設校準與反思修正。兩者交替覆蓋 VLA 和 AI 應用雙線。</span><span data-sc>周报（RECON）每周自动生成，聚焦意外信号、可证伪命题与观察清单——前瞻侦察下周动态。双周报（INTEL）深度回顾两周研究进展，涵盖预测验证（✅ / ❌ / ⏳）、假设校准与反思修正。两者交替覆盖 VLA 和 AI 应用双线。</span>
       </p>
 
       <div class="masthead-stats">
         <div class="stat-item">
-          <span class="stat-num">{displayEntries.filter(e => !e.isWeekly).length}</span>
-          <span class="stat-label">BIWEEKLY</span>
+          <span class="stat-num">{displayEntries.length}</span>
+          <span class="stat-label">DISPATCHES</span>
         </div>
         <div class="stat-div"></div>
         <div class="stat-item">
           <span class="stat-num">{displayEntries.filter(e => e.isWeekly).length}</span>
-          <span class="stat-label">WEEKLY</span>
+          <span class="stat-label">7D RECON</span>
         </div>
         <div class="stat-div"></div>
         <div class="stat-item">
-          <span class="stat-num">{displayEntries.length}</span>
-          <span class="stat-label">TOTAL</span>
+          <span class="stat-num">{displayEntries.filter(e => !e.isWeekly).length}</span>
+          <span class="stat-label">14D INTEL</span>
         </div>
       </div>
     </header>
@@ -239,7 +239,10 @@ function formatWeeklyPeriod(iso: string): string {
                   </svg>
                 </a>
                 <span class="dispatch-coverage">
-                  VLA &nbsp;·&nbsp; AI App &nbsp;·&nbsp; <span data-tc>社交情報</span><span data-sc>社交情报</span> &nbsp;·&nbsp; <span data-tc>校準</span><span data-sc>校准</span>
+                  {entry.isWeekly
+                    ? <><span data-tc>意外信號</span><span data-sc>意外信号</span> &nbsp;·&nbsp; <span data-tc>可證偽命題</span><span data-sc>可证伪命题</span> &nbsp;·&nbsp; <span data-tc>觀察清單</span><span data-sc>观察清单</span></>
+                    : <>VLA &nbsp;·&nbsp; AI App &nbsp;·&nbsp; <span data-tc>社交情報</span><span data-sc>社交情报</span> &nbsp;·&nbsp; <span data-tc>校準</span><span data-sc>校准</span></>
+                  }
                 </span>
               </div>
             </div>

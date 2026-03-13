@@ -36,29 +36,50 @@ const { report, isWeekly = false } = Astro.props;
 const { date, content } = report;
 const base = import.meta.env.BASE_URL;
 
-// Load all reports for prev/next navigation
-const allReports = loadBiweeklyReports(60, false);
-const allDates = [...new Set(allReports.map(r => r.date))].sort();
-const idx = allDates.indexOf(date);
-const prevDate = idx > 0 ? allDates[idx - 1] : null;
-const nextDate = idx < allDates.length - 1 ? allDates[idx + 1] : null;
+// Strip slug prefix to get raw ISO date for display
+function stripSlugPrefix(slug: string): string {
+  return slug.replace(/^w-ai-/, '').replace(/^w-/, '').replace(/^ai-/, '').replace(/-reflection$/, '');
+}
+const rawDate = stripSlugPrefix(date);
+
+// Load all report slugs for prev/next navigation (biweekly + weekly)
+const allBiweekly = loadBiweeklyReports(60, false);
+const allWeeklies = loadWeeklyReports(60);
+const allSlugs = [
+  ...allBiweekly.map(r => r.domain === 'ai' ? `ai-${r.date}` : r.date),
+  ...allWeeklies.map(r => r.domain === 'ai' ? `w-ai-${r.date}` : `w-${r.date}`),
+].sort();
+const idx = allSlugs.indexOf(date);
+const prevDate = idx > 0 ? allSlugs[idx - 1] : null;
+const nextDate = idx < allSlugs.length - 1 ? allSlugs[idx + 1] : null;
 
 // Format ISO date as Chinese: "2026年2月25日"
 function formatDateZh(iso: string): string {
-  const [year, month, day] = iso.split('-').map(Number);
+  const clean = stripSlugPrefix(iso);
+  const [year, month, day] = clean.split('-').map(Number);
   return `${year}年${month}月${day}日`;
 }
 
 // ─────────────────────────────────────────────────────────────
 // Section classification — determines visual treatment
 // ─────────────────────────────────────────────────────────────
-type SectionKind = 'action' | 'prediction' | 'prediction-review' | 'gap' | 'default';
+type SectionKind = 'action' | 'prediction' | 'prediction-review' | 'gap'
+  | 'signal-surge' | 'narrative-break' | 'velocity-anomaly' | 'watch-list'
+  | 'hook' | 'picks' | 'direction' | 'default';
 
 function classifySection(heading: string): SectionKind {
-  if (/如果你是|行动|建议|负责人/.test(heading))                                       return 'action';
-  if (/本期预测|预测$|觀察清單|观察清单/.test(heading))                                return 'prediction';
-  if (/预测回顾|上期预测|回顾/.test(heading))                                         return 'prediction-review';
-  if (/知识缺口|缺口|盲区|风险|最值得疑|敘事斷裂|叙事断裂/.test(heading))               return 'gap';
+  if (/如果你是|行动|建议|负责人/.test(heading))                  return 'action';
+  if (/本期预测|预测$/.test(heading))                             return 'prediction';
+  if (/预测回顾|上期预测|回顾/.test(heading))                     return 'prediction-review';
+  if (/知识缺口|缺口|盲区|风险/.test(heading))                    return 'gap';
+  // Weekly recon section kinds
+  if (/意外信[号號]|signal surge|突发/i.test(heading))            return 'signal-surge';
+  if (/叙事断裂|敘事斷裂|narrative break|范式/i.test(heading))    return 'narrative-break';
+  if (/速度异常|velocity|加速/i.test(heading))                    return 'velocity-anomaly';
+  if (/观察清单|觀察清單|watch.?list|追踪/i.test(heading))        return 'watch-list';
+  if (/可[证證]伪|falsifiable|命题|最值得疑/i.test(heading))      return 'hook';
+  if (/本周精[选選]|picks|亮点/i.test(heading))                   return 'picks';
+  if (/方向|direction|展望/i.test(heading))                       return 'direction';
   return 'default';
 }
 
@@ -69,6 +90,11 @@ let sectionCounter = 0;
 const SECTION_LABELS: Record<string, string> = {
   action: '行动建议 ACTION BRIEF',
   gap: '注意 ATTENTION REQUIRED',
+  'signal-surge': '意外信号 SIGNAL SURGE',
+  'narrative-break': '叙事断裂 NARRATIVE BREAK',
+  'velocity-anomaly': '速度异常 VELOCITY ANOMALY',
+  'watch-list': '观察清单 WATCH LIST',
+  hook: '可证伪命题 FALSIFIABLE HOOK',
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -292,8 +318,8 @@ function formatWeeklyPeriod(iso: string): string {
 ---
 
 <BaseLayout
-  title={`${isWeekly ? '週報偵察' : '雙週報告'} ${date} — PULSAR`}
-  description={`PULSAR 雙週報告 ${formatDateZh(date)} — VLA 進展、AI 應用、社交情報與校準分析`}
+  title={`${isWeekly ? '週報偵察' : '雙週報告'} ${rawDate} — PULSAR`}
+  description={`PULSAR ${isWeekly ? '週報偵察' : '雙週報告'} ${formatDateZh(rawDate)} — ${isWeekly ? '意外信號、可證偽命題、觀察清單' : 'VLA 進展、AI 應用、社交情報與校準分析'}`}
 >
   <div class="report-page page-container">
 
@@ -314,21 +340,34 @@ function formatWeeklyPeriod(iso: string): string {
         : <span class="overline-badge"><span data-tc>雙週報告</span><span data-sc>双周报告</span></span>
       }
         <span class="overline-sep">|</span>
-        <span class="overline-period">{isWeekly ? formatWeeklyPeriod(date) : formatPeriod(date)}</span>
+        <span class="overline-period">{isWeekly ? formatWeeklyPeriod(rawDate) : formatPeriod(rawDate)}</span>
       </div>
 
       <h1 class="report-title">
-        深度分析 · {formatDateZh(date)}
+        {isWeekly
+          ? <><span data-tc>前瞻偵察</span><span data-sc>前瞻侦察</span> · {formatDateZh(rawDate)}</>
+          : <><span data-tc>深度分析</span><span data-sc>深度分析</span> · {formatDateZh(rawDate)}</>
+        }
       </h1>
 
       <div class="report-meta-row">
-        <span class="meta-tag meta-tag--ai"><span data-tc>AI App線</span><span data-sc>AI App线</span></span>
-        <span class="meta-tag meta-tag--vla"><span data-tc>VLA線</span><span data-sc>VLA线</span></span>
-        <span class="meta-tag meta-tag--default"><span data-tc>社交情報</span><span data-sc>社交情报</span></span>
-        <span class="meta-tag meta-tag--default"><span data-tc>校準</span><span data-sc>校准</span></span>
+        {isWeekly ? (
+          <>
+            <span class="meta-tag meta-tag--weekly"><span data-tc>意外信號</span><span data-sc>意外信号</span></span>
+            <span class="meta-tag meta-tag--weekly"><span data-tc>可證偽命題</span><span data-sc>可证伪命题</span></span>
+            <span class="meta-tag meta-tag--weekly"><span data-tc>觀察清單</span><span data-sc>观察清单</span></span>
+          </>
+        ) : (
+          <>
+            <span class="meta-tag meta-tag--ai"><span data-tc>AI App線</span><span data-sc>AI App线</span></span>
+            <span class="meta-tag meta-tag--vla"><span data-tc>VLA線</span><span data-sc>VLA线</span></span>
+            <span class="meta-tag meta-tag--default"><span data-tc>社交情報</span><span data-sc>社交情报</span></span>
+            <span class="meta-tag meta-tag--default"><span data-tc>校準</span><span data-sc>校准</span></span>
+          </>
+        )}
       </div>
 
-      <hr class="report-rule" />
+      <hr class={`report-rule ${isWeekly ? 'report-rule--weekly' : ''}`} />
     </header>
 
     <!-- ── Detail breadcrumb ── -->
@@ -505,11 +544,21 @@ function formatWeeklyPeriod(iso: string): string {
   border-color: var(--border);
 }
 
+.meta-tag--weekly {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border-color: rgba(14,165,179,0.3);
+}
+
 .report-rule {
   border: none;
   height: 2px;
   background: linear-gradient(90deg, var(--accent-amber) 0%, var(--accent-amber) 72px, var(--border) 72px, var(--border) 100%);
   position: relative;
+}
+
+.report-rule--weekly {
+  background: linear-gradient(90deg, var(--accent-cyan) 0%, var(--accent-cyan) 72px, var(--border) 72px, var(--border) 100%);
 }
 
 /* ── Detail breadcrumb ── */
@@ -1137,6 +1186,89 @@ html.dark .report-body .rb-stat {
 html.dark .report-body .rb-footer-stats {
   color: var(--text-tertiary);
   text-shadow: 0 0 8px rgba(245,183,49,0.08);
+}
+
+/* ── Weekly section kinds ── */
+.report-body .rb-section--signal-surge {
+  border-left: 3px solid var(--accent-amber);
+  padding-left: 28px;
+}
+
+.report-body .rb-section--signal-surge .rb-section-label {
+  color: #070B14;
+  background: var(--accent-amber);
+}
+
+html:not(.dark) .report-body .rb-section--signal-surge .rb-section-label {
+  color: #fff;
+}
+
+.report-body .rb-section--signal-surge .rb-section-num {
+  color: var(--accent-amber);
+  opacity: 1;
+}
+
+.report-body .rb-section--narrative-break {
+  border-left: 3px solid var(--rating-x, #C94040);
+  padding-left: 28px;
+}
+
+.report-body .rb-section--narrative-break .rb-section-label {
+  color: var(--rating-x);
+  background: var(--rating-x-bg);
+  border: 1px solid rgba(239,83,80,0.2);
+}
+
+.report-body .rb-section--narrative-break .rb-section-num {
+  color: var(--rating-x);
+  opacity: 1;
+}
+
+.report-body .rb-section--velocity-anomaly {
+  border-left: 3px solid var(--accent-cyan);
+  padding-left: 28px;
+}
+
+.report-body .rb-section--velocity-anomaly .rb-section-label {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border: 1px solid rgba(14,165,179,0.25);
+}
+
+.report-body .rb-section--velocity-anomaly .rb-section-num {
+  color: var(--accent-cyan);
+  opacity: 1;
+}
+
+.report-body .rb-section--watch-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: 0 12px 12px 0;
+  padding: 28px 32px 24px;
+  margin-top: 4em;
+}
+
+.report-body .rb-section--watch-list .rb-section-label {
+  color: var(--accent-cyan);
+  background: var(--accent-cyan-bg);
+  border: 1px solid rgba(14,165,179,0.25);
+}
+
+.report-body .rb-section--watch-list .rb-section-num {
+  color: var(--accent-cyan);
+  opacity: 1;
+}
+
+html.dark .report-body .rb-section--watch-list {
+  box-shadow: 0 0 30px rgba(62,207,207,0.04);
+}
+
+.report-body .rb-section--hook .rb-section-num,
+.report-body .rb-section--picks .rb-section-num,
+.report-body .rb-section--direction .rb-section-num {
+  color: var(--accent-amber);
+  opacity: 1;
 }
 
 /* ── Empty state ── */
