@@ -1,0 +1,49 @@
+{
+  "date": "2026-03-13",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.50,
+      "reason": "counter_evidence:moderate — AR-VLA (autoregressive action expert) emerges as alternative to diffusion policy; however ScanDP/PPGuide/Pixel Motion Diffusion still show diffusion dominance. LIBERO 饱和使评测区分度下降。"
+    },
+    "V-005": {
+      "score": 0.50,
+      "reason": "counter_evidence:moderate — 'Breaking Barriers: Do Reinforcement Post Training Gains Transfer To Unseen Domains?' 直接质疑 RL 后训练的 OOD 泛化能力，与假设核心主张相悖。"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LeRobot v0.5.0 / Octo v1.5 发布支持开源进展，但 LIBERO 榜单饱和 (98-99%) 导致开源 vs 闭源对比基准失效。"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — DepthCache/ScanDP/PLANING 均支持 3D 必要性假设，但 LIBERO 饱和使精度评测基准区分度不足。"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 74,
+  "ai_signals_scanned": 68,
+  "triggers": [],
+  "note": "4 个假设有 early warning (机械预评分确认)：V-001/V-005 为 counter_evidence:moderate (0.50)，V-008/V-010 为 benchmark_relevance:weak (0.25)。无强触发 (score=1.00)。",
+  "method_trends_summary": {
+    "sim_to_real": "declining",
+    "diffusion_policy": "stable",
+    "flow_matching": "stable",
+    "world_model": "stable",
+    "tactile": "stable",
+    "3d_representation": "stable",
+    "cross_embodiment": "stable",
+    "rl_finetuning": "stable"
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": [
+    "LIBERO/non-standard (99.2%)",
+    "LIBERO/standard-closed (98.6%)",
+    "LIBERO/standard-opensource (99.2%)",
+    "CALVIN/ABC-D (4.8%)",
+    "CALVIN/ABCD-D (4.8%)",
+    "CALVIN/D-D (4.3%)"
+  ]
+}
