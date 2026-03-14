@@ -55,7 +55,8 @@ jobs:
           for attempt in 1 2 3; do
             echo "SSH attempt $attempt/3..."
             if ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" \
-                "cd /home/admin/clawd/pulsar-web && sudo -u admin git pull --rebase origin main 2>&1 | tail -3 && \
+                "cd /home/admin/clawd && sudo -u admin git pull --rebase origin main 2>&1 | tail -3; \
+                 cd /home/admin/clawd/pulsar-web && sudo -u admin git pull --rebase origin main 2>&1 | tail -3 && \
                  sudo timeout 90 python3.11 /home/admin/clawd/scripts/fetch-ai-github.py 2>&1 | tail -3 && \
                  sudo timeout 30 python3.11 /home/admin/clawd/scripts/build-graph-data.py 2>&1 | tail -5 && \
                  sudo timeout 30 python3.11 /home/admin/clawd/pulsar-web/scripts/build-atlas-data.py 2>&1 | tail -5 && \
@@ -78,8 +79,6 @@ jobs:
 
       - name: Restore force-committed data files
         run: |
-          # Restore any data files tracked by git (force-committed despite .gitignore)
-          # git ls-tree lists ALL files at HEAD regardless of .gitignore
           git ls-tree --name-only HEAD src/data/ | while read f; do
             if [ ! -f "$f" ]; then
               echo "Restoring missing: $f"
@@ -88,6 +87,54 @@ jobs:
           done
           echo "Data files in src/data/:"
           ls -la src/data/*.json 2>/dev/null | wc -l
+
+      - name: Fallback — sync from GitHub repos if SSH failed
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if we got fresh data from SSH (look for today's files)
+          TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
+          YESTERDAY=$(TZ=Asia/Shanghai date -d '-1 day' +%Y-%m-%d)
+          HAS_DATA=false
+          for d in "$TODAY" "$YESTERDAY"; do
+            [ -f "src/data/vla-daily-rating-out-${d}.json" ] && HAS_DATA=true
+            [ -f "src/data/_ai_daily_pick_${d}.md" ] && HAS_DATA=true
+          done
+
+          if [ "$HAS_DATA" = "true" ]; then
+            echo "Fresh data found, skipping GitHub fallback."
+            exit 0
+          fi
+
+          echo "No fresh data — pulling from GitHub repos..."
+          TOKEN="${{ secrets.DEPLOY_GH_TOKEN }}"
+          [ -z "$TOKEN" ] && TOKEN="$GH_TOKEN"
+          API="https://api.github.com"
+          AUTH="Authorization: token $TOKEN"
+
+          # Helper: download file from repo
+          dl() {
+            local repo="$1" path="$2" dest="$3"
+            local content
+            content=$(curl -sH "$AUTH" "$API/repos/sou350121/$repo/contents/$path" | python3 -c "import sys,json; print(json.load(sys.stdin).get('content',''))" 2>/dev/null)
+            if [ -n "$content" ] && [ "$content" != "None" ]; then
+              echo "$content" | base64 -d > "$dest"
+              echo "  ✓ $dest"
+              return 0
+            fi
+            return 1
+          }
+
+          # Download recent markdown archives
+          for d in "$TODAY" "$YESTERDAY"; do
+            dl "VLA-Handbook" "memory/blog/archives/vla-social-intel/${d}.md" "src/data/_vla_social_${d}.md" || true
+            dl "Agent-Playbook" "memory/blog/archives/ai-social-intel/${d}.md" "src/data/_ai_social_${d}.md" || true
+            dl "Agent-Playbook" "memory/blog/archives/ai-daily-pick/${d}.md" "src/data/_ai_daily_pick_${d}.md" || true
+          done
+
+          echo "GitHub fallback sync complete."
+          ls src/data/*${TODAY}* src/data/*${YESTERDAY}* 2>/dev/null || echo "No dated files found"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
