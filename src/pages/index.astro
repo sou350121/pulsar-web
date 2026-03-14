@@ -184,7 +184,8 @@ const MOCK_SOCIAL = [
 // Resolve: real vs mock
 // ---------------------------------------------------------------------------
 const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
-const displayDate = todayPicks.date;
+// Use the most recent date across AI and VLA (VLA may update on days AI doesn't)
+const displayDate = [todayPicks.date, recentVLA[0]?.date].filter(Boolean).sort().pop() ?? todayPicks.date;
 // Fall back to most recent VLA data within 3 days (weekends have no VLA ratings)
 const todayVLA    = (() => {
   const v = recentVLA[0];
