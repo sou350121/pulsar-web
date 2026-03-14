@@ -39,6 +39,7 @@ jobs:
           version: latest
 
       - name: Sync pipeline data via SSH
+        id: ssh_sync
         env:
           SSH_KEY:  ${{ secrets.DEPLOY_SSH_KEY }}
           SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
@@ -89,25 +90,14 @@ jobs:
           ls -la src/data/*.json 2>/dev/null | wc -l
 
       - name: Fallback — sync from GitHub repos if SSH failed
-        if: ${{ always() }}
+        if: ${{ steps.ssh_sync.outcome == 'failure' || steps.ssh_sync.outcome == 'skipped' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Check if we got fresh data from SSH (look for today's files)
+          echo "SSH sync failed/skipped — pulling from GitHub repos..."
           TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           YESTERDAY=$(TZ=Asia/Shanghai date -d '-1 day' +%Y-%m-%d)
-          HAS_DATA=false
-          for d in "$TODAY" "$YESTERDAY"; do
-            [ -f "src/data/vla-daily-rating-out-${d}.json" ] && HAS_DATA=true
-            [ -f "src/data/_ai_daily_pick_${d}.md" ] && HAS_DATA=true
-          done
 
-          if [ "$HAS_DATA" = "true" ]; then
-            echo "Fresh data found, skipping GitHub fallback."
-            exit 0
-          fi
-
-          echo "No fresh data — pulling from GitHub repos..."
           TOKEN="${{ secrets.DEPLOY_GH_TOKEN }}"
           [ -z "$TOKEN" ] && TOKEN="$GH_TOKEN"
           API="https://api.github.com"
@@ -126,7 +116,7 @@ jobs:
             return 1
           }
 
-          # Download recent markdown archives
+          # Download recent markdown archives (today + yesterday)
           for d in "$TODAY" "$YESTERDAY"; do
             dl "VLA-Handbook" "memory/blog/archives/vla-social-intel/${d}.md" "src/data/_vla_social_${d}.md" || true
             dl "Agent-Playbook" "memory/blog/archives/ai-social-intel/${d}.md" "src/data/_ai_social_${d}.md" || true
@@ -134,7 +124,7 @@ jobs:
           done
 
           echo "GitHub fallback sync complete."
-          ls src/data/*${TODAY}* src/data/*${YESTERDAY}* 2>/dev/null || echo "No dated files found"
+          ls src/data/*"${TODAY}"* src/data/*"${YESTERDAY}"* 2>/dev/null || echo "No new dated files"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
