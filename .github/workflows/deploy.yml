@@ -76,6 +76,17 @@ jobs:
             [ $attempt -lt 3 ] && { echo "SCP retry $attempt in 15s..."; sleep 15; }
           done
 
+      - name: Restore force-committed data files
+        run: |
+          # If SSH sync overwrote force-committed data files, restore them from git
+          # This allows manual data injection via force-committed files
+          git diff --name-only HEAD -- 'src/data/*.json' | while read f; do
+            if [ -n "$f" ]; then
+              echo "Restoring force-committed: $f"
+              git checkout HEAD -- "$f"
+            fi
+          done
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
