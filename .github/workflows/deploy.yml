@@ -78,14 +78,16 @@ jobs:
 
       - name: Restore force-committed data files
         run: |
-          # If SSH sync overwrote force-committed data files, restore them from git
-          # This allows manual data injection via force-committed files
-          git diff --name-only HEAD -- 'src/data/*.json' | while read f; do
-            if [ -n "$f" ]; then
-              echo "Restoring force-committed: $f"
-              git checkout HEAD -- "$f"
+          # Restore any data files tracked by git (force-committed despite .gitignore)
+          # git ls-tree lists ALL files at HEAD regardless of .gitignore
+          git ls-tree --name-only HEAD src/data/ | while read f; do
+            if [ ! -f "$f" ]; then
+              echo "Restoring missing: $f"
+              git show "HEAD:$f" > "$f"
             fi
           done
+          echo "Data files in src/data/:"
+          ls -la src/data/*.json 2>/dev/null | wc -l
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
