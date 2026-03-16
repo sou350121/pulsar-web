@@ -2,40 +2,57 @@
   "ok": true,
   "model": "qwen3.5-plus",
   "date": "2026-03-16",
-  "total": 3,
+  "total": 5,
   "counts": {
-    "❌": 3
+    "📖": 5
   },
   "filter_funnel": {
-    "weekend": true,
-    "note": "Weekend: showing recent papers"
+    "weekend": true
   },
   "papers": [
     {
-      "title": "Grounding Generated Videos in Feasible Plans via World Models",
-      "url": "https://arxiv.org/abs/2602.01960",
-      "source": "cs.LG",
-      "rating": "❌",
-      "reason": "视频世界模型用于规划，非直接VLA控制方法。聚焦视频生成计划的时间一致性，与VLA动作执行关联较弱，属于相邻领域。",
-      "abstract_snippet": "arXiv:2602.01960v2 Announce Type: replace Abstract: Large-scale video generative models have shown emerging capabilities as zero-shot visual planners, yet video-generated plans often violate temporal consistency and physical constraints, leading to failures when mapped to executable actions. To address this, we propose Grounding Video Plans with World Models (GVP-WM), a planning method that grounds video-generated plans into feasible action sequences using a learned action-conditioned world mode",
+      "title": "Cross-embodied Co-design for Dexterous Hands",
+      "url": "https://arxiv.org/abs/2512.03743",
+      "source": "cs.RO",
+      "rating": "📖",
+      "reason": "形态 - 控制协同设计框架，支持真实 fabrication 和部署。虽非直接VLA，但为灵巧操作提供新设计范式，有真实机器人实验验证。",
+      "abstract_snippet": "arXiv:2512.03743v3 Announce Type: replace Abstract: Dexterous manipulation is limited by both control and design, without consensus as to what makes manipulators best for performing dexterous tasks. This raises a fundamental challenge: how should we design and control robot manipulators that are optimized for dexterity? We present a co-design framework that learns task-specific hand morphology and complementary dexterous control policies. The framework supports 1) an expansive morphology search",
       "date": "2026-03-16"
     },
     {
-      "title": "World Model for Battery Degradation Prediction Under Non-Stationary Aging",
-      "url": "https://arxiv.org/abs/2603.10527",
-      "source": "cs.LG",
-      "rating": "❌",
-      "reason": "Pass 1 快速筛选：领域不相关或明显低质量",
-      "abstract_snippet": "arXiv:2603.10527v1 Announce Type: new Abstract: Degradation prognosis for lithium-ion cells requires forecasting the state-of-health (SOH) trajectory over future cycles. Existing data-driven approaches can produce trajectory outputs through direct regression, but lack a mechanism to propagate degradation dynamics forward in time. This paper formulates battery degradation prognosis as a world model problem, encoding raw voltage, current, and temperature time-series from each cycle into a latent s",
+      "title": "Lifelong Imitation Learning with Multimodal Latent Replay and Incremental Adjustment",
+      "url": "https://arxiv.org/abs/2603.10929",
+      "source": "cs.RO",
+      "rating": "📖",
+      "reason": "宣称LIBERO上AUC提升10-17点，遗忘减少65%。但AUC非标准成功率指标，需验证实际意义。持续学习方法对VLA有潜在价值。",
+      "abstract_snippet": "arXiv:2603.10929v1 Announce Type: cross Abstract: We introduce a lifelong imitation learning framework that enables continual policy refinement across sequential tasks under realistic memory and data constraints. Our approach departs from conventional experience replay by operating entirely in a multimodal latent space, where compact representations of visual, linguistic, and robot's state information are stored and reused to support future learning. To further stabilize adaptation, we introduce",
       "date": "2026-03-16"
     },
     {
-      "title": "AD-R1: Closed-Loop Reinforcement Learning for End-to-End Autonomous Driving with Impartial World Models",
-      "url": "https://arxiv.org/abs/2511.20325",
+      "title": "Learning Bimanual Cloth Manipulation with Vision-based Tactile Sensing via Single Robotic Arm",
+      "url": "https://arxiv.org/abs/2603.10609",
+      "source": "cs.RO",
+      "rating": "📖",
+      "reason": "单臂双臂布料操作+触觉感知，真实触觉图像训练。虽非直接VLA，但触觉 - 视觉融合对VLA感知有参考价值，有真实实验。",
+      "abstract_snippet": "arXiv:2603.10609v1 Announce Type: new Abstract: Robotic cloth manipulation remains challenging due to the high-dimensional state space of fabrics, their deformable nature, and frequent occlusions that limit vision-based sensing. Although dual-arm systems can mitigate some of these issues, they increase hardware and control complexity. This paper presents Touch G.O.G., a compact vision-based tactile gripper and perception/control framework for single-arm bimanual cloth manipulation. The proposed",
+      "date": "2026-03-16"
+    },
+    {
+      "title": "Seeing Space and Motion: Enhancing Latent Actions with Geometric and Dynamic Awareness for Vision-Language-Action Models",
+      "url": "https://arxiv.org/abs/2509.26251",
       "source": "cs.CV",
-      "rating": "❌",
-      "reason": "Pass 1 快速筛选：领域不相关或明显低质量",
-      "abstract_snippet": "arXiv:2511.20325v3 Announce Type: replace Abstract: End-to-end models for autonomous driving hold the promise of learning complex behaviors directly from sensor data, but face critical challenges in safety and handling long-tail events. Reinforcement Learning (RL) offers a promising path to overcome these limitations, yet its success in autonomous driving has been elusive. We identify a fundamental flaw hindering this progress: a deep seated optimistic bias in the world models used for RL. To ad",
+      "rating": "📖",
+      "reason": "Farsighted-LAM+SSM-VLA架构，几何感知空间编码+多尺度时序建模。直接改进LAM瓶颈，可集成到现有VLA系统，架构创新明确。 [Pass3降级: Overlaps significantly with 03-10 Visual Token Pruning and 03-11 DyQ-VLA on temporal/spatial efficiency modules without new paradigm.]",
+      "abstract_snippet": "arXiv:2509.26251v2 Announce Type: replace Abstract: Latent Action Models (LAMs) enable Vision- Language-Action (VLA) systems to learn semantic action representations from large-scale unannotated data. Yet, we identify two bottlenecks of LAMs: 1) the commonly adopted end-to-end trained image encoder suffers from poor spatial understanding; 2) LAMs can be fragile when input frames are temporally distant, leading to limited temporal percep- tion. Such factors inevitably hinder stable and clear acti",
+      "date": "2026-03-16"
+    },
+    {
+      "title": "World2Act: Latent Action Post-Training via Skill-Compositional World Models",
+      "url": "https://arxiv.org/abs/2603.10422",
+      "source": "cs.CV",
+      "rating": "📖",
+      "reason": "VLA后训练框架，对比匹配对齐WM视频动态潜在空间。减少像素依赖，但WM后训练已有较多工作，差异化需进一步验证。",
+      "abstract_snippet": "arXiv:2603.10422v1 Announce Type: new Abstract: World Models (WMs) have emerged as a promising approach for post-training Vision-Language-Action (VLA) policies to improve robustness and generalization under environmental changes. However, most WM-based post-training methods rely on pixel-space supervision, making policies sensitive to pixel-level artifacts and hallucination from imperfect WM rollouts. We introduce World2Act, a post-training framework that aligns VLA actions directly with WM vide",
       "date": "2026-03-16"
     }
   ]
