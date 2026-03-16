@@ -357,7 +357,7 @@ const RULE_LABELS: Record<string, string> = {
         <span class="ticker-text">
           {displayDate} 已更新&ensp;·&ensp;
           AI <span data-tc>精選</span><span data-sc>精选</span> {todayAICount || '?'} 條&ensp;·&ensp;
-          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount || '—'} 篇{isVLAStale && todayVLACount > 0 ? ` (${todayVLA?.date})` : ''}&ensp;·&ensp;
+          VLA <span data-tc>論文</span><span data-sc>论文</span> {isVLAStale ? '今日無新論文' : `${todayVLACount || '—'} 篇`}&ensp;·&ensp;
           <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
           <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
           <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
