@@ -188,12 +188,11 @@ const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 // Use today's Shanghai date if we have any data (social/AI/VLA) from today
 const shanghaiToday = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
 const displayDate = [todayPicks.date, recentVLA[0]?.date, shanghaiToday].filter(Boolean).sort().pop() ?? todayPicks.date;
-// Fall back to most recent VLA data within 3 days (weekends have no VLA ratings)
+// Only show VLA papers from today's date (no fallback to older days)
 const todayVLA    = (() => {
   const v = recentVLA[0];
   if (!v) return undefined;
-  const diff = Math.abs(new Date(displayDate).getTime() - new Date(v.date).getTime());
-  return diff <= 3 * 86400000 ? v : undefined;  // within 3 days
+  return v.date === shanghaiToday ? v : undefined;
 })();
 
 const heroAI  = todayPicks.items[0];
