@@ -215,9 +215,8 @@ const base        = import.meta.env.BASE_URL;
 const digestAiItems = todayPicks.items
   .filter(i => i.domain === 'ai')
   .map(i => ({ ...i, domain: 'ai' as const, deepDiveUrl: aiDeepDiveLookup.get(i.url) }));
-const digestVlaItems = isVLAStale ? []
-  : (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
-    .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
+const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
+  .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
 // Extract top bullet points from social intel markdown for digest display
 function extractSocialBullets(md: string, maxItems: number = 4): string {
