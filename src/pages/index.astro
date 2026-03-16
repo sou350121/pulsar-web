@@ -185,7 +185,9 @@ const MOCK_SOCIAL = [
 // ---------------------------------------------------------------------------
 const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 // Use the most recent date across AI and VLA (VLA may update on days AI doesn't)
-const displayDate = [todayPicks.date, recentVLA[0]?.date].filter(Boolean).sort().pop() ?? todayPicks.date;
+// Use today's Shanghai date if we have any data (social/AI/VLA) from today
+const shanghaiToday = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
+const displayDate = [todayPicks.date, recentVLA[0]?.date, shanghaiToday].filter(Boolean).sort().pop() ?? todayPicks.date;
 // Fall back to most recent VLA data within 3 days (weekends have no VLA ratings)
 const todayVLA    = (() => {
   const v = recentVLA[0];
@@ -198,7 +200,7 @@ const heroAI  = todayPicks.items[0];
 const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
              ?? todayVLA?.items.find(i => i.rating === '🔧')
              ?? todayVLA?.items[0]
-             ?? todayPicks.items[1];
+             ?? undefined;  // no fallback to AI — show "no new papers" instead
 
 // Entity stats
 const driftOk     = !driftState?.drift_active;
@@ -354,7 +356,7 @@ const RULE_LABELS: Record<string, string> = {
         <span class="ticker-text">
           {displayDate} 已更新&ensp;·&ensp;
           AI <span data-tc>精選</span><span data-sc>精选</span> {todayAICount || '?'} 條&ensp;·&ensp;
-          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount || '?'} 篇&ensp;·&ensp;
+          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount > 0 ? todayVLACount + ' 篇' : '週末無新論文'}&ensp;·&ensp;
           <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
           <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
           <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
@@ -492,16 +494,25 @@ const RULE_LABELS: Record<string, string> = {
 
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
           <div class="hero-card-label"><span><span data-tc>今日 VLA 論文</span><span data-sc>今日 VLA 论文</span></span></div>
-          <span class={getRatingClass(heroVLA.rating)} set:html={`${[...heroVLA.rating][0]} ${getRatingLabel(heroVLA.rating)}`}></span>
-          <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
-          <p class="hero-card-summary">{heroVLA.summary}</p>
-          <div class="hero-card-footer">
-            <div class="hero-card-tags">
-              <span class="source-tag">{heroVLA.source.toUpperCase()}</span>
-              <span class="source-tag">VLA</span>
-            </div>
-            <a href={heroVLA.url} target="_blank" rel="noopener noreferrer" class="btn btn-outline">閱讀 →</a>
-          </div>
+          {heroVLA ? (
+            <Fragment>
+              <span class={getRatingClass(heroVLA.rating)} set:html={`${[...heroVLA.rating][0]} ${getRatingLabel(heroVLA.rating)}`}></span>
+              <h2 class="hero-card-title" id="hero-vla-title">{heroVLA.title}</h2>
+              <p class="hero-card-summary">{heroVLA.summary}</p>
+              <div class="hero-card-footer">
+                <div class="hero-card-tags">
+                  <span class="source-tag">{heroVLA.source.toUpperCase()}</span>
+                  <span class="source-tag">VLA</span>
+                </div>
+                <a href={heroVLA.url} target="_blank" rel="noopener noreferrer" class="btn btn-outline">閱讀 →</a>
+              </div>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <h2 class="hero-card-title" id="hero-vla-title"><span data-tc>週末無新論文</span><span data-sc>周末无新论文</span></h2>
+              <p class="hero-card-summary"><span data-tc>arXiv 週末不發布新論文。下一批 VLA 論文將於週一 09:00 更新。</span><span data-sc>arXiv 周末不发布新论文。下一批 VLA 论文将于周一 09:00 更新。</span></p>
+            </Fragment>
+          )}
         </article>
 
       </div>
