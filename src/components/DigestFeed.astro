@@ -251,6 +251,7 @@ const wordmark = title ?? 'PULSAR DIGEST';
           </span>
         </div>
 
+        {!vlaStale && (
         <ul class="digest-list" role="list">
           {vlaSlice.map((item) => {
             const emoji    = ratingEmoji(item.rating);
@@ -315,6 +316,7 @@ const wordmark = title ?? 'PULSAR DIGEST';
             );
           })}
         </ul>
+        )}
       </section>
     )}
 
