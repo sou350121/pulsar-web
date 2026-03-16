@@ -39,6 +39,7 @@ interface Props {
   maxItems?:       number;
   title?:          string;
   singleDomain?:   boolean;
+  vlaStale?:       boolean;
 }
 
 const {
@@ -51,6 +52,7 @@ const {
   maxItems  = 12,
   title,
   singleDomain = false,
+  vlaStale = false,
 } = Astro.props;
 
 /**
@@ -245,7 +247,7 @@ const wordmark = title ?? 'PULSAR DIGEST';
             <span data-tc>VLA 線</span><span data-sc>VLA 线</span>&nbsp;&middot;&nbsp;cs.RO&nbsp;·&nbsp;cs.AI&nbsp;·&nbsp;cs.LG
           </span>
           <span class="digest-section-meta" aria-hidden="true">
-            Qwen3.5-Plus&nbsp;·&nbsp;{vlaSlice.length}&thinsp;篇
+            {vlaStale ? '今日無新論文' : `Qwen3.5-Plus\u00a0·\u00a0${vlaSlice.length}\u2009篇`}
           </span>
         </div>
 
