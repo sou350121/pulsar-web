@@ -188,18 +188,20 @@ const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
 // Use today's Shanghai date if we have any data (social/AI/VLA) from today
 const shanghaiToday = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
 const displayDate = [todayPicks.date, recentVLA[0]?.date, shanghaiToday].filter(Boolean).sort().pop() ?? todayPicks.date;
-// Only show VLA papers from today's date (no fallback to older days)
+// Show most recent VLA data (within 3 days for weekend fallback)
 const todayVLA    = (() => {
   const v = recentVLA[0];
   if (!v) return undefined;
-  return v.date === shanghaiToday ? v : undefined;
+  const diff = Math.abs(new Date(shanghaiToday).getTime() - new Date(v.date).getTime());
+  return diff <= 3 * 86400000 ? v : undefined;
 })();
+const isVLAStale = todayVLA ? todayVLA.date !== shanghaiToday : true;
 
 const heroAI  = todayPicks.items[0];
 const heroVLA = todayVLA?.items.find(i => i.rating === '⚡')
              ?? todayVLA?.items.find(i => i.rating === '🔧')
              ?? todayVLA?.items[0]
-             ?? undefined;  // no fallback to AI — show "no new papers" instead
+             ?? undefined;
 
 // Entity stats
 const driftOk     = !driftState?.drift_active;
@@ -355,7 +357,7 @@ const RULE_LABELS: Record<string, string> = {
         <span class="ticker-text">
           {displayDate} 已更新&ensp;·&ensp;
           AI <span data-tc>精選</span><span data-sc>精选</span> {todayAICount || '?'} 條&ensp;·&ensp;
-          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount > 0 ? todayVLACount + ' 篇' : '週末無新論文'}&ensp;·&ensp;
+          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount || '—'} 篇{isVLAStale && todayVLACount > 0 ? ` (${todayVLA?.date})` : ''}&ensp;·&ensp;
           <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
           <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
           <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
@@ -492,7 +494,7 @@ const RULE_LABELS: Record<string, string> = {
         </article>
 
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
-          <div class="hero-card-label"><span><span data-tc>今日 VLA 論文</span><span data-sc>今日 VLA 论文</span></span></div>
+          <div class="hero-card-label"><span>{isVLAStale ? `VLA 論文 (${todayVLA?.date ?? '—'})` : '今日 VLA 論文'}</span></div>
           {heroVLA ? (
             <Fragment>
               <span class={getRatingClass(heroVLA.rating)} set:html={`${[...heroVLA.rating][0]} ${getRatingLabel(heroVLA.rating)}`}></span>
