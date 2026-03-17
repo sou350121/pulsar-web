@@ -952,6 +952,7 @@ export interface CompetitionPair {
 }
 
 export const COMPETITION_PAIRS: CompetitionPair[] = [
+  { familyA: 'language_grounding', familyB: 'world_model',      label: 'VLA vs WAM' },
   { familyA: 'diffusion_policy',   familyB: 'flow_matching',    label: 'ACTION HEAD ROUTE' },
   { familyA: 'instruction_tuning', familyB: 'rl_finetuning',    label: 'POST-TRAINING ROUTE' },
   { familyA: 'world_model',        familyB: 'rl_finetuning',    label: 'LEARNING SIGNAL' },

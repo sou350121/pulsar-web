@@ -213,6 +213,7 @@ function gaugeSegments(accel: number, isNew: boolean): { filled: number; color: 
 
 // Competition pair context descriptions (short, shown inline)
 const PAIR_DESC: Record<string, string> = {
+  'VLA vs WAM':             'Paradigm war: end-to-end action prediction vs world model planning',
   'ACTION HEAD ROUTE':      'Continuous action generation: denoising vs optimal transport',
   'POST-TRAINING ROUTE':    'Model adaptation: supervised tuning vs reward optimization',
   'LEARNING SIGNAL':        'Training paradigm: imagination-based vs reward-based',
@@ -240,6 +241,7 @@ const FAMILY_EXPLAIN: Record<string, string> = {
 };
 
 const PAIR_EXPLAIN: Record<string, string> = {
+  'VLA vs WAM':             'The central paradigm war in embodied AI. VLA (Vision-Language-Action) maps observations directly to actions end-to-end — simple, scalable, but needs massive data and generalizes poorly. WAM (World-Action Model) first learns how the world works, then plans actions through mental simulation — better generalization and data efficiency, but world models are often inaccurate. The boundary is blurring: Pi0.5 uses flow matching (generative, WAM-like), GR00T adds video prediction. The winner likely is a hybrid.',
   'ACTION HEAD ROUTE':      'Both generate continuous actions from the same VLA backbone but take different mathematical routes: diffusion iteratively denoises random noise into actions (slow, expressive), while flow matching uses optimal transport for a direct trajectory (fast, efficient). If flow matching matches diffusion quality, it could replace it as the default action head.',
   'POST-TRAINING ROUTE':    'After pretraining a VLA, two competing strategies exist: SFT directly imitates expert demonstrations (simple, stable), while RL fine-tuning (GRPO/DPO) optimizes a reward signal to go beyond the demonstration distribution. RL can discover novel strategies but is harder to stabilize.',
   'LEARNING SIGNAL':        'World models learn by predicting the future (imagination-based planning), while RL learns from reward feedback. If world models become accurate enough, they could reduce the need for expensive real-world RL exploration.',
