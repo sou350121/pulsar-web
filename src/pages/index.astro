@@ -219,7 +219,7 @@ const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain
   .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
 // Extract top bullet points from social intel markdown for digest display
-function extractSocialBullets(md: string, maxItems: number = 4): string {
+function extractSocialBullets(md: string, maxItems: number = 50): string {
   const bullets: string[] = [];
   for (const line of md.split('\n')) {
     const trimmed = line.trim();
@@ -243,7 +243,7 @@ function extractSocialBullets(md: string, maxItems: number = 4): string {
 const digestSocialItems = [
   ...aiSocial.map(s => ({
     title:   `AI App · ${s.date.slice(5)}`,
-    summary: extractSocialBullets(s.content, 4),
+    summary: extractSocialBullets(s.content, 50),
     rating:  '📡',
     source:  'social',
     url:     `${import.meta.env.BASE_URL}social`,
@@ -251,7 +251,7 @@ const digestSocialItems = [
   })),
   ...vlaSocial.map(s => ({
     title:   `VLA · ${s.date.slice(5)}`,
-    summary: extractSocialBullets(s.content, 4),
+    summary: extractSocialBullets(s.content, 50),
     rating:  '📡',
     source:  'social',
     url:     `${import.meta.env.BASE_URL}social`,
@@ -306,7 +306,7 @@ const realSocial = [
     tag:    'VLA',
   })),
 ].filter(s => s.event.length > 20);
-const socialItems = realSocial.length >= 2 ? realSocial.slice(0, 6) : MOCK_SOCIAL;
+const socialItems = realSocial.length >= 2 ? realSocial : MOCK_SOCIAL;
 
 // Biweekly
 const latestReport  = biweekly[0] ?? null;
