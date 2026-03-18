@@ -1,0 +1,55 @@
+{
+  "date": "2026-03-16",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 三榜饱和 (98.6-99.2%)，限制 diffusion vs non-diffusion 架构差异化评估；但 flow matching 论文仍占主导 (23 hits/7d)"
+    },
+    "V-005": {
+      "score": 0.50,
+      "reason": "counter_evidence: PlayWorld 论文匹配 'RL fine-tuning fail' 模式；但单一证据未达失效条件 (需 meta-analysis + 多实验室验证)；RL 关键词仍活跃 (42 hits/7d)"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 饱和使开源 vs 闭源能力对比基准受限；开源 VLA 活动偏弱 (6 hits/7d)"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 饱和影响 3D 表示必要性评估；3D 论文稳定但量少 (4 hits/7d)，GST-VLA 等仍用 3D Gaussian tokens"
+    },
+    "A-003": {
+      "score": 0.25,
+      "reason": "keyword_decline: 多智能体框架关键词 80% 下降 (1 hit/7d vs 5/14d)；早期警示信号"
+    },
+    "S-002": {
+      "score": 0.25,
+      "reason": "keyword_decline: 系统假设关键词 80% 下降 (1 hit/7d vs 5/14d)"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 32,
+  "ai_signals_scanned": 65,
+  "triggers": [],
+  "note": "6 个假设有信号：V-005 为 approaching (0.50，反证信号)；其余 5 个为 early_warning (0.25，基准饱和或关键词下降)。无强触发。",
+  "method_trends_summary": {
+    "declining": ["mobile_manipulation", "sim_to_real"],
+    "stable": ["3d_representation", "cross_embodiment", "dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile", "world_model"],
+    "surging": [],
+    "accelerating": []
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D", "CALVIN/ABCD-D", "CALVIN/D-D", "LIBERO/non-standard", "LIBERO/standard-closed", "LIBERO/standard-opensource"],
+  "counter_evidence_summary": {
+    "V-005": {
+      "paper": "PlayWorld: Learning Robot World Models from Autonomous Play",
+      "pattern": "RL fine-tuning fail",
+      "expert_note": "单篇论文匹配反证模式；需观察是否出现系统性 RL 微调退化证据"
+    }
+  },
+  "data_confidence": "low",
+  "data_days": 9
+}

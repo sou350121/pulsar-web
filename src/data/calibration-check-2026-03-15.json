@@ -1,0 +1,43 @@
+{
+  "date": "2026-03-15",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-005": {
+      "score": 0.50,
+      "reason": "counter_evidence: PlayWorld 论文显示 RL fine-tuning 在特定场景下可能 fail（'fail' pattern 匹配）；但单篇论文不足以证明系统性退化，需持续观察"
+    },
+    "V-001": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 三榜饱和（98.6-99.2%），但 diffusion/flow-matching 论文仍占主导（29 hits/7d），仅标注基准局限性"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 饱和影响开源 vs 闭源能力对比的测量基准，但无 >30pp 差距证据"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 饱和 + 3D spatial 关键词 7d 内仅 4 hits（但含 GST-VLA 等支持性证据）"
+    },
+    "A-003": {
+      "score": 0.25,
+      "reason": "keyword_decline: multi-agent 关键词 80% 下降（1 hit/7d vs 5/14d），可能是噪声或真实放缓"
+    },
+    "S-002": {
+      "score": 0.25,
+      "reason": "keyword_decline: 关键词 80% 下降（1 hit/7d vs 5/14d）"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 30,
+  "ai_signals_scanned": 64,
+  "triggers": [],
+  "note": "1 个假设 approaching (V-005: RL fine-tuning counter-evidence)；5 个假设 early warning（机械预评分确认）",
+  "method_trends_summary": {
+    "stable": ["3d_representation", "cross_embodiment", "dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile", "world_model"],
+    "declining": ["mobile_manipulation", "sim_to_real"]
+  },
+  "benchmark_saturation_noted": true
+}

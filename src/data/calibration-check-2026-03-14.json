@@ -1,0 +1,46 @@
+{
+  "date": "2026-03-14",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.25,
+      "reason": "LIBERO 三榜饱和 (98.6-99.2%) 使扩散策略主导性假设的评测基准受限；但 LeRobot v0.5.0 仍采用 diffusion/flow 架构，pi0-FAST 自回归变体未构成实质挑战"
+    },
+    "V-005": {
+      "score": 0.50,
+      "reason": "counter_evidence 命中：PlayWorld 论文表明通过自主玩耍学习世界模型可能减少对 RL 微调的依赖；机械评分确认 moderate 挑战信号 (0.50)"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和影响开源 vs 闭源对比基准；但 LeRobot v0.5.0 发布显示开源生态仍在追赶"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和使 3D 表示必要性假设的评测基准受限；GST-VLA 等论文仍支持 3D 深度感知方向"
+    },
+    "A-003": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak — multi-agent 关键词 7d 仅 1 次命中 vs 14d 共 5 次 (80% 下降)；但 Spine Swarm、Mozzie 等新框架仍在发布"
+    },
+    "S-002": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak — 系统假设相关关键词 7d 仅 1 次命中 vs 14d 共 5 次 (80% 下降)"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 32,
+  "ai_signals_scanned": 69,
+  "triggers": [],
+  "note": "6 个假设有信号：V-005 为 approaching (0.50, RL 微调面临世界模型替代路径挑战)；其余 5 个为 early_warning (0.25, 主要源于基准饱和或关键词波动)",
+  "method_trends_summary": {
+    "surging": [],
+    "accelerating": [],
+    "declining": ["mobile_manipulation", "sim_to_real"],
+    "stable": ["3d_representation", "cross_embodiment", "dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile", "world_model"]
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D", "CALVIN/ABCD-D", "CALVIN/D-D", "LIBERO/non-standard", "LIBERO/standard-closed", "LIBERO/standard-opensource"]
+}

@@ -1,0 +1,82 @@
+{
+  "ok": true,
+  "model": "qwen3.5-plus",
+  "total": 3,
+  "counts": {
+    "⚡": 0,
+    "🔧": 0,
+    "📖": 3,
+    "❌": 0
+  },
+  "parse_error": "",
+  "filter_funnel": {
+    "total_rss": 3,
+    "pass1_a": 3,
+    "pass1_b": 0,
+    "pass2_promoted": 1,
+    "pass3_downgraded": 1,
+    "final_star": 0,
+    "final_gear": 0,
+    "final_book": 3,
+    "final_x": 0
+  },
+  "pass1_bucket_b": [],
+  "pass3_verdicts": [
+    {
+      "title": "look before acting: enhancing vision foundation representations for vision-langu",
+      "verdict": "downgrade",
+      "new_rating": "📖",
+      "challenge": "Core contribution is incremental visual feature enhancement based on common layer-sensitivity analysis, lacking novel paradigm or specific reusable tool compared to crowded 2024 VLA improvement works."
+    }
+  ],
+  "papers": [
+    {
+      "title": "Panoramic Affordance Prediction",
+      "date": "2026-03-18",
+      "url": "https://tldr.takara.ai/p/2603.15558",
+      "source": "hf-papers",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "Affordance prediction serves as a critical bridge between perception and action in embodied AI. However, existing research is confined to pinhole camera models, which suffer from narrow Fields of View (FoV) and fragmented observations, often missing critical holistic environmental context. In this paper, we present the first exploration into Panoramic Affordance Prediction, utilizing 360-degree imagery to capture global spatial relationships and holistic scene understanding. To facilitate this n",
+      "bucket": "A",
+      "pass1_reason": "",
+      "rating": "📖",
+      "reason": "提出全景 affordance 预测新任务，发布 PAP-12K 数据集（1000+12k 全景图像与标注），训练免费粗到细管道。为具身感知提供新基准，但非直接 VLA 动作模型。",
+      "affiliation": "",
+      "pass3_note": "",
+      "full_abstract": "Affordance prediction serves as a critical bridge between perception and action in embodied AI. However, existing research is confined to pinhole camera models, which suffer from narrow Fields of View (FoV) and fragmented observations, often missing critical holistic environmental context. In this paper, we present the first exploration into Panoramic Affordance Prediction, utilizing 360-degree imagery to capture global spatial relationships and holistic scene understanding. To facilitate this novel task, we first introduce PAP-12K, a large-scale benchmark dataset containing over 1,000 ultra-high-resolution (12k, 11904 x 5952) panoramic images with over 12k carefully annotated QA pairs and affordance masks. Furthermore, we propose PAP, a training-free, coarse-to-fine pipeline inspired by the human foveal visual system to tackle the ultra-high resolution and severe distortion inherent in panoramic images. PAP employs recursive visual routing via grid prompting to progressively locate targets, applies an adaptive gaze mechanism to rectify local geometric distortions, and utilizes a cascaded grounding pipeline to extract precise instance-level masks. Experimental results on PAP-12K reveal that existing affordance prediction methods designed for standard perspective images suffer severe performance degradation and fail due to the unique challenges of panoramic vision. In contrast, PAP framework effectively overcomes these obstacles, significantly outperforming state-of-the-art baselines and highlighting the immense potential of panoramic perception for robust embodied intelligence."
+    },
+    {
+      "title": "MA-VLCM: A Vision Language Critic Model for Value Estimation of Policies in Multi-Agent Team Settings",
+      "date": "2026-03-18",
+      "url": "https://tldr.takara.ai/p/2603.15418",
+      "source": "hf-papers",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "Multi-agent reinforcement learning (MARL) commonly relies on a centralized critic to estimate the value function. However, learning such a critic from scratch is highly sample-inefficient and often lacks generalization across environments. At the same time, large vision-language-action models (VLAs) trained on internet-scale data exhibit strong multimodal reasoning and zero-shot generalization capabilities, yet directly deploying them for robotic execution remains computationally prohibitive, pa",
+      "bucket": "A",
+      "pass1_reason": "",
+      "rating": "📖",
+      "reason": "用预训练 VLM 替代 MARL 中学习式评论家，提升样本效率与泛化能力。针对多机器人系统价值估计，但核心是 MARL 而非 VLA 动作生成。",
+      "affiliation": "",
+      "pass3_note": "",
+      "full_abstract": "Multi-agent reinforcement learning (MARL) commonly relies on a centralized critic to estimate the value function. However, learning such a critic from scratch is highly sample-inefficient and often lacks generalization across environments. At the same time, large vision-language-action models (VLAs) trained on internet-scale data exhibit strong multimodal reasoning and zero-shot generalization capabilities, yet directly deploying them for robotic execution remains computationally prohibitive, particularly in heterogeneous multi-robot systems with diverse embodiments and resource constraints. To address these challenges, we propose Multi-Agent Vision-Language-Critic Models (MA-VLCM), a framework that replaces the learned centralized critic in MARL with a pretrained vision-language model fine-tuned to evaluate multi-agent behavior. MA-VLCM acts as a centralized critic conditioned on natural language task descriptions, visual trajectory observations, and structured multi-agent state information. By eliminating critic learning during policy optimization, our approach significantly improves sample efficiency while producing compact execution policies suitable for deployment on resource-constrained robots. Results show good zero-shot return estimation on models with differing VLM backbones on in-distribution and out-of-distribution scenarios in multi-agent team settings"
+    },
+    {
+      "title": "Look Before Acting: Enhancing Vision Foundation Representations for Vision-Language-Action Models",
+      "date": "2026-03-18",
+      "url": "https://tldr.takara.ai/p/2603.15618",
+      "source": "hf-papers",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "Vision-Language-Action (VLA) models have recently emerged as a promising paradigm for robotic manipulation, in which reliable action prediction critically depends on accurately interpreting and integrating visual observations conditioned on language instructions. Although recent works have sought to enhance the visual capabilities of VLA models, most approaches treat the LLM backbone as a black box, providing limited insight into how visual information is grounded into action generation. Therefo",
+      "bucket": "A",
+      "pass1_reason": "",
+      "rating": "📖",
+      "reason": "系统分析 VLA 模型发现深层视觉 token 敏感度下降，提出 DeepVision-VLA 增强视觉基础表示。直接改进 VLA 视觉接地，有方法贡献。 [Pass3降级: Core contribution is incremental visual feature enhancement based on common layer-sensitivity analysis, lacking novel paradigm or specific reusable tool compared to crowded 2024 VLA improvement works.]",
+      "affiliation": "",
+      "pass3_note": "Core contribution is incremental visual feature enhancement based on common layer-sensitivity analysis, lacking novel paradigm or specific reusable tool compared to crowded 2024 VLA improvement works.",
+      "full_abstract": "Vision-Language-Action (VLA) models have recently emerged as a promising paradigm for robotic manipulation, in which reliable action prediction critically depends on accurately interpreting and integrating visual observations conditioned on language instructions. Although recent works have sought to enhance the visual capabilities of VLA models, most approaches treat the LLM backbone as a black box, providing limited insight into how visual information is grounded into action generation. Therefore, we perform a systematic analysis of multiple VLA models across different action-generation paradigms and observe that sensitivity to visual tokens progressively decreases in deeper layers during action generation. Motivated by this observation, we propose \\textbf{DeepVision-VLA}, built on a \\textbf{Vision-Language Mixture-of-Transformers (VL-MoT)} framework. This framework enables shared attention between the vision foundation model and the VLA backbone, injecting multi-level visual features from the vision expert into deeper layers of the VLA backbone to enhance visual representations for precise and complex manipulation. In addition, we introduce \\textbf{Action-Guided Visual Pruning (AGVP)}, which leverages shallow-layer attention to prune irrelevant visual tokens while preserving task-relevant ones, reinforcing critical visual cues for manipulation with minimal computational overhead. DeepVision-VLA outperforms prior state-of-the-art methods by 9.0\\% and 7.5\\% on simulated and real-world tasks, respectively, providing new insights for the design of visually enhanced VLA models."
+    }
+  ]
+}
