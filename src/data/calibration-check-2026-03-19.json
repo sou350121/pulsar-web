@@ -1,0 +1,53 @@
+{
+  "date": "2026-03-19",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-005": {
+      "score": 0.50,
+      "reason": "counter_evidence:moderate — PlayWorld 论文暗示世界模型可实现 fine-grained control 无需 RL fine-tuning，匹配 counter 模式 'RL...fine...fail'"
+    },
+    "V-001": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LIBERO 三榜饱和 (99.2-99.3%)，限制扩散策略 vs 非扩散策略的评估能力，但 diffusion 仍占主导"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LIBERO 饱和使开源 vs 闭源对比基准受限，但 OpenVLA 等仍有活跃更新"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LIBERO 饱和影响 3D 表示必要性评估，但 Kinema4D 等 3D/4D 建模论文持续出现"
+    },
+    "A-001": {
+      "score": 0.25,
+      "reason": "keyword_decline:moderate — MCP 关键词 7d 内 0 命中 (14d 内 3 次)，但 Product Hunt 有 MCP 产品发布，可能是关键词覆盖问题"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 79,
+  "ai_signals_scanned": 70,
+  "triggers": [],
+  "note": "1 个假设 approaching (V-005: RL fine-tuning 面临世界模型竞争信号); 4 个 early warning (V-001/V-008/V-010 基准饱和，A-001 关键词短期消失)",
+  "method_trends_summary": {
+    "flow_matching": "stable (3.6/d)",
+    "diffusion_policy": "stable (3.6/d)",
+    "world_model": "stable (4.4/d)",
+    "rl_finetuning": "stable (7.2/d)",
+    "tactile": "stable (2.0/d)",
+    "3d_representation": "stable (2.0/d)",
+    "mobile_manipulation": "declining (1.6/d vs 1.5/d prior)"
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": [
+    "CALVIN/ABC-D (4.8%)",
+    "CALVIN/ABCD-D (4.8%)",
+    "CALVIN/D-D (4.3%)",
+    "LIBERO/non-standard (99.2%)",
+    "LIBERO/standard-closed (99.3%)",
+    "LIBERO/standard-opensource (99.2%)"
+  ],
+  "data_confidence": "low (9 days)"
+}
