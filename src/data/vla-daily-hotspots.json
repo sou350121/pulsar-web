@@ -1,6 +1,186 @@
 {
   "reported_papers": [
     {
+      "title": "AutoMoT: A Unified Vision-Language-Action Model with Asynchronous Mixture-of-Transformers for End-to-End Autonomous Driving",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.14851",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.14851v2 Announce Type: replace-cross Abstract: Integrating vision-language models (VLMs) into end-to-end (E2E) autonomous driving (AD) systems has shown promise in improving scene understanding. However, existing integration strategies suffer from several limitations: they either struggle to resolve distribution misalignment between reasoning and action spaces, underexploit the general reasoning capabilities of pretrained VLMs, or incur substantial inference latency during action poli",
+      "rating": "❌",
+      "reason": "Pass 1 快速筛选：领域不相关或明显低质量",
+      "affiliation": ""
+    },
+    {
+      "title": "Grounding Robot Generalization in Training Data via Retrieval-Augmented VLMs",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.11426",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.11426v2 Announce Type: replace Abstract: Recent work on robot manipulation has advanced policy generalization to novel scenarios. However, it is often difficult to characterize how different evaluation settings actually represent generalization from the training distribution of a given policy. To work towards more precise evaluation of generalization in robotics, we propose RADAR, a scalable framework for directly comparing test-time evaluation tasks to policy training data, to determ",
+      "rating": "📖",
+      "reason": "提出 RADAR 框架，通过检索 +VLM 分析评估任务与训练数据分布差异，提供可解释的泛化评估工具。对 VLA 泛化研究有参考价值，但属评估框架非架构创新。",
+      "affiliation": "[Stanford]"
+    },
+    {
+      "title": "U-ARM : Ultra low-cost general teleoperation interface for robot manipulation",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2509.02437",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2509.02437v4 Announce Type: replace Abstract: We propose U-Arm, a low-cost and rapidly adaptable leader-follower teleoperation framework designed to interface with most of commercially available robotic arms. Our system supports teleoperation through three structurally distinct 3D-printed leader arms that share consistent control logic, enabling seamless compatibility with diverse commercial robot configurations. Compared with previous open-source leader-follower interfaces, we further opt",
+      "rating": "📖",
+      "reason": "低成本遥操作硬件系统（BOM $50-57），支持多机械臂兼容。对 VLA 数据采集有实用价值，但属硬件工程贡献，非 VLA 核心方法。",
+      "affiliation": ""
+    },
+    {
+      "title": "Learning to See and Act: Task-Aware Virtual View Exploration for Robotic Manipulation",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2508.05186",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2508.05186v5 Announce Type: replace Abstract: Recent vision-language-action (VLA) models for multi-task robot manipulation often rely on fixed camera setups and shared visual encoders, which limit their performance under occlusions and during cross-task transfer. To address these challenges, we propose Task-aware Virtual View Exploration (TVVE), a framework that learns to select task-relevant virtual camera viewpoints and dynamically re-render observations from a reconstructed scene repres",
+      "rating": "📖",
+      "reason": "提出 TVVE 框架学习任务相关虚拟视角，配合 TaskMoE 视觉编码器路由特征。解决固定相机限制，架构创新明确，VLA 研究者可本周集成试用。 [Pass3降级: Active vision and view selection for manipulation predate 2024 significantly, making this an incremental combination with MoE rather than a new paradigm.]",
+      "affiliation": ""
+    },
+    {
+      "title": "DexViTac: Collecting Human Visuo-Tactile-Kinematic Demonstrations for Contact-Rich Dexterous Manipulation",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17851",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17851v1 Announce Type: new Abstract: Large-scale, high-quality multimodal demonstrations are essential for robot learning of contact-rich dexterous manipulation. While human-centric data collection systems lower the barrier to scaling, they struggle to capture the tactile information during physical interactions. Motivated by this, we present DexViTac, a portable, human-centric data collection system tailored for contact-rich dexterous manipulation. The system enables the high-fidelit",
+      "rating": "📖",
+      "reason": "便携式触觉 - 视觉 - 运动学数据采集系统，提出运动学引导触觉表示学习算法。填补触觉 VLA 数据空白，方法 + 硬件双重贡献。 [Pass3降级: Hardware-dependent data collection systems have high replication barriers for immediate reuse, and similar teleop datasets existed pre-2024.]",
+      "affiliation": ""
+    },
+    {
+      "title": "ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17850",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17850v1 Announce Type: new Abstract: Recent Vision-Language-Action (VLA) models equipped with Flow Matching (FM) action heads achieve state-of-the-art performance in complex robot manipulation. However, the multi-step iterative ODE solving required by FM introduces inference latency that precludes responsive physical control. While current acceleration efforts optimize the Vision-Language Model (VLM) backbone, the action head bottleneck remains overlooked. To address this, we propose",
+      "rating": "📖",
+      "reason": "无需训练的自适应 Flow Matching 推理框架，通过轨迹复杂度动态调度积分步数。MetaWorld 上加速 VLA 推理，工程价值高可立即复用。 [Pass3降级: Adaptive ODE solving for diffusion models is a well-established technique pre-2024, applied here with minimal modification to VLA action heads.]",
+      "affiliation": ""
+    },
+    {
+      "title": "Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17834",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17834v1 Announce Type: new Abstract: Diffusion models and flow matching have become a cornerstone of robotic imitation learning, yet they suffer from a structural inefficiency where inference is often bound to a fixed integration schedule that is agnostic to state complexity. This paradigm forces the policy to expend the same computational budget on trivial motions as it does on complex tasks. We introduce Generative Control as Optimization (GeCO), a time-unconditional framework that",
+      "rating": "📖",
+      "reason": "GeCO 将动作合成转为迭代优化，学习时间无条件速度场。与 ProbeFlow 思路相似但抽象缺乏量化对比，待正文验证实际增益。",
+      "affiliation": "[清华|Zhao]"
+    },
+    {
+      "title": "VolumeDP: Modeling Volumetric Representation for Manipulation Policy Learning",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17720",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17720v1 Announce Type: new Abstract: Imitation learning is a prominent paradigm for robotic manipulation. However, existing visual imitation methods map 2D image observations directly to 3D action outputs, imposing a 2D-3D mismatch that hinders spatial reasoning and degrades robustness. We present VolumeDP, a policy architecture that restores spatial alignment by explicitly reasoning in 3D. VolumeDP first lifts image features into a Volumetric Representation via cross-attention. It th",
+      "rating": "🔧",
+      "reason": "显式 3D 体素表示策略架构，通过交叉注意力提升图像特征，选择任务相关体素转为空间 token。解决 2D-3D 不匹配，架构创新清晰。",
+      "affiliation": "[清华|Zhao]"
+    },
+    {
+      "title": "HeiSD: Hybrid Speculative Decoding for Embodied Vision-Language-Action Models with Kinematic Awareness",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17573",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17573v1 Announce Type: new Abstract: Vision-Language-Action (VLA) Models have become the mainstream solution for robot control, but suffer from slow inference speeds. Speculative Decoding (SD) is a promising acceleration method which can be divided into two categories: drafter-based SD and retrieval-based SD. Existing methods fail to analyze the advantages and disadvantages of these two types of SD in VLA models, leading to their sole application or optimization. In this paper, we ana",
+      "rating": "📖",
+      "reason": "混合推测解码加速 VLA 推理，结合 drafter 和 retrieval 两类 SD。与 ProbeFlow 同属推理优化方向，需对比验证差异化优势。",
+      "affiliation": ""
+    },
+    {
+      "title": "KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17524",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17524v1 Announce Type: new Abstract: In this paper, we introduce a novel kinematics-rich vision-language-action (VLA) task, in which language commands densely encode diverse kinematic attributes (such as direction, trajectory, orientation, and relative displacement) from initiation through completion, at key moments, unlike existing action instructions that capture kinematics only coarsely or partially, thereby supporting fine-grained and personalized manipulation. In this setting, wh",
+      "rating": "🔧",
+      "reason": "提出运动学感知 VLA 新任务，双层动作表示解耦目标不变性与运动学可变性。扩展 VLA 能力边界，但需基准测试验证泛化效果。",
+      "affiliation": "[Waterloo]"
+    },
+    {
+      "title": "DexEXO: A Wearability-First Dexterous Exoskeleton for Operator-Agnostic Demonstration and Learning",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17323",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17323v1 Announce Type: new Abstract: Scaling dexterous robot learning is constrained by the difficulty of collecting high-quality demonstrations across diverse operators. Existing wearable interfaces often trade comfort and cross-user adaptability for kinematic fidelity, while embodiment mismatch between demonstration and deployment requires visual post-processing before policy training. We present DexEXO, a wearability-first hand exoskeleton that aligns visual appearance, contact geo",
+      "rating": "📖",
+      "reason": "可穿戴外骨骼硬件系统，支持跨操作者数据采集。对 VLA 数据规模扩展有价值，但属硬件贡献，非算法或架构创新。",
+      "affiliation": ""
+    },
+    {
+      "title": "Influence of Gripper Design on Human Demonstration Quality for Robot Learning",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17189",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17189v1 Announce Type: new Abstract: Opening sterile medical packaging is routine for healthcare workers but remains challenging for robots. Learning from demonstration enables robots to acquire manipulation skills directly from humans, and handheld gripper tools such as the Universal Manipulation Interface (UMI) offer a pathway for efficient data collection. However, the effectiveness of these tools depends heavily on their usability. We evaluated UMI in demonstrating a bandage openi",
+      "rating": "❌",
+      "reason": "研究夹爪设计对人演示质量影响，属人机交互/人因工程研究。与 VLA 架构/训练/推理无实质关联，不符合 VLA 核心研究方向。",
+      "affiliation": "[Purdue]"
+    },
+    {
+      "title": "TeleDex: Accessible Dexterous Teleoperation",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.17065",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.17065v1 Announce Type: new Abstract: Despite increasing dataset scale and model capacity, robot manipulation policies still struggle to generalize beyond their training distributions. As a result, deploying state-of-the-art policies in new environments, tasks, or robot embodiments often requires collecting additional demonstrations. Enabling this in real-world deployment settings requires tools that allow users to collect demonstrations quickly, affordably, and with minimal setup. We",
+      "rating": "📖",
+      "reason": "基于手机的灵巧手遥操作系统，无需外部追踪。对数据采集有实用价值，但属工具类贡献，非 VLA 方法或架构创新。",
+      "affiliation": ""
+    },
+    {
+      "title": "Rewarding DINO: Predicting Dense Rewards with Vision Foundation Models",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.16978",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.16978v1 Announce Type: new Abstract: Well-designed dense reward functions in robot manipulation not only indicate whether a task is completed but also encode progress along the way. Generally, designing dense rewards is challenging and usually requires access to privileged state information available only in simulation, not in real-world experiments. This makes reward prediction models that infer task state information from camera images attractive. A common approach is to predict rew",
+      "rating": "📖",
+      "reason": "语言条件奖励建模，从视觉基础模型预测稠密奖励。更偏向 RL 奖励函数学习，与 VLA 直接关联较弱，可作为 VLA+RL 精调参考。",
+      "affiliation": "[Freiburg]"
+    },
+    {
+      "title": "Embodied Foundation Models at the Edge: A Survey of Deployment Constraints and Mitigation Strategies",
+      "date": "2026-03-20",
+      "url": "https://arxiv.org/abs/2603.16952",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2603.16952v1 Announce Type: new Abstract: Deploying foundation models in embodied edge systems is fundamentally a systems problem, not just a problem of model compression. Real-time control must operate within strict size, weight, and power constraints, where memory traffic, compute latency, timing variability, and safety margins interact directly. The Deployment Gauntlet organizes these constraints into eight coupled barriers that determine whether embodied foundation models can run relia",
+      "rating": "📖",
+      "reason": "具身基础模型边缘部署综述，提出八重部署障碍框架。系统级视角有价值，但属综述类，无新方法或实验贡献。",
+      "affiliation": ""
+    },
+    {
       "title": "On the minimax optimality of Flow Matching through the connection to kernel density estimation",
       "date": "2026-03-19",
       "url": "https://arxiv.org/abs/2504.13336",
@@ -6380,5 +6560,5 @@
     }
   ],
   "last_report_date": "2026-02-21",
-  "last_updated": "2026-03-19T09:15:08.244646+08:00"
+  "last_updated": "2026-03-20T09:18:32.624512+08:00"
 }

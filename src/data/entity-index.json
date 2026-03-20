@@ -218,6 +218,14 @@
           "rating": null,
           "domain": "ai_app",
           "why_picked": "OpenAI 官方发布：帮助用户通过 ChatGPT 了解薪资信息，缩小工资信息差距，展示 AI 在劳动市场的实际应用"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "OpenAI 收购 Astral：uv/ruff/ty 核心团队加入",
+          "url": "https://simonwillison.net/2026/Mar/19/openai-acquiring-astral/",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "OpenAI 正式宣布收购 Astral（uv/ruff/ty 背后团队），标志编程工具链成为大模型公司战略要地，Python 生态核心基础设施纳入 OpenAI 版图"
         }
       ],
       "assumption_links": {
@@ -482,6 +490,14 @@
           "rating": "📖",
           "domain": "vla",
           "abstract": "arXiv:2510.11689v2 Announce Type: replace Abstract: Learning robotic manipulation policies directly in the real world can be expensive and time-consuming. While reinforcement learning (RL) policies trained in simulation present a scalable alternative, effective sim-to-real transfer remains challenging, particularly for tasks that require precise dynamics. To address this, we propose Phys2Real, a real-to-sim-to-real RL pipeline that combines vision-language model (VLM)-inferred physical parameter"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Grounding Robot Generalization in Training Data via Retrieval-Augmented VLMs",
+          "url": "https://arxiv.org/abs/2603.11426",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.11426v2 Announce Type: replace Abstract: Recent work on robot manipulation has advanced policy generalization to novel scenarios. However, it is often difficult to characterize how different evaluation settings actually represent generalization from the training distribution of a given policy. To work towards more precise evaluation of generalization in robotics, we propose RADAR, a scalable framework for directly comparing test-time evaluation tasks to policy training data, to determ"
         }
       ],
       "assumption_links": {
@@ -491,6 +507,10 @@
         },
         "V-007": {
           "strength": 0.08,
+          "direction": "supporting"
+        },
+        "A-006": {
+          "strength": 0.04,
           "direction": "supporting"
         }
       }
@@ -514,9 +534,34 @@
           "rating": "⚡",
           "domain": "vla",
           "abstract": "arXiv:2603.16666v1 Announce Type: cross Abstract: World Action Models (WAMs) have emerged as a promising alternative to Vision-Language-Action (VLA) models for embodied control because they explicitly model how visual observations may evolve under action. Most existing WAMs follow an imagine-then-execute paradigm, incurring substantial test-time latency from iterative video denoising, yet it remains unclear whether explicit future imagination is actually necessary for strong action performance."
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control",
+          "url": "https://arxiv.org/abs/2603.17834",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17834v1 Announce Type: new Abstract: Diffusion models and flow matching have become a cornerstone of robotic imitation learning, yet they suffer from a structural inefficiency where inference is often bound to a fixed integration schedule that is agnostic to state complexity. This paradigm forces the policy to expend the same computational budget on trivial motions as it does on complex tasks. We introduce Generative Control as Optimization (GeCO), a time-unconditional framework that"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "VolumeDP: Modeling Volumetric Representation for Manipulation Policy Learning",
+          "url": "https://arxiv.org/abs/2603.17720",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17720v1 Announce Type: new Abstract: Imitation learning is a prominent paradigm for robotic manipulation. However, existing visual imitation methods map 2D image observations directly to 3D action outputs, imposing a 2D-3D mismatch that hinders spatial reasoning and degrades robustness. We present VolumeDP, a policy architecture that restores spatial alignment by explicitly reasoning in 3D. VolumeDP first lifts image features into a Volumetric Representation via cross-attention. It th"
         }
       ],
-      "assumption_links": {}
+      "assumption_links": {
+        "V-001": {
+          "strength": 0.1,
+          "direction": "supporting"
+        },
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
     },
     "method:instructvla": {
       "type": "method",
@@ -1209,6 +1254,22 @@
           "rating": "⚡",
           "domain": "vla",
           "abstract": "arXiv:2603.15757v1 Announce Type: new Abstract: What happens when a pretrained generative robot policy is provided a constant initial noise as input, rather than repeatedly sampling it from a Gaussian? We demonstrate that the performance of a pretrained, frozen diffusion or flow matching policy can be improved with respect to a downstream reward by swapping the sampling of initial noise from the prior distribution (typically isotropic Gaussian) with a well-chosen, constant initial noise input --"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models",
+          "url": "https://arxiv.org/abs/2603.17850",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17850v1 Announce Type: new Abstract: Recent Vision-Language-Action (VLA) models equipped with Flow Matching (FM) action heads achieve state-of-the-art performance in complex robot manipulation. However, the multi-step iterative ODE solving required by FM introduces inference latency that precludes responsive physical control. While current acceleration efforts optimize the Vision-Language Model (VLM) backbone, the action head bottleneck remains overlooked. To address this, we propose"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control",
+          "url": "https://arxiv.org/abs/2603.17834",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17834v1 Announce Type: new Abstract: Diffusion models and flow matching have become a cornerstone of robotic imitation learning, yet they suffer from a structural inefficiency where inference is often bound to a fixed integration schedule that is agnostic to state complexity. This paradigm forces the policy to expend the same computational budget on trivial motions as it does on complex tasks. We introduce Generative Control as Optimization (GeCO), a time-unconditional framework that"
         }
       ],
       "assumption_links": {
@@ -1345,6 +1406,30 @@
           "rating": "🔧",
           "domain": "vla",
           "abstract": "arXiv:2603.16806v1 Announce Type: new Abstract: To meet the demands of increasingly diverse dexterous hand hardware, it is crucial to develop a policy that enables zero-shot cross-embodiment grasping without redundant re-learning. Cross-embodiment alignment is challenging due to heterogeneous hand kinematics and physical constraints. Existing approaches typically predict intermediate motion targets and retarget them to each embodiment, which may introduce errors and violate embodiment-specific l"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "DexViTac: Collecting Human Visuo-Tactile-Kinematic Demonstrations for Contact-Rich Dexterous Manipulation",
+          "url": "https://arxiv.org/abs/2603.17851",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17851v1 Announce Type: new Abstract: Large-scale, high-quality multimodal demonstrations are essential for robot learning of contact-rich dexterous manipulation. While human-centric data collection systems lower the barrier to scaling, they struggle to capture the tactile information during physical interactions. Motivated by this, we present DexViTac, a portable, human-centric data collection system tailored for contact-rich dexterous manipulation. The system enables the high-fidelit"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "DexEXO: A Wearability-First Dexterous Exoskeleton for Operator-Agnostic Demonstration and Learning",
+          "url": "https://arxiv.org/abs/2603.17323",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17323v1 Announce Type: new Abstract: Scaling dexterous robot learning is constrained by the difficulty of collecting high-quality demonstrations across diverse operators. Existing wearable interfaces often trade comfort and cross-user adaptability for kinematic fidelity, while embodiment mismatch between demonstration and deployment requires visual post-processing before policy training. We present DexEXO, a wearability-first hand exoskeleton that aligns visual appearance, contact geo"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "TeleDex: Accessible Dexterous Teleoperation",
+          "url": "https://arxiv.org/abs/2603.17065",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17065v1 Announce Type: new Abstract: Despite increasing dataset scale and model capacity, robot manipulation policies still struggle to generalize beyond their training distributions. As a result, deploying state-of-the-art policies in new environments, tasks, or robot embodiments often requires collecting additional demonstrations. Enabling this in real-world deployment settings requires tools that allow users to collect demonstrations quickly, affordably, and with minimal setup. We"
         }
       ],
       "assumption_links": {
@@ -1354,6 +1439,10 @@
         },
         "V-004": {
           "strength": 0.15,
+          "direction": "supporting"
+        },
+        "V-007": {
+          "strength": 0.08,
           "direction": "supporting"
         },
         "V-009": {
@@ -1623,6 +1712,22 @@
           "rating": "📖",
           "domain": "vla",
           "abstract": "arXiv:2603.15789v1 Announce Type: new Abstract: Reinforcement learning in massively parallel physics simulations has driven major progress in sim-to-real robot learning. However, current approaches remain brittle and task-specific, relying on extensive per-task engineering to design rewards, curricula, and demonstrations. Even with this engineering, they often fail on long-horizon, contact-rich manipulation tasks and do not meaningfully scale with compute, as performance quickly saturates when t"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "U-ARM : Ultra low-cost general teleoperation interface for robot manipulation",
+          "url": "https://arxiv.org/abs/2509.02437",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.02437v4 Announce Type: replace Abstract: We propose U-Arm, a low-cost and rapidly adaptable leader-follower teleoperation framework designed to interface with most of commercially available robotic arms. Our system supports teleoperation through three structurally distinct 3D-printed leader arms that share consistent control logic, enabling seamless compatibility with diverse commercial robot configurations. Compared with previous open-source leader-follower interfaces, we further opt"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition",
+          "url": "https://arxiv.org/abs/2603.17524",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17524v1 Announce Type: new Abstract: In this paper, we introduce a novel kinematics-rich vision-language-action (VLA) task, in which language commands densely encode diverse kinematic attributes (such as direction, trajectory, orientation, and relative displacement) from initiation through completion, at key moments, unlike existing action instructions that capture kinematics only coarsely or partially, thereby supporting fine-grained and personalized manipulation. In this setting, wh"
         }
       ],
       "assumption_links": {
@@ -1643,7 +1748,7 @@
           "direction": "challenging"
         },
         "V-007": {
-          "strength": 0.08,
+          "strength": 0.17,
           "direction": "challenging"
         },
         "A-003": {
@@ -1948,11 +2053,27 @@
           "rating": "📖",
           "domain": "vla",
           "abstract": "Learning in simulation provides a useful foundation for scaling robotic manipulation capabilities. However, this paradigm often suffers from a lack of data-generation-ready digital assets, in both scale and diversity. In this work, we present ManiTwin, an automated and efficient pipeline for generating data-generation-ready digital object twins. Our pipeline transforms a single image into simulation-ready and semantically annotated 3D asset, enabling large-scale robotic manipulation data generat"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control",
+          "url": "https://arxiv.org/abs/2603.17834",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17834v1 Announce Type: new Abstract: Diffusion models and flow matching have become a cornerstone of robotic imitation learning, yet they suffer from a structural inefficiency where inference is often bound to a fixed integration schedule that is agnostic to state complexity. This paradigm forces the policy to expend the same computational budget on trivial motions as it does on complex tasks. We introduce Generative Control as Optimization (GeCO), a time-unconditional framework that"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "VolumeDP: Modeling Volumetric Representation for Manipulation Policy Learning",
+          "url": "https://arxiv.org/abs/2603.17720",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17720v1 Announce Type: new Abstract: Imitation learning is a prominent paradigm for robotic manipulation. However, existing visual imitation methods map 2D image observations directly to 3D action outputs, imposing a 2D-3D mismatch that hinders spatial reasoning and degrades robustness. We present VolumeDP, a policy architecture that restores spatial alignment by explicitly reasoning in 3D. VolumeDP first lifts image features into a Volumetric Representation via cross-attention. It th"
         }
       ],
       "assumption_links": {
         "V-001": {
-          "strength": 0.1,
+          "strength": 0.2,
           "direction": "supporting"
         },
         "V-002": {
@@ -2119,6 +2240,14 @@
           "rating": "📖",
           "domain": "vla",
           "abstract": "arXiv:2603.10565v1 Announce Type: new Abstract: Pose estimation is essential for robotic manipulation, particularly when visual perception is occluded during gripper-object interactions. Existing tactile-based methods generally rely on tactile simulation or pre-trained models, which limits their generalizability and efficiency. In this study, we propose TacLoc, a novel tactile localization framework that formulates the problem as a one-shot point cloud registration task. TacLoc introduces a grap"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "DexViTac: Collecting Human Visuo-Tactile-Kinematic Demonstrations for Contact-Rich Dexterous Manipulation",
+          "url": "https://arxiv.org/abs/2603.17851",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17851v1 Announce Type: new Abstract: Large-scale, high-quality multimodal demonstrations are essential for robot learning of contact-rich dexterous manipulation. While human-centric data collection systems lower the barrier to scaling, they struggle to capture the tactile information during physical interactions. Motivated by this, we present DexViTac, a portable, human-centric data collection system tailored for contact-rich dexterous manipulation. The system enables the high-fidelit"
         }
       ],
       "assumption_links": {
@@ -3084,6 +3213,38 @@
           "rating": "📖",
           "domain": "vla",
           "abstract": "arXiv:2603.16086v1 Announce Type: new Abstract: While recent Vision-Language-Action (VLA) models have begun to incorporate audio, they typically treat sound as static pre-execution prompts or focus exclusively on human speech. This leaves a significant gap in real-time, sound-centric manipulation where fleeting environmental acoustics provide critical state verification during task execution. Consequently, key sounds are easily missed due to low-frequency updates or system latency. This problem"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Learning to See and Act: Task-Aware Virtual View Exploration for Robotic Manipulation",
+          "url": "https://arxiv.org/abs/2508.05186",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2508.05186v5 Announce Type: replace Abstract: Recent vision-language-action (VLA) models for multi-task robot manipulation often rely on fixed camera setups and shared visual encoders, which limit their performance under occlusions and during cross-task transfer. To address these challenges, we propose Task-aware Virtual View Exploration (TVVE), a framework that learns to select task-relevant virtual camera viewpoints and dynamically re-render observations from a reconstructed scene repres"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models",
+          "url": "https://arxiv.org/abs/2603.17850",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17850v1 Announce Type: new Abstract: Recent Vision-Language-Action (VLA) models equipped with Flow Matching (FM) action heads achieve state-of-the-art performance in complex robot manipulation. However, the multi-step iterative ODE solving required by FM introduces inference latency that precludes responsive physical control. While current acceleration efforts optimize the Vision-Language Model (VLM) backbone, the action head bottleneck remains overlooked. To address this, we propose"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "HeiSD: Hybrid Speculative Decoding for Embodied Vision-Language-Action Models with Kinematic Awareness",
+          "url": "https://arxiv.org/abs/2603.17573",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17573v1 Announce Type: new Abstract: Vision-Language-Action (VLA) Models have become the mainstream solution for robot control, but suffer from slow inference speeds. Speculative Decoding (SD) is a promising acceleration method which can be divided into two categories: drafter-based SD and retrieval-based SD. Existing methods fail to analyze the advantages and disadvantages of these two types of SD in VLA models, leading to their sole application or optimization. In this paper, we ana"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition",
+          "url": "https://arxiv.org/abs/2603.17524",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17524v1 Announce Type: new Abstract: In this paper, we introduce a novel kinematics-rich vision-language-action (VLA) task, in which language commands densely encode diverse kinematic attributes (such as direction, trajectory, orientation, and relative displacement) from initiation through completion, at key moments, unlike existing action instructions that capture kinematics only coarsely or partially, thereby supporting fine-grained and personalized manipulation. In this setting, wh"
         }
       ],
       "assumption_links": {
@@ -3092,7 +3253,7 @@
           "direction": "supporting"
         },
         "V-001": {
-          "strength": 0.2,
+          "strength": 0.3,
           "direction": "supporting"
         },
         "V-002": {
@@ -3216,6 +3377,30 @@
           "rating": "📖",
           "domain": "vla",
           "abstract": "arXiv:2511.18810v2 Announce Type: replace Abstract: Recent Vision-Language-Action (VLA) models reformulate vision-language models by tuning them with millions of robotic demonstrations. While they perform well when fine-tuned for a single embodiment or task family, extending them to multi-skill settings remains challenging: directly merging VLA experts trained on different tasks results in near-zero success rates. This raises a fundamental question: what prevents VLAs from mastering multiple ski"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Learning to See and Act: Task-Aware Virtual View Exploration for Robotic Manipulation",
+          "url": "https://arxiv.org/abs/2508.05186",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2508.05186v5 Announce Type: replace Abstract: Recent vision-language-action (VLA) models for multi-task robot manipulation often rely on fixed camera setups and shared visual encoders, which limit their performance under occlusions and during cross-task transfer. To address these challenges, we propose Task-aware Virtual View Exploration (TVVE), a framework that learns to select task-relevant virtual camera viewpoints and dynamically re-render observations from a reconstructed scene repres"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Rewarding DINO: Predicting Dense Rewards with Vision Foundation Models",
+          "url": "https://arxiv.org/abs/2603.16978",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.16978v1 Announce Type: new Abstract: Well-designed dense reward functions in robot manipulation not only indicate whether a task is completed but also encode progress along the way. Generally, designing dense rewards is challenging and usually requires access to privileged state information available only in simulation, not in real-world experiments. This makes reward prediction models that infer task state information from camera images attractive. A common approach is to predict rew"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Embodied Foundation Models at the Edge: A Survey of Deployment Constraints and Mitigation Strategies",
+          "url": "https://arxiv.org/abs/2603.16952",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.16952v1 Announce Type: new Abstract: Deploying foundation models in embodied edge systems is fundamentally a systems problem, not just a problem of model compression. Real-time control must operate within strict size, weight, and power constraints, where memory traffic, compute latency, timing variability, and safety margins interact directly. The Deployment Gauntlet organizes these constraints into eight coupled barriers that determine whether embodied foundation models can run relia"
         }
       ],
       "assumption_links": {
@@ -3289,11 +3474,23 @@
           "rating": null,
           "domain": "ai_app",
           "why_picked": "两大国产 AI 巨头同期发布新模型，DeepSeek V4 与腾讯混元升级版本预计 4 月亮相，反映中国大模型竞争持续升温"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "小米认领神秘大模型：全网猜了一周的 DeepSeek V4 竟是它",
+          "url": "https://www.36kr.com/p/3729145971178883",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "小米正式认领引发全网猜测的神秘大模型，支持免费养龙虾式训练，国产大模型竞争再添变数，小米 AI 战略浮出水面"
         }
       ],
       "assumption_links": {
         "A-004": {
           "strength": 0.08,
+          "direction": "supporting"
+        },
+        "S-001": {
+          "strength": 0.1,
           "direction": "supporting"
         }
       }
@@ -3367,9 +3564,54 @@
           "rating": "⚡",
           "domain": "vla",
           "abstract": "arXiv:2603.10929v1 Announce Type: cross Abstract: We introduce a lifelong imitation learning framework that enables continual policy refinement across sequential tasks under realistic memory and data constraints. Our approach departs from conventional experience replay by operating entirely in a multimodal latent space, where compact representations of visual, linguistic, and robot's state information are stored and reused to support future learning. To further stabilize adaptation, we introduce"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "U-ARM : Ultra low-cost general teleoperation interface for robot manipulation",
+          "url": "https://arxiv.org/abs/2509.02437",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.02437v4 Announce Type: replace Abstract: We propose U-Arm, a low-cost and rapidly adaptable leader-follower teleoperation framework designed to interface with most of commercially available robotic arms. Our system supports teleoperation through three structurally distinct 3D-printed leader arms that share consistent control logic, enabling seamless compatibility with diverse commercial robot configurations. Compared with previous open-source leader-follower interfaces, we further opt"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control",
+          "url": "https://arxiv.org/abs/2603.17834",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17834v1 Announce Type: new Abstract: Diffusion models and flow matching have become a cornerstone of robotic imitation learning, yet they suffer from a structural inefficiency where inference is often bound to a fixed integration schedule that is agnostic to state complexity. This paradigm forces the policy to expend the same computational budget on trivial motions as it does on complex tasks. We introduce Generative Control as Optimization (GeCO), a time-unconditional framework that"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "VolumeDP: Modeling Volumetric Representation for Manipulation Policy Learning",
+          "url": "https://arxiv.org/abs/2603.17720",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17720v1 Announce Type: new Abstract: Imitation learning is a prominent paradigm for robotic manipulation. However, existing visual imitation methods map 2D image observations directly to 3D action outputs, imposing a 2D-3D mismatch that hinders spatial reasoning and degrades robustness. We present VolumeDP, a policy architecture that restores spatial alignment by explicitly reasoning in 3D. VolumeDP first lifts image features into a Volumetric Representation via cross-attention. It th"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "TeleDex: Accessible Dexterous Teleoperation",
+          "url": "https://arxiv.org/abs/2603.17065",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17065v1 Announce Type: new Abstract: Despite increasing dataset scale and model capacity, robot manipulation policies still struggle to generalize beyond their training distributions. As a result, deploying state-of-the-art policies in new environments, tasks, or robot embodiments often requires collecting additional demonstrations. Enabling this in real-world deployment settings requires tools that allow users to collect demonstrations quickly, affordably, and with minimal setup. We"
         }
       ],
-      "assumption_links": {}
+      "assumption_links": {
+        "V-001": {
+          "strength": 0.1,
+          "direction": "challenging"
+        },
+        "V-007": {
+          "strength": 0.08,
+          "direction": "challenging"
+        },
+        "A-004": {
+          "strength": 0.08,
+          "direction": "challenging"
+        }
+      }
     },
     "model:coverage-guided": {
       "type": "model",
@@ -4182,6 +4424,14 @@
           "rating": null,
           "domain": "ai_app",
           "why_picked": "36kr 深度报道：xAI 11 名联合创始人中 6 名华人全部离职，马斯克承认 Grok 编码能力落后，将巨硬智能体项目与特斯拉数字擎天柱合并，反映 AI 智能体竞争白热化下的人事动荡"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Grok Imagine 视频生成三金封神",
+          "url": "https://www.36kr.com/p/3729334524444038",
+          "rating": null,
+          "domain": "ai_app",
+          "why_picked": "马斯克 xAI 的 Grok Imagine 在视频生成领域斩获三项大奖，AI 视频生成竞争格局生变，xAI 从文本向多模态扩展加速"
         }
       ],
       "assumption_links": {}
@@ -4436,6 +4686,14 @@
           "rating": "🔧",
           "domain": "vla",
           "abstract": "arXiv:2603.16218v1 Announce Type: new Abstract: While vision-language-action (VLA) models have shown great promise for robot manipulation, their deployment on rigid industrial robots remains challenging due to the inherent trade-off between compliance and responsiveness. Standard Behavior Cloning (BC) approaches predict discrete poses at low frequencies, omitting the velocity and acceleration feedforward terms typically used by low-level compliant controllers. This requires to rely on high stiff"
+        },
+        {
+          "date": "2026-03-20",
+          "title": "Rewarding DINO: Predicting Dense Rewards with Vision Foundation Models",
+          "url": "https://arxiv.org/abs/2603.16978",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.16978v1 Announce Type: new Abstract: Well-designed dense reward functions in robot manipulation not only indicate whether a task is completed but also encode progress along the way. Generally, designing dense rewards is challenging and usually requires access to privileged state information available only in simulation, not in real-world experiments. This makes reward prediction models that infer task state information from camera images attractive. A common approach is to predict rew"
         }
       ],
       "assumption_links": {}
@@ -4540,7 +4798,182 @@
           "direction": "supporting"
         }
       }
+    },
+    "model:u-arm": {
+      "type": "model",
+      "name": "U-ARM",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "U-ARM : Ultra low-cost general teleoperation interface for robot manipulation",
+          "url": "https://arxiv.org/abs/2509.02437",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2509.02437v4 Announce Type: replace Abstract: We propose U-Arm, a low-cost and rapidly adaptable leader-follower teleoperation framework designed to interface with most of commercially available robotic arms. Our system supports teleoperation through three structurally distinct 3D-printed leader arms that share consistent control logic, enabling seamless compatibility with diverse commercial robot configurations. Compared with previous open-source leader-follower interfaces, we further opt"
+        }
+      ],
+      "assumption_links": {
+        "V-007": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:dexvitac": {
+      "type": "model",
+      "name": "DexViTac",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "DexViTac: Collecting Human Visuo-Tactile-Kinematic Demonstrations for Contact-Rich Dexterous Manipulation",
+          "url": "https://arxiv.org/abs/2603.17851",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17851v1 Announce Type: new Abstract: Large-scale, high-quality multimodal demonstrations are essential for robot learning of contact-rich dexterous manipulation. While human-centric data collection systems lower the barrier to scaling, they struggle to capture the tactile information during physical interactions. Motivated by this, we present DexViTac, a portable, human-centric data collection system tailored for contact-rich dexterous manipulation. The system enables the high-fidelit"
+        }
+      ],
+      "assumption_links": {
+        "V-002": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:probeflow": {
+      "type": "model",
+      "name": "ProbeFlow",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models",
+          "url": "https://arxiv.org/abs/2603.17850",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17850v1 Announce Type: new Abstract: Recent Vision-Language-Action (VLA) models equipped with Flow Matching (FM) action heads achieve state-of-the-art performance in complex robot manipulation. However, the multi-step iterative ODE solving required by FM introduces inference latency that precludes responsive physical control. While current acceleration efforts optimize the Vision-Language Model (VLM) backbone, the action head bottleneck remains overlooked. To address this, we propose"
+        }
+      ],
+      "assumption_links": {
+        "V-001": {
+          "strength": 0.1,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:volumedp": {
+      "type": "model",
+      "name": "VolumeDP",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "VolumeDP: Modeling Volumetric Representation for Manipulation Policy Learning",
+          "url": "https://arxiv.org/abs/2603.17720",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17720v1 Announce Type: new Abstract: Imitation learning is a prominent paradigm for robotic manipulation. However, existing visual imitation methods map 2D image observations directly to 3D action outputs, imposing a 2D-3D mismatch that hinders spatial reasoning and degrades robustness. We present VolumeDP, a policy architecture that restores spatial alignment by explicitly reasoning in 3D. VolumeDP first lifts image features into a Volumetric Representation via cross-attention. It th"
+        }
+      ],
+      "assumption_links": {
+        "A-004": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:heisd": {
+      "type": "model",
+      "name": "HeiSD",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "HeiSD: Hybrid Speculative Decoding for Embodied Vision-Language-Action Models with Kinematic Awareness",
+          "url": "https://arxiv.org/abs/2603.17573",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17573v1 Announce Type: new Abstract: Vision-Language-Action (VLA) Models have become the mainstream solution for robot control, but suffer from slow inference speeds. Speculative Decoding (SD) is a promising acceleration method which can be divided into two categories: drafter-based SD and retrieval-based SD. Existing methods fail to analyze the advantages and disadvantages of these two types of SD in VLA models, leading to their sole application or optimization. In this paper, we ana"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "lab:waterloo": {
+      "type": "lab",
+      "name": "Waterloo",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition",
+          "url": "https://arxiv.org/abs/2603.17524",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17524v1 Announce Type: new Abstract: In this paper, we introduce a novel kinematics-rich vision-language-action (VLA) task, in which language commands densely encode diverse kinematic attributes (such as direction, trajectory, orientation, and relative displacement) from initiation through completion, at key moments, unlike existing action instructions that capture kinematics only coarsely or partially, thereby supporting fine-grained and personalized manipulation. In this setting, wh"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "model:kinevla": {
+      "type": "model",
+      "name": "KineVLA",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "KineVLA: Towards Kinematics-Aware Vision-Language-Action Models with Bi-Level Action Decomposition",
+          "url": "https://arxiv.org/abs/2603.17524",
+          "rating": "🔧",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17524v1 Announce Type: new Abstract: In this paper, we introduce a novel kinematics-rich vision-language-action (VLA) task, in which language commands densely encode diverse kinematic attributes (such as direction, trajectory, orientation, and relative displacement) from initiation through completion, at key moments, unlike existing action instructions that capture kinematics only coarsely or partially, thereby supporting fine-grained and personalized manipulation. In this setting, wh"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "model:dexexo": {
+      "type": "model",
+      "name": "DexEXO",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "DexEXO: A Wearability-First Dexterous Exoskeleton for Operator-Agnostic Demonstration and Learning",
+          "url": "https://arxiv.org/abs/2603.17323",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17323v1 Announce Type: new Abstract: Scaling dexterous robot learning is constrained by the difficulty of collecting high-quality demonstrations across diverse operators. Existing wearable interfaces often trade comfort and cross-user adaptability for kinematic fidelity, while embodiment mismatch between demonstration and deployment requires visual post-processing before policy training. We present DexEXO, a wearability-first hand exoskeleton that aligns visual appearance, contact geo"
+        }
+      ],
+      "assumption_links": {}
+    },
+    "model:teledex": {
+      "type": "model",
+      "name": "TeleDex",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "TeleDex: Accessible Dexterous Teleoperation",
+          "url": "https://arxiv.org/abs/2603.17065",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.17065v1 Announce Type: new Abstract: Despite increasing dataset scale and model capacity, robot manipulation policies still struggle to generalize beyond their training distributions. As a result, deploying state-of-the-art policies in new environments, tasks, or robot embodiments often requires collecting additional demonstrations. Enabling this in real-world deployment settings requires tools that allow users to collect demonstrations quickly, affordably, and with minimal setup. We"
+        }
+      ],
+      "assumption_links": {
+        "V-007": {
+          "strength": 0.08,
+          "direction": "supporting"
+        }
+      }
+    },
+    "model:dino": {
+      "type": "model",
+      "name": "DINO",
+      "signals": [
+        {
+          "date": "2026-03-20",
+          "title": "Rewarding DINO: Predicting Dense Rewards with Vision Foundation Models",
+          "url": "https://arxiv.org/abs/2603.16978",
+          "rating": "📖",
+          "domain": "vla",
+          "abstract": "arXiv:2603.16978v1 Announce Type: new Abstract: Well-designed dense reward functions in robot manipulation not only indicate whether a task is completed but also encode progress along the way. Generally, designing dense rewards is challenging and usually requires access to privileged state information available only in simulation, not in real-world experiments. This makes reward prediction models that infer task state information from camera images attractive. A common approach is to predict rew"
+        }
+      ],
+      "assumption_links": {}
     }
   },
-  "last_updated": "2026-03-19"
+  "last_updated": "2026-03-20"
 }

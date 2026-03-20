@@ -1,0 +1,44 @@
+{
+  "date": "2026-03-20",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 多榜饱和 (99.2-99.3%) 使扩散策略 vs 自回归动作头对比基准受限；但今日 RSS 中 flow matching 论文仍活跃 (ProbeFlow, Generative Control as Optimization)，diffusion 主导地位未受挑战"
+    },
+    "V-003": {
+      "score": 0.25,
+      "reason": "method_trends: sim_to_real 标注为 declining；但 Genesis v0.4.3、MuJoCo 3.6.0 等模拟器持续更新，无实验室公开放弃信号"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO/CALVIN 饱和使开源 vs 闭源 VLA 能力对比基准受限；LeRobot v0.5.0、Octo v1.5 持续发布，6 个月 lag 条件未触发"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "method_trends: 3d_representation 标注为 declining + benchmark_relevance: LIBERO 饱和影响 3D vs 2D RGB 对比基准；但 VolumeDP (volumetric representation)、MG-Grasp (3D geometric) 等 3D 论文仍活跃"
+    },
+    "A-001": {
+      "score": 0.25,
+      "reason": "keyword_decline: MCP 关键词 7d 内出现频率下降；但 MCPCore 产品发布、HumanMCP benchmark 论文、TopoCurate tool-use agent 工作显示生态仍活跃，非真正衰退信号"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 62,
+  "ai_signals_scanned": 72,
+  "triggers": [],
+  "note": "5 个假设有 early warning (机械预评分确认)：V-001/V-003/V-008/V-010 (benchmark 饱和或方法趋势下降), A-001 (keyword 频率波动)。无 score≥0.50 条目，无需告警。",
+  "method_trends_summary": {
+    "declining": ["3d_representation", "mobile_manipulation", "sim_to_real"],
+    "stable": ["cross_embodiment", "dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile", "world_model"],
+    "surging": [],
+    "accelerating": []
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)", "LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (99.3%)", "LIBERO/standard-opensource (99.2%)"],
+  "low_confidence_warning": true,
+  "data_days": 9
+}
