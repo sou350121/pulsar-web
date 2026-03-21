@@ -1,0 +1,60 @@
+{
+  "date": "2026-03-21",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.25,
+      "reason": "LIBERO 多榜饱和 (99.2-99.3%) 限制评测区分度；但 diffusion_policy/flow_matching 仍为 stable，无架构范式转移证据"
+    },
+    "V-004": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak — humanoid 关键词 7d 内信号减少；Honor MWC 演示为正面信号但未达 4h 自主运行验证"
+    },
+    "V-006": {
+      "score": 0.25,
+      "reason": "method_decline:moderate + keyword_decline:weak — world_model 方法族呈 declining 趋势；今日无世界模型 VLA 突破性论文"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak — LIBERO 饱和使开源 vs 闭源对比基准受限；LeRobot v0.5/Octo v1.5 为正面信号"
+    },
+    "V-009": {
+      "score": 0.25,
+      "reason": "method_decline:moderate — cross_embodiment 方法族 declining；与假设方向一致（迁移仍困难），非挑战性信号"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "benchmark_relevance:weak + keyword_decline:weak — 3d_representation declining 为弱挑战信号；但无 RGB-only SOTA 突破"
+    },
+    "A-001": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak — MCP 关键词 7d 内信号减少；但 MCPCore 发布 + HumanMCP 论文为正面证据"
+    },
+    "S-001": {
+      "score": 0.25,
+      "reason": "keyword_decline:moderate — open-weight 关键词信号下降；今日无直接反证"
+    },
+    "S-002": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak — pipeline 稳定性关键词信号弱；Watchdog 机制正常运行"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 33,
+  "ai_signals_scanned": 66,
+  "triggers": [],
+  "note": "9 个假设有 early warning (score=0.25)，全部由机械预评分确认；无升级至 0.50+ 的证据",
+  "method_trends_summary": {
+    "declining": ["3d_representation", "cross_embodiment", "mobile_manipulation", "sim_to_real", "world_model"],
+    "stable": ["diffusion_policy", "flow_matching", "tactile", "rl_finetuning", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "dexterous_hand"],
+    "surging": [],
+    "accelerating": []
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (99.3%)", "LIBERO/standard-opensource (99.2%)", "CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)"],
+  "low_confidence": true,
+  "data_days": 9
+}

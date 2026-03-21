@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "model": "qwen3.5-plus",
+  "total": 1,
+  "counts": {
+    "⚡": 0,
+    "🔧": 0,
+    "📖": 1,
+    "❌": 0
+  },
+  "parse_error": "",
+  "filter_funnel": {
+    "total_rss": 1,
+    "pass1_a": 1,
+    "pass1_b": 0,
+    "pass2_promoted": 1,
+    "pass3_downgraded": 1,
+    "final_star": 0,
+    "final_gear": 0,
+    "final_book": 1,
+    "final_x": 0
+  },
+  "pass1_bucket_b": [],
+  "pass3_verdicts": [
+    {
+      "title": "faster: rethinking real-time flow vlas",
+      "verdict": "downgrade",
+      "new_rating": "📖",
+      "challenge": "Real-time inference for generative policies has ≥3 pre-2024 precedents (e.g. Diffusion Policy, ACT), making this an incremental Flow adaptation rather than a new paradigm, with significant overlap to recent ⚡ paper Fast-WAM."
+    }
+  ],
+  "papers": [
+    {
+      "title": "FASTER: Rethinking Real-Time Flow VLAs",
+      "date": "2026-03-21",
+      "url": "https://tldr.takara.ai/p/2603.19199",
+      "source": "hf-papers",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "Real-time execution is crucial for deploying Vision-Language-Action (VLA) models in the physical world. Existing asynchronous inference methods primarily optimize trajectory smoothness, but neglect the critical latency in reacting to environmental changes. By rethinking the notion of reaction in action chunking policies, this paper presents a systematic analysis of the factors governing reaction time. We show that reaction time follows a uniform distribution determined jointly by the Time to Fir",
+      "bucket": "A",
+      "pass1_reason": "",
+      "rating": "📖",
+      "reason": "分析 Flow VLA 反应时间分布（TTFA+ 视界），揭示恒定调度低效。提出 FASTER 方法优化采样，允许动作早于采样完成。显著降低延迟，实时部署价值高。 [Pass3降级: Real-time inference for generative policies has ≥3 pre-2024 precedents (e.g. Diffusion Policy, ACT), making this an incremental Flow adaptation rather than a new paradigm, with significant overlap to recent ⚡ paper Fast-WAM.]",
+      "affiliation": "[SJTU]",
+      "pass3_note": "Real-time inference for generative policies has ≥3 pre-2024 precedents (e.g. Diffusion Policy, ACT), making this an incremental Flow adaptation rather than a new paradigm, with significant overlap to recent ⚡ paper Fast-WAM.",
+      "full_abstract": "Real-time execution is crucial for deploying Vision-Language-Action (VLA) models in the physical world. Existing asynchronous inference methods primarily optimize trajectory smoothness, but neglect the critical latency in reacting to environmental changes. By rethinking the notion of reaction in action chunking policies, this paper presents a systematic analysis of the factors governing reaction time. We show that reaction time follows a uniform distribution determined jointly by the Time to First Action (TTFA) and the execution horizon. Moreover, we reveal that the standard practice of applying a constant schedule in flow-based VLAs can be inefficient and forces the system to complete all sampling steps before any movement can start, forming the bottleneck in reaction latency. To overcome this issue, we propose Fast Action Sampling for ImmediaTE Reaction (FASTER). By introducing a Horizon-Aware Schedule, FASTER adaptively prioritizes near-term actions during flow sampling, compressing the denoising of the immediate reaction by tenfold (e.g., in $π_{0.5}$ and X-VLA) into a single step, while preserving the quality of long-horizon trajectory. Coupled with a streaming client-server pipeline, FASTER substantially reduces the effective reaction latency on real robots, especially when deployed on consumer-grade GPUs. Real-world experiments, including a highly dynamic table tennis task, prove that FASTER unlocks unprecedented real-time responsiveness for generalist policies, enabling rapid generation of accurate and smooth trajectories."
+    }
+  ]
+}
