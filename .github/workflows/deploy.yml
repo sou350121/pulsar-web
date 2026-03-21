@@ -90,12 +90,11 @@ jobs:
           echo "Data files in src/data/:"
           ls -la src/data/*.json 2>/dev/null | wc -l
 
-      - name: Fallback — sync from GitHub repos if SSH failed
-        if: ${{ steps.ssh_sync.outcome == 'failure' || steps.ssh_sync.outcome == 'skipped' }}
+      - name: Sync markdown from GitHub repos (always runs)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "SSH sync failed/skipped — pulling from GitHub repos..."
+          echo "Syncing markdown from GitHub repos..."
           TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           YESTERDAY=$(TZ=Asia/Shanghai date -d '-1 day' +%Y-%m-%d)
 
@@ -104,9 +103,10 @@ jobs:
           API="https://api.github.com"
           AUTH="Authorization: token $TOKEN"
 
-          # Helper: download file from repo
+          # Helper: download file from repo (skip if already exists and non-empty)
           dl() {
             local repo="$1" path="$2" dest="$3"
+            [ -s "$dest" ] && return 0  # already synced via SSH
             local content
             content=$(curl -sH "$AUTH" "$API/repos/sou350121/$repo/contents/$path" | python3 -c "import sys,json; print(json.load(sys.stdin).get('content',''))" 2>/dev/null)
             if [ -n "$content" ] && [ "$content" != "None" ]; then
@@ -124,7 +124,7 @@ jobs:
             dl "Agent-Playbook" "memory/blog/archives/ai-daily-pick/${d}.md" "src/data/_ai_daily_pick_${d}.md" || true
           done
 
-          echo "GitHub fallback sync complete."
+          echo "Markdown sync complete."
           ls src/data/*"${TODAY}"* src/data/*"${YESTERDAY}"* 2>/dev/null || echo "No new dated files"
 
       - name: Install dependencies
