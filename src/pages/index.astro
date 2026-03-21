@@ -43,7 +43,7 @@ const entityIndex   = loadEntityIndex();
 const aiSocial      = loadSocialIntel('ai',  1);
 const vlaSocial     = loadSocialIntel('vla', 1);
 const biweekly      = loadBiweeklyReports(1);
-const crossDomain   = loadCrossDomainInsights(6);
+const crossDomain   = loadCrossDomainInsights(30);
 
 // Deep dive — recent 3 days
 const DEEP_DIVE_DAYS = 3;
@@ -601,7 +601,7 @@ const RULE_LABELS: Record<string, string> = {
         </div>
         <div class="collapse-body" id="collapse-cross-domain">
         <div class="hp-xd-grid fade-in-2">
-          {crossDomain.slice(0, 3).map(ins => (
+          {crossDomain.map(ins => (
             <article class="hp-xd-card">
               <div class="hp-xd-meta">
                 <span class="hp-xd-rule">{RULE_LABELS[ins.rule_id] ?? ins.label}</span>
