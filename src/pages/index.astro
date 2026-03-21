@@ -338,8 +338,11 @@ function getRatingLabel(r: string): string {
 // Cross-domain rule labels
 const RULE_LABELS: Record<string, string> = {
   R001: 'VLA 技法 → AI',
-  R002: '世界模型 → AI',
-  R003: 'AI Agent → VLA',
+  R002: 'AI 工具 → VLA',
+  R003: 'AI 具身 → VLA',
+  R004: 'VLA 基礎 → AI',
+  R005: '範式融合',
+  R006: 'GitHub 收斂',
 };
 ---
 
@@ -610,6 +613,9 @@ const RULE_LABELS: Record<string, string> = {
               <a href={ins.url} target="_blank" rel="noopener noreferrer" class="hp-xd-title">
                 {ins.rating} {ins.title}
               </a>
+              {ins.significance && (
+                <p class="hp-xd-significance">{ins.significance}</p>
+              )}
               {ins.matched_keywords.length > 0 && (
                 <div class="hp-xd-kws">
                   {ins.matched_keywords.map(kw => <span class="hp-xd-kw">{kw}</span>)}
@@ -1414,6 +1420,14 @@ const RULE_LABELS: Record<string, string> = {
   transition: color 0.15s;
 }
 .hp-xd-title:hover { color: var(--accent-cyan); }
+
+.hp-xd-significance {
+  font-size: 0.65rem;
+  color: var(--accent-amber, #f59e0b);
+  margin: 2px 0 4px;
+  opacity: 0.9;
+  line-height: 1.4;
+}
 
 .hp-xd-kws {
   display: flex;
