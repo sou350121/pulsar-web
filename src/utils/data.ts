@@ -655,16 +655,20 @@ export function extractMarkdownSummary(content: string, maxLen: number = 300): s
 
 // Cross-domain insights
 export interface CrossDomainInsight {
-  rule_id:          string;
-  label:            string;
-  source_domain:    string;
-  target_domain:    string;
-  title:            string;
-  url:              string;
-  rating:           string;
-  matched_keywords: string[];
-  abstract:         string;
-  date:             string;
+  rule_id:            string;
+  label:              string;
+  source_domain:      string;
+  target_domain:      string;
+  title:              string;
+  url:                string;
+  rating:             string;
+  matched_keywords:   string[];
+  abstract:           string;
+  date:               string;
+  significance?:      string;
+  practitioner_note?: string;
+  rule_description?:  string;
+  vla_need?:          string;
 }
 
 interface CrossDomainFile {
