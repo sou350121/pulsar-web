@@ -23,9 +23,10 @@ interface Props {
   domain:       'vla' | 'ai' | string;
   url:          string;
   affiliation?: string;
+  soWhat?:      string;
 }
 
-const { title, summary, rating, source, date, domain, url, affiliation } = Astro.props;
+const { title, summary, rating, source, date, domain, url, affiliation, soWhat } = Astro.props;
 
 const domainLabel = domain === 'vla' ? 'VLA' : 'AI App';
 const domainTag   = domain === 'vla' ? 'tag-vla' : 'tag-ai';
@@ -63,6 +64,13 @@ const domainTag   = domain === 'vla' ? 'tag-vla' : 'tag-ai';
   <p class="text-pulsar-muted text-sm leading-relaxed line-clamp-3 font-noto-serif-sc">
     {summary}
   </p>
+
+  {soWhat && (
+    <p class="text-xs leading-relaxed font-noto-serif-sc italic" style="color: var(--color-pulsar-amber, #d97706);">
+      <span class="font-ibm-plex-mono font-bold text-[0.65rem] tracking-wide not-italic opacity-70 border border-current rounded px-1 mr-1" style="font-style: normal;">SO WHAT</span>
+      {soWhat}
+    </p>
+  )}
 
   <!-- Footer: source + external link -->
   <div class="flex items-center justify-between mt-auto pt-2 border-t border-pulsar-border">

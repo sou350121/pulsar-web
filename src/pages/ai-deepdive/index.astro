@@ -5,11 +5,22 @@
  * 解法：入門路徑 → 精選必讀 8 篇 → PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span> → 模塊過濾 + 緊湊列表。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadAIGitHubArticles, loadAIDeepDive } from '../../utils/data';
+import { loadAIGitHubArticles, loadAIDeepDive, AI_DEEP_DIVE_TAGS, matchDeepDiveTags } from '../../utils/data';
 import type { AIGitHubArticle } from '../../utils/data';
 
 const articles = loadAIGitHubArticles(200);
 const deepDiveArticles = loadAIDeepDive(50);
+
+// Pre-compute tags for each deep dive article
+const ddTagsMap = new Map<number, string[]>();
+const tagCounts: Record<string, number> = {};
+for (const [idx, article] of deepDiveArticles.entries()) {
+  const tags = matchDeepDiveTags(article.title);
+  ddTagsMap.set(idx, tags);
+  for (const t of tags) { tagCounts[t] = (tagCounts[t] ?? 0) + 1; }
+}
+// Build tag lookup for template use
+const TAG_MAP = new Map(AI_DEEP_DIVE_TAGS.map(t => [t.id, t]));
 const GITHUB_REPO = 'https://github.com/sou350121/Agent-Playbook';
 const gh = (mod: string, slug: string) => `${GITHUB_REPO}/blob/main/theory/${mod}/${slug}`;
 
@@ -215,9 +226,24 @@ function artNewBadge(dateStr: string): string | null {
         <h2 class="section-title">PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span></h2>
         <span class="section-sub">{deepDiveArticles.length} <span data-tc>篇 · Pipeline 自動生成</span><span data-sc>篇 · Pipeline 自动生成</span></span>
       </div>
+
+      <!-- Tag filter bar -->
+      <div class="dd-tag-filter" id="dd-tag-filter" role="tablist" aria-label="标签过滤">
+        <button class="dtf-btn dtf-btn--all active" data-tag="all" role="tab" aria-selected="true">
+          <span data-tc>全部</span><span data-sc>全部</span> <span class="dtf-ct">{deepDiveArticles.length}</span>
+        </button>
+        {AI_DEEP_DIVE_TAGS.filter(t => (tagCounts[t.id] ?? 0) > 0).map(t => (
+          <button class={`dtf-btn dtf-btn--${t.accent}`} data-tag={t.id} role="tab" aria-selected="false">
+            <span data-tc>{t.label}</span><span data-sc>{t.labelSC}</span>
+            <span class="dtf-ct">{tagCounts[t.id] ?? 0}</span>
+          </button>
+        ))}
+      </div>
+
       <div class="dd-list" id="dd-list">
         {deepDiveArticles.map((article, idx) => {
           const sig = SIGNAL_MAP[article.signal_type] ?? { label: article.signal_type, labelSC: article.signal_type, accent: 'cyan' };
+          const tags = ddTagsMap.get(idx) ?? [];
           return (
             <a
               href={article.html_url || article.url}
@@ -225,10 +251,19 @@ function artNewBadge(dateStr: string): string | null {
               rel="noopener noreferrer"
               class={`dd-row ${idx >= DD_INITIAL ? 'dd-row--hidden' : ''}`}
               data-dd-idx={idx}
+              data-tags={tags.join(',')}
             >
               <time class="dd-date">{article.date}</time>
               <span class={`dd-signal dd-signal--${sig.accent}`}><span data-tc>{sig.label}</span><span data-sc>{sig.labelSC ?? sig.label}</span></span>
               <span class="dd-title">{article.title}</span>
+              <span class="dd-tags">
+                {tags.map(tid => {
+                  const t = TAG_MAP.get(tid);
+                  return t ? (
+                    <span class={`dd-tag dd-tag--${t.accent}`}><span data-tc>{t.label}</span><span data-sc>{t.labelSC}</span></span>
+                  ) : null;
+                })}
+              </span>
               <svg class="dd-ext" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                 <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
               </svg>
@@ -513,9 +548,39 @@ function artNewBadge(dateStr: string): string | null {
 
 /* ══ SECTION B2: Deep Dive ═══════════════════ */
 .dd-section { margin-bottom: 52px; }
+
+/* Tag filter bar */
+.dd-tag-filter {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 20px;
+}
+.dtf-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.64rem; letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  cursor: pointer; transition: all 0.15s;
+}
+.dtf-btn:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+.dtf-btn.active { color: #fff; }
+.dtf-btn.active .dtf-ct { color: rgba(255,255,255,0.7); }
+.dtf-btn--all.active    { background: var(--text-primary); border-color: var(--text-primary); }
+.dtf-btn--purple.active { background: #8b5cf6; border-color: #8b5cf6; }
+.dtf-btn--red.active    { background: #ef4444; border-color: #ef4444; }
+.dtf-btn--amber.active  { background: var(--accent-amber); border-color: var(--accent-amber); }
+.dtf-btn--blue.active   { background: #3b82f6; border-color: #3b82f6; }
+.dtf-btn--green.active  { background: #22c55e; border-color: #22c55e; }
+.dtf-btn--cyan.active   { background: #06b6d4; border-color: #06b6d4; }
+.dtf-btn--teal.active   { background: #14b8a6; border-color: #14b8a6; }
+.dtf-ct { font-size: 0.58rem; color: var(--text-tertiary); }
+
 .dd-list { display: flex; flex-direction: column; }
 .dd-row {
-  display: grid; grid-template-columns: 6.5rem auto 1fr 18px;
+  display: grid; grid-template-columns: 6.5rem auto 1fr auto 18px;
   gap: 10px; align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid var(--border-subtle, rgba(0,0,0,0.06));
@@ -560,6 +625,26 @@ function artNewBadge(dateStr: string): string | null {
 }
 .dd-row:hover .dd-ext { opacity: 0.8; transform: translate(2px, -2px); }
 
+/* Tag badges on each row */
+.dd-tags {
+  display: flex; gap: 4px; flex-shrink: 0; flex-wrap: wrap;
+}
+.dd-tag {
+  font-family: 'Menlo','Consolas',monospace;
+  font-size: 0.52rem; font-weight: 600; letter-spacing: 0.04em;
+  padding: 1px 7px; border-radius: 10px; white-space: nowrap;
+}
+.dd-tag--purple { background: rgba(139,92,246,0.12); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.25); }
+.dd-tag--red    { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.dd-tag--amber  { background: rgba(212,145,10,0.12); color: var(--accent-amber); border: 1px solid rgba(212,145,10,0.25); }
+.dd-tag--blue   { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+.dd-tag--green  { background: rgba(34,197,94,0.12);  color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+.dd-tag--cyan   { background: rgba(6,182,212,0.12);  color: #06b6d4; border: 1px solid rgba(6,182,212,0.25); }
+.dd-tag--teal   { background: rgba(20,184,166,0.12); color: #14b8a6; border: 1px solid rgba(20,184,166,0.25); }
+
+/* Hide rows filtered out by tag */
+.dd-row--tag-hidden { display: none; }
+
 .dd-expand-btn {
   display: block; margin: 16px auto 0;
   padding: 8px 24px; border-radius: 20px;
@@ -575,12 +660,13 @@ function artNewBadge(dateStr: string): string | null {
 @media (max-width: 640px) {
   .dd-row {
     grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
     gap: 4px 8px;
   }
   .dd-date { grid-column: 1; grid-row: 1; }
   .dd-signal { grid-column: 2; grid-row: 1; }
   .dd-title { grid-column: 1 / -1; grid-row: 2; white-space: normal; }
+  .dd-tags { grid-column: 1 / -1; grid-row: 3; }
   .dd-ext { display: none; }
 }
 
@@ -750,6 +836,40 @@ if (expandBtn) {
       el.classList.remove('dd-row--hidden');
     });
     expandBtn.style.display = 'none';
+  });
+}
+
+// Deep dive tag filter
+const tagFilter = document.getElementById('dd-tag-filter');
+const ddList = document.getElementById('dd-list');
+if (tagFilter && ddList) {
+  tagFilter.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('.dtf-btn');
+    if (!btn) return;
+    const tag = btn.dataset.tag ?? 'all';
+    tagFilter.querySelectorAll('.dtf-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+
+    // When filtering by tag, first expand all rows so hidden ones become visible
+    if (tag !== 'all' && expandBtn) {
+      document.querySelectorAll('.dd-row--hidden').forEach(el => {
+        el.classList.remove('dd-row--hidden');
+      });
+      expandBtn.style.display = 'none';
+    }
+
+    ddList.querySelectorAll<HTMLElement>('.dd-row').forEach(row => {
+      if (tag === 'all') {
+        row.classList.remove('dd-row--tag-hidden');
+      } else {
+        const rowTags = (row.dataset.tags ?? '').split(',');
+        row.classList.toggle('dd-row--tag-hidden', !rowTags.includes(tag));
+      }
+    });
   });
 }
 </script>

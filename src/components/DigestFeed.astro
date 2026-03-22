@@ -27,6 +27,7 @@ interface DigestItem {
   domain:       'ai' | 'vla';
   affiliation?: string;   // [Lab|Author] from VLA pipeline
   deepDiveUrl?: string;   // GitHub deep-dive doc URL when a deep analysis exists
+  soWhat?:      string;   // "So What" — practitioner impact statement
 }
 
 interface Props {
@@ -226,6 +227,12 @@ const wordmark = title ?? 'PULSAR DIGEST';
                     onClick={(e: MouseEvent) => e.stopPropagation()}
                   >🔬</a>
                 )}
+                {item.soWhat && (
+                  <div class="digest-sowhat" aria-label="So What">
+                    <span class="digest-sowhat-label">SO WHAT</span>
+                    <span class="digest-sowhat-text">{item.soWhat}</span>
+                  </div>
+                )}
               </li>
             );
           })}
@@ -311,6 +318,12 @@ const wordmark = title ?? 'PULSAR DIGEST';
                     aria-label="深析"
                     onClick={(e: MouseEvent) => e.stopPropagation()}
                   >🔬</a>
+                )}
+                {item.soWhat && (
+                  <div class="digest-sowhat" aria-label="So What">
+                    <span class="digest-sowhat-label">SO WHAT</span>
+                    <span class="digest-sowhat-text">{item.soWhat}</span>
+                  </div>
                 )}
               </li>
             );

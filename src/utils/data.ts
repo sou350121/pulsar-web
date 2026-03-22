@@ -36,6 +36,7 @@ export interface DailyPickItem {
   source:      string;
   domain:      'ai' | 'vla' | string;
   affiliation?: string;
+  soWhat?:     string;   // "So What" — why this matters to practitioners
 }
 
 export interface DailyPickDay {
@@ -51,6 +52,7 @@ interface AIDailyPickRaw {
   source:     string;
   url:        string;
   why_picked: string;   // maps to summary
+  so_what?:   string;   // "So What" — practitioner impact statement
 }
 
 export interface AIDailyPickFile {
@@ -191,6 +193,42 @@ interface AIDeepDiveFile {
   deep_dive_articles: AIDeepDiveArticle[];
 }
 
+// ---------------------------------------------------------------------------
+// AI Deep Dive tag taxonomy — practitioner-oriented categorization
+// ---------------------------------------------------------------------------
+export interface AIDeepDiveTag {
+  id:       string;
+  label:    string;    // TC
+  labelSC:  string;    // SC
+  accent:   string;
+  keywords: string[];  // lowercase; matched against title.toLowerCase()
+}
+
+export const AI_DEEP_DIVE_TAGS: AIDeepDiveTag[] = [
+  { id: 'framework',    label: '框架',       labelSC: '框架',       accent: 'purple',
+    keywords: ['framework', 'autogen', 'langchain', 'langsmith', 'strands', 'jido', 'sdk', 'ag-ui'] },
+  { id: 'safety',       label: '安全',       labelSC: '安全',       accent: 'red',
+    keywords: ['guardrail', 'security', 'safehouse', 'sandbox', 'injection', 'trust'] },
+  { id: 'coding-agent', label: '編碼Agent',  labelSC: '编码Agent',  accent: 'amber',
+    keywords: ['coding agent', 'claude code', 'agentic engineering', 'vibe', 'tmux-ide', 'verification'] },
+  { id: 'infra',        label: '基礎設施',   labelSC: '基础设施',   accent: 'blue',
+    keywords: ['inference', 'apple silicon', 'ane', 'npu', 'flashattention', 'sagemaker', 'bedrock', 'embedding', 'context'] },
+  { id: 'product',      label: '產品',       labelSC: '产品',       accent: 'green',
+    keywords: ['gpt', 'openai', 'anthropic', 'launch hn', 'lerobot'] },
+  { id: 'paradigm',     label: '範式',       labelSC: '范式',       accent: 'cyan',
+    keywords: ['paradigm', 'reshaping', 'operationalizing', 'end of', 'mcp is dead'] },
+  { id: 'tool-rag',     label: '工具RAG',    labelSC: '工具RAG',    accent: 'teal',
+    keywords: ['mcp', 'tool', 'retrieval', 'search', 'memory', 'rag', 'spine swarm', 'gui agent'] },
+];
+
+/** Match an article title against the tag taxonomy. Returns all matching tag IDs. */
+export function matchDeepDiveTags(title: string): string[] {
+  const lower = title.toLowerCase();
+  return AI_DEEP_DIVE_TAGS
+    .filter(tag => tag.keywords.some(kw => lower.includes(kw)))
+    .map(tag => tag.id);
+}
+
 // VLA SOTA tracker
 export interface VLASOTAEntry {
   benchmark:      string;
@@ -302,6 +340,7 @@ export function loadAIDailyPicks(n: number = 7): DailyPickDay[] {
         rating:  CATEGORY_DISPLAY[raw.category] ?? raw.category ?? '',
         source:  raw.source  ?? '',
         domain:  'ai',
+        soWhat:  raw.so_what || undefined,
       })),
     }));
 }
