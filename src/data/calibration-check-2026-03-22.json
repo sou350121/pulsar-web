@@ -1,0 +1,57 @@
+{
+  "date": "2026-03-22",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 三榜饱和 (99.2-99.3%)，但 diffusion/flow_matching 方法族仍稳定 (2.4-3.0 papers/d)，仅标注基准评测局限性"
+    },
+    "V-004": {
+      "score": 0.25,
+      "reason": "keyword_decline: human_robot 关键词 7d 仅 2 篇 vs 14d 12 篇 (83% 下降)；Unitree IPO 与 XPENG IRON 展示属资本/产品动态，非技术突破"
+    },
+    "V-006": {
+      "score": 0.25,
+      "reason": "method_decline + keyword_decline: world_model 方法族 0.24x 减速 (7.5→1.8 papers/d)，关键词 81% 下降 (21→4)；Simulation Distillation 等仍用 sim 预训练世界模型，非否定性证据"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "benchmark_relevance: LIBERO 饱和使开源 vs 闭源对比基准受限；OpenVLA/lerobot v0.5 持续更新，未见能力差距扩大信号"
+    },
+    "V-009": {
+      "score": 0.25,
+      "reason": "method_decline: cross_embodiment 0.18x 减速 (1.0→0.6 papers/d)；DexGrasp-Zero 仍专注 zero-shot 迁移，无颠覆性泛化突破"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "benchmark_relevance + keyword_decline: LIBERO 饱和 + 3d_representation 方法族 declining (2.75→0.6 papers/d)；Kinema4D/TacLoc 仍用 3D/触觉表示，无 2D-only SOTA 信号"
+    },
+    "A-001": {
+      "score": 0.25,
+      "reason": "keyword_decline: MCP 关键词 7d 零命中 (14d 仅 1 篇 HumanMCP)；但无 major platform 宣布私有协议替代，仅早期预警"
+    },
+    "S-001": {
+      "score": 0.25,
+      "reason": "keyword_decline:moderate: 系统假设关键词 7d 零命中 (14d 3 篇)；需持续观察"
+    },
+    "S-002": {
+      "score": 0.25,
+      "reason": "keyword_decline: 系统假设关键词 7d 零命中 (14d 1 篇)；需持续观察"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 31,
+  "ai_signals_scanned": 61,
+  "triggers": [],
+  "note": "9 个假设有 early warning (score=0.25)，全部为机械预评分确认；无 score≥0.50 条目",
+  "method_trends_summary": {
+    "declining": ["3d_representation (0.18x)", "cross_embodiment (0.18x)", "mobile_manipulation (0.24x)", "sim_to_real (0.30x)", "world_model (0.24x)"],
+    "stable": ["dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile"]
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)", "LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (99.3%)", "LIBERO/standard-opensource (99.2%)"],
+  "data_confidence": "low (9 days)"
+}
