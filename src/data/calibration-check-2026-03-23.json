@@ -1,0 +1,29 @@
+{
+  "date": "2026-03-23",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {"score": 0.25, "reason": "benchmark_relevance: LIBERO 三榜饱和 (~99%) 限制评估灵敏度；diffusion_policy 方法族稳定，无扩散策略被超越证据"},
+    "V-004": {"score": 0.25, "reason": "keyword_decline:weak — 人形机器人关键词 7d 内信号减少；Honor/Neura 融资新闻但无 4h+ 生产环境自主运行案例"},
+    "V-006": {"score": 0.25, "reason": "method_decline:moderate + keyword_decline:weak — world_model 方法族呈下降趋势；无 SIMPLER/OXE top-5 突破"},
+    "V-008": {"score": 0.25, "reason": "benchmark_relevance:weak — LIBERO 饱和使开源 vs 闭源对比基准受限；LeRobot v0.5/Octo v1.5 持续更新"},
+    "V-009": {"score": 0.25, "reason": "method_decline:moderate — cross_embodiment 方法族下降；无 >70% zero-shot 跨本体迁移论文"},
+    "V-010": {"score": 0.25, "reason": "benchmark_relevance:weak + keyword_decline:weak — 3d_representation 方法族下降 + LIBERO 饱和；无纯 RGB 方案登顶 SOTA"},
+    "A-001": {"score": 0.25, "reason": "keyword_decline:weak — MCP 关键词 7d 内信号减少；HumanMCP 基准发布但无主流 IDE 私有协议碎片化"},
+    "S-001": {"score": 0.25, "reason": "keyword_decline:moderate — 开源模型关键词 7d 内信号减少；无 LMSYS Arena 数据显示 >30% 差距"},
+    "S-002": {"score": 0.25, "reason": "keyword_decline:weak — 系统稳定性关键词减少；管道运行正常，无连续 3 日故障"}
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 29,
+  "ai_signals_scanned": 64,
+  "triggers": [],
+  "note": "9 个假设有 early warning (机械预评分确认) — 均为 method_decline/keyword_decline/benchmark_relevance 弱信号，无达到失效条件的强证据",
+  "method_trends_summary": {
+    "declining": ["3d_representation", "cross_embodiment", "mobile_manipulation", "sim_to_real", "world_model"],
+    "stable": ["dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile"]
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)", "LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (99.3%)", "LIBERO/standard-opensource (99.2%)"]
+}

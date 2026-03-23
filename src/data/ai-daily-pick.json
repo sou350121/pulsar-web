@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-03-23",
+      "items": [
+        {
+          "title": "OpenClaw 安全争议：274 分 HN 热议「安全噩梦还是白日梦」",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://composio.dev/content/openclaw-security-and-vulnerabilities",
+          "why_picked": "HN 274 分/191 评论深度辩论：OpenClaw 类开源 Agent 框架的安全边界问题，涉及权限控制、供应链攻击、生产环境部署风险",
+          "so_what": "如果你在生产环境部署 AI Agent：立即审查现有 Agent 的权限范围和命令执行边界，实施最小权限原则；考虑引入沙盒执行层（如 Docker/Agent Safehouse）；建立命令白名单和人工审批流程，避免 Claude Code 误删数据库类事故重演。"
+        },
+        {
+          "title": "Delve 审计数据泄露：533 份报告、455 家公司 99.8% 雷同",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://trustcompliance.xyz",
+          "why_picked": "HN 113 分热议：AI 合规审计行业数据泄露，揭示大量审计报告高度雷同，引发对 AI 生成合规报告真实性的质疑",
+          "so_what": "如果你在采购 AI 合规/审计工具：要求供应商提供人工审核比例和报告生成流程透明化；交叉验证审计报告中的关键发现；警惕纯 AI 生成的合规报告可能存在的模板化风险，关键场景需人工复核。"
+        },
+        {
+          "title": "Simon Willison：编码 Agent 的 Git 工作流最佳实践",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/",
+          "why_picked": "Agentic Engineering Patterns 系列更新：详解如何让 coding agent 有效使用 Git，包括分支策略、提交信息规范、代码审查流程",
+          "so_what": "如果你在用 Claude Code/Codex 等 agent：配置 agent 使用独立分支而非直接提交 main；要求 agent 为每次修改生成描述性提交信息；设置 pre-commit hook 拦截危险操作；定期 review agent 的 git history 理解其行为模式。"
+        },
+        {
+          "title": "实战：教 Claude 做移动端 App QA 测试",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://christophermeiklejohn.com/ai/zabriskie/development/android/ios/2026/03/22/teaching-claude-to-qa-a-mobile-app.html",
+          "why_picked": "详细记录如何用 Claude 进行移动端 App 质量测试，包括测试用例生成、自动化执行、结果分析完整流程",
+          "so_what": "如果你在构建 Agent 测试流程：参考其 prompt 设计模式让 agent 理解 UI 层级和交互逻辑；结合截图 + 元素树让 agent 定位问题；建立测试用例模板库供 agent 复用；将测试结果结构化存储便于后续分析。"
+        },
+        {
+          "title": "雷军确认电脑版「龙虾」开发中",
+          "category": "行业",
+          "source": "Readhub",
+          "url": "https://readhub.cn/topic/8rZ1K2jMnXY",
+          "why_picked": "小米 CEO 雷军公开回应电脑版 OpenClaw 类 Agent 框架开发计划，确认「正在开发之中」，国产 AI 编程助手竞争再升温",
+          "so_what": "如果你在选型 AI 编程助手：关注小米生态链与现有工具链（如 Cursor/Claude Code）的兼容性；评估跨平台支持能力；留意国产工具的本地化优势（中文 prompt、国内 API 访问）；但生产环境建议等待成熟版本。"
+        }
+      ]
+    },
+    {
       "date": "2026-03-22",
       "items": [
         {
@@ -1442,60 +1487,6 @@
           "source": "Reddit",
           "url": "https://www.reddit.com/r/LocalLLaMA/comments/1r86i3o/llms_grading_other_llms_2/",
           "why_picked": "社区讨论使用 LLM 评估其他 LLM 的有效性，获得大量关注和深度讨论"
-        }
-      ]
-    },
-    {
-      "date": "2026-02-20",
-      "items": [
-        {
-          "title": "Gemini 3.1 Pro 发布：复杂问题解决能力翻倍",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-pro/",
-          "why_picked": "Google 新模型在 ARC-AGI-2 基准上得分 77.1%，是 Gemini 3 Pro 的两倍多，专为复杂推理和 agentic 工作流设计"
-        },
-        {
-          "title": "Qwen3.5 开源发布：397B 多模态原生智能体",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://qwen.ai/blog?id=qwen3.5",
-          "why_picked": "阿里通义千问新版本支持文本、图像、视频输入，采用 MoE 架构（397B 总参数，17B 激活），上下文长度达 262K，可扩展至 1M+"
-        },
-        {
-          "title": "Anthropic 发布 AI 智能体自主性实证研究",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.anthropic.com/research/measuring-agent-autonomy",
-          "why_picked": "基于数百万次 Claude Code 和 API 交互数据，发现用户经验越丰富，对智能体的自动批准率越高（从 20% 升至 40-50%）"
-        },
-        {
-          "title": "Mengram：AI 记忆 API 支持三种记忆类型",
-          "category": "新发布",
-          "source": "ProductHunt",
-          "url": "https://www.producthunt.com/products/mengram",
-          "why_picked": "提供事实、事件和工作流三种记忆类型，帮助开发者构建具有长期记忆的 AI 应用"
-        },
-        {
-          "title": "AgentReady：单 API 调用降低 40-60% AI token 成本",
-          "category": "新发布",
-          "source": "ProductHunt",
-          "url": "https://www.producthunt.com/products/agentready-2",
-          "why_picked": "通过优化的代理架构显著减少大模型调用成本，适合高频率 AI 应用场景"
-        },
-        {
-          "title": "sponsors/explore",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/sponsors/explore",
-          "why_picked": "一个智能体技能框架和软件开发方法论"
-        },
-        {
-          "title": "RichardAtCT/claude-code-telegram",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/RichardAtCT/claude-code-telegram",
-          "why_picked": "机器学习系统入门项目"
         }
       ]
     }
