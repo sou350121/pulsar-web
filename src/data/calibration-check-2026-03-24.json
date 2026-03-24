@@ -1,0 +1,28 @@
+{
+  "date": "2026-03-24",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {"score": 0.25, "reason": "LIBERO 多榜饱和 (99.2-99.3%) 限制扩散策略评估基准；diffusion_policy 仍 stable，仅标注 benchmark 局限性"},
+    "V-004": {"score": 0.25, "reason": "keyword_decline:weak — 但 Westlake Titan o1 与 KAIST v0.7 人形机器人演示显示硬件进展持续"},
+    "V-006": {"score": 0.25, "reason": "method_decline:moderate — world_model 趋势下降，但今日 5 篇世界模型论文 (X-World, R2-Dreamer, WorldAgents 等) 显示研究活跃"},
+    "V-008": {"score": 0.25, "reason": "LIBERO 饱和使开源 vs 闭源对比基准受限；LeRobot v0.5.0 + Octo v1.5 发布显示开源生态活跃"},
+    "V-009": {"score": 0.25, "reason": "method_decline:moderate — cross_embodiment 趋势下降；'Latent Action Diffusion for Cross-Embodiment' 论文直接相关但未突破 70% 零-shot 门槛"},
+    "V-010": {"score": 0.25, "reason": "LIBERO 饱和影响 3D 空间理解评估；'ReMAP-DP' 使用点云表示但 3d_representation 趋势 declining"},
+    "S-001": {"score": 0.25, "reason": "keyword_decline:moderate — 但 'One Year Since DeepSeek Moment' 系列 + GGML/llama.cpp 加入 HF 显示开源生态持续演进"},
+    "S-002": {"score": 0.25, "reason": "keyword_decline:weak — Watchdog 机制正常运行，无连续故障信号"}
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 53,
+  "ai_signals_scanned": 69,
+  "triggers": [],
+  "note": "8 个假设有 early warning (机械预评分确认) — 主要为 benchmark 饱和 (LIBERO 99%+) 和方法趋势下降 (world_model, cross_embodiment, 3d_representation)；无强触发信号",
+  "method_trends_summary": {
+    "declining": ["3d_representation", "cross_embodiment", "mobile_manipulation", "sim_to_real", "world_model"],
+    "stable": ["dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "instruction_tuning", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "tactile"]
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)", "LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (99.3%)", "LIBERO/standard-opensource (99.2%)"]
+}
