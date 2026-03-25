@@ -167,39 +167,6 @@ function artNewBadge(dateStr: string): string | null {
   </header>
 
   <!-- ══════════════════════════════
-       SECTION A: 入門路徑
-  ══════════════════════════════ -->
-  <section class="start-here">
-    <div class="sh-label">✦ <span data-tc>不知道從哪裡開始？選一條路徑</span><span data-sc>不知道从哪里开始？选一条路径</span></div>
-    <div class="path-grid">
-      {PATHS.map(path => (
-        <div class={`path-card path-card--${path.accent}`}>
-          <div class="path-head">
-            <span class="path-icon">{path.icon}</span>
-            <div>
-              <div class="path-role"><span data-tc>{path.role}</span><span data-sc>{path.roleSC}</span></div>
-              <div class="path-desc"><span data-tc>{path.desc}</span><span data-sc>{path.descSC}</span></div>
-            </div>
-          </div>
-          <ol class="path-steps">
-            {path.steps.map((step, i) => (
-              <li class="path-step">
-                <span class="step-n">{i + 1}</span>
-                <a href={step.url} target="_blank" rel="noopener noreferrer" class="step-link">
-                  <span data-tc>{step.label}</span><span data-sc>{step.labelSC ?? step.label}</span>
-                  <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                    <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
-                  </svg>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════
        SECTION A2: AI METHOD TRENDS
   ══════════════════════════════ -->
   {aiFieldState && aiFieldState.method_trends.length > 0 && (
@@ -252,6 +219,40 @@ function artNewBadge(dateStr: string): string | null {
       )}
     </section>
   )}
+
+  <!-- ══════════════════════════════
+       SECTION A: 入門路徑
+  ══════════════════════════════ -->
+  <section class="start-here">
+    <div class="sh-label">✦ <span data-tc>不知道從哪裡開始？選一條路徑</span><span data-sc>不知道从哪里开始？选一条路径</span></div>
+    <div class="path-grid">
+      {PATHS.map(path => (
+        <div class={`path-card path-card--${path.accent}`}>
+          <div class="path-head">
+            <span class="path-icon">{path.icon}</span>
+            <div>
+              <div class="path-role"><span data-tc>{path.role}</span><span data-sc>{path.roleSC}</span></div>
+              <div class="path-desc"><span data-tc>{path.desc}</span><span data-sc>{path.descSC}</span></div>
+            </div>
+          </div>
+          <ol class="path-steps">
+            {path.steps.map((step, i) => (
+              <li class="path-step">
+                <span class="step-n">{i + 1}</span>
+                <a href={step.url} target="_blank" rel="noopener noreferrer" class="step-link">
+                  <span data-tc>{step.label}</span><span data-sc>{step.labelSC ?? step.label}</span>
+                  <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M4 1H1.5a.5.5 0 00-.5.5v7a.5.5 0 00.5-.5h7a.5.5 0 00.5-.5V7M7 1h2v2M9 1L5 5"/>
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </section>
+
 
   <!-- ══════════════════════════════
        SECTION B: 精選必讀 8 篇
