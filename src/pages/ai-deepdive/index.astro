@@ -212,7 +212,7 @@ function artNewBadge(dateStr: string): string | null {
         {aiTrendVisible.map(t => {
           const barPct = aiTrendMaxCount > 0 ? (t.count_7d / aiTrendMaxCount * 100) : 0;
           const accColor = t.acceleration >= 2.0 ? 'var(--color-pulsar-green, #22c55e)' :
-                          t.acceleration <= 0.5 ? 'var(--color-pulsar-red, #ef4444)' :
+                          (0.5 >= t.acceleration) ? 'var(--color-pulsar-red, #ef4444)' :
                           'var(--color-pulsar-cyan, #06b6d4)';
           return (
             <div class="ai-trend-row">
