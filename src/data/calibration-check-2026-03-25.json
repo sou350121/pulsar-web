@@ -1,0 +1,56 @@
+{
+  "date": "2026-03-25",
+  "triggered": false,
+  "field_state_used": true,
+  "soft_scores": {
+    "V-001": {
+      "score": 0.25,
+      "reason": "LIBERO 多榜饱和 (99.2-99.3%) 使 diffusion vs autoregressive 对比基准受限；但今日 RSS 中 Diffusion Policy 相关论文仍活跃 (Contractive Diffusion Policies, Video2Act)，无失效证据"
+    },
+    "V-002": {
+      "score": 0.25,
+      "reason": "tactile method_decline:moderate + sim_to_real declining；但 OmniVTA (Visuo-Tactile World Modeling) 证明触觉+世界模型融合仍在推进，仅标注趋势性挑战"
+    },
+    "V-004": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak；社交信号活跃 (Unitree R1 Air $4900, Amazon 收购 Fauna, ROBOTERA ¥10 亿融资)，但缺乏>4h 自主运行验证案例，假设仍悬置"
+    },
+    "V-008": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和使开源 vs 闭源能力对比基准失效；lerobot v0.5.0、Octo v1.5 持续更新但缺乏标准化评测证明竞争力"
+    },
+    "V-009": {
+      "score": 0.25,
+      "reason": "cross_embodiment method_decline:moderate；今日 UniDex (Universal Dexterous Hand Control) 涉及跨形态但需 fine-tuning，无 zero-shot >70% 证据"
+    },
+    "V-010": {
+      "score": 0.25,
+      "reason": "LIBERO 饱和影响 3D vs 2D 对比基准；Real2Edit2Real 使用 3D 控制接口但非 SOTA 对比，3D 必要性假设仍待验证"
+    },
+    "T-004": {
+      "score": 0.25,
+      "reason": "keyword_decline:moderate (source grounding/hallucination 相关信号减少)；今日 AI Daily 中 OpenAI Sora 关闭、LiteLLM 恶意文件等均有 primary source，无幻觉触发"
+    },
+    "S-002": {
+      "score": 0.25,
+      "reason": "keyword_decline:weak (system reliability/watchdog 信号减少)；管道运行正常，无连续失败记录，假设保持有效"
+    }
+  },
+  "vla_assumptions_scanned": 10,
+  "ai_assumptions_scanned": 6,
+  "system_assumptions_scanned": 4,
+  "vla_signals_scanned": 63,
+  "ai_signals_scanned": 74,
+  "triggers": [],
+  "note": "8 个假设有 early warning (机械预评分确认)；无 score≥0.50 条目，静默完成",
+  "method_trends_summary": {
+    "surging": [],
+    "accelerating": [],
+    "declining": ["cross_embodiment", "instruction_tuning", "mobile_manipulation", "sim_to_real", "tactile"],
+    "stable": ["3d_representation", "dexterous_hand", "diffusion_policy", "flow_matching", "human_robot", "language_grounding", "long_horizon", "multi_task", "rl_finetuning", "world_model"]
+  },
+  "benchmark_saturation_noted": true,
+  "saturated_benchmarks": ["CALVIN/ABC-D (4.8%)", "CALVIN/ABCD-D (4.8%)", "CALVIN/D-D (4.3%)", "LIBERO/non-standard (99.2%)", "LIBERO/standard-closed (99.3%)", "LIBERO/standard-opensource (99.2%)"],
+  "low_confidence": true,
+  "data_days": 9
+}

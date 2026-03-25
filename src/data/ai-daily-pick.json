@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-03-25",
+      "items": [
+        {
+          "title": "OpenAI 宣布关闭 Sora 视频生成服务",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://twitter.com/soraofficialapp/status/2036532795984715896",
+          "why_picked": "OpenAI 正式宣布停止 Sora 视频生成服务，标志 AI 视频生成赛道洗牌；HN 热议链接显示社区对技术路线的反思",
+          "so_what": "如果你在做 AI 视频/多模态应用：关注 Runway/Pika/Luma 等替代方案；评估自建视频生成管线的成本效益；Sora 关闭反映纯生成式视频商业化困难，考虑结合编辑工具而非纯生成。"
+        },
+        {
+          "title": "Anthropic Claude 新增电脑操作能力，AI Agent 实用化加速",
+          "category": "新发布",
+          "source": "Readhub",
+          "url": "https://readhub.cn/topic/8rkwhU9VdtO",
+          "why_picked": "Anthropic 宣布 Claude 可操纵用户电脑完成任务（打开应用、浏览网页、填写表格），已在 macOS 版 Claude Cowork 和 Claude Code 提供；与 OpenClaw 形成直接竞争",
+          "so_what": "如果你在构建 AI Agent 系统：参考 Claude 的权限边界设计（Anthropic 明确提醒风险控制）；评估现有 Agent 的命令执行沙盒机制；考虑引入人工审批层处理敏感操作；对比 OpenClaw/Claude Code 的权限模型差异。"
+        },
+        {
+          "title": "OpenAI 拟融资 100 亿美元，MGX/Coatue/Thrive 参投",
+          "category": "行业",
+          "source": "Readhub",
+          "url": "https://readhub.cn/topic/8rlh8Mm7G9H",
+          "why_picked": "OpenAI 据悉正从 MGX、Coatue、Thrive 筹集约 100 亿美元，反映大模型公司持续烧钱态势；结合此前对微软依赖风险披露，融资独立性成关键",
+          "so_what": "如果你在企业 AI 选型：关注大模型供应商财务独立性，避免供应商资金链风险影响服务；评估多云部署策略降低单一供应商依赖；长期看，融资能力强的公司更可能持续投入模型迭代。"
+        },
+        {
+          "title": "ServiceNow 发布 EVA：语音 Agent 评估新框架",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ServiceNow-AI/eva",
+          "why_picked": "ServiceNow 在 HuggingFace 博客发布 EVA（Evaluating Voice Agents）框架，填补语音 Agent 评估空白；提供标准化 benchmark 和评估指标",
+          "so_what": "如果你在开发语音 Agent 或客服系统：立即试用 EVA 框架评估现有语音 pipeline；参考其评估维度（意图识别准确率、多轮对话连贯性、错误恢复能力）；将 EVA 集成到 CI/CD 流程做回归测试。"
+        },
+        {
+          "title": "Gap × Google Gemini：AI 平台内直接购物结账",
+          "category": "趋势",
+          "source": "Readhub",
+          "url": "https://readhub.cn/topic/8rlLlLCfJAw",
+          "why_picked": "Gap 与谷歌合作，Gemini 允许用户直接在 AI 平台内购买 Gap 产品，无需跳转网站，通过 Google Pay 结账；AI 从信息助手转向交易入口",
+          "so_what": "如果你在做 AI 电商/导购应用：评估 AI 内嵌交易闭环的用户体验优势；关注 Google Pay/Stripe 等支付集成方案；警惕平台抽成风险；考虑 AI 推荐转化率与传统电商漏斗的差异。"
+        },
+        {
+          "title": "AWS SageMaker 推出 GPU 容量预留训练计划",
+          "category": "工具",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/deploy-sagemaker-ai-inference-endpoints-with-set-gpu-capacity-using-training-plans/",
+          "why_picked": "AWS 官方博客详解如何用训练计划预留 p 系列 GPU 容量部署推理端点，解决 GPU 资源不稳定问题；适合企业级 AI 服务 SLA 保障",
+          "so_what": "如果你在 AWS 部署 AI 推理服务：评估训练计划预留 GPU 的成本效益（对比按需实例）；为生产端点设置容量预留避免高峰期资源竞争；结合 Spot 实例做开发/测试环境降低成本。"
+        },
+        {
+          "title": "Simon Willison：AI 完全控制电脑是愚蠢的",
+          "category": "观点",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Mar/24/christopher-mims/#atom-everything",
+          "why_picked": "Simon 引用 Christopher Mims 观点：给 AI 完全控制电脑看起来会在 retrospect 中显得愚蠢；对当前 AI Agent 热潮提出冷静反思",
+          "so_what": "如果你在设计 Agent 权限系统：参考最小权限原则而非全权委托；为敏感操作（文件删除、网络请求、支付）设置人工确认层；记录 Agent 所有操作日志便于审计；考虑时间/范围限制的临时授权机制。"
+        },
+        {
+          "title": "Simon Willison：Streaming Experts 让大 MoE 模型跑在小显存上",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Mar/24/streaming-experts/#atom-everything",
+          "why_picked": "Simon 详解 Dan Woods 的 streaming experts 实验：通过流式加载 MoE 模型的 expert 层，让显存不足的硬件也能跑大模型；实用技巧",
+          "so_what": "如果你在本地部署大 MoE 模型：参考其流式加载策略（按需 swap expert 层到 GPU）；评估 vLLM/TensorRT-LLM 的类似功能；权衡推理延迟 vs 显存占用；适合资源受限的边缘部署场景。"
+        }
+      ]
+    },
+    {
       "date": "2026-03-24",
       "items": [
         {
@@ -1403,81 +1472,6 @@
           "source": "HF Blog",
           "url": "https://huggingface.co/blog/ggml-org/model-management-in-llamacpp",
           "why_picked": "llama.cpp 新增模型管理功能，简化本地部署的模型下载、版本切换和存储优化"
-        }
-      ]
-    },
-    {
-      "date": "2026-02-22",
-      "items": [
-        {
-          "title": "OpenClaw v2026.2.21：模型/通道/安全大更新",
-          "category": "更新",
-          "source": "GitHub Release",
-          "url": "https://github.com/openclaw/openclaw/releases/tag/v2026.2.21",
-          "why_picked": "新增 Gemini 3.1 与 Doubao/BytePlus provider；支持 per-channel 模型覆盖与 defaultTo 投递；Discord/Telegram streaming 与状态 reaction；并包含大量安全与稳定性修复。"
-        },
-        {
-          "title": "GGML 和 llama.cpp 正式加入 Hugging Face",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://huggingface.co/blog/ggml-joins-hf",
-          "why_picked": "本地 AI 推理核心基础设施并入 HF 生态，确保 GGML/llama.cpp 长期发展，对端侧部署影响深远"
-        },
-        {
-          "title": "IBM + UC Berkeley 发布 IT-Bench 诊断企业智能体失败原因",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://huggingface.co/blog/ibm-research/itbenchandmast",
-          "why_picked": "首个系统性分析企业级 AI 智能体失败模式的基准，揭示工具调用、状态管理等关键瓶颈"
-        },
-        {
-          "title": "NVIDIA DGX Spark + Reachy Mini：让智能体拥有物理身体",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://huggingface.co/blog/nvidia-reachy-mini",
-          "why_picked": "NVIDIA 将 DGX Spark 计算平台与 Reachy Mini 人形机器人结合，展示具身智能体的端到端部署"
-        },
-        {
-          "title": "为什么 Claude 是 Electron 应用？",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.dbreunig.com/2026/02/21/why-is-claude-an-electron-app.html",
-          "why_picked": "HN 362 分热议：深入分析 Anthropic 选择 Electron 架构的技术权衡和社区反应"
-        },
-        {
-          "title": "ntransformer：NVMe 直连 GPU 绕过 CPU，单 3090 跑 70B",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/xaskasdf/ntransformer",
-          "why_picked": "Show HN 项目：通过 NVMe-to-GPU 直连技术绕过 CPU/内存瓶颈，在消费级硬件上运行大模型"
-        },
-        {
-          "title": "OpenEnv in Practice：真实环境中评估工具使用智能体",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://huggingface.co/blog/openenv-turing",
-          "why_picked": "HF 展示 OpenEnv 框架在实际场景中评估工具调用智能体的方法论和案例"
-        },
-        {
-          "title": "Community Evals：社区驱动评估挑战黑盒排行榜",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://huggingface.co/blog/community-evals",
-          "why_picked": "HF 推出社区评估平台，让用户提交和验证模型评估，打破对官方排行榜的依赖"
-        },
-        {
-          "title": "AprielGuard：ServiceNow 发布 LLM 系统安全护栏",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://huggingface.co/blog/ServiceNow-AI/aprielguard",
-          "why_picked": "针对现代 LLM 系统的安全和对抗鲁棒性护栏，支持策略定义和违规检测"
-        },
-        {
-          "title": "Cencurity：LLM 智能体安全网关",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://www.producthunt.com/products/cencurity",
-          "why_picked": "专为智能体设计的安全层，提供输入输出过滤、敏感操作审批和审计日志"
         }
       ]
     }
