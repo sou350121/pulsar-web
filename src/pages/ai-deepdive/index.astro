@@ -211,9 +211,9 @@ function artNewBadge(dateStr: string): string | null {
       <div class="ai-trends-grid">
         {aiTrendVisible.map(t => {
           const barPct = aiTrendMaxCount > 0 ? (t.count_7d / aiTrendMaxCount * 100) : 0;
-          const accColor = t.acceleration >= 2.0 ? 'var(--color-pulsar-green, #22c55e)' :
-                          (0.5 >= t.acceleration) ? 'var(--color-pulsar-red, #ef4444)' :
-                          'var(--color-pulsar-cyan, #06b6d4)';
+          const accColor = t.acceleration >= 2.0 ? 'var(--fin-up, #22c55e)' :
+                          (0.33 >= t.acceleration) ? 'var(--fin-down, #ef4444)' :
+                          'var(--accent-cyan)';
           return (
             <div class="ai-trend-row">
               <span class="ai-trend-name">{t.label}</span>
@@ -236,7 +236,7 @@ function artNewBadge(dateStr: string): string | null {
               if (!a || !b) return null;
               if (a.count_7d === 0 && b.count_7d === 0) return null;
               const total = a.count_7d + b.count_7d;
-              const pctA = total > 0 ? Math.round(a.count_7d / total * 100) : 50;
+              const pctA = Math.min(95, Math.max(5, total > 0 ? Math.round(a.count_7d / total * 100) : 50));
               return (
                 <div class="ai-comp-card">
                   <div class="ai-comp-label">{pair.label}</div>
@@ -865,24 +865,47 @@ function artNewBadge(dateStr: string): string | null {
 .xdomain-link svg { transition: transform 0.15s; }
 .xdomain-link:hover svg { transform: translateX(3px); }
 
-/* ── AI Trends Section ── */
-.ai-trends-section { margin-bottom: 2rem; }
-.ai-trends-grid { display: flex; flex-direction: column; gap: 6px; }
+/* ── AI Trends Section (mirrors VLA .fin-panel) ── */
+.ai-trends-section {
+  --fin-up:   #22c55e;
+  --fin-down: #ef4444;
+  --fin-flat: var(--text-tertiary);
+  position: relative;
+  background: var(--card-bg, rgba(255,255,255,0.02));
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.ai-trends-section::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber));
+  border-radius: 8px 8px 0 0;
+}
+.ai-trends-grid { display: flex; flex-direction: column; gap: 2px; }
 .ai-trend-row {
   display: grid;
-  grid-template-columns: 140px 1fr 40px 50px;
+  grid-template-columns: 130px 1fr 36px 48px;
   align-items: center;
   gap: 8px;
-  font-size: 0.75rem;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
+  transition: background 0.12s;
 }
+.ai-trend-row:hover { background: rgba(255,255,255,0.02); }
+.ai-trend-row:last-child { border-bottom: none; }
 .ai-trend-name {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem;
   color: var(--text-secondary);
-  text-align: right;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ai-trend-bar-wrap {
-  background: rgba(128,128,128,0.1);
+  background: rgba(128,128,128,0.08);
   border-radius: 2px;
   height: 14px;
   overflow: hidden;
@@ -894,52 +917,77 @@ function artNewBadge(dateStr: string): string | null {
   min-width: 2px;
 }
 .ai-trend-count {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.7rem;
+  font-family: 'IBM Plex Mono',monospace;
+  font-size: 0.72rem;
   font-weight: 600;
   text-align: right;
+  color: var(--text-primary);
 }
 .ai-trend-acc {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono',monospace;
   font-size: 0.65rem;
   text-align: right;
+  font-weight: 500;
 }
-.ai-competition-section { margin-top: 1.5rem; }
+
+/* ── Competition Pairs (mirrors VLA .fin-pairs) ── */
+.ai-competition-section {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
+}
 .ai-comp-title {
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  color: var(--text-tertiary);
-  margin-bottom: 0.5rem;
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin: 0 0 0.8rem;
 }
-.ai-comp-grid { display: flex; flex-direction: column; gap: 8px; }
-.ai-comp-card { }
+.ai-comp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.ai-comp-card {
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
+  border-radius: 6px;
+  padding: 8px 10px;
+}
 .ai-comp-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
+  font-family: 'IBM Plex Mono',monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--text-tertiary);
-  margin-bottom: 2px;
+  margin-bottom: 6px;
 }
 .ai-comp-bar {
   display: flex;
-  height: 22px;
+  height: 20px;
   border-radius: 3px;
   overflow: hidden;
   font-size: 0.55rem;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono',monospace;
+  font-weight: 600;
 }
 .ai-comp-fill-a {
-  background: var(--accent-cyan, #06b6d4);
-  color: #000;
+  background: var(--accent-cyan);
+  color: var(--bg, #070B14);
   display: flex;
   align-items: center;
   padding: 0 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 .ai-comp-fill-b {
-  background: var(--accent-amber, #f59e0b);
-  color: #000;
+  background: var(--accent-amber);
+  color: var(--bg, #070B14);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -947,10 +995,21 @@ function artNewBadge(dateStr: string): string | null {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
+
 @media (max-width: 767px) {
-  .ai-trend-row { grid-template-columns: 100px 1fr 30px 40px; }
+  .ai-trends-section { padding: 1rem; }
+  .ai-trend-row { grid-template-columns: 100px 1fr 30px 40px; gap: 4px; }
+  .ai-trend-name { font-size: 0.6rem; }
+  .ai-comp-grid { grid-template-columns: 1fr; }
+  .ai-comp-bar { height: 18px; font-size: 0.5rem; }
+}
+@media (max-width: 480px) {
+  .ai-trend-row { grid-template-columns: 80px 1fr 24px 36px; }
   .ai-trend-name { font-size: 0.55rem; }
+  .ai-comp-bar { height: 16px; }
+  .ai-comp-fill-a, .ai-comp-fill-b { padding: 0 3px; }
 }
 </style>
 
