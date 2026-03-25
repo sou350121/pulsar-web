@@ -170,33 +170,57 @@ function artNewBadge(dateStr: string): string | null {
        SECTION A2: AI METHOD TRENDS
   ══════════════════════════════ -->
   {aiFieldState && aiFieldState.method_trends.length > 0 && (
-    <section class="ai-trends-section">
-      <div class="section-hd">
-        <h2 class="section-title">AI AGENT TRENDS</h2>
-        <span class="section-sub">{aiFieldState.date} · {aiFieldState.total_mentions_7d} mentions · 7d window · {aiFieldState.method_trends.length} families</span>
+    <section class="fin-panel" aria-label="AI Agent 趋势看板">
+      <div class="fin-header">
+        <div class="fin-header-left">
+          <h2 class="fin-title">AI AGENT TRENDS</h2>
+          <span class="fin-meta">
+            {aiFieldState.date} · {aiFieldState.total_mentions_7d} mentions · 7d window · {aiFieldState.method_trends.length} families
+          </span>
+        </div>
       </div>
-      <div class="ai-trends-grid">
-        {aiTrendVisible.map(t => {
-          const barPct = aiTrendMaxCount > 0 ? (t.count_7d / aiTrendMaxCount * 100) : 0;
-          const accColor = t.acceleration >= 2.0 ? 'var(--fin-up, #22c55e)' :
-                          (0.33 >= t.acceleration) ? 'var(--fin-down, #ef4444)' :
-                          'var(--accent-cyan)';
-          return (
-            <div class="ai-trend-row">
-              <span class="ai-trend-name">{t.label}</span>
-              <div class="ai-trend-bar-wrap">
-                <div class="ai-trend-bar" style={`width:${barPct}%; background:${accColor}`}></div>
+
+      <div class="fin-ticker-wrap">
+        <div class="fin-ticker-header" style="display:grid; grid-template-columns: 1fr auto 50px 60px; gap:6px; padding:4px 0;">
+          <span class="fin-th">FAMILY</span>
+          <span class="fin-th">MOM</span>
+          <span class="fin-th" style="text-align:right">7d</span>
+          <span class="fin-th" style="text-align:right">ACC</span>
+        </div>
+        <div class="fin-ticker">
+          {aiTrendVisible.map(t => {
+            const barPct = aiTrendMaxCount > 0 ? (t.count_7d / aiTrendMaxCount * 100) : 0;
+            const accColor = t.acceleration >= 2.0 ? 'var(--fin-up, #22c55e)' :
+                            (0.33 >= t.acceleration) ? 'var(--fin-down, #ef4444)' :
+                            'var(--accent-cyan)';
+            const statusDot = t.status === 'surging' ? '▲' :
+                             t.status === 'accelerating' ? '△' :
+                             t.status === 'declining' ? '▼' :
+                             t.status === 'insufficient_data' ? '○' : '●';
+            return (
+              <div class="fin-row" style="display:grid; grid-template-columns: 1fr auto 50px 60px; gap:6px; align-items:center;">
+                <span class="fin-name">{t.label}</span>
+                <div style={`width:80px; height:12px; background:rgba(128,128,128,0.08); border-radius:2px; overflow:hidden;`}>
+                  <div style={`width:${barPct}%; height:100%; background:${accColor}; border-radius:2px; min-width:2px;`}></div>
+                </div>
+                <span class="fin-vol tabular-nums" style="text-align:right">{t.count_7d}</span>
+                <span class={`fin-accel tabular-nums`} style={`text-align:right; color:${accColor}`}>
+                  {statusDot} {t.acceleration.toFixed(2)}x
+                </span>
               </div>
-              <span class="ai-trend-count">{t.count_7d}</span>
-              <span class="ai-trend-acc" style={`color:${accColor}`}>{t.acceleration.toFixed(1)}x</span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
+
       {aiFieldState.competition_pairs && aiFieldState.competition_pairs.length > 0 && (
-        <div class="ai-competition-section">
-          <h3 class="ai-comp-title">COMPETITION PAIRS</h3>
-          <div class="ai-comp-grid">
+        <details class="vdd-fold vdd-fold--nested fin-competition" open>
+          <summary class="fin-sub-title">
+            <span class="vdd-fold-chevron"></span>
+            COMPETITION PAIRS
+            <span class="vdd-fold-badge fin-pair-badge">{aiFieldState.competition_pairs.length}</span>
+          </summary>
+          <div class="fin-pairs-grid">
             {aiFieldState.competition_pairs.map(pair => {
               const a = aiFieldState.method_trends.find(t => t.family === pair.familyA);
               const b = aiFieldState.method_trends.find(t => t.family === pair.familyB);
@@ -204,18 +228,28 @@ function artNewBadge(dateStr: string): string | null {
               if (a.count_7d === 0 && b.count_7d === 0) return null;
               const total = a.count_7d + b.count_7d;
               const pctA = Math.min(95, Math.max(5, total > 0 ? Math.round(a.count_7d / total * 100) : 50));
+              const ratio = b.count_7d > 0 ? (a.count_7d / b.count_7d).toFixed(2) : '—';
               return (
-                <div class="ai-comp-card">
-                  <div class="ai-comp-label">{pair.label}</div>
-                  <div class="ai-comp-bar">
-                    <div class="ai-comp-fill-a" style={`width:${pctA}%`}>{a.label} {pctA}%</div>
-                    <div class="ai-comp-fill-b" style={`width:${100-pctA}%`}>{b.label} {100-pctA}%</div>
+                <div class="fin-pair-card">
+                  <div class="fin-pair-label">{pair.label}</div>
+                  {pair.desc && <div class="fin-pair-desc">{pair.desc}</div>}
+                  <div class="fin-pair-bar">
+                    <span class="fin-pair-name-left">{a.label}</span>
+                    <div class="fin-pair-track">
+                      <div class="fin-pair-pct fin-pair-pct--a" style={`width:${pctA}%`}>{pctA}%</div>
+                      <div class="fin-pair-pct fin-pair-pct--b" style={`width:${100-pctA}%`}>{100-pctA}%</div>
+                    </div>
+                    <span class="fin-pair-name-right">{b.label}</span>
+                  </div>
+                  <div class="fin-pair-ratio">
+                    <span class="fin-pair-ratio-num">{a.count_7d}</span> vs <span class="fin-pair-ratio-num">{b.count_7d}</span>
+                    &nbsp;·&nbsp;ratio {ratio}x
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
+        </details>
       )}
     </section>
   )}
@@ -866,152 +900,7 @@ function artNewBadge(dateStr: string): string | null {
 .xdomain-link svg { transition: transform 0.15s; }
 .xdomain-link:hover svg { transform: translateX(3px); }
 
-/* ── AI Trends Section (mirrors VLA .fin-panel) ── */
-.ai-trends-section {
-  --fin-up:   #22c55e;
-  --fin-down: #ef4444;
-  --fin-flat: var(--text-tertiary);
-  position: relative;
-  background: var(--card-bg, rgba(255,255,255,0.02));
-  border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
-  border-radius: 8px;
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 2rem;
-}
-.ai-trends-section::before {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber));
-  border-radius: 8px 8px 0 0;
-}
-.ai-trends-grid { display: flex; flex-direction: column; gap: 2px; }
-.ai-trend-row {
-  display: grid;
-  grid-template-columns: 130px 1fr 36px 48px;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 0;
-  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
-  transition: background 0.12s;
-}
-.ai-trend-row:hover { background: rgba(255,255,255,0.02); }
-.ai-trend-row:last-child { border-bottom: none; }
-.ai-trend-name {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ai-trend-bar-wrap {
-  background: rgba(128,128,128,0.08);
-  border-radius: 2px;
-  height: 14px;
-  overflow: hidden;
-}
-.ai-trend-bar {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.3s;
-  min-width: 2px;
-}
-.ai-trend-count {
-  font-family: 'IBM Plex Mono',monospace;
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-align: right;
-  color: var(--text-primary);
-}
-.ai-trend-acc {
-  font-family: 'IBM Plex Mono',monospace;
-  font-size: 0.65rem;
-  text-align: right;
-  font-weight: 500;
-}
-
-/* ── Competition Pairs (mirrors VLA .fin-pairs) ── */
-.ai-competition-section {
-  margin-top: 1.2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
-}
-.ai-comp-title {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent-cyan);
-  margin: 0 0 0.8rem;
-}
-.ai-comp-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 12px;
-}
-.ai-comp-card {
-  background: rgba(255,255,255,0.01);
-  border: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
-  border-radius: 6px;
-  padding: 8px 10px;
-}
-.ai-comp-label {
-  font-family: 'IBM Plex Mono',monospace;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 6px;
-}
-.ai-comp-bar {
-  display: flex;
-  height: 20px;
-  border-radius: 3px;
-  overflow: hidden;
-  font-size: 0.55rem;
-  font-family: 'IBM Plex Mono',monospace;
-  font-weight: 600;
-}
-.ai-comp-fill-a {
-  background: var(--accent-cyan);
-  color: var(--bg, #070B14);
-  display: flex;
-  align-items: center;
-  padding: 0 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-.ai-comp-fill-b {
-  background: var(--accent-amber);
-  color: var(--bg, #070B14);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-
-@media (max-width: 767px) {
-  .ai-trends-section { padding: 1rem; }
-  .ai-trend-row { grid-template-columns: 100px 1fr 30px 40px; gap: 4px; }
-  .ai-trend-name { font-size: 0.6rem; }
-  .ai-comp-grid { grid-template-columns: 1fr; }
-  .ai-comp-bar { height: 18px; font-size: 0.5rem; }
-}
-@media (max-width: 480px) {
-  .ai-trend-row { grid-template-columns: 80px 1fr 24px 36px; }
-  .ai-trend-name { font-size: 0.55rem; }
-  .ai-comp-bar { height: 16px; }
-  .ai-comp-fill-a, .ai-comp-fill-b { padding: 0 3px; }
-}
+/* AI Trends now uses VLA's .fin-panel / .fin-row / .fin-pairs CSS — no custom AI CSS needed */
 </style>
 
 <script>
