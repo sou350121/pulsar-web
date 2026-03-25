@@ -205,8 +205,10 @@ function artNewBadge(dateStr: string): string | null {
         <span class="section-sub">{aiFieldState.date} · {aiFieldState.total_mentions_7d} mentions · 7d window · {aiFieldState.method_trends.length} families</span>
       </div>
       <div class="ai-trends-grid">
-        {aiFieldState.method_trends.filter(t => t.count_7d > 0).map(t => {
-          const maxCount = Math.max(...aiFieldState.method_trends.map(x => x.count_7d));
+        {(() => {
+          const visible = aiFieldState.method_trends.filter(t => t.count_7d > 0);
+          const maxCount = visible.reduce((m, t) => Math.max(m, t.count_7d), 0);
+          return visible.map(t => {
           const barPct = maxCount > 0 ? (t.count_7d / maxCount * 100) : 0;
           const accColor = t.acceleration >= 2.0 ? 'var(--color-pulsar-green, #22c55e)' :
                           t.acceleration <= 0.5 ? 'var(--color-pulsar-red, #ef4444)' :
@@ -221,7 +223,8 @@ function artNewBadge(dateStr: string): string | null {
               <span class="ai-trend-acc" style={`color:${accColor}`}>{t.acceleration.toFixed(1)}x</span>
             </div>
           );
-        })}
+        });
+        })()}
       </div>
       {aiFieldState.competition_pairs && aiFieldState.competition_pairs.length > 0 && (
         <div class="ai-competition-section">
@@ -231,6 +234,7 @@ function artNewBadge(dateStr: string): string | null {
               const a = aiFieldState.method_trends.find(t => t.family === pair.familyA);
               const b = aiFieldState.method_trends.find(t => t.family === pair.familyB);
               if (!a || !b) return null;
+              if (a.count_7d === 0 && b.count_7d === 0) return null;
               const total = a.count_7d + b.count_7d;
               const pctA = total > 0 ? Math.round(a.count_7d / total * 100) : 50;
               return (
@@ -931,6 +935,7 @@ function artNewBadge(dateStr: string): string | null {
   padding: 0 6px;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ai-comp-fill-b {
   background: var(--accent-amber, #f59e0b);
@@ -941,6 +946,7 @@ function artNewBadge(dateStr: string): string | null {
   padding: 0 6px;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media (max-width: 767px) {
   .ai-trend-row { grid-template-columns: 100px 1fr 30px 40px; }

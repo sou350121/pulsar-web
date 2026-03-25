@@ -622,12 +622,12 @@ export interface AICompetitionPair {
   label:   string;
 }
 
-interface AIFieldStateFile {
+export interface AIFieldStateFile {
   date:              string;
   trend_version:     number;
   total_mentions_7d: number;
   method_trends:     AIMethodTrend[];
-  competition_pairs: AICompetitionPair[];
+  competition_pairs?: AICompetitionPair[];
 }
 
 export function loadLatestAIFieldState(): AIFieldStateFile | null {
