@@ -12,6 +12,10 @@ const articles = loadAIGitHubArticles(200);
 const deepDiveArticles = loadAIDeepDive(50);
 const aiFieldState = loadLatestAIFieldState();
 
+// Pre-compute AI method trend data for rendering
+const aiTrendVisible = aiFieldState?.method_trends?.filter(t => t.count_7d > 0) ?? [];
+const aiTrendMaxCount = aiTrendVisible.reduce((m, t) => Math.max(m, t.count_7d), 0);
+
 // Pre-compute tags for each deep dive article
 const ddTagsMap = new Map<number, string[]>();
 const tagCounts: Record<string, number> = {};
@@ -205,11 +209,8 @@ function artNewBadge(dateStr: string): string | null {
         <span class="section-sub">{aiFieldState.date} · {aiFieldState.total_mentions_7d} mentions · 7d window · {aiFieldState.method_trends.length} families</span>
       </div>
       <div class="ai-trends-grid">
-        {(() => {
-          const visible = aiFieldState.method_trends.filter(t => t.count_7d > 0);
-          const maxCount = visible.reduce((m, t) => Math.max(m, t.count_7d), 0);
-          return visible.map(t => {
-          const barPct = maxCount > 0 ? (t.count_7d / maxCount * 100) : 0;
+        {aiTrendVisible.map(t => {
+          const barPct = aiTrendMaxCount > 0 ? (t.count_7d / aiTrendMaxCount * 100) : 0;
           const accColor = t.acceleration >= 2.0 ? 'var(--color-pulsar-green, #22c55e)' :
                           t.acceleration <= 0.5 ? 'var(--color-pulsar-red, #ef4444)' :
                           'var(--color-pulsar-cyan, #06b6d4)';
@@ -223,8 +224,7 @@ function artNewBadge(dateStr: string): string | null {
               <span class="ai-trend-acc" style={`color:${accColor}`}>{t.acceleration.toFixed(1)}x</span>
             </div>
           );
-        });
-        })()}
+        })}
       </div>
       {aiFieldState.competition_pairs && aiFieldState.competition_pairs.length > 0 && (
         <div class="ai-competition-section">
