@@ -5,11 +5,12 @@
  * 解法：入門路徑 → 精選必讀 8 篇 → PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span> → 模塊過濾 + 緊湊列表。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadAIGitHubArticles, loadAIDeepDive, AI_DEEP_DIVE_TAGS, matchDeepDiveTags } from '../../utils/data';
+import { loadAIGitHubArticles, loadAIDeepDive, AI_DEEP_DIVE_TAGS, matchDeepDiveTags, loadLatestAIFieldState } from '../../utils/data';
 import type { AIGitHubArticle } from '../../utils/data';
 
 const articles = loadAIGitHubArticles(200);
 const deepDiveArticles = loadAIDeepDive(50);
+const aiFieldState = loadLatestAIFieldState();
 
 // Pre-compute tags for each deep dive article
 const ddTagsMap = new Map<number, string[]>();
@@ -193,6 +194,60 @@ function artNewBadge(dateStr: string): string | null {
       ))}
     </div>
   </section>
+
+  <!-- ══════════════════════════════
+       SECTION A2: AI METHOD TRENDS
+  ══════════════════════════════ -->
+  {aiFieldState && aiFieldState.method_trends.length > 0 && (
+    <section class="ai-trends-section">
+      <div class="section-hd">
+        <h2 class="section-title">AI AGENT TRENDS</h2>
+        <span class="section-sub">{aiFieldState.date} · {aiFieldState.total_mentions_7d} mentions · 7d window · {aiFieldState.method_trends.length} families</span>
+      </div>
+      <div class="ai-trends-grid">
+        {aiFieldState.method_trends.filter(t => t.count_7d > 0).map(t => {
+          const maxCount = Math.max(...aiFieldState.method_trends.map(x => x.count_7d));
+          const barPct = maxCount > 0 ? (t.count_7d / maxCount * 100) : 0;
+          const accColor = t.acceleration >= 2.0 ? 'var(--color-pulsar-green, #22c55e)' :
+                          t.acceleration <= 0.5 ? 'var(--color-pulsar-red, #ef4444)' :
+                          'var(--color-pulsar-cyan, #06b6d4)';
+          return (
+            <div class="ai-trend-row">
+              <span class="ai-trend-name">{t.label}</span>
+              <div class="ai-trend-bar-wrap">
+                <div class="ai-trend-bar" style={`width:${barPct}%; background:${accColor}`}></div>
+              </div>
+              <span class="ai-trend-count">{t.count_7d}</span>
+              <span class="ai-trend-acc" style={`color:${accColor}`}>{t.acceleration.toFixed(1)}x</span>
+            </div>
+          );
+        })}
+      </div>
+      {aiFieldState.competition_pairs && aiFieldState.competition_pairs.length > 0 && (
+        <div class="ai-competition-section">
+          <h3 class="ai-comp-title">COMPETITION PAIRS</h3>
+          <div class="ai-comp-grid">
+            {aiFieldState.competition_pairs.map(pair => {
+              const a = aiFieldState.method_trends.find(t => t.family === pair.familyA);
+              const b = aiFieldState.method_trends.find(t => t.family === pair.familyB);
+              if (!a || !b) return null;
+              const total = a.count_7d + b.count_7d;
+              const pctA = total > 0 ? Math.round(a.count_7d / total * 100) : 50;
+              return (
+                <div class="ai-comp-card">
+                  <div class="ai-comp-label">{pair.label}</div>
+                  <div class="ai-comp-bar">
+                    <div class="ai-comp-fill-a" style={`width:${pctA}%`}>{a.label} {pctA}%</div>
+                    <div class="ai-comp-fill-b" style={`width:${100-pctA}%`}>{b.label} {100-pctA}%</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </section>
+  )}
 
   <!-- ══════════════════════════════
        SECTION B: 精選必讀 8 篇
@@ -805,6 +860,92 @@ function artNewBadge(dateStr: string): string | null {
 .xdomain-link:hover { opacity: 0.7; }
 .xdomain-link svg { transition: transform 0.15s; }
 .xdomain-link:hover svg { transform: translateX(3px); }
+
+/* ── AI Trends Section ── */
+.ai-trends-section { margin-bottom: 2rem; }
+.ai-trends-grid { display: flex; flex-direction: column; gap: 6px; }
+.ai-trend-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 40px 50px;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+}
+.ai-trend-name {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+.ai-trend-bar-wrap {
+  background: rgba(128,128,128,0.1);
+  border-radius: 2px;
+  height: 14px;
+  overflow: hidden;
+}
+.ai-trend-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s;
+  min-width: 2px;
+}
+.ai-trend-count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: right;
+}
+.ai-trend-acc {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  text-align: right;
+}
+.ai-competition-section { margin-top: 1.5rem; }
+.ai-comp-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+.ai-comp-grid { display: flex; flex-direction: column; gap: 8px; }
+.ai-comp-card { }
+.ai-comp-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.ai-comp-bar {
+  display: flex;
+  height: 22px;
+  border-radius: 3px;
+  overflow: hidden;
+  font-size: 0.55rem;
+  font-family: "IBM Plex Mono", monospace;
+}
+.ai-comp-fill-a {
+  background: var(--accent-cyan, #06b6d4);
+  color: #000;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ai-comp-fill-b {
+  background: var(--accent-amber, #f59e0b);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .ai-trend-row { grid-template-columns: 100px 1fr 30px 40px; }
+  .ai-trend-name { font-size: 0.55rem; }
+}
 </style>
 
 <script>

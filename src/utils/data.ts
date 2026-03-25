@@ -602,6 +602,50 @@ export function loadAIDeepDive(n: number = 20): AIDeepDiveArticle[] {
 }
 
 // ---------------------------------------------------------------------------
+// AI Field State — method family trends for AI Agent ecosystem
+// ---------------------------------------------------------------------------
+export interface AIMethodTrend {
+  family:           string;
+  label:            string;
+  count_7d:         number;
+  count_prior_7d:   number;
+  count_14d:        number;
+  daily_avg_recent: number;
+  daily_avg_prior:  number;
+  acceleration:     number;
+  status:           string;
+}
+
+export interface AICompetitionPair {
+  familyA: string;
+  familyB: string;
+  label:   string;
+}
+
+interface AIFieldStateFile {
+  date:              string;
+  trend_version:     number;
+  total_mentions_7d: number;
+  method_trends:     AIMethodTrend[];
+  competition_pairs: AICompetitionPair[];
+}
+
+export function loadLatestAIFieldState(): AIFieldStateFile | null {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('ai-field-state-') && f.endsWith('.json'))
+      .sort()
+      .reverse();
+  } catch {
+    return null;
+  }
+  if (files.length === 0) return null;
+  return readJson<AIFieldStateFile>(files[0]);
+}
+
+// ---------------------------------------------------------------------------
 // loadVLASOTA
 // Returns all VLA SOTA tracker entries, sorted by date desc.
 // ---------------------------------------------------------------------------
