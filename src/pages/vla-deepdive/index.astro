@@ -597,7 +597,7 @@ const base = import.meta.env.BASE_URL;
           </div>
           <div class="fin-inst-rows">
             {topInstitutions.map((inst, idx) => {
-              const barWidth = topInstitutions[0].totalCount > 0
+              const barWidth = (topInstitutions[0].totalCount > 0 && inst.recentCount > 0)
                 ? Math.max(4, (inst.totalCount / topInstitutions[0].totalCount) * 100)
                 : 0;
               return (
