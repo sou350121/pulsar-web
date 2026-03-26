@@ -590,10 +590,10 @@ const base = import.meta.env.BASE_URL;
 
           <div class="fin-inst-grid-header fin-inst-grid">
             <span class="fin-th">INSTITUTION</span>
-            <span class="fin-th" style="text-align:right">30d</span>
+            <span class="fin-th" style="text-align:right">TOTAL</span>
             <span class="fin-th" style="text-align:center">BEST</span>
             <span class="fin-th" style="text-align:right">LAST SEEN</span>
-            <span class="fin-th">ACTIVITY</span>
+            <span class="fin-th fin-inst-activity-th">ACTIVITY</span>
           </div>
           <div class="fin-inst-rows">
             {topInstitutions.map((inst, idx) => {
@@ -608,7 +608,7 @@ const base = import.meta.env.BASE_URL;
                   </span>
                   <span class="fin-inst-count tabular-nums">{inst.totalCount}</span>
                   <span class="fin-inst-rating">{inst.topRating}</span>
-                  <span class="fin-inst-date tabular-nums">{inst.lastSeen.slice(5)}</span>
+                  <span class="fin-inst-date tabular-nums">{inst.lastSeen ? inst.lastSeen.slice(5) : '—'}</span>
                   <span class="fin-inst-bar-wrap">
                     <span class="fin-inst-bar" style={`width:${barWidth}%`} />
                   </span>
@@ -1362,6 +1362,7 @@ const base = import.meta.env.BASE_URL;
     grid-template-columns: 1fr 36px 36px 56px;
   }
   .fin-inst-bar-wrap { display: none; }
+  .fin-inst-activity-th { display: none; }
 }
 
 /* ── Sections ── */
