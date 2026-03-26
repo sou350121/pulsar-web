@@ -493,8 +493,8 @@ export function getTopEntities(
 // ---------------------------------------------------------------------------
 export interface InstitutionTrend {
   name:          string;
-  recentCount:   number;   // signals in last 7d
-  totalCount:    number;   // all signals
+  recentCount:   number;   // signals within the caller's `days` window
+  totalCount:    number;   // all signals (90d rolling)
   lastSeen:      string;   // most recent signal date
   topRating:     string;   // best rating seen (⚡ > 🔧 > 📖)
 }
