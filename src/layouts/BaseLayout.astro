@@ -1160,6 +1160,24 @@ html.dark .hero::after {
   background: linear-gradient(90deg, var(--accent-cyan), var(--accent-amber));
   transition: width 0.8s ease;
 }
+.entity-bar-fill--cyan { background: linear-gradient(90deg, var(--accent-cyan), rgba(6,182,212,0.3)); }
+.entity-bar-fill--amber { background: linear-gradient(90deg, var(--accent-amber), rgba(245,158,11,0.3)); }
+
+.entity-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.entity-col-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.56rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px; display: block;
+}
+@media (max-width: 480px) {
+  .entity-dual-grid { grid-template-columns: 1fr; }
+}
 
 /* Pipeline health checks */
 .health-list { display: flex; flex-direction: column; gap: 10px; }

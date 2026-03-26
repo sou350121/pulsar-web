@@ -537,6 +537,48 @@ export function getTopInstitutions(n: number = 20, days: number = 7): Institutio
 }
 
 // ---------------------------------------------------------------------------
+// getTopAIOrgs
+// Returns top N lab entities with AI-domain signals, sorted by signal count.
+// Used by the TOP AI ORGS panel on the AI Deep Dive page.
+// ---------------------------------------------------------------------------
+export function getTopAIOrgs(n: number = 15): InstitutionTrend[] {
+  const { entities } = loadEntityIndex();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+  const ratingRank: Record<string, number> = { '⚡': 3, '🔧': 2, '📖': 1 };
+
+  const results: InstitutionTrend[] = [];
+  for (const entity of Object.values(entities)) {
+    if (entity.type !== 'lab') continue;
+    const aiSignals = entity.signals.filter(s => s.domain === 'ai_app');
+    if (aiSignals.length === 0) continue;
+
+    const recent = aiSignals.filter(s => s.date >= cutoffStr);
+    const lastSeen = aiSignals.reduce((max, s) => s.date > max ? s.date : max, '');
+    let topRating = '📖';
+    let topRank = 0;
+    for (const s of aiSignals) {
+      const rank = ratingRank[s.rating] ?? 0;
+      if (rank > topRank) { topRank = rank; topRating = s.rating; }
+    }
+
+    results.push({
+      name: entity.name,
+      recentCount: recent.length,
+      totalCount: aiSignals.length,
+      lastSeen,
+      topRating,
+    });
+  }
+
+  return results
+    .sort((a, b) => b.totalCount - a.totalCount || b.recentCount - a.recentCount)
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
 // loadSocialIntel
 // Loads the N most recent daily social intel .md files for ai or vla.
 // Returns array of { date, content } objects.

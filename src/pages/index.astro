@@ -40,6 +40,14 @@ const recentPicks   = loadAIDailyPicks(1);
 const recentVLA     = loadVLADailyPicks(3);  // 3 days for weekend fallback
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
+const topLabsHome   = Object.values(entityIndex.entities)
+  .filter(e => e.type === 'lab')
+  .sort((a, b) => b.signals.length - a.signals.length)
+  .slice(0, 5);
+const topMethodsHome = Object.values(entityIndex.entities)
+  .filter(e => e.type === 'method')
+  .sort((a, b) => b.signals.length - a.signals.length)
+  .slice(0, 5);
 const aiSocial      = loadSocialIntel('ai',  1);
 const vlaSocial     = loadSocialIntel('vla', 1);
 const biweekly      = loadBiweeklyReports(1);
@@ -758,53 +766,57 @@ const RULE_LABELS: Record<string, string> = {
           </div>
         </div>
 
-        <!-- Entity activity (real data) -->
+        <!-- Entity activity — split: labs + methods -->
         <div class="dash-card">
           <div class="dash-card-header">
-            <span class="dash-card-title"><span data-tc>實體活躍度</span><span data-sc>实体活跃度</span></span>
+            <span class="dash-card-title"><span data-tc>知識圖譜</span><span data-sc>知识图谱</span></span>
             <span class="status-badge status-ok">
-              {entityCount > 0 ? entityCount + ' 實體' : '7日追蹤'}
+              {entityCount > 0 ? entityCount + ' <span data-tc>實體</span><span data-sc>实体</span>' : '—'}
             </span>
           </div>
-          <div class="entity-list">
-            {entityCount > 0
-              ? Object.values(entityIndex.entities)
-                  .sort((a, b) => (b.signals?.length ?? 0) - (a.signals?.length ?? 0))
-                  .slice(0, 5)
-                  .map((ent, idx) => {
-                    const count = ent.signals?.length ?? 0;
-                    const max   = Object.values(entityIndex.entities).reduce((m, e) => Math.max(m, e.signals?.length ?? 0), 1);
-                    const pct   = Math.max(12, Math.round(count / max * 100));
-                    return (
-                      <div class="entity-row">
-                        <div class="entity-row-meta">
-                          <span class="entity-name">{ent.name}</span>
-                          <span class="entity-count">{count} 信號</span>
-                        </div>
-                        <div class="entity-bar-track">
-                          <div class="entity-bar-fill" style={`width:${pct}%;`}></div>
-                        </div>
+          <div class="entity-dual-grid">
+            <div class="entity-col">
+              <span class="entity-col-label"><span data-tc>機構</span><span data-sc>机构</span></span>
+              <div class="entity-list">
+                {topLabsHome.map((ent, idx) => {
+                  const count = ent.signals?.length ?? 0;
+                  const max = topLabsHome[0]?.signals?.length ?? 1;
+                  const pct = Math.max(12, Math.round(count / max * 100));
+                  return (
+                    <div class="entity-row">
+                      <div class="entity-row-meta">
+                        <span class="entity-name">{ent.name}</span>
+                        <span class="entity-count">{count}</span>
                       </div>
-                    );
-                  })
-              : [
-                  ['FlowMatching', 12, 100],
-                  ['Pi0 / Pi0.5',  9,  75],
-                  ['WorldModel',   7,  58],
-                  ['Mamba / SSM',  6,  50],
-                  ['DiffusionPolicy', 5, 42],
-                ].map(([name, count, pct]) => (
-                  <div class="entity-row">
-                    <div class="entity-row-meta">
-                      <span class="entity-name">{name}</span>
-                      <span class="entity-count">{count} 信號</span>
+                      <div class="entity-bar-track">
+                        <div class="entity-bar-fill entity-bar-fill--cyan" style={`width:${pct}%;`}></div>
+                      </div>
                     </div>
-                    <div class="entity-bar-track">
-                      <div class="entity-bar-fill" style={`width:${pct}%;`}></div>
+                  );
+                })}
+              </div>
+            </div>
+            <div class="entity-col">
+              <span class="entity-col-label"><span data-tc>方法</span><span data-sc>方法</span></span>
+              <div class="entity-list">
+                {topMethodsHome.map((ent, idx) => {
+                  const count = ent.signals?.length ?? 0;
+                  const max = topMethodsHome[0]?.signals?.length ?? 1;
+                  const pct = Math.max(12, Math.round(count / max * 100));
+                  return (
+                    <div class="entity-row">
+                      <div class="entity-row-meta">
+                        <span class="entity-name">{ent.name.replace(/_/g, ' ')}</span>
+                        <span class="entity-count">{count}</span>
+                      </div>
+                      <div class="entity-bar-track">
+                        <div class="entity-bar-fill entity-bar-fill--amber" style={`width:${pct}%;`}></div>
+                      </div>
                     </div>
-                  </div>
-                ))
-            }
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
