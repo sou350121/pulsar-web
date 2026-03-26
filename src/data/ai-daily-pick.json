@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-03-26",
+      "items": [
+        {
+          "title": "谷歌发布 Lyria 3 Pro 音乐生成模型，支持 3 分钟曲目",
+          "category": "新发布",
+          "source": "Readhub",
+          "url": "https://readhub.cn/topic/8rnDePnvOgi",
+          "why_picked": "Google 升级 Lyria 3 至 Pro 版本，生成时长从短片段扩展至 3 分钟，增强创作控制力；将整合进 Gemini 付费版、Google Vids 和 ProducerAI",
+          "so_what": "如果你在做 AI 音乐/视频创作应用：评估 Lyria 3 Pro 对比 Suno/Udio 的商业授权条款；关注 3 分钟时长对完整歌曲创作的意义；考虑通过 Vertex AI 或 Gemini API 集成，注意仅限付费订阅用户可用。"
+        },
+        {
+          "title": "OpenAI 发布 Model Spec：模型行为公开框架",
+          "category": "观点",
+          "source": "OpenAI Blog",
+          "url": "https://openai.com/index/our-approach-to-the-model-spec",
+          "why_picked": "OpenAI 官方博客详解 Model Spec 设计理念，作为模型行为的公开框架，平衡安全性、用户自由和问责制；回应外界对模型行为透明度的关切",
+          "so_what": "如果你在企业部署 LLM 应用：参考 Model Spec 设计自己的 AI 系统行为准则；将其作为供应商评估维度（是否有明确的行为框架和问责机制）；关注 OpenAI 如何将此框架落实到具体产品策略中。"
+        },
+        {
+          "title": "90% 的 Claude 代码输出流向低星仓库（<2 stars）",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://www.claudescode.dev/?window=since_launch",
+          "why_picked": "HN 135 分/76 评论热议：claudescode.dev 数据显示 90% Claude Code 生成的代码提交到少于 2 星的仓库，反映 AI 编程助手主要服务于个人/小团队项目",
+          "so_what": "如果你在推广 AI 编程工具：个人开发者和小团队是核心用户群，企业级渗透率仍低；评估 Claude Code 在企业环境的 adoption 障碍（安全审查、代码所有权、审计需求）；考虑针对小团队设计轻量级部署方案。"
+        },
+        {
+          "title": "LiteLLM 遭 PyPI 投毒攻击，4.7 万下载受影响",
+          "category": "行业",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Mar/25/litellm-hack/",
+          "why_picked": "Simon Willison 追踪 LiteLLM 包被恶意投毒事件：攻击者在 46 分钟内获得 47,000 次下载，暴露 Python 包供应链安全风险",
+          "so_what": "如果你在生产环境使用 Python AI 库：立即检查 requirements.txt 中 LiteLLM 版本是否在被攻击时间窗口内；启用 pip hash 验证或锁定具体版本号；考虑使用私有 PyPI 镜像 + 人工审核流程；评估 poetry/pipenv 等锁定工具的供应链保护能力。"
+        },
+        {
+          "title": "Health NZ 禁止员工用 ChatGPT 写临床笔记",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.rnz.co.nz/news/national/590645/health-nz-staff-told-to-stop-using-chatgpt-to-write-clinical-notes",
+          "why_picked": "新西兰卫生部要求员工停止使用 ChatGPT 撰写临床笔记，HN 57 分讨论；反映医疗行业对 AI 生成内容的合规性和准确性担忧",
+          "so_what": "如果你在做医疗/法律等合规敏感领域的 AI 应用：预先设计内容审核和人工复核流程；记录 AI 生成内容的完整审计日志；评估数据隐私合规（HIPAA/GDPR）；准备应对监管审查的文档和解释框架。"
+        },
+        {
+          "title": "datasette-llm 0.1a1：Datasette 的 LLM 基础插件",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Mar/25/datasette-llm/",
+          "why_picked": "Simon Willison 发布 datasette-llm 0.1a1，为 Datasette 生态提供 LLM 模型接入基础插件，支持其他插件（如 datasette-enrichments-llm）调用",
+          "so_what": "如果你在用 Datasette 做数据探索：安装 datasette-llm 后可直接在数据表中调用 LLM 做文本分析/摘要/分类；参考其 plugin hook 设计（register_llm_purposes）为自己的 Datasette 插件添加 AI 能力；适合快速原型验证场景。"
+        },
+        {
+          "title": "Simon Willison：AI 工程需要「慢下来」",
+          "category": "观点",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Mar/25/thoughts-on-slowing-the-fuck-down/",
+          "why_picked": "Simon 引用 Pi agent 框架作者 Mario Zechner 观点：当前 AI Agent 工程过于追求自动化速度，忽视可靠性和可调试性；呼吁行业反思",
+          "so_what": "如果你在设计 Agent 系统：在自动化和可调试性之间找平衡，为关键路径添加人工确认点；建立完善的日志和追踪系统（如 LangSmith）；参考 Mario 的 Pi 框架设计理念，优先保证行为可预测而非执行速度。"
+        },
+        {
+          "title": "AWS Bedrock 多模态视频理解架构详解",
+          "category": "工具",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/unlocking-video-insights-at-scale-with-amazon-bedrock-multimodal-models/",
+          "why_picked": "AWS 官方博客详解三种视频理解架构方案，针对不同用例（实时分析/批量处理/交互式查询）提供设计参考",
+          "so_what": "如果你在做视频分析应用：根据延迟需求选择架构（实时用流式处理，批量用异步任务）；评估 Bedrock 多模态模型对比自建方案的成本效益；参考其分片处理策略优化长视频分析性能。"
+        }
+      ]
+    },
+    {
       "date": "2026-03-25",
       "items": [
         {
@@ -1397,81 +1466,6 @@
           "source": "GitHub",
           "url": "https://github.com/BerriAI/litellm/releases/tag/v1.81.14.rc.1",
           "why_picked": "统一 LLM API 调用层的新版本，持续扩展模型支持和优化性能"
-        }
-      ]
-    },
-    {
-      "date": "2026-02-23",
-      "items": [
-        {
-          "title": "How I use Claude Code: Separation of planning and execution",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://boristane.com/blog/how-i-use-claude-code/",
-          "why_picked": "HN 716 分热议：将规划与执行分离的 Claude Code 使用范式，显著提升复杂任务的可靠性和可调试性"
-        },
-        {
-          "title": "How Taalas \"prints\" LLM onto a chip?",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://www.anuragk.com/blog/posts/Taalas.html",
-          "why_picked": "HN 270 分：将 LLM 直接\"印刷\"到芯片上的硬件创新，可能重塑端侧推理架构"
-        },
-        {
-          "title": "Custom Kernels for All from Codex and Claude",
-          "category": "工具",
-          "source": "HF Blog",
-          "url": "https://huggingface.co/blog/custom-cuda-kernels-agent-skills",
-          "why_picked": "HF 展示用 Codex/Claude 自动生成 CUDA kernel 的 agent skill，降低高性能计算门槛"
-        },
-        {
-          "title": "The Future of the Global Open-Source AI Ecosystem: From DeepSeek to AI+",
-          "category": "行业",
-          "source": "HF Blog",
-          "url": "https://huggingface.co/blog/huggingface/one-year-since-the-deepseek-moment-blog-3",
-          "why_picked": "HF 博客系列第三篇：DeepSeek 事件一年后全球开源 AI 生态的演变和中国团队的新角色"
-        },
-        {
-          "title": "Unlocking Agentic RL Training for GPT-OSS: A Practical Retrospective",
-          "category": "趋势",
-          "source": "HF Blog",
-          "url": "https://huggingface.co/blog/LinkedIn/gpt-oss-agentic-rl",
-          "why_picked": "LinkedIn 工程团队分享 GPT-OSS 智能体 RL 训练的实战经验和关键洞察"
-        },
-        {
-          "title": "Straion",
-          "category": "工具",
-          "source": "ProductHunt",
-          "url": "https://www.producthunt.com/products/straion",
-          "why_picked": "为 AI 编程智能体设计的智能体管理规则系统，帮助团队标准化 agent 行为和代码输出"
-        },
-        {
-          "title": "Claudebin",
-          "category": "工具",
-          "source": "ProductHunt",
-          "url": "https://www.producthunt.com/products/claudebin",
-          "why_picked": "将 Claude Code 会话导出为可恢复 URL，支持分享和断点续跑工作流"
-        },
-        {
-          "title": "ClawMetry for OpenClaw",
-          "category": "工具",
-          "source": "ProductHunt",
-          "url": "https://www.producthunt.com/products/clawmetry",
-          "why_picked": "专为 OpenClaw 智能体设计的实时可观测性仪表板，追踪 agent 执行状态和性能指标"
-        },
-        {
-          "title": "ntransformer",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/xaskasdf/ntransformer",
-          "why_picked": "Show HN：NVMe 直连 GPU 绕过 CPU/内存瓶颈，单 RTX 3090 运行 Llama 3.1 70B"
-        },
-        {
-          "title": "New in llama.cpp: Model Management",
-          "category": "工具",
-          "source": "HF Blog",
-          "url": "https://huggingface.co/blog/ggml-org/model-management-in-llamacpp",
-          "why_picked": "llama.cpp 新增模型管理功能，简化本地部署的模型下载、版本切换和存储优化"
         }
       ]
     }
