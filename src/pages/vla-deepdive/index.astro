@@ -4,8 +4,8 @@
  * VLA Deep Dive — 統一文章庫 + 方法族趨勢金融終端看板 + SOTA 排行。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState, loadFieldStateHistory, COMPETITION_PAIRS, loadEmergingTerms } from '../../utils/data';
-import type { FamilyTimeSeries, EmergingTerm } from '../../utils/data';
+import { loadVLASOTA, loadVLATheory, loadVLAGitHubArticles, loadLatestFieldState, loadFieldStateHistory, COMPETITION_PAIRS, loadEmergingTerms, getTopInstitutions } from '../../utils/data';
+import type { FamilyTimeSeries, EmergingTerm, InstitutionTrend } from '../../utils/data';
 
 const theory   = loadVLATheory(50);
 const sota     = loadVLASOTA(30);
@@ -13,6 +13,7 @@ const ghAll    = loadVLAGitHubArticles(100);
 const fieldState = loadLatestFieldState();
 const history  = loadFieldStateHistory();
 const emergingData = loadEmergingTerms();
+const topInstitutions = getTopInstitutions(20, 30);
 
 const GITHUB_REPO         = 'https://github.com/sou350121/VLA-Handbook';
 const GITHUB_THEORY_PATH  = `${GITHUB_REPO}/tree/main/theory`;
@@ -562,6 +563,62 @@ const base = import.meta.env.BASE_URL;
               {emergingData.stats.after_stopword_filter} after filter
               <span class="fin-emerging-stat-sep">|</span>
               coverage gap: {((emergingData.unmatched_papers / emergingData.total_papers_scanned) * 100).toFixed(0)}%
+            </span>
+          </div>
+        </details>
+      </section>
+    )}
+
+    <!-- ══════════════════════════════════════════
+         TOP INSTITUTIONS: Entity-based lab ranking
+    ══════════════════════════════════════════ -->
+    {topInstitutions.length > 0 && (
+      <section class="fin-panel fin-institutions-panel" aria-label="机构排名">
+        <details class="vdd-fold">
+          <summary class="fin-header vdd-fold-summary">
+            <span class="vdd-fold-chevron"></span>
+            <div class="fin-header-left">
+              <h2 class="fin-title">TOP INSTITUTIONS</h2>
+              <span class="fin-meta">
+                30d window · {topInstitutions.length} labs tracked · VLA domain
+              </span>
+            </div>
+            <span class="vdd-fold-badge fin-emerging-badge">
+              {topInstitutions.filter(i => i.recentCount > 0).length} active
+            </span>
+          </summary>
+
+          <div class="fin-inst-grid-header fin-inst-grid">
+            <span class="fin-th">INSTITUTION</span>
+            <span class="fin-th" style="text-align:right">30d</span>
+            <span class="fin-th" style="text-align:center">BEST</span>
+            <span class="fin-th" style="text-align:right">LAST SEEN</span>
+            <span class="fin-th">ACTIVITY</span>
+          </div>
+          <div class="fin-inst-rows">
+            {topInstitutions.map((inst, idx) => {
+              const barWidth = topInstitutions[0].totalCount > 0
+                ? Math.max(4, (inst.totalCount / topInstitutions[0].totalCount) * 100)
+                : 0;
+              return (
+                <div class={`fin-inst-row fin-inst-grid ${idx < 3 ? 'fin-inst-top3' : ''}`}>
+                  <span class="fin-inst-name">
+                    {idx < 3 && <span class="fin-inst-rank">{idx + 1}</span>}
+                    {inst.name}
+                  </span>
+                  <span class="fin-inst-count tabular-nums">{inst.totalCount}</span>
+                  <span class="fin-inst-rating">{inst.topRating}</span>
+                  <span class="fin-inst-date tabular-nums">{inst.lastSeen.slice(5)}</span>
+                  <span class="fin-inst-bar-wrap">
+                    <span class="fin-inst-bar" style={`width:${barWidth}%`} />
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <div class="fin-inst-footer">
+            <span class="fin-meta">
+              source: entity-index.json · VLA papers (⚡🔧) · keyword + LLM affiliation
             </span>
           </div>
         </details>
@@ -1244,6 +1301,67 @@ const base = import.meta.env.BASE_URL;
     grid-template-columns: 1fr 40px 32px 60px 56px;
   }
   .fin-emerging-sample { display: none; }
+}
+
+/* ── Institutions panel ── */
+.fin-inst-grid {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.5fr) 40px 40px 64px 1fr;
+  gap: 6px; align-items: center;
+}
+.fin-inst-grid-header {
+  padding: 0 0 3px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+.fin-inst-row {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
+  transition: background 0.12s;
+}
+.fin-inst-row:hover { background: rgba(255,255,255,0.02); }
+.fin-inst-row:last-child { border-bottom: none; }
+.fin-inst-top3 .fin-inst-name { color: var(--accent-cyan); font-weight: 600; }
+.fin-inst-name {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: flex; align-items: center; gap: 6px;
+}
+.fin-inst-rank {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 3px;
+  font-size: 0.56rem; font-weight: 700;
+  background: rgba(6,182,212,0.15); color: var(--accent-cyan);
+  flex-shrink: 0;
+}
+.fin-inst-count {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem; color: var(--text-secondary); text-align: right;
+}
+.fin-inst-rating { text-align: center; font-size: 0.72rem; }
+.fin-inst-date {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.64rem; color: var(--text-tertiary); text-align: right;
+}
+.fin-inst-bar-wrap {
+  height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px;
+  overflow: hidden;
+}
+.fin-inst-bar {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-cyan), rgba(6,182,212,0.3));
+  transition: width 0.3s ease;
+}
+.fin-inst-footer {
+  margin-top: 8px; padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 640px) {
+  .fin-inst-grid {
+    grid-template-columns: 1fr 36px 36px 56px;
+  }
+  .fin-inst-bar-wrap { display: none; }
 }
 
 /* ── Sections ── */

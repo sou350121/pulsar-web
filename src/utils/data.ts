@@ -153,7 +153,7 @@ export interface EntitySignal {
 }
 
 export interface Entity {
-  type:    string;  // 'lab' | 'method' | 'benchmark' | 'org'
+  type:    string;  // 'lab' | 'method' | 'benchmark' | 'researcher'
   name:    string;
   signals: EntitySignal[];
 }
@@ -483,6 +483,56 @@ export function getTopEntities(
   return Object.values(entities)
     .filter(e => !type || e.type === type)
     .sort((a, b) => b.signals.length - a.signals.length)
+    .slice(0, n);
+}
+
+// ---------------------------------------------------------------------------
+// getTopInstitutions
+// Returns top N lab entities with VLA-domain signals in the last `days` days,
+// sorted by recent signal count. Used by the TOP INSTITUTIONS panel.
+// ---------------------------------------------------------------------------
+export interface InstitutionTrend {
+  name:          string;
+  recentCount:   number;   // signals in last 7d
+  totalCount:    number;   // all signals
+  lastSeen:      string;   // most recent signal date
+  topRating:     string;   // best rating seen (⚡ > 🔧 > 📖)
+}
+
+export function getTopInstitutions(n: number = 20, days: number = 7): InstitutionTrend[] {
+  const { entities } = loadEntityIndex();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+  const ratingRank: Record<string, number> = { '⚡': 3, '🔧': 2, '📖': 1 };
+
+  const results: InstitutionTrend[] = [];
+  for (const entity of Object.values(entities)) {
+    if (entity.type !== 'lab') continue;
+    const vlaSignals = entity.signals.filter(s => s.domain === 'vla');
+    if (vlaSignals.length === 0) continue;
+
+    const recent = vlaSignals.filter(s => s.date >= cutoffStr);
+    const lastSeen = vlaSignals.reduce((max, s) => s.date > max ? s.date : max, '');
+    let topRating = '📖';
+    let topRank = 0;
+    for (const s of vlaSignals) {
+      const rank = ratingRank[s.rating] ?? 0;
+      if (rank > topRank) { topRank = rank; topRating = s.rating; }
+    }
+
+    results.push({
+      name: entity.name,
+      recentCount: recent.length,
+      totalCount: vlaSignals.length,
+      lastSeen,
+      topRating,
+    });
+  }
+
+  return results
+    .sort((a, b) => b.recentCount - a.recentCount || b.totalCount - a.totalCount)
     .slice(0, n);
 }
 
