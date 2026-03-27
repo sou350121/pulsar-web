@@ -77,56 +77,57 @@ interface VLARatingRaw {
 }
 
 // ---------------------------------------------------------------------------
-// Build-time institution matching for affiliation backfill
-// Lightweight keyword scan — mirrors _vla_institutions.py logic
+// Build-time institution matching — auto-synced from _vla_institutions.py
+// via export-institution-registry.py → institution-registry.json
+// Falls back to inline subset if JSON not yet synced.
 // ---------------------------------------------------------------------------
-const INSTITUTION_ALIASES: Record<string, string[]> = {
-  'Stanford':       ['stanford', 'sail'],
-  'UC Berkeley':    ['berkeley', 'bair'],
-  'CMU':            ['cmu', 'carnegie mellon'],
-  'MIT':            ['massachusetts institute', 'csail'],
-  'Google DeepMind': ['deepmind', 'google brain', 'google research'],
-  'Meta FAIR':      ['meta ai', 'fair lab', 'facebook ai'],
-  'NVIDIA':         ['nvidia', 'nvlabs'],
-  'Physical Intelligence': ['physical intelligence', 'pi0', 'openpi'],
-  'Microsoft Research': ['microsoft research'],
-  'Tsinghua':       ['tsinghua', '\u6e05\u534e'],
-  'Peking University': ['peking university', '\u5317\u5927', 'pku'],
-  'ETH Zurich':     ['eth zurich'],
-  'KAIST':          ['kaist'],
-  'SJTU':           ['shanghai jiao tong', '\u4e0a\u4ea4', 'sjtu'],
-  'Toyota Research': ['toyota research', 'tri-ml'],
-};
+let INSTITUTION_ALIASES: Record<string, string[]> = {};
+let RESEARCHER_INSTITUTION: Record<string, string> = {};
+try {
+  const reg = readJson<{
+    all_institutions: Record<string, string[]>;
+    researcher_affiliation: Record<string, string>;
+  }>('institution-registry.json');
+  if (reg) {
+    INSTITUTION_ALIASES = reg.all_institutions;
+    RESEARCHER_INSTITUTION = reg.researcher_affiliation;
+  }
+} catch { /* fallback below */ }
+// Inline fallback if registry JSON not available
+if (Object.keys(INSTITUTION_ALIASES).length === 0) {
+  INSTITUTION_ALIASES = {
+    'Stanford': ['stanford', 'sail'], 'UC Berkeley': ['berkeley', 'bair'],
+    'CMU': ['cmu', 'carnegie mellon'], 'MIT': ['massachusetts institute', 'csail'],
+    'Google DeepMind': ['deepmind', 'google brain'], 'NVIDIA': ['nvidia'],
+    'Physical Intelligence': ['physical intelligence', 'pi0'],
+    'Tsinghua': ['tsinghua'], 'ETH Zurich': ['eth zurich'], 'KAIST': ['kaist'],
+  };
+  RESEARCHER_INSTITUTION = {
+    'chelsea finn': 'Stanford', 'sergey levine': 'UC Berkeley',
+    'pieter abbeel': 'UC Berkeley', 'dieter fox': 'NVIDIA',
+    'tony zhao': 'Stanford', 'marco hutter': 'ETH Zurich',
+  };
+}
 
-// Known researcher → institution mapping (for author-based affiliation inference)
-const RESEARCHER_INSTITUTION: Record<string, string> = {
-  'chelsea finn': 'Stanford', 'sergey levine': 'UC Berkeley',
-  'pieter abbeel': 'UC Berkeley', 'fei-fei li': 'Stanford',
-  'shuran song': 'Stanford', 'russ tedrake': 'MIT',
-  'dorsa sadigh': 'Stanford', 'lerrel pinto': 'NYU',
-  'dieter fox': 'NVIDIA', 'yuke zhu': 'UT Austin',
-  'kaiming he': 'MIT', 'andy zeng': 'Google DeepMind',
-  'ted xiao': 'Google DeepMind', 'pete florence': 'Google DeepMind',
-  'danny driess': 'Google DeepMind', 'kevin black': 'UC Berkeley',
-  'homer walke': 'UC Berkeley', 'oier mees': 'UC Berkeley',
-  'tony zhao': 'Stanford', 'marco hutter': 'ETH Zurich',
-  'wolfram burgard': 'University of Freiburg',
-  'animesh garg': 'Georgia Tech', 'abhinav gupta': 'CMU',
-};
-
+/** Resolve affiliation from text: institution aliases → researcher mapping. */
 function matchInstitution(text: string): string {
   const lower = text.toLowerCase();
-  // 1. Try institution name/alias matching
   for (const [name, aliases] of Object.entries(INSTITUTION_ALIASES)) {
     for (const alias of aliases) {
       if (lower.includes(alias)) return `[${name}]`;
     }
   }
-  // 2. Try known researcher → institution mapping
   for (const [researcher, inst] of Object.entries(RESEARCHER_INSTITUTION)) {
     if (lower.includes(researcher)) return `[${inst}]`;
   }
   return '';
+}
+
+/** Shared affiliation resolver used by both V1 and V2 loaders. */
+function resolveAffiliation(raw: { affiliation?: string; title?: string; abstract_snippet?: string; authors?: string }): string {
+  const a = (raw.affiliation || '').trim();
+  if (a) return a;
+  return matchInstitution([raw.title, raw.abstract_snippet, raw.authors || ''].join(' '));
 }
 
 // Filter funnel counts from 3-pass pipeline
@@ -427,48 +428,39 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
       date,
       daText: data?.da_text || '',
       items: papers
-        .filter(p => p.rating !== '❌')   // skip low-relevance by default
+        .filter(p => p.rating !== '❌')
         .map((raw): DailyPickItem => {
-          const r   = (raw.reason || '').trim();
+          const r   = (raw.reason || '').trim()
+            .replace(/\s*\[Pass3.*$/i, '');  // strip pipeline Pass3 annotations
           const abs = (raw.abstract_snippet || '')
             .replace(/^arXiv:\S+\s+Announce Type:\s*\S+\s*/i, '')
             .replace(/^Abstract:\s*/i, '')
             .trim();
 
-          // Build summary: reason + abstract excerpt
+          // Summary: lead with abstract excerpt for substance, trail with reason tag
           let summary: string;
-          if (r.length > 40) {
-            summary = r;  // new pipeline: reason is full summary
-          } else if (r && abs) {
-            summary = r + '  ' + abs;  // old pipeline: pad with abstract
+          if (abs) {
+            summary = abs.slice(0, 140) + (r ? '  · ' + r : '');
           } else {
-            summary = r || abs;
+            summary = r;
           }
 
-          // Affiliation: use LLM output first, fall back to build-time keyword matching
-          let affiliation = (raw.affiliation || '').trim();
-          if (!affiliation) {
-            const searchText = [raw.title, raw.abstract_snippet, raw.authors || ''].join(' ');
-            affiliation = matchInstitution(searchText);
-          }
-
-          // Prepend first author to summary if available and affiliation is known
+          // First author for ALL papers
           const authors = (raw.authors || '').trim();
-          if (authors && affiliation) {
-            const firstAuthor = authors.split(',')[0].trim();
-            if (firstAuthor && !summary.includes(firstAuthor)) {
-              summary = firstAuthor + ' et al. · ' + summary;
-            }
+          if (authors) {
+            const parts = authors.split(',');
+            const byline = parts[0].trim() + (parts.length > 1 ? ' et al.' : '');
+            summary = byline + ' · ' + summary;
           }
 
           return {
-            title:   raw.title ?? '',
-            url:     raw.url   ?? '#',
+            title:       raw.title ?? '',
+            url:         raw.url   ?? '#',
             summary,
-            rating:  raw.rating ?? '📖',
-            source:  raw.source ?? 'arxiv',
-            domain:  'vla',
-            affiliation,
+            rating:      raw.rating ?? '📖',
+            source:      raw.source ?? 'arxiv',
+            domain:      'vla',
+            affiliation: resolveAffiliation(raw),
           };
         }),
     };
