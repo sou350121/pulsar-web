@@ -7,6 +7,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { loadAIGitHubArticles, loadAIDeepDive, AI_DEEP_DIVE_TAGS, matchDeepDiveTags, loadLatestAIFieldState, loadAIFieldStateHistory, getTopAIOrgs } from '../../utils/data';
 import type { AIGitHubArticle, AIFamilyTimeSeries } from '../../utils/data';
+import '../../styles/fin-terminal.css';
 
 const topAIOrgs = getTopAIOrgs(15);
 const aiHistory = loadAIFieldStateHistory();
@@ -215,20 +216,23 @@ function artNewBadge(dateStr: string): string | null {
   {aiSortedFamilies.length > 0 && (
     <section class="fin-panel" aria-label="AI Agent 趋势看板">
       <details class="vdd-fold" open>
-        <summary class="fin-header vdd-fold-summary">
-          <span class="vdd-fold-chevron"></span>
-          <div class="fin-header-left">
-            <h2 class="fin-title">AI AGENT TRENDS</h2>
-            <span class="fin-meta">
-              {aiHistory?.latestDate ?? aiFieldState?.date} · {aiTotalMentions} mentions · {aiHistory?.dates.length ?? 1} snapshots · {aiSortedFamilies.length} families
-            </span>
+        <summary class="vdd-fold-summary">
+          <div class="fin-header">
+            <div class="fin-header-left">
+              <h2 class="fin-title">AI AGENT TRENDS</h2>
+              <span class="fin-meta">
+                {aiHistory?.latestDate ?? aiFieldState?.date} · {aiTotalMentions} mentions · {aiHistory?.dates.length ?? 1} snapshots · {aiSortedFamilies.length} families
+              </span>
+            </div>
+            {aiHistory && (
+              <span class={`fin-confidence fin-confidence--${aiHistory.confidence === 'med' ? 'moderate' : aiHistory.confidence}`}>
+                {aiHistory.confidence}
+              </span>
+            )}
           </div>
-          {aiHistory && (
-            <span class={`fin-confidence fin-confidence--${aiHistory.confidence}`}>
-              {aiHistory.confidence}
-            </span>
-          )}
+          <span class="vdd-fold-chevron"></span>
         </summary>
+        <div class="vdd-fold-body">
 
         <!-- Summary strip -->
         <div class="fin-summary-line">
@@ -239,33 +243,32 @@ function artNewBadge(dateStr: string): string | null {
           <span class="fin-summary-stat">{aiTotalMentions} mentions covered</span>
         </div>
 
-        <!-- Ticker table with gauge + sparkline (matches VLA) -->
+        <!-- Ticker table with gauge + sparkline (identical to VLA) -->
         <div class="fin-ticker-wrap">
-          <div class="fin-ticker-header fin-ai-ticker-grid">
-            <span class="fin-th">FAMILY</span>
-            <span class="fin-th">MOM</span>
-            <span class="fin-th" style="text-align:right">7d</span>
-            <span class="fin-th" style="text-align:right">&Delta;7d</span>
-            <span class="fin-th">CHART</span>
-            <span class="fin-th" style="text-align:center">ST</span>
+          <div class="fin-ticker-header fin-ticker-grid-v3">
+            <span class="fin-th fin-th-name">FAMILY</span>
+            <span class="fin-th fin-th-gauge">MOM</span>
+            <span class="fin-th fin-th-vol">7d</span>
+            <span class="fin-th fin-th-accel">&Delta;7d</span>
+            <span class="fin-th fin-th-chart">CHART</span>
+            <span class="fin-th fin-th-status">ST</span>
           </div>
           <div class="fin-ticker">
             {aiSortedFamilies.map(fam => {
               const gs = aiGaugeSegments(fam.latest.accel);
               const accCls = fam.latest.accel >= 1.15 ? 'fin-up' : fam.latest.accel >= 0.86 ? 'fin-flat' : 'fin-down';
-              const statusCls = fam.latest.status === 'accelerating' ? 'fin-surge'
-                : fam.latest.status === 'declining' ? 'fin-decel-dot'
-                : 'fin-stable-dot';
-              const statusLabel = fam.latest.status === 'accelerating' ? 'SURGE'
-                : fam.latest.status === 'declining' ? 'DECEL'
-                : 'STABLE';
+              const si = fam.latest.status === 'accelerating'
+                ? { dot: '◉', cls: 'fin-surge' }
+                : fam.latest.status === 'declining'
+                ? { dot: '●', cls: 'fin-decel-dot' }
+                : { dot: '●', cls: 'fin-stable-dot' };
               const bars = aiBuildSparkBars(fam.shares);
               const { barW } = aiSparkDims(fam.shares.length);
-              const svgW = Math.max(aiSparkWidth(fam.shares.length), 60);
+              const svgW = Math.max(aiSparkWidth(fam.shares.length), 90);
               return (
-                <div class="fin-row fin-ai-ticker-grid">
+                <div class="fin-row fin-ticker-grid-v3">
                   <span class="fin-name">{fam.label}</span>
-                  <span class="fin-mini-gauge">
+                  <span class="fin-mini-gauge" aria-label={`momentum ${fam.latest.accel.toFixed(2)}x`}>
                     {[0,1,2,3,4,5].map(i => (
                       <span
                         class={`fin-gauge-seg ${i < gs.filled ? 'fin-gauge-seg-on' : ''}`}
@@ -273,8 +276,8 @@ function artNewBadge(dateStr: string): string | null {
                       />
                     ))}
                   </span>
-                  <span class={`fin-vol tabular-nums`} style="text-align:right">{fam.latest.count}</span>
-                  <span class={`fin-accel tabular-nums ${accCls}`} style="text-align:right">
+                  <span class="fin-vol tabular-nums">{fam.latest.count}</span>
+                  <span class={`fin-accel tabular-nums ${accCls}`}>
                     {fam.latest.accel.toFixed(2)}x
                   </span>
                   <svg class="fin-spark" viewBox={`0 0 ${svgW} ${AI_SPARK_H}`} width={svgW} height={AI_SPARK_H} aria-hidden="true">
@@ -284,12 +287,13 @@ function artNewBadge(dateStr: string): string | null {
                         opacity="0.85" />
                     ))}
                   </svg>
-                  <span class={`fin-status-dot ${statusCls}`}>{statusLabel}</span>
+                  <span class={`fin-status-dot ${si.cls}`} title={fam.latest.status}>{si.dot}</span>
                 </div>
               );
             })}
           </div>
         </div>
+        </div><!-- /vdd-fold-body -->
 
       {aiFieldState.competition_pairs && aiFieldState.competition_pairs.length > 0 && (
         <details class="vdd-fold vdd-fold--nested fin-competition" open>
@@ -1145,97 +1149,8 @@ function artNewBadge(dateStr: string): string | null {
 }
 .fin-pair-ratio-num { font-weight: 600; color: var(--text-secondary); }
 
-/* AI ticker grid — exact same layout as VLA fin-ticker-grid-v3 */
-.fin-ai-ticker-grid {
-  display: grid;
-  grid-template-columns: 120px 56px 36px 50px 1fr 24px;
-  gap: 6px; align-items: center;
-}
-.fin-ticker-wrap { overflow-x: auto; }
-.fin-mini-gauge {
-  display: flex; gap: 2px; align-items: center;
-}
-.fin-gauge-seg {
-  width: 6px; height: 10px; border-radius: 1px;
-  background: rgba(128,128,128,0.12);
-}
-.fin-gauge-seg-on { opacity: 1; }
-.fin-spark { flex-shrink: 0; }
-.fin-name {
-  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.72rem; color: var(--text-secondary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.fin-vol {
-  font-family: 'IBM Plex Mono','Menlo',monospace;
-  font-size: 0.72rem; font-weight: 600;
-}
-.fin-accel {
-  font-family: 'IBM Plex Mono','Menlo',monospace;
-  font-size: 0.66rem;
-}
-.fin-row {
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
-}
-.fin-row:last-child { border-bottom: none; }
-.fin-row:hover { background: rgba(255,255,255,0.02); }
-.fin-ticker-header {
-  padding: 2px 0 4px;
-  border-bottom: 1px solid var(--border);
-}
-.fin-th {
-  font-family: 'IBM Plex Mono','Menlo',monospace;
-  font-size: 0.52rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--text-tertiary);
-  white-space: nowrap;
-}
-.fin-status-dot {
-  font-family: 'IBM Plex Mono','Menlo',monospace;
-  font-size: 0.52rem; font-weight: 700; text-align: center;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  padding: 1px 4px; border-radius: 3px;
-}
-.fin-surge      { background: rgba(34,197,94,0.12); color: #22c55e; }
-.fin-decel-dot  { background: rgba(239,68,68,0.12); color: #ef4444; }
-.fin-stable-dot { background: rgba(148,163,184,0.10); color: var(--text-tertiary); }
-.fin-up         { color: #22c55e; }
-.fin-down       { color: #ef4444; }
-.fin-flat       { color: var(--accent-cyan); }
-.fin-summary-line {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-  padding: 8px 0; margin-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  font-family: 'IBM Plex Mono','Menlo',monospace;
-  font-size: 0.56rem; letter-spacing: 0.06em;
-}
-.fin-summary-tag {
-  padding: 2px 8px; border-radius: 4px; font-weight: 700;
-}
-.fin-summary-tag.fin-up { background: rgba(34,197,94,0.12); }
-.fin-summary-tag.fin-down { background: rgba(239,68,68,0.12); }
-.fin-summary-stat { color: var(--text-tertiary); }
-.fin-summary-sep { color: var(--text-tertiary); opacity: 0.4; }
-.fin-confidence {
-  font-family: 'IBM Plex Mono','Menlo',monospace;
-  font-size: 0.48rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px;
-}
-.fin-confidence--high { background: rgba(34,197,94,0.12); color: #22c55e; }
-.fin-confidence--med  { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
-.fin-confidence--low  { background: rgba(239,68,68,0.12); color: #ef4444; }
-@media (max-width: 768px) {
-  .fin-ai-ticker-grid {
-    grid-template-columns: 100px 48px 32px 44px 1fr 22px;
-    gap: 4px;
-  }
-  .fin-spark { max-width: 80px; }
-}
-@media (max-width: 480px) {
-  .fin-ai-ticker-grid { grid-template-columns: 1fr auto auto auto; }
-  .fin-mini-gauge, .fin-spark { display: none; }
-  .fin-name { font-size: 0.68rem; font-weight: 600; color: var(--text-primary); }
-}
+/* AI-specific overrides (shared fin-terminal.css handles the base) */
+/* All fin-* styles come from shared fin-terminal.css */
 
 /* Fold chevron + badge */
 .vdd-fold { border: none; }
