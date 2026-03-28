@@ -18,6 +18,8 @@ import {
   loadRecentCalibrationTriggers,
   loadVLATagDistribution,
   loadAICategoryDistribution,
+  loadAIDeepDive,
+  loadVLATheory,
   type DriftMetricsFile,
   type VLASOTAEntry,
   type DailyPickDay,
@@ -133,6 +135,49 @@ const DOMAIN_ARROW: Record<string, string> = {
   vla: 'VLA',
   ai_app: 'AI App',
 };
+
+// ── CONTENT METRICS (build-time) ─────────────────────────────────────────
+const allVLADays   = loadVLADailyPicks(365);   // all available VLA days
+const allAIDays    = loadAIDailyPicks(365);     // all available AI days
+const aiDeepDives  = loadAIDeepDive(9999);      // all AI deep dives
+const vlaTheory    = loadVLATheory(9999);        // all VLA theory articles
+
+// Total counts
+const totalVLAPapers  = allVLADays.reduce((sum, d) => sum + d.items.length, 0);
+const totalAIArticles = allAIDays.reduce((sum, d) => sum + d.items.length, 0);
+const totalDeepDives  = aiDeepDives.length + vlaTheory.length;
+
+// Days of continuous data — span from earliest to latest VLA date
+const allDates = [
+  ...allVLADays.map(d => d.date),
+  ...allAIDays.map(d => d.date),
+].filter(Boolean).sort();
+const dataSpanDays = allDates.length >= 2
+  ? Math.round((new Date(allDates[allDates.length - 1]).getTime() - new Date(allDates[0]).getTime()) / 86400000) + 1
+  : allDates.length;
+
+// Papers/day average (last 7d) — from VLA
+const vla7d = allVLADays.slice(0, 7);
+const vlaPapers7d = vla7d.reduce((s, d) => s + d.items.length, 0);
+const vlaPapersPerDay = vla7d.length > 0 ? (vlaPapers7d / vla7d.length).toFixed(1) : '0';
+
+// AI articles/day (last 7d)
+const ai7d = allAIDays.slice(0, 7);
+const aiArticles7d = ai7d.reduce((s, d) => s + d.items.length, 0);
+const aiArticlesPerDay = ai7d.length > 0 ? (aiArticles7d / ai7d.length).toFixed(1) : '0';
+
+// Deep dives per week (based on last 30 days of deep dive articles)
+const ddThirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+const recentDD = [...aiDeepDives, ...vlaTheory].filter(a => a.date >= ddThirtyDaysAgo);
+const deepDivesPerWeek = recentDD.length > 0 ? (recentDD.length / 30 * 7).toFixed(1) : '0';
+
+// Entity growth: compare entity signals in last 7d vs prior 7d
+const entitySignals7d = Object.values(entityIndex.entities)
+  .flatMap(e => e.signals)
+  .filter(s => {
+    const d = s.date;
+    return d >= vla7d[vla7d.length - 1]?.date;
+  }).length;
 ---
 
 <BaseLayout
@@ -579,6 +624,86 @@ const DOMAIN_ARROW: Record<string, string> = {
 
     </div>
 
+    <!-- ══ CONTENT METRICS ═══════════════════════════════════════════ -->
+    <div class="db-section-label">
+      <span class="db-section-title">CONTENT METRICS</span>
+      <span class="db-section-desc"><span data-tc>全站內容統計 · 管道吞吐量</span><span data-sc>全站内容统计 · 管道吞吐量</span></span>
+    </div>
+
+    <div class="db-grid">
+      <!-- Content Stats -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title"><span data-tc>內容總量</span><span data-sc>内容总量</span></span>
+          <span class="db-panel-meta">all-time · build-time</span>
+        </div>
+        <div class="db-cm-grid">
+          <div class="db-cm-stat">
+            <span class="db-cm-num db-cm-num--cyan">{totalVLAPapers}</span>
+            <span class="db-cm-label"><span data-tc>VLA 論文</span><span data-sc>VLA 论文</span></span>
+          </div>
+          <div class="db-cm-stat">
+            <span class="db-cm-num db-cm-num--amber">{totalAIArticles}</span>
+            <span class="db-cm-label"><span data-tc>AI 文章</span><span data-sc>AI 文章</span></span>
+          </div>
+          <div class="db-cm-stat">
+            <span class="db-cm-num db-cm-num--purple">{totalDeepDives}</span>
+            <span class="db-cm-label">Deep Dives</span>
+          </div>
+          <div class="db-cm-stat">
+            <span class="db-cm-num">{entityCount}</span>
+            <span class="db-cm-label"><span data-tc>追蹤實體</span><span data-sc>追踪实体</span></span>
+          </div>
+          <div class="db-cm-stat db-cm-stat--wide">
+            <span class="db-cm-num">{dataSpanDays}</span>
+            <span class="db-cm-label"><span data-tc>連續天數</span><span data-sc>连续天数</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline Throughput -->
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title"><span data-tc>管道吞吐</span><span data-sc>管道吞吐</span></span>
+          <span class="db-panel-meta"><span data-tc>近期效率</span><span data-sc>近期效率</span></span>
+        </div>
+        <div class="db-cm-throughput">
+          <div class="db-cm-tp-row">
+            <span class="db-cm-tp-label"><span data-tc>VLA 論文/日</span><span data-sc>VLA 论文/日</span></span>
+            <div class="db-cm-tp-bar-wrap">
+              <div class="db-cm-tp-bar db-cm-tp-bar--cyan" style={`width:${Math.min(100, Number(vlaPapersPerDay) * 3)}%`}></div>
+            </div>
+            <span class="db-cm-tp-val">{vlaPapersPerDay}</span>
+            <span class="db-cm-tp-sub">avg 7d</span>
+          </div>
+          <div class="db-cm-tp-row">
+            <span class="db-cm-tp-label"><span data-tc>AI 文章/日</span><span data-sc>AI 文章/日</span></span>
+            <div class="db-cm-tp-bar-wrap">
+              <div class="db-cm-tp-bar db-cm-tp-bar--amber" style={`width:${Math.min(100, Number(aiArticlesPerDay) * 3)}%`}></div>
+            </div>
+            <span class="db-cm-tp-val">{aiArticlesPerDay}</span>
+            <span class="db-cm-tp-sub">avg 7d</span>
+          </div>
+          <div class="db-cm-tp-row">
+            <span class="db-cm-tp-label">Deep Dives/wk</span>
+            <div class="db-cm-tp-bar-wrap">
+              <div class="db-cm-tp-bar db-cm-tp-bar--purple" style={`width:${Math.min(100, Number(deepDivesPerWeek) * 5)}%`}></div>
+            </div>
+            <span class="db-cm-tp-val">{deepDivesPerWeek}</span>
+            <span class="db-cm-tp-sub">30d avg</span>
+          </div>
+          <div class="db-cm-tp-row">
+            <span class="db-cm-tp-label"><span data-tc>實體訊號</span><span data-sc>实体讯号</span></span>
+            <div class="db-cm-tp-bar-wrap">
+              <div class="db-cm-tp-bar" style={`width:${Math.min(100, entitySignals7d * 2)}%`}></div>
+            </div>
+            <span class="db-cm-tp-val">{entitySignals7d}</span>
+            <span class="db-cm-tp-sub">7d new</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ SITE ANALYTICS ═════════════════════════════════════════════ -->
     {analytics && (
     <div class="db-grid" style="margin-top:32px;">
@@ -653,7 +778,7 @@ const DOMAIN_ARROW: Record<string, string> = {
             {analytics.popular_paths.slice(0, 8).map((p, i) => (
               <div class="db-rank-row">
                 <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
-                <span class="db-rank-name db-rank-name--mono">{p.path.replace('/sou350121/pulsar-web', '')}</span>
+                <span class="db-rank-name db-rank-name--mono">{p.path.replace('/sou350121/pulsar-web', '') || '/'}</span>
                 <span class="db-rank-count">{p.views}</span>
               </div>
             ))}
@@ -1859,5 +1984,76 @@ html.dark .db-cat-bar { box-shadow: 0 0 5px rgba(245,183,49,0.4); }
   font-size: 0.56rem; color: var(--text-tertiary);
   text-transform: uppercase; letter-spacing: 0.08em;
   display: block; margin-bottom: 6px;
+}
+
+/* ── Content Metrics ── */
+.db-cm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 12px;
+  padding: 8px 0;
+}
+.db-cm-stat {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.db-cm-stat--wide {
+  grid-column: span 2;
+}
+.db-cm-num {
+  font-size: 1.6rem; font-weight: 700; line-height: 1.1;
+  color: var(--text-primary);
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+}
+.db-cm-num--cyan  { color: var(--accent-cyan); }
+.db-cm-num--amber { color: var(--accent-amber); }
+.db-cm-num--purple { color: #a78bfa; }
+html.dark .db-cm-num--purple { color: #c4b5fd; }
+.db-cm-label {
+  font-size: 0.56rem; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+}
+.db-cm-throughput {
+  display: flex; flex-direction: column; gap: 10px; padding: 4px 0;
+}
+.db-cm-tp-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 40px 44px;
+  align-items: center;
+  gap: 8px;
+}
+.db-cm-tp-label {
+  font-size: 0.6rem; color: var(--text-secondary);
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  white-space: nowrap;
+}
+.db-cm-tp-bar-wrap {
+  height: 6px; border-radius: 3px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+.db-cm-tp-bar {
+  height: 100%; border-radius: 3px;
+  background: var(--accent-cyan);
+  transition: width 0.3s ease;
+}
+.db-cm-tp-bar--cyan  { background: var(--accent-cyan); }
+.db-cm-tp-bar--amber { background: var(--accent-amber); }
+.db-cm-tp-bar--purple { background: #a78bfa; }
+html.dark .db-cm-tp-bar--purple { background: #c4b5fd; }
+.db-cm-tp-val {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text-primary);
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  text-align: right;
+}
+.db-cm-tp-sub {
+  font-size: 0.48rem; color: var(--text-tertiary);
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+}
+@media (max-width: 600px) {
+  .db-cm-grid { grid-template-columns: repeat(2, 1fr); }
+  .db-cm-stat--wide { grid-column: span 2; }
+  .db-cm-tp-row { grid-template-columns: 72px 1fr 36px 40px; }
 }
 </style>
