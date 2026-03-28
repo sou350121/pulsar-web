@@ -168,12 +168,11 @@ function sparkWidth(n: number): number {
   return n * barW + (n - 1) * gap;
 }
 
-// Status dot and label
+// Status dot and label — use server's status field directly
 function statusInfo(accel: number, status: string, isNew: boolean): { dot: string; label: string; cls: string } {
   if (isNew) return { dot: '◇', label: 'NEW', cls: 'fin-new-dot' };
-  if (status === 'accelerating' || accel >= 1.5) return { dot: '◉', label: 'SURGE', cls: 'fin-surge' };
-  if (accel >= 1.15) return { dot: '●', label: 'ACCEL', cls: 'fin-accel-dot' };
-  if (!(accel > 0.85)) return { dot: '●', label: 'DECEL', cls: 'fin-decel-dot' };
+  if (status === 'accelerating') return { dot: '◉', label: 'SURGE', cls: 'fin-surge' };
+  if (status === 'declining')    return { dot: '●', label: 'DECEL', cls: 'fin-decel-dot' };
   return { dot: '●', label: 'STABLE', cls: 'fin-stable-dot' };
 }
 
@@ -199,8 +198,8 @@ function accelCls(val: number): string {
 }
 
 // Summary stats
-const accelFamilies = sortedFamilies.filter(f => !f.latest.isNew && f.latest.accel >= 1.15).length;
-const declFamilies = sortedFamilies.filter(f => !f.latest.isNew && f.latest.accel < 0.71).length;
+const accelFamilies = sortedFamilies.filter(f => !f.latest.isNew && f.latest.status === 'accelerating').length;
+const declFamilies = sortedFamilies.filter(f => !f.latest.isNew && f.latest.status === 'declining').length;
 const newFamilies = sortedFamilies.filter(f => f.latest.isNew).length;
 const totalCoverage = history ? (sortedFamilies.reduce((s, f) => s + f.latest.count, 0)) : 0;
 
