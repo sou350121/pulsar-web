@@ -496,17 +496,27 @@ export function loadVLADailyPicksV2(n: number = 7): VLAPickDay[] {
         date,
         items: papers
           .filter(p => p.rating !== '❌')
-          .map((raw): VLAPickItem => ({
-            title:         raw.title            ?? '',
-            url:           raw.url              ?? '#',
-            summary:       raw.reason           || raw.abstract_snippet || '',
-            rating:        raw.rating           ?? '📖',
-            source:        raw.source           ?? 'arxiv',
-            domain:        'vla' as const,
-            full_abstract: raw.full_abstract    ?? '',
-            pass3_note:    raw.pass3_note       ?? '',
-            affiliation:   raw.affiliation      ?? '',
-          })),
+          .map((raw): VLAPickItem => {
+            // Build summary with author byline (same logic as V1 loader)
+            let summary = raw.reason || raw.abstract_snippet || '';
+            const authors = (raw.authors || '').trim();
+            if (authors) {
+              const parts = authors.split(',');
+              const byline = parts[0].trim() + (parts.length > 1 ? ' et al.' : '');
+              summary = byline + ' · ' + summary;
+            }
+            return {
+              title:         raw.title            ?? '',
+              url:           raw.url              ?? '#',
+              summary,
+              rating:        raw.rating           ?? '📖',
+              source:        raw.source           ?? 'arxiv',
+              domain:        'vla' as const,
+              full_abstract: raw.full_abstract    ?? '',
+              pass3_note:    raw.pass3_note       ?? '',
+              affiliation:   resolveAffiliation(raw),
+            };
+          }),
         filter_funnel: data?.filter_funnel ?? null,
         bucket_b:      data?.pass1_bucket_b ?? [],
       };
