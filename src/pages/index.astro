@@ -521,7 +521,13 @@ const RULE_LABELS: Record<string, string> = {
         </article>
 
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
-          <div class="hero-card-label"><span>{isVLAStale ? `VLA 論文 (${todayVLA?.date ?? '—'})` : '今日 VLA 論文'}</span></div>
+          <div class="hero-card-label"><span>{
+            isVLAStale
+              ? `VLA 論文 (${todayVLA?.date ?? '—'})`
+              : todayVLA && todayVLA.date !== shanghaiToday
+                ? `VLA 論文 (${todayVLA.date})`
+                : '今日 VLA 論文'
+          }</span></div>
           {heroVLA ? (
             <Fragment>
               <span class={getRatingClass(heroVLA.rating)} set:html={`${[...heroVLA.rating][0]} ${getRatingLabel(heroVLA.rating)}`}></span>
@@ -538,7 +544,7 @@ const RULE_LABELS: Record<string, string> = {
           ) : (
             <Fragment>
               <h2 class="hero-card-title" id="hero-vla-title"><span data-tc>週末無新論文</span><span data-sc>周末无新论文</span></h2>
-              <p class="hero-card-summary"><span data-tc>arXiv 週末不發布新論文。下一批 VLA 論文將於週一 09:00 更新。</span><span data-sc>arXiv 周末不发布新论文。下一批 VLA 论文将于周一 09:00 更新。</span></p>
+              <p class="hero-card-summary"><span data-tc>arXiv 週日/週一不發布新論文。下一批將於週二早上更新。</span><span data-sc>arXiv 周日/周一不发布新论文。下一批将于周二早上更新。</span></p>
             </Fragment>
           )}
         </article>
