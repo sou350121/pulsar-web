@@ -5,23 +5,59 @@
  * 解法：入門路徑 → 精選必讀 8 篇 → PULSAR <span data-tc>深度分析</span><span data-sc>深度分析</span> → 模塊過濾 + 緊湊列表。
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { loadAIGitHubArticles, loadAIDeepDive, AI_DEEP_DIVE_TAGS, matchDeepDiveTags, loadLatestAIFieldState, getTopAIOrgs } from '../../utils/data';
-import type { AIGitHubArticle } from '../../utils/data';
+import { loadAIGitHubArticles, loadAIDeepDive, AI_DEEP_DIVE_TAGS, matchDeepDiveTags, loadLatestAIFieldState, loadAIFieldStateHistory, getTopAIOrgs } from '../../utils/data';
+import type { AIGitHubArticle, AIFamilyTimeSeries } from '../../utils/data';
 
 const topAIOrgs = getTopAIOrgs(15);
+const aiHistory = loadAIFieldStateHistory();
 
 const articles = loadAIGitHubArticles(200);
 const deepDiveArticles = loadAIDeepDive(50);
 const aiFieldState = loadLatestAIFieldState();
 
 // Pre-compute AI method trend data for rendering
-const aiTrendAll = (aiFieldState?.method_trends ?? [])
-  .sort((a, b) => b.count_7d - a.count_7d);
-const aiTrendVisible = aiTrendAll.filter(t => t.count_7d > 0);
-const aiTrendMaxCount = aiTrendVisible.reduce((m, t) => Math.max(m, t.count_7d), 0);
-const aiAccelCount = aiTrendAll.filter(t => t.status === 'accelerating').length;
-const aiDeclCount  = aiTrendAll.filter(t => t.status === 'declining').length;
-const aiTotalMentions = aiTrendAll.reduce((s, t) => s + t.count_7d, 0);
+// AI trend data — prefer history (sparklines) over single snapshot
+const aiSortedFamilies = (aiHistory?.families ?? []).slice()
+  .sort((a, b) => b.latest.count - a.latest.count);
+const aiAccelCount = aiSortedFamilies.filter(f => f.latest.status === 'accelerating').length;
+const aiDeclCount  = aiSortedFamilies.filter(f => f.latest.status === 'declining').length;
+const aiTotalMentions = aiSortedFamilies.reduce((s, f) => s + f.latest.count, 0);
+const aiTrendMaxCount = aiSortedFamilies.reduce((m, f) => Math.max(m, f.latest.count), 0);
+
+// Sparkline helpers (same as VLA)
+const AI_SPARK_W = 100;
+const AI_SPARK_H = 28;
+function aiSparkDims(n: number) {
+  const gap = n > 14 ? 1 : 2;
+  const barW = Math.max(3, Math.floor((AI_SPARK_W - (n - 1) * gap) / Math.max(n, 1)));
+  return { barW, gap };
+}
+function aiBuildSparkBars(shares: number[]) {
+  if (shares.length < 2) return [];
+  const { barW, gap } = aiSparkDims(shares.length);
+  const min = Math.min(...shares);
+  const max = Math.max(...shares);
+  const range = max - min || 0.001;
+  return shares.map((s, i) => {
+    const norm = (s - min) / range;
+    const h = Math.max(2, norm * (AI_SPARK_H - 4));
+    return { x: i * (barW + gap), y: AI_SPARK_H - 2 - h, h, up: i === 0 || s >= shares[i-1] };
+  });
+}
+function aiSparkWidth(n: number) {
+  const { barW, gap } = aiSparkDims(n);
+  return n * barW + (n - 1) * gap;
+}
+
+// Gauge segments (same logic as VLA)
+function aiGaugeSegments(accel: number): { filled: number; color: string } {
+  const filled = Math.min(6, Math.max(0, Math.round(accel * 3)));
+  const color = accel >= 1.5 ? 'var(--fin-up, #22c55e)'
+    : accel >= 1.0 ? 'var(--accent-cyan)'
+    : accel >= 0.5 ? 'var(--accent-amber)'
+    : 'var(--fin-down, #ef4444)';
+  return { filled, color };
+}
 
 // Pre-compute tags for each deep dive article
 const ddTagsMap = new Map<number, string[]>();
@@ -176,7 +212,7 @@ function artNewBadge(dateStr: string): string | null {
   <!-- ══════════════════════════════
        SECTION A2: AI METHOD TRENDS
   ══════════════════════════════ -->
-  {aiFieldState && aiFieldState.method_trends.length > 0 && (
+  {aiSortedFamilies.length > 0 && (
     <section class="fin-panel" aria-label="AI Agent 趋势看板">
       <details class="vdd-fold" open>
         <summary class="fin-header vdd-fold-summary">
@@ -184,49 +220,70 @@ function artNewBadge(dateStr: string): string | null {
           <div class="fin-header-left">
             <h2 class="fin-title">AI AGENT TRENDS</h2>
             <span class="fin-meta">
-              {aiFieldState.date} · {aiTotalMentions} mentions · {aiFieldState.method_trends.length} families
+              {aiHistory?.latestDate ?? aiFieldState?.date} · {aiTotalMentions} mentions · {aiHistory?.dates.length ?? 1} snapshots · {aiSortedFamilies.length} families
             </span>
           </div>
+          {aiHistory && (
+            <span class={`fin-confidence fin-confidence--${aiHistory.confidence}`}>
+              {aiHistory.confidence}
+            </span>
+          )}
         </summary>
 
         <!-- Summary strip -->
         <div class="fin-summary-line">
           {aiAccelCount > 0 && <span class="fin-summary-tag fin-up">&#9650; {aiAccelCount} accelerating</span>}
           {aiDeclCount > 0 && <span class="fin-summary-tag fin-down">&#9660; {aiDeclCount} declining</span>}
-          <span class="fin-summary-stat">{aiTrendAll.length} families</span>
+          <span class="fin-summary-stat">{aiSortedFamilies.length} families</span>
           <span class="fin-summary-sep">&middot;</span>
           <span class="fin-summary-stat">{aiTotalMentions} mentions covered</span>
         </div>
 
-        <!-- Unified ticker table (aligned with VLA style) -->
+        <!-- Ticker table with gauge + sparkline (matches VLA) -->
         <div class="fin-ticker-wrap">
           <div class="fin-ticker-header fin-ai-ticker-grid">
             <span class="fin-th">FAMILY</span>
             <span class="fin-th">MOM</span>
             <span class="fin-th" style="text-align:right">7d</span>
             <span class="fin-th" style="text-align:right">&Delta;7d</span>
+            <span class="fin-th">CHART</span>
             <span class="fin-th" style="text-align:center">ST</span>
           </div>
           <div class="fin-ticker">
-            {aiTrendAll.map(t => {
-              const barPct = aiTrendMaxCount > 0 ? (t.count_7d / aiTrendMaxCount * 100) : 0;
-              const accCls = t.acceleration >= 1.15 ? 'fin-up' : t.acceleration >= 0.86 ? 'fin-flat' : 'fin-down';
-              const statusCls = t.status === 'accelerating' ? 'fin-surge'
-                : t.status === 'declining' ? 'fin-decel-dot'
+            {aiSortedFamilies.map(fam => {
+              const gs = aiGaugeSegments(fam.latest.accel);
+              const accCls = fam.latest.accel >= 1.15 ? 'fin-up' : fam.latest.accel >= 0.86 ? 'fin-flat' : 'fin-down';
+              const statusCls = fam.latest.status === 'accelerating' ? 'fin-surge'
+                : fam.latest.status === 'declining' ? 'fin-decel-dot'
                 : 'fin-stable-dot';
-              const statusLabel = t.status === 'accelerating' ? 'SURGE'
-                : t.status === 'declining' ? 'DECEL'
+              const statusLabel = fam.latest.status === 'accelerating' ? 'SURGE'
+                : fam.latest.status === 'declining' ? 'DECEL'
                 : 'STABLE';
+              const bars = aiBuildSparkBars(fam.shares);
+              const { barW } = aiSparkDims(fam.shares.length);
+              const svgW = Math.max(aiSparkWidth(fam.shares.length), 60);
               return (
                 <div class="fin-row fin-ai-ticker-grid">
-                  <span class="fin-name">{t.label}</span>
-                  <div class="fin-gauge" style="width:80px">
-                    <div class="fin-gauge-fill" style={`width:${Math.max(2, barPct)}%`}></div>
-                  </div>
-                  <span class={`fin-vol tabular-nums ${accCls}`} style="text-align:right">{t.count_7d}</span>
-                  <span class={`fin-accel tabular-nums ${accCls}`} style="text-align:right">
-                    {t.acceleration.toFixed(2)}x
+                  <span class="fin-name">{fam.label}</span>
+                  <span class="fin-mini-gauge">
+                    {[0,1,2,3,4,5].map(i => (
+                      <span
+                        class={`fin-gauge-seg ${i < gs.filled ? 'fin-gauge-seg-on' : ''}`}
+                        style={i < gs.filled ? `background:${gs.color}` : ''}
+                      />
+                    ))}
                   </span>
+                  <span class={`fin-vol tabular-nums`} style="text-align:right">{fam.latest.count}</span>
+                  <span class={`fin-accel tabular-nums ${accCls}`} style="text-align:right">
+                    {fam.latest.accel.toFixed(2)}x
+                  </span>
+                  <svg class="fin-spark" viewBox={`0 0 ${svgW} ${AI_SPARK_H}`} width={svgW} height={AI_SPARK_H} aria-hidden="true">
+                    {bars.map(b => (
+                      <rect x={b.x} y={b.y} width={barW} height={b.h} rx="1"
+                        fill={b.up ? 'var(--fin-up, #22c55e)' : 'var(--fin-down, #ef4444)'}
+                        opacity="0.85" />
+                    ))}
+                  </svg>
                   <span class={`fin-status-dot ${statusCls}`}>{statusLabel}</span>
                 </div>
               );
@@ -1091,17 +1148,18 @@ function artNewBadge(dateStr: string): string | null {
 /* AI ticker grid — aligned with VLA style */
 .fin-ai-ticker-grid {
   display: grid;
-  grid-template-columns: 1fr 80px 42px 60px 56px;
-  gap: 6px; align-items: center;
+  grid-template-columns: minmax(90px,1fr) 56px 36px 50px minmax(60px,100px) 48px;
+  gap: 4px; align-items: center;
 }
-.fin-gauge {
-  height: 12px; background: rgba(128,128,128,0.08);
-  border-radius: 2px; overflow: hidden;
+.fin-mini-gauge {
+  display: flex; gap: 2px; align-items: center;
 }
-.fin-gauge-fill {
-  height: 100%; border-radius: 2px; min-width: 2px;
-  background: var(--accent-cyan);
+.fin-gauge-seg {
+  width: 6px; height: 10px; border-radius: 1px;
+  background: rgba(128,128,128,0.12);
 }
+.fin-gauge-seg-on { opacity: 1; }
+.fin-spark { flex-shrink: 0; }
 .fin-status-dot {
   font-family: 'IBM Plex Mono','Menlo',monospace;
   font-size: 0.52rem; font-weight: 700; text-align: center;
@@ -1128,9 +1186,17 @@ function artNewBadge(dateStr: string): string | null {
 .fin-summary-tag.fin-down { background: rgba(239,68,68,0.12); }
 .fin-summary-stat { color: var(--text-tertiary); }
 .fin-summary-sep { color: var(--text-tertiary); opacity: 0.4; }
+.fin-confidence {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.48rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px;
+}
+.fin-confidence--high { background: rgba(34,197,94,0.12); color: #22c55e; }
+.fin-confidence--med  { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+.fin-confidence--low  { background: rgba(239,68,68,0.12); color: #ef4444; }
 @media (max-width: 640px) {
-  .fin-ai-ticker-grid { grid-template-columns: 1fr 40px 50px 48px; }
-  .fin-gauge { display: none; }
+  .fin-ai-ticker-grid { grid-template-columns: 1fr 36px 50px 48px; }
+  .fin-mini-gauge, .fin-spark { display: none; }
 }
 
 /* Fold chevron + badge */

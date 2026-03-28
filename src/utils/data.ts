@@ -817,6 +817,89 @@ export function loadLatestAIFieldState(): AIFieldStateFile | null {
 }
 
 // ---------------------------------------------------------------------------
+// loadAIFieldStateHistory
+// Loads ALL ai-field-state-*.json snapshots and builds per-family time series.
+// Same structure as VLA's loadFieldStateHistory but for AI domain.
+// ---------------------------------------------------------------------------
+export interface AIFamilyTimeSeries {
+  family: string;
+  label:  string;
+  shares: number[];  // count_7d per snapshot date
+  latest: {
+    count:  number;
+    accel:  number;
+    status: string;
+  };
+}
+
+export interface AIFieldStateHistory {
+  dates:       string[];
+  families:    AIFamilyTimeSeries[];
+  latestDate:  string;
+  totalMentions: number;
+  confidence:  string;
+}
+
+export function loadAIFieldStateHistory(): AIFieldStateHistory | null {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(DATA_DIR)
+      .filter(f => f.startsWith('ai-field-state-') && f.endsWith('.json'))
+      .sort();
+  } catch {
+    return null;
+  }
+  if (files.length === 0) return null;
+
+  const snapshots: AIFieldStateFile[] = [];
+  const dates: string[] = [];
+  for (const f of files) {
+    const data = readJson<AIFieldStateFile>(f);
+    if (data?.method_trends) {
+      snapshots.push(data);
+      dates.push(data.date);
+    }
+  }
+  if (snapshots.length === 0) return null;
+
+  const latest = snapshots[snapshots.length - 1];
+  const familyMap = new Map<string, AIFamilyTimeSeries>();
+
+  for (const trend of latest.method_trends) {
+    familyMap.set(trend.family, {
+      family: trend.family,
+      label:  trend.label,
+      shares: [],
+      latest: {
+        count:  trend.count_7d,
+        accel:  trend.acceleration,
+        status: trend.status,
+      },
+    });
+  }
+
+  // Build time series
+  for (const snap of snapshots) {
+    const byFamily = new Map(snap.method_trends.map(t => [t.family, t]));
+    for (const [fam, series] of familyMap) {
+      const trend = byFamily.get(fam);
+      series.shares.push(trend?.count_7d ?? 0);
+    }
+  }
+
+  const confidence = snapshots.length >= 7 ? 'high' : snapshots.length >= 3 ? 'med' : 'low';
+
+  return {
+    dates,
+    families: [...familyMap.values()],
+    latestDate: latest.date,
+    totalMentions: latest.method_trends.reduce((s, t) => s + t.count_7d, 0),
+    confidence,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // loadVLASOTA
 // Returns all VLA SOTA tracker entries, sorted by date desc.
 // ---------------------------------------------------------------------------
