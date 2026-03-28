@@ -1145,12 +1145,13 @@ function artNewBadge(dateStr: string): string | null {
 }
 .fin-pair-ratio-num { font-weight: 600; color: var(--text-secondary); }
 
-/* AI ticker grid — aligned with VLA style */
+/* AI ticker grid — exact same layout as VLA fin-ticker-grid-v3 */
 .fin-ai-ticker-grid {
   display: grid;
-  grid-template-columns: minmax(90px,1fr) 56px 36px 50px minmax(60px,100px) 48px;
-  gap: 4px; align-items: center;
+  grid-template-columns: 120px 56px 36px 50px 1fr 24px;
+  gap: 6px; align-items: center;
 }
+.fin-ticker-wrap { overflow-x: auto; }
 .fin-mini-gauge {
   display: flex; gap: 2px; align-items: center;
 }
@@ -1160,6 +1161,35 @@ function artNewBadge(dateStr: string): string | null {
 }
 .fin-gauge-seg-on { opacity: 1; }
 .fin-spark { flex-shrink: 0; }
+.fin-name {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.72rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fin-vol {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.72rem; font-weight: 600;
+}
+.fin-accel {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.66rem;
+}
+.fin-row {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.04));
+}
+.fin-row:last-child { border-bottom: none; }
+.fin-row:hover { background: rgba(255,255,255,0.02); }
+.fin-ticker-header {
+  padding: 2px 0 4px;
+  border-bottom: 1px solid var(--border);
+}
+.fin-th {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.52rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-tertiary);
+  white-space: nowrap;
+}
 .fin-status-dot {
   font-family: 'IBM Plex Mono','Menlo',monospace;
   font-size: 0.52rem; font-weight: 700; text-align: center;
@@ -1194,9 +1224,17 @@ function artNewBadge(dateStr: string): string | null {
 .fin-confidence--high { background: rgba(34,197,94,0.12); color: #22c55e; }
 .fin-confidence--med  { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
 .fin-confidence--low  { background: rgba(239,68,68,0.12); color: #ef4444; }
-@media (max-width: 640px) {
-  .fin-ai-ticker-grid { grid-template-columns: 1fr 36px 50px 48px; }
+@media (max-width: 768px) {
+  .fin-ai-ticker-grid {
+    grid-template-columns: 100px 48px 32px 44px 1fr 22px;
+    gap: 4px;
+  }
+  .fin-spark { max-width: 80px; }
+}
+@media (max-width: 480px) {
+  .fin-ai-ticker-grid { grid-template-columns: 1fr auto auto auto; }
   .fin-mini-gauge, .fin-spark { display: none; }
+  .fin-name { font-size: 0.68rem; font-weight: 600; color: var(--text-primary); }
 }
 
 /* Fold chevron + badge */
