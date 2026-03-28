@@ -13,6 +13,7 @@ import {
   loadAIDailyPicks,
   loadVLASOTA,
   loadLatestCalibration,
+  loadSiteAnalytics,
   loadCrossDomainInsights,
   loadRecentCalibrationTriggers,
   loadVLATagDistribution,
@@ -27,6 +28,7 @@ const { metrics: driftMetrics, state: driftState } = loadDriftMetrics();
 const entityIndex   = loadEntityIndex();
 const upstream      = loadUpstreamSignals(30);
 const topLabs       = getTopEntities(8, 'lab');
+const analytics     = loadSiteAnalytics();
 const topMethods    = getTopEntities(10, 'method');
 
 const entityCount   = Object.keys(entityIndex.entities).length;
@@ -576,6 +578,91 @@ const DOMAIN_ARROW: Record<string, string> = {
       </div>
 
     </div>
+
+    <!-- ══ SITE ANALYTICS ═════════════════════════════════════════════ -->
+    {analytics && (
+    <div class="db-grid" style="margin-top:32px;">
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title">SITE TRAFFIC</span>
+          <span class="db-panel-meta">GitHub API · 14d · {analytics.collected_at}</span>
+        </div>
+        <div class="db-analytics-stats">
+          <div class="db-analytics-stat">
+            <span class="db-analytics-num">{analytics.summary.total_views_14d}</span>
+            <span class="db-analytics-label">Views</span>
+          </div>
+          <div class="db-analytics-stat">
+            <span class="db-analytics-num">{analytics.summary.unique_visitors_14d}</span>
+            <span class="db-analytics-label">Unique</span>
+          </div>
+          <div class="db-analytics-stat">
+            <span class="db-analytics-num">{analytics.summary.total_clones_14d}</span>
+            <span class="db-analytics-label">Clones</span>
+          </div>
+          <div class="db-analytics-stat">
+            <span class="db-analytics-num">{analytics.summary.unique_cloners_14d}</span>
+            <span class="db-analytics-label">Clone Users</span>
+          </div>
+        </div>
+        {/* Daily views sparkline */}
+        {Object.keys(analytics.daily_views).length > 0 && (
+          <div class="db-analytics-spark">
+            <span class="db-analytics-spark-label">Daily Views (14d)</span>
+            <div class="db-analytics-bars">
+              {Object.entries(analytics.daily_views)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .slice(-14)
+                .map(([date, data]) => {
+                  const maxV = Math.max(...Object.values(analytics.daily_views).map(d => d.views), 1);
+                  const pct = Math.max(4, Math.round(data.views / maxV * 100));
+                  return (
+                    <div class="db-analytics-bar-col" title={`${date}: ${data.views} views (${data.uniques} unique)`}>
+                      <div class="db-analytics-bar" style={`height:${pct}%`}></div>
+                      <span class="db-analytics-bar-date">{date.slice(8)}</span>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div class="db-panel">
+        <div class="db-panel-header">
+          <span class="db-panel-title">REFERRERS & PATHS</span>
+          <span class="db-panel-meta">top sources</span>
+        </div>
+        {analytics.top_referrers.length > 0 ? (
+          <div class="db-rank-list">
+            <span class="db-analytics-sub-title">Top Referrers</span>
+            {analytics.top_referrers.slice(0, 8).map((r, i) => (
+              <div class="db-rank-row">
+                <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
+                <span class="db-rank-name">{r.referrer}</span>
+                <span class="db-rank-count">{r.views} ({r.uniques})</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="db-empty"><span data-tc>尚無流量來源資料</span><span data-sc>尚无流量来源资料</span></p>
+        )}
+        {analytics.popular_paths.length > 0 && (
+          <div class="db-rank-list" style="margin-top:16px;">
+            <span class="db-analytics-sub-title">Popular Pages</span>
+            {analytics.popular_paths.slice(0, 8).map((p, i) => (
+              <div class="db-rank-row">
+                <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
+                <span class="db-rank-name db-rank-name--mono">{p.path.replace('/sou350121/pulsar-web', '')}</span>
+                <span class="db-rank-count">{p.views}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+    )}
+
   </div>
 </BaseLayout>
 
@@ -1727,5 +1814,50 @@ html.dark .db-cat-bar { box-shadow: 0 0 5px rgba(245,183,49,0.4); }
 
   .db-pulse-wrap { grid-template-columns: 1fr; }
   .db-pulse-sep  { display: none; }
+}
+
+/* ── Site Analytics ── */
+.db-analytics-stats {
+  display: flex; gap: 24px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.db-analytics-stat { text-align: center; }
+.db-analytics-num {
+  display: block;
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 1.5rem; font-weight: 700; color: var(--accent-cyan);
+}
+.db-analytics-label {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.db-analytics-spark { margin-top: 8px; }
+.db-analytics-spark-label {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.56rem; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 6px; display: block;
+}
+.db-analytics-bars {
+  display: flex; gap: 3px; align-items: flex-end; height: 60px;
+}
+.db-analytics-bar-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  height: 100%;
+}
+.db-analytics-bar {
+  width: 100%; border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent-cyan), rgba(6,182,212,0.2));
+  margin-top: auto;
+}
+.db-analytics-bar-date {
+  font-size: 0.44rem; color: var(--text-tertiary);
+  margin-top: 2px;
+}
+.db-analytics-sub-title {
+  font-family: 'IBM Plex Mono','Menlo',monospace;
+  font-size: 0.56rem; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  display: block; margin-bottom: 6px;
 }
 </style>

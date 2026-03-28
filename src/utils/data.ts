@@ -1419,3 +1419,24 @@ export function loadAtlasData(): AtlasData | null {
     },
   };
 }
+
+// ---------------------------------------------------------------------------
+// Site Analytics
+// ---------------------------------------------------------------------------
+export interface SiteAnalytics {
+  collected_at: string;
+  summary: {
+    total_views_14d:    number;
+    unique_visitors_14d: number;
+    total_clones_14d:   number;
+    unique_cloners_14d: number;
+  };
+  daily_views:   Record<string, { views: number; uniques: number }>;
+  daily_clones:  Record<string, { clones: number; uniques: number }>;
+  top_referrers: Array<{ referrer: string; views: number; uniques: number }>;
+  popular_paths: Array<{ path: string; views: number; uniques: number }>;
+}
+
+export function loadSiteAnalytics(): SiteAnalytics | null {
+  return readJson<SiteAnalytics>('site-analytics.json');
+}
