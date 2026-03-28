@@ -41,6 +41,7 @@ interface Props {
   title?:          string;
   singleDomain?:   boolean;
   vlaStale?:       boolean;
+  vlaDataDate?:    string;   // actual date of VLA data (may differ from `date` on weekends)
 }
 
 const {
@@ -54,6 +55,7 @@ const {
   title,
   singleDomain = false,
   vlaStale = false,
+  vlaDataDate,
 } = Astro.props;
 
 /**
@@ -89,6 +91,17 @@ const aiSlice       = aiItems.slice(0, maxItems);
 const vlaSlice      = vlaItems.slice(0, maxItems);
 const deepDiveSlice = deepDiveItems.slice(0, maxItems);
 const socialSlice   = socialItems;
+
+// Build VLA section meta: show actual data date when it differs from the display date
+const vlaMeta = (() => {
+  if (vlaStale) return '今日無新論文';
+  const count = `${vlaSlice.length}\u2009篇`;
+  if (vlaDataDate && vlaDataDate !== date) {
+    // Show the actual data date (e.g. "2026-03-27 · 30 篇")
+    return `${vlaDataDate}\u00a0·\u00a0${count}`;
+  }
+  return `Qwen3.5-Plus\u00a0·\u00a0${count}`;
+})();
 
 const hasAi       = aiSlice.length       > 0;
 const hasVla      = vlaSlice.length      > 0;
@@ -248,7 +261,7 @@ const wordmark = title ?? 'PULSAR DIGEST';
             <span data-tc>VLA 線</span><span data-sc>VLA 线</span>&nbsp;&middot;&nbsp;cs.RO&nbsp;·&nbsp;cs.AI&nbsp;·&nbsp;cs.LG
           </span>
           <span class="digest-section-meta" aria-hidden="true">
-            {vlaStale ? '今日無新論文' : `Qwen3.5-Plus\u00a0·\u00a0${vlaSlice.length}\u2009篇`}
+            {vlaMeta}
           </span>
         </div>
 

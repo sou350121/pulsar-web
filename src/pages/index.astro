@@ -203,7 +203,19 @@ const todayVLA    = (() => {
   const diff = Math.abs(new Date(shanghaiToday).getTime() - new Date(v.date).getTime());
   return diff <= 3 * 86400000 ? v : undefined;
 })();
-const isVLAStale = todayVLA ? todayVLA.date !== shanghaiToday : true;
+// arXiv weekend schedule: no new papers Sat/Sun/Mon (Mon papers arrive Tue 04:00 Beijing).
+// On those days, accept the most recent VLA data (up to 3 days old) as fresh.
+const isVLAStale = (() => {
+  if (!todayVLA) return true;
+  if (todayVLA.date === shanghaiToday) return false;
+  const dow = new Date(Date.now() + 8 * 3600000).getUTCDay(); // Shanghai day-of-week
+  const isArxivOff = dow === 6 || dow === 0 || dow === 1; // Sat, Sun, Mon
+  if (isArxivOff) {
+    const diffMs = new Date(shanghaiToday).getTime() - new Date(todayVLA.date).getTime();
+    return diffMs > 3 * 86400000; // stale only if older than 3 days
+  }
+  return true; // weekday but date doesn't match today → stale
+})();
 
 const heroAI  = todayPicks.items[0];
 const heroVLA = isVLAStale ? undefined
@@ -392,6 +404,7 @@ const RULE_LABELS: Record<string, string> = {
         deepDiveItems={digestDeepDiveItems}
         socialItems={digestSocialItems}
         vlaStale={isVLAStale}
+        vlaDataDate={todayVLA?.date}
       />
     </div>
   </section>
