@@ -1278,11 +1278,13 @@ export interface FamilyTimeSeries {
 }
 
 export interface FieldStateHistory {
-  families:    FamilyTimeSeries[];
-  dates:       string[];
-  latestDate:  string;
-  totalPapers: number;
-  confidence:  string;
+  families:      FamilyTimeSeries[];
+  dates:         string[];
+  latestDate:    string;
+  lastDataDate:  string;   // last date that actually had papers (from dates_used)
+  dataDays:      number;   // actual days with data in the window
+  totalPapers:   number;
+  confidence:    string;
 }
 
 // Competition pair definition (from METHOD_COMPETITION in _vla_method_families.py)
@@ -1376,10 +1378,17 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
   // data_confidence may be missing on older files; fall back to 'low'
   const confidence = (latest as any).data_confidence ?? 'low';
 
+  // Extract actual data date range from dates_used (if available)
+  const datesUsed: string[] = (latest as any).dates_used ?? [];
+  const lastDataDate = datesUsed.length > 0 ? datesUsed[0] : latest.date;
+  const dataDays = (latest as any).data_days ?? datesUsed.length;
+
   return {
     families,
     dates,
     latestDate:  latest.date,
+    lastDataDate,
+    dataDays,
     totalPapers: latest.total_papers_scanned,
     confidence,
   };
