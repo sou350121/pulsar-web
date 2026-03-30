@@ -48,8 +48,9 @@ const topMethodsHome = Object.values(entityIndex.entities)
   .filter(e => e.type === 'method')
   .sort((a, b) => b.signals.length - a.signals.length)
   .slice(0, 5);
-const aiSocial      = loadSocialIntel('ai',  1);
-const vlaSocial     = loadSocialIntel('vla', 1);
+// Load up to 5 social files, pick the first with real content (skip empty stubs)
+const aiSocial      = loadSocialIntel('ai',  5).filter(s => s.content.length > 150).slice(0, 1);
+const vlaSocial     = loadSocialIntel('vla', 5).filter(s => s.content.length > 150).slice(0, 1);
 const biweekly      = loadBiweeklyReports(1);
 const crossDomain   = loadCrossDomainInsights(30);
 
@@ -327,6 +328,14 @@ const realSocial = [
   })),
 ].filter(s => s.event.length > 20);
 const socialItems = realSocial.length >= 2 ? realSocial : MOCK_SOCIAL;
+// Compute how old the newest social data is (for staleness badge on homepage)
+const socialNewestDate = realSocial.length > 0
+  ? realSocial.map(s => s.date).sort().pop()!
+  : null;
+const socialDaysOld = socialNewestDate
+  ? Math.round((Date.now() - new Date(socialNewestDate + 'T00:00:00+08:00').getTime()) / 86400000)
+  : Infinity;
+const socialIsStale = socialDaysOld > 3;
 
 // Biweekly
 const latestReport  = biweekly[0] ?? null;
@@ -671,6 +680,9 @@ const RULE_LABELS: Record<string, string> = {
         <div class="collapse-header-left">
           <span class="section-label section-number">05 — <span data-tc>動態追蹤</span><span data-sc>动态追踪</span></span>
           <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>社交情報 · 過去 24 小時</span><span data-sc>社交情报 · 过去 24 小时</span></h2>
+          {socialIsStale && socialNewestDate && (
+            <span class="hp-social-stale-tag"><span data-tc>最新數據</span><span data-sc>最新数据</span>：{socialNewestDate.slice(5)}（{socialDaysOld}<span data-tc>天前</span><span data-sc>天前</span>）</span>
+          )}
         </div>
         <div class="collapse-header-right">
           <span class="collapse-summary"><span data-tc>最新社群動態</span><span data-sc>最新社群动态</span></span>
@@ -1507,6 +1519,15 @@ const RULE_LABELS: Record<string, string> = {
 :global(html.dark) .hp-social-tag--vla {
   background: rgba(62,207,207,0.08) !important;
   border-color: rgba(62,207,207,0.2) !important;
+}
+
+/* ── Social stale tag (homepage) ── */
+.hp-social-stale-tag {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.58rem; letter-spacing: 0.04em;
+  padding: 2px 8px; border-radius: 3px; margin-left: 10px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-tertiary); white-space: nowrap;
 }
 
 /* ── Pipeline health meta row ── */

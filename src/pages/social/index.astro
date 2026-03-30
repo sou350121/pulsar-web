@@ -12,6 +12,24 @@ const base = import.meta.env.BASE_URL;
 const aiSocial  = loadSocialIntel('ai',  10);
 const vlaSocial = loadSocialIntel('vla', 10);
 
+// Detect empty-shell reports ("无重大信号" stubs ≤ 200 chars)
+function isEmptyShell(content: string): boolean {
+  const trimmed = content.trim();
+  return trimmed.length <= 200 && /无重大信号/.test(trimmed);
+}
+
+// Compute last real update date per channel and staleness
+function channelMeta(entries: typeof aiSocial) {
+  const real = entries.filter(f => f.content.trim().length > 30 && !isEmptyShell(f.content));
+  const lastDate = real[0]?.date ?? entries[0]?.date ?? null;
+  const daysSince = lastDate
+    ? Math.round((Date.now() - new Date(lastDate + 'T00:00:00+08:00').getTime()) / 86400000)
+    : Infinity;
+  return { lastDate, daysSince, stale: daysSince > 2 };
+}
+const aiMeta  = channelMeta(aiSocial);
+const vlaMeta = channelMeta(vlaSocial);
+
 // Format date as "3月8日"
 function formatDateZh(iso: string): string {
   const [, m, d] = iso.split('-').map(Number);
@@ -27,6 +45,7 @@ function formatCompact(iso: string): string {
 // Relative day label
 function relativeDay(iso: string): string {
   const diff = Math.round((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (Number.isNaN(diff)) return iso;
   if (diff === 0) return '今天';
   if (diff === 1) return '昨天';
   if (diff === 2) return '前天';
@@ -73,12 +92,12 @@ function mdToHtml(md: string): string {
       }
       // Standalone URL line → skip (will be inlined in the list item above)
       if (/^https?:\/\//.test(trimmed)) {
-        return `<a href="${trimmed}" target="_blank" rel="noopener noreferrer" class="si-url">[source]</a>`;
+        return `<a href="${encodeURI(trimmed)}" target="_blank" rel="noopener noreferrer" class="si-url">[source]</a>`;
       }
       // Bold + inline links
       let html = line
         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-        .replace(/(https?:\/\/[^\s<)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="si-url">[link]</a>');
+        .replace(/(https?:\/\/[^\s<)]+)/g, (_m, url) => `<a href="${encodeURI(url)}" target="_blank" rel="noopener noreferrer" class="si-url">[link]</a>`);
       // List item
       if (/^[-*•]\s/.test(trimmed)) {
         html = `<div class="si-li">${html.replace(/^[\s]*[-*•]\s*/, '')}</div>`;
@@ -97,27 +116,27 @@ interface DayReport {
   preview: string;
   count:   number;
   html:    string;
+  empty:   boolean;   // true for "无重大信号" stubs
 }
 
-const aiDays: DayReport[] = aiSocial
-  .filter(f => f.content.trim().length > 30)
-  .map(f => ({
-    date:    f.date,
-    content: f.content,
-    preview: extractPreview(f.content),
-    count:   countItems(f.content),
-    html:    mdToHtml(f.content),
-  }));
+function buildDays(entries: typeof aiSocial): DayReport[] {
+  return entries
+    .filter(f => f.content.trim().length > 30)
+    .map(f => {
+      const empty = isEmptyShell(f.content);
+      return {
+        date:    f.date,
+        content: f.content,
+        preview: empty ? '当日无重大信号' : extractPreview(f.content),
+        count:   empty ? 0 : countItems(f.content),
+        html:    empty ? '<p class="si-p si-empty-note">当日无重大信号 — 系统正常运行，未检测到值得关注的社交动态。</p>' : mdToHtml(f.content),
+        empty,
+      };
+    });
+}
 
-const vlaDays: DayReport[] = vlaSocial
-  .filter(f => f.content.trim().length > 30)
-  .map(f => ({
-    date:    f.date,
-    content: f.content,
-    preview: extractPreview(f.content),
-    count:   countItems(f.content),
-    html:    mdToHtml(f.content),
-  }));
+const aiDays  = buildDays(aiSocial);
+const vlaDays = buildDays(vlaSocial);
 ---
 
 <BaseLayout
@@ -145,6 +164,18 @@ const vlaDays: DayReport[] = vlaSocial
         每日追蹤 Karpathy · Altman · Amodei · LeCun · Sutskever · Hassabis · <span data-tc>李飛飛</span><span data-sc>李飞飞</span>
         及<span data-tc>頂級機構動態</span><span data-sc>顶级机构动态</span>。<span data-tc>點擊日期卡片展開完整報告</span><span data-sc>点击日期卡片展开完整报告</span>。
       </p>
+
+      {/* ── Staleness notices ── */}
+      {(aiMeta.stale || vlaMeta.stale) && (
+        <div class="social-stale-notice">
+          {aiMeta.stale && aiMeta.lastDate && (
+            <span class="stale-tag stale-tag--ai">AI <span data-tc>最後有效更新</span><span data-sc>最后有效更新</span>：{aiMeta.lastDate.slice(5)}（{aiMeta.daysSince}<span data-tc>天前</span><span data-sc>天前</span>）· <span data-tc>數據可能延遲</span><span data-sc>数据可能延迟</span></span>
+          )}
+          {vlaMeta.stale && vlaMeta.lastDate && (
+            <span class="stale-tag stale-tag--vla">VLA <span data-tc>最後有效更新</span><span data-sc>最后有效更新</span>：{vlaMeta.lastDate.slice(5)}（{vlaMeta.daysSince}<span data-tc>天前</span><span data-sc>天前</span>）· <span data-tc>數據可能延遲</span><span data-sc>数据可能延迟</span></span>
+          )}
+        </div>
+      )}
     </header>
 
     <!-- ═══ TWO-COLUMN FEED ════════════════════════════ -->
@@ -166,15 +197,16 @@ const vlaDays: DayReport[] = vlaSocial
 
         <div class="day-list">
           {aiDays.length > 0 ? aiDays.map((day, i) => (
-            <details class="day-card day-card--ai" data-day-idx={i} open={i === 0}>
+            <details class={`day-card day-card--ai ${day.empty ? 'day-card--empty' : ''}`} data-day-idx={i} open={i === 0 && !day.empty}>
               <summary class="day-summary">
                 <div class="day-summary-left">
                   <span class="day-date-badge day-date-badge--ai">{formatCompact(day.date)}</span>
                   <span class="day-relative">{relativeDay(day.date)}</span>
+                  {day.empty && <span class="day-empty-badge"><span data-tc>無信號</span><span data-sc>无信号</span></span>}
                 </div>
                 <span class="day-preview">{day.preview}</span>
                 <div class="day-summary-right">
-                  <span class="day-item-count">{day.count} <span data-tc>條</span><span data-sc>条</span></span>
+                  {!day.empty && <span class="day-item-count">{day.count} <span data-tc>條</span><span data-sc>条</span></span>}
                   <span class="day-chevron" aria-hidden="true"></span>
                 </div>
               </summary>
@@ -207,15 +239,16 @@ const vlaDays: DayReport[] = vlaSocial
 
         <div class="day-list">
           {vlaDays.length > 0 ? vlaDays.map((day, i) => (
-            <details class="day-card day-card--vla" data-day-idx={i} open={i === 0}>
+            <details class={`day-card day-card--vla ${day.empty ? 'day-card--empty' : ''}`} data-day-idx={i} open={i === 0 && !day.empty}>
               <summary class="day-summary">
                 <div class="day-summary-left">
                   <span class="day-date-badge day-date-badge--vla">{formatCompact(day.date)}</span>
                   <span class="day-relative">{relativeDay(day.date)}</span>
+                  {day.empty && <span class="day-empty-badge"><span data-tc>無信號</span><span data-sc>无信号</span></span>}
                 </div>
                 <span class="day-preview">{day.preview}</span>
                 <div class="day-summary-right">
-                  <span class="day-item-count">{day.count} <span data-tc>條</span><span data-sc>条</span></span>
+                  {!day.empty && <span class="day-item-count">{day.count} <span data-tc>條</span><span data-sc>条</span></span>}
                   <span class="day-chevron" aria-hidden="true"></span>
                 </div>
               </summary>
@@ -475,6 +508,38 @@ const vlaDays: DayReport[] = vlaSocial
 }
 .day-body :global(br) { display: none; }
 .day-body :global(strong) { color: var(--text-primary); font-weight: 700; }
+
+/* ── Staleness notice ── */
+.social-stale-notice {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+}
+.stale-tag {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.62rem; letter-spacing: 0.04em;
+  padding: 3px 10px; border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+  background: var(--surface-2);
+}
+.stale-tag--ai  { border-color: rgba(212,145,10,0.3); }
+.stale-tag--vla { border-color: rgba(14,165,179,0.3); }
+
+/* ── Empty-shell day card ── */
+.day-card--empty { opacity: 0.65; }
+.day-card--empty:hover { opacity: 0.85; }
+
+.day-empty-badge {
+  font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 0.56rem; letter-spacing: 0.04em;
+  padding: 1px 6px; border-radius: 3px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-tertiary);
+}
+
+.day-body :global(.si-empty-note) {
+  font-style: italic; color: var(--text-tertiary);
+  padding: 8px 0;
+}
 
 /* ── Empty state ── */
 .feed-empty {

@@ -48,6 +48,7 @@ JSON_FILES = [
     "entity-index.json",
     "upstream-signals.json",
     "vla-social-intel.json",
+    "ai-social-intel.json",
     # Cross-domain insight (optional, may not exist)
     "cross-domain-insight.json",
     # Deep dive content
