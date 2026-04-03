@@ -389,6 +389,8 @@ const base = import.meta.env.BASE_URL;
             <span class="fin-th fin-th-name">FAMILY</span>
             <span class="fin-th fin-th-gauge">MOM</span>
             <span class="fin-th fin-th-vol">7d</span>
+            <span class="fin-th fin-th-vol14d">14d</span>
+            <span class="fin-th fin-th-cumul">ALL</span>
             <span class="fin-th fin-th-accel">&Delta;7d</span>
             <span class="fin-th fin-th-accel14d">&Delta;14d</span>
             <span class="fin-th fin-th-chart">CHART</span>
@@ -418,6 +420,8 @@ const base = import.meta.env.BASE_URL;
                     ))}
                   </span>
                   <span class="fin-vol tabular-nums">{fam.latest.count}</span>
+                  <span class="fin-vol14d tabular-nums">{fam.latest.count14d}</span>
+                  <span class="fin-cumul tabular-nums">{fam.latest.cumulative}</span>
                   <span class={`fin-accel tabular-nums ${accelClsVal}`}>
                     {fam.latest.isNew ? 'NEW' : fam.latest.accel.toFixed(2) + 'x'}
                   </span>
@@ -971,11 +975,11 @@ const base = import.meta.env.BASE_URL;
   grid-template-columns: 130px 1fr 54px 50px 50px 34px 28px;
   gap: 6px; align-items: center;
 }
-/* v3 merged ticker+gauge grid: FAMILY | GAUGE | 7d | Δ7d | Δ14d | CHART | ST */
+/* v3 merged ticker+gauge grid: FAMILY | GAUGE | 7d | 14d | ALL | Δ7d | Δ14d | CHART | ST */
 .fin-ticker-grid-v3 {
   display: grid;
-  grid-template-columns: 120px 56px 36px 50px 50px 1fr 24px;
-  gap: 6px; align-items: center;
+  grid-template-columns: 110px 50px 32px 32px 36px 46px 46px 1fr 20px;
+  gap: 4px; align-items: center;
 }
 .fin-ticker-wrap { overflow-x: auto; }
 .fin-ticker-wrap > .fin-ticker-header,
@@ -1062,6 +1066,16 @@ const base = import.meta.env.BASE_URL;
 .fin-accel14d {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.66rem; font-weight: 600; text-align: right;
+}
+.fin-vol14d {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; font-weight: 600; text-align: right;
+  opacity: 0.7;
+}
+.fin-cumul {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.66rem; font-weight: 600; text-align: right;
+  opacity: 0.5;
 }
 .fin-vol {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
@@ -1602,7 +1616,7 @@ const base = import.meta.env.BASE_URL;
 /* Medium: shrink v3 grid */
 @media (max-width: 768px) {
   .fin-ticker-grid-v3 {
-    grid-template-columns: 100px 48px 32px 44px 44px 1fr 22px;
+    grid-template-columns: 90px 44px 28px 28px 32px 40px 40px 1fr 18px;
     gap: 4px;
   }
   .fin-spark { max-width: 80px; }

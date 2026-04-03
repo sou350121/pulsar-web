@@ -1273,7 +1273,7 @@ export interface FamilyTimeSeries {
   shares: number[];    // share_7d per day
   counts: number[];    // count_7d per day
   accels: number[];    // acceleration per day
-  latest: { share: number; count: number; accel: number; accel14d: number; status: string; isNew: boolean };
+  latest: { share: number; count: number; count14d: number; cumulative: number; accel: number; accel14d: number; status: string; isNew: boolean };
   delta:  number;      // shares[last] - shares[first] (pp change over window)
 }
 
@@ -1354,6 +1354,7 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
       accels.push(m?.acceleration ?? 1);
     }
     const latestTrend = latest.method_trends.find(t => t.family === family);
+    const cumulative = counts.reduce((sum, c) => sum + c, 0);
     families.push({
       family,
       dates,
@@ -1363,6 +1364,8 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
       latest: {
         share:   getShare(latestTrend, latest.total_papers_scanned),
         count:   latestTrend?.count_7d ?? 0,
+        count14d: latestTrend?.count_14d ?? 0,
+        cumulative,
         accel:   latestTrend?.acceleration ?? 1,
         accel14d: latestTrend?.acceleration_14d ?? latestTrend?.acceleration ?? 1,
         status:  latestTrend?.status ?? 'stable',
