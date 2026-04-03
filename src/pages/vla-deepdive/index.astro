@@ -50,7 +50,21 @@ const recentAll = allCombined.filter(a => a.date >= cutoff);
 const olderAll  = allCombined.filter(a => a.date < cutoff);
 const byTopicAll: Record<string, typeof olderAll> = {};
 for (const a of olderAll) { (byTopicAll[a.topic] ??= []).push(a); }
-const topics = Object.keys(byTopicAll).sort();
+// Sort topics by article count descending
+const topics = Object.keys(byTopicAll).sort((a, b) => byTopicAll[b].length - byTopicAll[a].length);
+const TOPIC_LABELS: Record<string, string> = {
+  'frontier':    '🔬 Frontier Research',
+  'theory':      '📐 Theory & Foundations',
+  'methods':     '🔧 Methods & Techniques',
+  'engineering': '⚙️ Engineering & Architecture',
+  'tactile':     '🤚 Tactile Perception',
+  'robotics':    '🤖 Robotics & Hardware',
+  'rl':          '🎮 Reinforcement Learning',
+  'foundation':  '🏗️ Foundation Models',
+  'reasoning':   '🧠 Reasoning & Planning',
+  'world-model': '🌍 World Models',
+  'general':     '📄 General',
+};
 
 function dotDate(iso: string) {
   const [y, m, d] = iso.split('-');
@@ -696,7 +710,7 @@ const base = import.meta.env.BASE_URL;
                       {topics.map(topic => (
                         <div class="vdd-topic-group">
                           <div class="vdd-topic-label">
-                            {topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} <span data-tc>篇</span><span data-sc>篇</span>
+                            {TOPIC_LABELS[topic] ?? topic.replace(/-/g, ' ')} &nbsp;·&nbsp; {byTopicAll[topic].length} <span data-tc>篇</span><span data-sc>篇</span>
                           </div>
                           <div class="vdd-art-list">
                             {byTopicAll[topic].map((article, i) => (
