@@ -1,19 +1,20 @@
 {
-  "last_check": "2026-04-02",
+  "last_check": "2026-04-03",
   "metrics": {
     "vla_papers_scanned": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 2047,
-      "baseline": 941.43,
-      "ratio": 2.174
+      "last_value": 1160,
+      "baseline": 1041.43,
+      "ratio": 1.114
     },
     "vla_final_in_report": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 30,
+      "last_value": 22,
       "baseline": 15.43,
-      "ratio": 1.944
+      "ratio": 1.426,
+      "sustained_degradation": true
     },
     "vla_sources_active": {
       "streak": 0,
@@ -40,19 +41,19 @@
       "streak": 0,
       "alerted_at_streak": 0,
       "last_value": 8,
-      "baseline": 6.29,
-      "ratio": 1.273
+      "baseline": 6.14,
+      "ratio": 1.302
     },
     "vla_upstream_count": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 75,
-      "baseline": 45.14,
-      "ratio": 1.661
+      "last_value": 43,
+      "baseline": 42.29,
+      "ratio": 1.017
     }
   },
   "last_remediation": {
-    "vla_final_in_report": "2026-03-23",
+    "vla_final_in_report": "2026-04-03",
     "vla_papers_scanned": "2026-03-23",
     "aiapp_items_report": "2026-03-23"
   },
@@ -96,6 +97,14 @@
       "script": "/home/admin/clawd/scripts/prep-ai-app-rss-filtered.py",
       "ok": true,
       "detail": "{\"ok\": true, \"date\": \"2026-03-23\", \"output\": \"/home/admin/clawd/memory/ai-app-rss-filtered-2026-03-23.json\", \"total_before\": 251, \"after\": 5, \"too_old\": 246, \"no_date_capped\": 0, \"jaccard_dedup\": 0, \""
+    },
+    {
+      "date": "2026-04-03",
+      "key": "vla_final_in_report",
+      "label": "VLA 評級重跑",
+      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
+      "ok": false,
+      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
     }
   ]
 }
