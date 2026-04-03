@@ -408,7 +408,7 @@ const base = import.meta.env.BASE_URL;
                     {fam.latest.isNew ? 'NEW' : fam.latest.accel.toFixed(2) + 'x'}
                   </span>
                   <span class={`fin-accel14d tabular-nums ${fam.latest.isNew ? 'fin-new-text' : accelCls(fam.latest.accel14d)}`}>
-                    {fam.latest.isNew ? '' : 'Δ' + fam.latest.accel14d.toFixed(2) + 'x'}
+                    {fam.latest.isNew ? 'NEW' : fam.latest.accel14d.toFixed(2) + 'x'}
                   </span>
                   <svg class="fin-spark" viewBox={`0 0 ${svgW} ${SPARK_H}`} width={svgW} height={SPARK_H} aria-hidden="true">
                     {bars.map(b => (
@@ -512,7 +512,7 @@ const base = import.meta.env.BASE_URL;
           <div class="fin-emerging-grid-header fin-emerging-grid">
             <span class="fin-th">TERM</span>
             <span class="fin-th" style="text-align:right">COUNT</span>
-            <span class="fin-th" style="text-align:right">DAYS</span>
+            <span class="fin-th" style="text-align:right">AGE</span>
             <span class="fin-th" style="text-align:center">VELOCITY</span>
             <span class="fin-th" style="text-align:center">STATUS</span>
             <span class="fin-th">SAMPLE</span>
@@ -548,7 +548,7 @@ const base = import.meta.env.BASE_URL;
                       </svg>
                     </div>
                     <span class="fin-emerging-count">{term.total_count}</span>
-                    <span class="fin-emerging-days">{term.days_active}d</span>
+                    <span class="fin-emerging-days" title={`active ${term.days_active}/${emergingData.window_days}d, since ${term.first_seen}`}>{Math.round((Date.now() - new Date(term.first_seen + 'T00:00:00+08:00').getTime()) / 86400000)}d</span>
                     <span class={`fin-emerging-vel ${velCls}`}>{velArrow} x{term.acceleration.toFixed(1)}</span>
                     <span class={`fin-emerging-status ${statusCls}`}>{term.status.toUpperCase()}</span>
                     <span class="fin-emerging-sample" title={term.sample_titles.join(' · ')}>
@@ -1047,8 +1047,7 @@ const base = import.meta.env.BASE_URL;
 }
 .fin-accel14d {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
-  font-size: 0.60rem; font-weight: 500; text-align: right;
-  opacity: 0.75;
+  font-size: 0.66rem; font-weight: 600; text-align: right;
 }
 .fin-vol {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
