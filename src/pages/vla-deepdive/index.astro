@@ -376,6 +376,7 @@ const base = import.meta.env.BASE_URL;
             <span class="fin-th fin-th-gauge">MOM</span>
             <span class="fin-th fin-th-vol">7d</span>
             <span class="fin-th fin-th-accel">&Delta;7d</span>
+            <span class="fin-th fin-th-accel14d">&Delta;14d</span>
             <span class="fin-th fin-th-chart">CHART</span>
             <span class="fin-th fin-th-status">ST</span>
           </div>
@@ -405,6 +406,9 @@ const base = import.meta.env.BASE_URL;
                   <span class="fin-vol tabular-nums">{fam.latest.count}</span>
                   <span class={`fin-accel tabular-nums ${accelClsVal}`}>
                     {fam.latest.isNew ? 'NEW' : fam.latest.accel.toFixed(2) + 'x'}
+                  </span>
+                  <span class={`fin-accel14d tabular-nums ${fam.latest.isNew ? 'fin-new-text' : accelCls(fam.latest.accel14d)}`}>
+                    {fam.latest.isNew ? '' : 'Δ' + fam.latest.accel14d.toFixed(2) + 'x'}
                   </span>
                   <svg class="fin-spark" viewBox={`0 0 ${svgW} ${SPARK_H}`} width={svgW} height={SPARK_H} aria-hidden="true">
                     {bars.map(b => (
@@ -953,10 +957,10 @@ const base = import.meta.env.BASE_URL;
   grid-template-columns: 130px 1fr 54px 50px 50px 34px 28px;
   gap: 6px; align-items: center;
 }
-/* v3 merged ticker+gauge grid: FAMILY | GAUGE | 7d | Δ7d | CHART | ST */
+/* v3 merged ticker+gauge grid: FAMILY | GAUGE | 7d | Δ7d | Δ14d | CHART | ST */
 .fin-ticker-grid-v3 {
   display: grid;
-  grid-template-columns: 120px 56px 36px 50px 1fr 24px;
+  grid-template-columns: 120px 56px 36px 50px 50px 1fr 24px;
   gap: 6px; align-items: center;
 }
 .fin-ticker-wrap { overflow-x: auto; }
@@ -1040,6 +1044,11 @@ const base = import.meta.env.BASE_URL;
 .fin-accel {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
   font-size: 0.66rem; font-weight: 600; text-align: right;
+}
+.fin-accel14d {
+  font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
+  font-size: 0.60rem; font-weight: 500; text-align: right;
+  opacity: 0.75;
 }
 .fin-vol {
   font-family: 'IBM Plex Mono','Menlo','Consolas',monospace;
@@ -1580,7 +1589,7 @@ const base = import.meta.env.BASE_URL;
 /* Medium: shrink v3 grid */
 @media (max-width: 768px) {
   .fin-ticker-grid-v3 {
-    grid-template-columns: 100px 48px 32px 44px 1fr 22px;
+    grid-template-columns: 100px 48px 32px 44px 44px 1fr 22px;
     gap: 4px;
   }
   .fin-spark { max-width: 80px; }
