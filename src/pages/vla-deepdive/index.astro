@@ -399,9 +399,9 @@ const base = import.meta.env.BASE_URL;
           </div>
           <div class="fin-ticker">
             {sortedFamilies.map(fam => {
-              const bars = buildSparkBars(fam.shares);
-              const maLine = buildMALine(fam.shares);
-              const { barW } = sparkDims(fam.shares.length);
+              const bars = buildSparkBars(fam.counts);
+              const maLine = buildMALine(fam.counts);
+              const { barW } = sparkDims(fam.counts.length);
               const maPath = maLine.length > 1
                 ? 'M' + maLine.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L')
                 : '';
