@@ -26,7 +26,7 @@ const flatAll = [...flatAI, ...flatVLA];
 const aiTotal    = flatAI.length;
 const vlaTotal   = flatVLA.length;
 
-// Detect arxiv weekend gap — VLA relies on arxiv which doesn't publish Fri night–Mon
+// Detect arxiv gap — no new VLA papers on Sunday/Monday CST (Sat/Sun US = no announcements)
 const vlaLatestDate = sevenVLA[0]?.date ?? '';
 const vlaDaysSince  = vlaLatestDate
   ? Math.floor((Date.now() - new Date(vlaLatestDate + 'T00:00:00+08:00').getTime()) / 86400000)
