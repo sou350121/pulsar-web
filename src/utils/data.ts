@@ -1320,14 +1320,17 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
   if (files.length < 2) return null;  // need >=2 points for a trend
 
   const snapshots: FieldStateFile[] = [];
-  let prevLatestData = '';
+  let prevCountsKey = '';
   for (const f of files) {
     const data = readJson<FieldStateFile>(f);
     if (!data?.method_trends?.length) continue;
-    // Skip snapshots that repeat the same data (weekends/holidays with no new papers)
-    const latestData = (data as any).dates_used?.[0] ?? data.date;
-    if (latestData === prevLatestData) continue;
-    prevLatestData = latestData;
+    // Skip snapshots with identical method counts (no actual data change)
+    const countsKey = data.method_trends
+      .map((t: any) => `${t.family}:${t.count_7d}`)
+      .sort()
+      .join(',');
+    if (countsKey === prevCountsKey) continue;
+    prevCountsKey = countsKey;
     snapshots.push(data);
   }
   if (snapshots.length < 2) return null;
