@@ -1321,9 +1321,11 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
 
   const snapshots: FieldStateFile[] = [];
   let prevCountsKey = '';
+  const allValid: FieldStateFile[] = [];
   for (const f of files) {
     const data = readJson<FieldStateFile>(f);
     if (!data?.method_trends?.length) continue;
+    allValid.push(data);
     // Skip snapshots with identical method counts (no actual data change)
     const countsKey = data.method_trends
       .map((t: any) => `${t.family}:${t.count_7d}`)
@@ -1332,6 +1334,10 @@ export function loadFieldStateHistory(): FieldStateHistory | null {
     if (countsKey === prevCountsKey) continue;
     prevCountsKey = countsKey;
     snapshots.push(data);
+  }
+  // Always include the latest snapshot (today) even if counts are unchanged
+  if (allValid.length > 0 && snapshots[snapshots.length - 1] !== allValid[allValid.length - 1]) {
+    snapshots.push(allValid[allValid.length - 1]);
   }
   if (snapshots.length < 2) return null;
 
