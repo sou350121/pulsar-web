@@ -221,7 +221,7 @@ const isVLAStale = (() => {
 })();
 
 const heroAI  = todayPicks.items[0];
-const heroVLA = isVLAStale ? undefined
+const heroVLA = (isVLAStale || noNewVLAPapers) ? undefined
              : (todayVLA?.items.find(i => i.rating === '⚡')
              ?? todayVLA?.items.find(i => i.rating === '🔧')
              ?? todayVLA?.items[0]
