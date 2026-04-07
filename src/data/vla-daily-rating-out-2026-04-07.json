@@ -23,7 +23,7 @@
       "abstract_snippet": "arXiv:2604.02408v1 Announce Type: new Abstract: Asynchronous inference has emerged as a prevalent paradigm in robotic manipulation, achieving significant progress in ensuring trajectory smoothness and efficiency. However, a systemic challenge remains unresolved, as inherent latency causes generated actions to inevitably lag behind the real-time environment. This issue is particularly exacerbated in dynamic scenarios, where such temporal misalignment severely compromises the policy's ability to i",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "异步策略用于机械臂操作，VLA 相邻但贡献不明确",
+      "reason": "提出流匹配异步策略解决机器人操作延迟问题，但摘要截断无法判断具体创新点和实验验证。",
       "affiliation": ""
     },
     {
@@ -39,7 +39,7 @@
       "abstract_snippet": "arXiv:2604.02523v1 Announce Type: new Abstract: Position controllers have become the dominant interface for executing learned manipulation policies. Yet a critical design decision remains understudied: how should we choose controller gains for policy learning? The conventional wisdom is to select gains based on desired task compliance or stiffness. However, this logic breaks down when controllers are paired with state-conditioned policies: effective stiffness emerges from the interplay between l",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "控制器增益对策略学习影响分析，低层控制非 VLA 架构",
+      "reason": "研究控制器增益对策略学习的影响，属于底层控制调参而非 VLA 架构创新，MIT 团队工作。",
       "affiliation": "[MIT]"
     },
     {
@@ -55,7 +55,7 @@
       "abstract_snippet": "arXiv:2604.02710v1 Announce Type: new Abstract: Multimodal large language models (MLLMs) have shown strong potential for autonomous driving, yet existing benchmarks remain largely ego-centric and therefore cannot systematically assess model performance in infrastructure-centric and cooperative driving conditions. In this work, we introduce V2X-QA, a real-world dataset and benchmark for evaluating MLLMs across vehicle-side, infrastructure-side, and cooperative viewpoints. V2X-QA is built around a",
       "pub_date": "2026-04-06",
       "rating": "❌",
-      "reason": "自动驾驶基准，非机器人操作任务",
+      "reason": "自动驾驶多模态基准，非机器人操作/embodied AI 范畴，按标准过滤。",
       "affiliation": ""
     },
     {
@@ -70,8 +70,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.02812v1 Announce Type: new Abstract: Vision-language models (VLMs) have recently demonstrated strong capabilities in mapping multimodal observations to robot behaviors. However, most current approaches rely on end-to-end visuomotor policies that remain opaque and difficult to analyze, limiting their use in safety-critical robotic applications. In contrast, classical robotic systems often rely on structured policy representations that provide interpretability, modularity, and reactive",
       "pub_date": "2026-04-06",
-      "rating": "📖",
-      "reason": "VLM 到机器人策略的神经符号方法，无明确 VLA 应用路径",
+      "rating": "🔧",
+      "reason": "通过神经符号监督从 VLM 学习结构化机器人策略，解决端到端策略不可解释问题，提供可复用的符号监督框架。",
       "affiliation": ""
     },
     {
@@ -89,7 +89,7 @@
       "abstract_snippet": "arXiv:2604.02965v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models, as large foundation models for embodied control, have shown strong performance in manipulation tasks. However, their performance comes at high inference cost. To improve efficiency, recent methods adopt action chunking, which predicts a sequence of future actions for open-loop execution. Although effective for reducing computation, open-loop execution is sensitive to environmental changes and prone to error accu",
       "pub_date": "2026-04-06",
       "rating": "🔧",
-      "reason": "VLA 推理效率优化，推测验证方法本周可复用",
+      "reason": "提出推测验证机制降低 VLA 推理成本，开环规划 + 闭环验证架构可直接集成到现有 VLA 系统。",
       "affiliation": ""
     },
     {
@@ -106,7 +106,7 @@
       "abstract_snippet": "arXiv:2604.03037v1 Announce Type: new Abstract: Long-horizon robotic manipulation remains challenging for reinforcement learning (RL) because sparse rewards provide limited guidance for credit assignment. Practical policy improvement thus relies on richer intermediate supervision, such as dense progress rewards, which are costly to obtain and ill-suited to non-monotonic behaviors such as backtracking and recovery. To address this, we propose Advantage Reward Modeling (ARM), a framework that shif",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "长程操作 RL 奖励建模，非 VLA 架构直接相关",
+      "reason": "优势奖励建模解决长程操作稀疏奖励问题，属于 RL 奖励设计而非 VLA 核心架构。",
       "affiliation": ""
     },
     {
@@ -123,7 +123,7 @@
       "abstract_snippet": "arXiv:2604.03181v1 Announce Type: new Abstract: Robotic manipulation requires understanding both the 3D spatial structure of the environment and its temporal evolution, yet most existing policies overlook one or both. They typically rely on 2D visual observations and backbones pretrained on static image--text pairs, resulting in high data requirements and limited understanding of environment dynamics. To address this, we introduce MV-VDP, a multi-view video diffusion policy that jointly models t",
       "pub_date": "2026-04-06",
       "rating": "🔧",
-      "reason": "3D 时空感知扩散策略，VLA 动作生成可直接采用",
+      "reason": "多视角视频扩散策略引入 3D 时空感知，改进现有 Diffusion Policy 的空间理解能力，代码可复用。",
       "affiliation": ""
     },
     {
@@ -141,8 +141,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03191v1 Announce Type: new Abstract: Scaling Vision-Language-Action (VLA) models by upgrading the vision encoder is expected to improve downstream manipulation performance--as it does in vision-language modeling. We show that this expectation fails when actions are represented as discrete tokens, and explain why through an information-theoretic principle we call the Compression Gap: in any visuomotor pipeline, scaling behavior is governed by the location of the tightest information bo",
       "pub_date": "2026-04-06",
-      "rating": "🔧",
-      "reason": "VLA 动作离散化限制分析，指导架构设计决策",
+      "rating": "📖",
+      "reason": "分析离散动作 tokenization 对 VLA 扩展的限制，重要理论洞察但未提出解决方案。",
       "affiliation": ""
     },
     {
@@ -160,7 +160,7 @@
       "abstract_snippet": "arXiv:2511.15279v2 Announce Type: replace Abstract: In embodied AI, visual perception should be active rather than passive: the system must decide where to look and at what scale to sense to acquire maximally informative data under pixel and spatial budget constraints. Existing vision models coupled with fixed RGB-D cameras fundamentally fail to reconcile wide-area coverage with fine-grained detail acquisition, severely limiting their efficacy in open-world robotic applications. We study the tas",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "具身主动感知方法，VLA 感知模块相邻",
+      "reason": "主动视觉感知系统决定观察位置和尺度，属于具身感知相邻方向而非 VLA 核心。",
       "affiliation": ""
     },
     {
@@ -176,7 +176,7 @@
       "abstract_snippet": "arXiv:2601.14617v2 Announce Type: replace Abstract: Deploying learning-based controllers across heterogeneous robots is challenging due to platform differences, inconsistent interfaces, and inefficient middleware. To address these issues, we present UniCon, a lightweight framework that standardizes states, control flow, and instrumentation across platforms. It decomposes workflows into execution graphs with reusable components, separating system states from control logic to enable plug-and-play",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "机器人学习迁移系统框架，部署工具非 VLA 核心",
+      "reason": "标准化机器人部署中间件框架，标题夸大但实质是工程接口统一，无 VLA 算法创新 [💧灌水]。",
       "affiliation": ""
     },
     {
@@ -192,7 +192,7 @@
       "abstract_snippet": "arXiv:2603.29585v2 Announce Type: replace-cross Abstract: The ability to transform a flat sheet into a complex three-dimensional structure is a fundamental test of physical intelligence. Unlike cloth manipulation, origami is governed by strict geometric axioms and hard kinematic constraints, where a single invalid crease or collision can invalidate the entire folding sequence. As a result, origami demands long-horizon constructive reasoning that jointly satisfies precise physical laws and high-l",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "折纸任务世界模型规划，特定任务非通用 VLA",
+      "reason": "折纸任务的世界模型规划，特定任务验证而非通用 VLA 方法，仿真为主。",
       "affiliation": "[Physical Intelligence]"
     },
     {
@@ -209,7 +209,7 @@
       "abstract_snippet": "arXiv:2604.02714v1 Announce Type: new Abstract: End-to-end autonomous driving models based on Vision-Language-Action (VLA) architectures have shown promising results by learning driving policies through behavior cloning on expert demonstrations. However, imitation learning inherently limits the model to replicating observed behaviors without exploring diverse driving strategies, leaving it brittle in novel or out-of-distribution scenarios. Reinforcement learning (RL) offers a natural remedy by e",
       "pub_date": "2026-04-06",
       "rating": "❌",
-      "reason": "标题含 VLA 但为自动驾驶，非机械臂操作",
+      "reason": "端到端自动驾驶 VLA 模型，按标准自动驾驶非机器人操作范畴，过滤。",
       "affiliation": ""
     },
     {
@@ -225,7 +225,7 @@
       "abstract_snippet": "arXiv:2601.16672v2 Announce Type: replace Abstract: High-quality 3D garment reconstruction plays a crucial role in mitigating the sim-to-real gap in applications such as digital avatars, virtual try-on and robotic manipulation. However, existing garment reconstruction methods typically rely on unstructured representations, such as 3D Gaussian Splats, struggling to provide accurate reconstructions of garment topology and sewing structures. As a result, the reconstructed outputs are often unsuitab",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "服装重建用于 sim2real，感知模块非 VLA 核心",
+      "reason": "服装 3D 重建用于 sim-to-real，属于感知重建相邻方向，非 VLA 策略学习核心。",
       "affiliation": ""
     },
     {
@@ -241,7 +241,7 @@
       "abstract_snippet": "arXiv:2604.03006v1 Announce Type: new Abstract: Learning the inverse dynamics of soft continuum robots remains challenging due to high-dimensional nonlinearities and complex actuation coupling. Conventional feedback-based controllers often suffer from control chattering due to corrective oscillations, while deterministic regression-based learners struggle to capture the complex nonlinear mappings required for accurate dynamic tracking. Motivated by these limitations, we propose an inverse-dynami",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "软体机器人逆动力学，特定领域非 VLA 架构",
+      "reason": "软体机器人逆动力学流匹配框架，特定机器人类型控制而非通用 VLA 架构。",
       "affiliation": ""
     },
     {
@@ -257,7 +257,7 @@
       "abstract_snippet": "arXiv:2511.01770v2 Announce Type: replace Abstract: Robotic grasping under uncertainty remains a fundamental challenge due to its uncertain and contact-rich nature. Traditional rigid robotic hands, with limited degrees of freedom and compliance, rely on complex model-based and heavy feedback controllers to manage such interactions. Soft robots, by contrast, exhibit embodied mechanical intelligence: their underactuated structures and passive flexibility of their whole body, naturally accommodate",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "软体抓取流匹配方法，特定领域非 VLA 架构",
+      "reason": "软体机器人抓取流匹配学习，特定硬件平台方法，泛化性有限。",
       "affiliation": ""
     },
     {
@@ -273,7 +273,7 @@
       "abstract_snippet": "arXiv:2604.03144v1 Announce Type: cross Abstract: Industrial software development across chip design, GPU optimization, and embedded systems lacks expert reasoning traces showing how engineers reason about hardware constraints and timing semantics. In this work, we propose InCoder-32B-Thinking, trained on the data from the Error-driven Chain-of-Thought (ECoT) synthesis framework with an industrial code world model (ICWM) to generate reasoning traces. Specifically, ECoT generates reasoning chains",
       "pub_date": "2026-04-06",
       "rating": "❌",
-      "reason": "工业代码生成，非机器人操作任务",
+      "reason": "工业代码生成世界模型，非机器人操作/embodied AI 范畴，过滤。",
       "affiliation": ""
     },
     {
@@ -289,7 +289,7 @@
       "abstract_snippet": "arXiv:2603.14267v4 Announce Type: replace-cross Abstract: Video dubbing requires content accuracy, expressive prosody, high-quality acoustics, and precise lip synchronization, yet existing approaches struggle on all four fronts. To address these issues, we propose DiFlowDubber, the first video dubbing framework built upon a discrete flow matching backbone with a novel two-stage training strategy. In the first stage, a zero-shot text-to-speech (TTS) system is pre-trained on large-scale corpora, w",
       "pub_date": "2026-04-06",
       "rating": "❌",
-      "reason": "视频配音任务，非机器人操作",
+      "reason": "视频配音跨模态对齐，纯媒体处理任务，与机器人操作无关。",
       "affiliation": ""
     },
     {
@@ -305,7 +305,7 @@
       "abstract_snippet": "arXiv:2604.02392v1 Announce Type: new Abstract: Diffusion and flow-based generative models have shown strong potential for image restoration. However, image denoising under unknown and varying noise conditions remains challenging, because the learned vector fields may become inconsistent across different noise levels, leading to degraded restoration quality under mismatch between training and inference. To address this issue, we propose a quantitative flow matching framework for adaptive image d",
       "pub_date": "2026-04-06",
       "rating": "❌",
-      "reason": "图像去噪任务，非机器人操作",
+      "reason": "图像去噪流匹配方法，纯 2D 视觉任务，无机器人操作场景。",
       "affiliation": ""
     },
     {
@@ -321,7 +321,7 @@
       "abstract_snippet": "arXiv:2604.02868v1 Announce Type: cross Abstract: Data heterogeneity hinders clinical deployment of medical image analysis models, and generative data augmentation helps mitigate this issue. However, recent diffusion-based methods that synthesize image-mask pairs often ignore distribution shifts between generated and real images across scenarios, and such mismatches can markedly degrade downstream performance. To address this issue, we propose AlignFlow, a flow matching model that aligns with th",
       "pub_date": "2026-04-06",
       "rating": "❌",
-      "reason": "医学图像分割，非机器人操作",
+      "reason": "医学图像分割数据合成，医疗影像领域，非 embodied AI。",
       "affiliation": ""
     },
     {
@@ -337,7 +337,7 @@
       "abstract_snippet": "arXiv:2604.02580v1 Announce Type: new Abstract: Evaluating code generation models for 3D spatial reasoning requires executing generated code in realistic environments and assessing outputs beyond surface-level correctness. We introduce a platform VoxelCode, for analyzing code generation capabilities for 3D understanding and environment creation. Our platform integrates natural language task specification, API-driven code execution in Unreal Engine, and a unified evaluation pipeline supporting bo",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "3D 世界建模代码生成基准，VLA 相邻方向",
+      "reason": "3D 世界模型代码生成基准，评测工具而非 VLA 方法，重要但不紧急。",
       "affiliation": ""
     },
     {
@@ -353,7 +353,7 @@
       "abstract_snippet": "arXiv:2604.03208v1 Announce Type: new Abstract: Model predictive control (MPC) with learned world models has emerged as a promising paradigm for embodied control, particularly for its ability to generalize zero-shot when deployed in new environments. However, learned world models often struggle with long-horizon control due to the accumulation of prediction errors and the exponentially growing search space. In this work, we address these challenges by learning latent world models at multiple tem",
       "pub_date": "2026-04-06",
       "rating": "📖",
-      "reason": "潜在世界模型分层规划，VLA 决策模块相邻",
+      "reason": "潜在世界模型分层规划用于具身控制，MPC+ 世界模型相邻方向，非 VLA 架构创新。",
       "affiliation": ""
     }
   ]
