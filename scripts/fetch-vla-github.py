@@ -50,16 +50,37 @@ def load_env(env_path: Path) -> dict[str, str]:
     return env
 
 
-def github_api(path: str, token: str) -> dict | list:
-    """Make a GitHub API request and return parsed JSON."""
+def github_api(path: str, token: str, max_attempts: int = 3) -> dict | list:
+    """Make a GitHub API request with retry+backoff for 429/5xx errors."""
     url = f"https://api.github.com/{path}"
-    req = urllib.request.Request(url, headers={
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json",
-        "User-Agent": "pulsar-sync/1.0"
-    })
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.loads(resp.read())
+    for attempt in range(max_attempts):
+        req = urllib.request.Request(url, headers={
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "pulsar-sync/1.0"
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return json.loads(resp.read())
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 502, 503) and attempt < max_attempts - 1:
+                # Check Retry-After header for 429
+                retry_after = e.headers.get("Retry-After")
+                if retry_after and retry_after.isdigit():
+                    wait = min(int(retry_after), 60)
+                else:
+                    wait = 5 * (attempt + 1)
+                print(f" [retry {attempt+1}: HTTP {e.code}, wait {wait}s]", end="", flush=True)
+                time.sleep(wait)
+                continue
+            raise
+        except urllib.error.URLError as e:
+            if attempt < max_attempts - 1:
+                wait = 5 * (attempt + 1)
+                print(f" [retry {attempt+1}: {e.reason}, wait {wait}s]", end="", flush=True)
+                time.sleep(wait)
+                continue
+            raise
 
 
 def extract_title(content_b64: str, filename: str) -> str:
