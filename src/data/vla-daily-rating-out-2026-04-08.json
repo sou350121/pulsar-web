@@ -4,11 +4,11 @@
   "total": 53,
   "counts": {
     "⚡": 0,
-    "🔧": 0,
-    "📖": 53,
-    "❌": 0
+    "🔧": 6,
+    "📖": 31,
+    "❌": 16
   },
-  "parse_error": "parse_error: Unterminated string starting at: line 305 column 15 (char 10858)",
+  "parse_error": "",
   "papers": [
     {
       "title": "Diffusion Policy with Bayesian Expert Selection for Active Multi-Target Tracking",
@@ -23,7 +23,7 @@
       "abstract_snippet": "arXiv:2604.03404v1 Announce Type: new Abstract: Active multi-target tracking requires a mobile robot to balance exploration for undetected targets with exploitation of uncertain tracked ones. Diffusion policies have emerged as a powerful approach for capturing diverse behavioral strategies by learning action sequences from expert demonstrations. However, existing methods implicitly select among strategies through the denoising process, without uncertainty quantification over which strategy to ex",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "针对多目标跟踪的扩散策略改进，引入贝叶斯专家选择平衡探索与利用。虽涉及移动机器人，但侧重感知跟踪而非 VLA 核心操作架构，应用路径较窄。",
       "affiliation": ""
     },
     {
@@ -38,9 +38,9 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03540v1 Announce Type: new Abstract: Although multi-step generative policies achieve strong performance in robotic manipulation by modeling multimodal action distributions, they require multi-step iterative denoising at inference time. Each action therefore needs tens to hundreds of network function evaluations (NFEs), making them costly for high-frequency closed-loop control and online reinforcement learning (RL). To address this limitation, we propose a two-stage framework for nativ",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "rating": "🔧",
+      "reason": "提出基于漂移的单步策略优化方法，解决多步生成策略推理慢的问题，实现原生单步动作生成。代码若开源可立即用于加速现有 Diffusion Policy 部署。",
+      "affiliation": "[Jia Pan]"
     },
     {
       "title": "CRAFT: Video Diffusion for Bimanual Robot Data Generation",
@@ -54,9 +54,9 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03552v1 Announce Type: new Abstract: Bimanual robot learning from demonstrations is fundamentally limited by the cost and narrow visual diversity of real-world data, which constrains policy robustness across viewpoints, object configurations, and embodiments. We present Canny-guided Robot Data Generation using Video Diffusion Transformers (CRAFT), a video diffusion-based framework for scalable bimanual demonstration generation that synthesizes temporally coherent manipulation videos w",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "rating": "🔧",
+      "reason": "利用视频扩散模型生成双臂机器人训练数据，解决真实数据稀缺和视角单一问题。为双臂 VLA 训练提供低成本数据增强方案，本周可尝试集成。",
+      "affiliation": "[USC|Sukhatme]"
     },
     {
       "title": "HAD: Combining Hierarchical Diffusion with Metric-Decoupled RL for End-to-End Driving",
@@ -70,8 +70,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03581v1 Announce Type: new Abstract: End-to-end planning has emerged as a dominant paradigm for autonomous driving, where recent models often adopt a scoring-selection framework to choose trajectories from a large set of candidates, with diffusion-based decoding showing strong promise. However, directly selecting from the entire candidate space remains difficult to optimize, and Gaussian perturbations used in diffusion often introduce unrealistic trajectories that complicate the denoi",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "专注于端到端自动驾驶规划，属于车辆控制领域，非通用机器人操作或 VLA 研究范畴，与团队核心方向无实质关联。",
       "affiliation": ""
     },
     {
@@ -87,7 +87,7 @@
       "abstract_snippet": "arXiv:2604.03730v1 Announce Type: new Abstract: Robot teleoperation is critical for applications such as remote maintenance, fleet robotics, search and rescue, and data collection for robot learning. Effective teleoperation requires intuitive 3D visualization with reliable depth cues, which conventional screen-based interfaces often fail to provide. We introduce a multi-view VR telepresence system that (1) fuses geometry from three cameras to produce GPU-accelerated point-cloud rendering on stan",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "提出基于 XR 的多视角 3D 遥操作系统，改善深度感知。属于遥操作硬件/交互系统创新，非 VLA 算法或策略学习核心进展。",
       "affiliation": ""
     },
     {
@@ -103,7 +103,7 @@
       "abstract_snippet": "arXiv:2604.03759v1 Announce Type: new Abstract: Enabling robots to learn long-horizon manipulation tasks from a handful of demonstrations remains a central challenge in robotics. Existing neuro-symbolic approaches often rely on hand-crafted symbolic abstractions, semantically labeled trajectories or large demonstration datasets, limiting their scalability and real-world applicability. We present a scalable neuro-symbolic framework that autonomously constructs symbolic planning domains and data-e",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "结合视觉语言引导与神经符号方法进行少样本模仿学习。方法相邻但依赖特定符号抽象，缺乏明确 VLA 架构改进或大规模实验验证。",
       "affiliation": ""
     },
     {
@@ -119,8 +119,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03781v1 Announce Type: new Abstract: Colorectal cancer screening critically depends on colonoscopy, yet existing platforms offer limited support for systematically studying the coupled dynamics of operator control, instrument motion, and visual feedback. This gap restricts reproducible closed-loop research in robotic colonoscopy, medical imaging, and emerging vision-language-action (VLA) learning paradigms. To address this challenge, we present OpenRC, an open-source modular robotic c",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "医疗内窥镜机器人专用框架，聚焦特定医疗设备的数据采集与控制，不属于通用具身智能或 VLA 基础研究范畴。",
       "affiliation": ""
     },
     {
@@ -136,7 +136,7 @@
       "abstract_snippet": "arXiv:2604.03890v1 Announce Type: new Abstract: The integration of large language models (LLMs) into robotic control pipelines enables natural language interfaces that translate user prompts into executable commands. However, this digital-to-physical interface introduces a critical and underexplored vulnerability: structured backdoor attacks embedded during fine-tuning. In this work, we experimentally investigate LoRA-based supply-chain backdoors in LLM-mediated ROS2 robotic control systems and",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "揭示 LLM 控制机器人系统中的结构化后门攻击风险，聚焦安全对齐。虽重要但属安全攻防研究，非 VLA 性能或架构提升。",
       "affiliation": ""
     },
     {
@@ -154,8 +154,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04161v1 Announce Type: new Abstract: In Vision-Language-Action (VLA) models, action chunking (i.e., executing a sequence of actions without intermediate replanning) is a key technique to improve robotic manipulation abilities. However, a large chunk size reduces the model's responsiveness to new information, while a small one increases the likelihood of mode-jumping, jerky behavior resulting from discontinuities between chunks. Therefore, selecting the optimal chunk size is an urgent",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "🔧",
+      "reason": "提出推理时自适应动作分块策略，动态调整执行序列长度以平衡响应速度与稳定性。直接优化 VLA 推理延迟，工程价值高且易复用。",
       "affiliation": ""
     },
     {
@@ -170,8 +170,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04196v1 Announce Type: new Abstract: Evolutionary Robotics and Robot Learning are two fields in robotics that aim to automatically optimize robot designs. The key difference between them lies in what is being optimized and the time scale involved. Evolutionary Robotics is a field that applies evolutionary computation techniques to evolve the morphologies or controllers, or both. Robot Learning, on the other hand, involves any learning technique aimed at optimizing a robot's controller",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "探讨进化机器人与机器人学习的理论复杂度差异，纯理论分析文章，无具体算法实现或实验验证，对当前 VLA 研发无直接指导意义。",
       "affiliation": ""
     },
     {
@@ -191,7 +191,7 @@
       "abstract_snippet": "arXiv:2604.04502v1 Announce Type: new Abstract: Video generation models have advanced rapidly and are beginning to show a strong understanding of physical dynamics. In this paper, we investigate how far an advanced video generation model such as Veo-3 can support generalizable robotic manipulation. We first study a zero-shot approach in which Veo-3 predicts future image sequences from current robot observations, while an inverse dynamics model IDM recovers the corresponding robot actions. The ID",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "评估前沿视频生成模型（Veo-3）在机器人操作中的泛化能力边界。属探索性分析报告，未提出新 VLA 架构或显著超越 SOTA 的方法。",
       "affiliation": ""
     },
     {
@@ -208,7 +208,7 @@
       "abstract_snippet": "arXiv:2604.04664v1 Announce Type: new Abstract: The integration of large language models (LLMs) with embodied agents has improved high-level reasoning capabilities; however, a critical gap remains between semantic understanding and physical execution. While vision-language-action (VLA) and vision-language-navigation (VLN) systems enable robots to perform manipulation and navigation tasks from natural language instructions, they still struggle with long-horizon sequential and temporally structure",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "提出分层语义 - 物理框架解决多智能体协作中的语义执行鸿沟。侧重多智能体系统架构，非单机器人 VLA 核心策略创新。",
       "affiliation": ""
     },
     {
@@ -224,7 +224,7 @@
       "abstract_snippet": "arXiv:2604.04225v1 Announce Type: cross Abstract: Learning robot control policies from demonstrations is a powerful paradigm, yet real-world data is often suboptimal, noisy, or otherwise imperfect, posing significant challenges for imitation and reinforcement learning. In this work, we present a formal framework that leverages Temporal Behavior Trees (TBT), an extension of Signal Temporal Logic (STL) with Behavior Tree semantics, to repair suboptimal trajectories prior to their use in downstream",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "利用时序行为树引导轨迹修复以从不完美的演示中学习。方法传统，主要结合行为树与 IL，缺乏 VLA 端到端学习的创新性。",
       "affiliation": ""
     },
     {
@@ -240,9 +240,9 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04834v1 Announce Type: cross Abstract: Robotic Vision-Language-Action (VLA) models generalize well for open-ended manipulation, but their perception is fragile under sensing-stage degradations such as extreme low light, motion blur, and black clipping. We present E-VLA, an event-augmented VLA framework that improves manipulation robustness when conventional frame-based vision becomes unreliable. Instead of reconstructing images from events, E-VLA directly leverages motion and structur",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "rating": "🔧",
+      "reason": "引入事件相机数据增强 VLA 在低光和模糊场景下的感知鲁棒性。解决极端光照下 VLA 失效痛点，传感器融合方案具明确落地价值。",
+      "affiliation": "[ZJU]"
     },
     {
       "title": "From Seeing to Doing: Bridging Reasoning and Decision for Robotic Manipulation",
@@ -260,7 +260,7 @@
       "abstract_snippet": "arXiv:2505.08548v3 Announce Type: replace Abstract: Achieving generalization in robotic manipulation remains a critical challenge, particularly for unseen scenarios and novel tasks. Current Vision-Language-Action (VLA) models, while building on top of general Vision-Language Models (VLMs), still fall short of achieving robust zero-shot performance due to the scarcity and heterogeneity prevalent in embodied datasets. To address these limitations, we propose FSD (From Seeing to Doing), a novel vis",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "试图桥接视觉推理与决策执行，摘要描述较为宏观，缺乏具体架构细节或量化实验支撑，疑似概念性论文。",
       "affiliation": ""
     },
     {
@@ -277,7 +277,7 @@
       "abstract_snippet": "arXiv:2508.13998v2 Announce Type: replace Abstract: Generalization in embodied AI is hindered by the \"seeing-to-doing gap,\" which stems from data scarcity and embodiment heterogeneity. To address this, we pioneer \"pointing\" as a unified, embodiment-agnostic intermediate representation, defining four core embodied pointing abilities that bridge high-level vision-language comprehension with low-level action primitives. We introduce Embodied-R1, a 3B Vision-Language Model (VLM) specifically designe",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "提出基于强化学习的具身推理方法，使用“指向”作为中间表示。思路有趣但摘要未展示显著优于现有 R1 类方法的实验结果。",
       "affiliation": ""
     },
     {
@@ -293,7 +293,7 @@
       "abstract_snippet": "arXiv:2510.12866v2 Announce Type: replace Abstract: Robotic manipulation policies often struggle to generalize to novel objects, limiting their real-world utility. In contrast, cognitive science suggests that children develop generalizable dexterous manipulation skills by mastering a small set of simple toys and then applying that knowledge to more complex items. Inspired by this, we study if similar generalization capabilities can also be achieved by robots. Our results indicate robots can lear",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "受儿童认知启发，通过与随机玩具交互学习通用抓取技能。理念新颖但摘要缺乏具体算法实现细节和多基准对比数据。",
       "affiliation": ""
     },
     {
@@ -312,7 +312,7 @@
       "abstract_snippet": "arXiv:2601.07060v2 Announce Type: replace Abstract: Recent advancements in vision-language-action (VLA) models have shown promise in robotic manipulation, yet they continue to struggle with long-horizon, multi-step tasks. Existing methods lack internal reasoning mechanisms that can identify task-relevant interaction cues or track progress within a subtask, leading to critical execution errors such as repeated actions, missed steps, and premature termination. To address these challenges, we intro",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "引入功能可供性推理进行长程任务的进度感知策略学习。针对长程任务痛点，但需进一步确认其在复杂基准上的实际增益。",
       "affiliation": ""
     },
     {
@@ -328,8 +328,8 @@
       "abstract_snippet": "arXiv:2602.08392v2 Announce Type: replace Abstract: Multimodal Large Language Models (MLLMs) have significantly advanced the landscape of embodied AI, yet transitioning to synchronized bimanual coordination introduces formidable challenges in multi-stream multimodal integration. We introduce ST-BiBench, a comprehensive multi-tier framework for evaluating spatio-temporal multimodal coordination. Our approach centers on Strategic Coordination Planning, assessing high-level cross-modal reasoning ov",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "reason": "发布双臂具身任务的多流多模态协调基准 ST-BiBench。重要数据集资源，但属评测工具而非算法突破，供后续研究使用。",
+      "affiliation": "[Tsinghua]"
     },
     {
       "title": "Steerable Vision-Language-Action Policies for Embodied Reasoning and Hierarchical Control",
@@ -345,7 +345,7 @@
       "abstract_snippet": "arXiv:2602.13193v3 Announce Type: replace Abstract: Pretrained vision-language models (VLMs) can make semantic and visual inferences across diverse settings, providing valuable common-sense priors for robotic control. However, effectively grounding this knowledge in robot behaviors remains an open challenge. Prior methods often employ a hierarchical approach where VLMs reason over high-level commands to be executed by separate low-level policies, e.g., vision-language-action models (VLAs). The i",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "研究可引导的 VLA 策略以实现分层控制。标题宏大但摘要未明确“可引导”的具体技术机制及相比基线的显著提升。",
       "affiliation": ""
     },
     {
@@ -360,8 +360,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2603.07672v2 Announce Type: replace Abstract: Teleoperation of mobile bimanual manipulators requires simultaneous control of high-dimensional systems, often necessitating expensive specialized equipment. We present an open-source teleoperation framework that enables intuitive whole body control using readily available commodity hardware. Our system combines smartphone-based head tracking for camera control, leader arms for bilateral manipulation, and foot pedals for hands-free base navigat",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "低成本移动操作臂遥操作扩展系统，属硬件/系统工程类工作，不涉及 VLA 模型算法或策略学习核心创新。",
       "affiliation": ""
     },
     {
@@ -377,7 +377,7 @@
       "abstract_snippet": "arXiv:2603.09030v3 Announce Type: replace Abstract: Action-conditioned video models offer a promising path to building general-purpose robot simulators that can improve directly from data. Yet, despite training on large-scale robot datasets, current state-of-the-art video models still struggle to predict physically consistent robot-object interactions that are crucial in robotic manipulation. To close this gap, we present PlayWorld, a simple, scalable, and fully autonomous pipeline for training",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "通过自主玩耍学习机器人世界模型，旨在构建通用模拟器。方向前沿（世界模型），但摘要未展示超越现有视频预测模型的具体指标。",
       "affiliation": ""
     },
     {
@@ -394,7 +394,7 @@
       "abstract_snippet": "arXiv:2603.12510v3 Announce Type: replace Abstract: Vision-Language-Action (VLA) models have significant potential to enable general-purpose robotic systems for a range of vision-language tasks. However, the performance of VLA-based robots is highly sensitive to the precise wording of language instructions, and it remains difficult to predict when such robots will fail. We propose Quality Diversity (QD) optimization as a natural framework for red-teaming embodied models, and present Q-DIG (Quali",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "通过多样化提示生成对 VLA 进行红队测试以提升鲁棒性。聚焦 VLA 安全性与指令敏感性，属对齐与安全研究方向。",
       "affiliation": ""
     },
     {
@@ -411,8 +411,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2511.18082v2 Announce Type: replace-cross Abstract: Recent Vision-Language-Action (VLA) models have shown impressive flexibility and generalization, yet their deployment in robotic manipulation remains limited by heavy computational overhead and inference latency. In this work, we present ActDistill, a general action-guided self-derived distillation framework that transfers the action prediction capability of any existing VLA model to a lightweight counterpart. Unlike previous efficiency s",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "🔧",
+      "reason": "提出动作引导的自蒸馏方法压缩 VLA 模型，降低计算开销与推理延迟。针对部署瓶颈的直接优化，若开源将极具工程实用价值。",
       "affiliation": ""
     },
     {
@@ -427,8 +427,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2603.23607v2 Announce Type: replace-cross Abstract: In real-world domains such as self-driving, generalization to rare scenarios remains a fundamental challenge. To address this, we introduce a new dataset designed for end-to-end driving that focuses on long-tail driving events. We provide multi-view video data, trajectories, high-level instructions, and detailed reasoning traces, facilitating in-context learning and few-shot generalization. The resulting benchmark for multimodal models, s",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "自动驾驶长尾场景数据集，包含推理轨迹。数据仅适用于自动驾驶领域，与通用机器人操作及 VLA 研究无直接交集。",
       "affiliation": ""
     },
     {
@@ -444,8 +444,8 @@
       "abstract_snippet": "arXiv:2604.03340v1 Announce Type: cross Abstract: Latent action learning infers pseudo-action labels from visual transitions, providing an approach to leverage internet-scale video for embodied AI. However, most methods learn latent actions without structural priors that encode the additive, compositional structure of physical motion. As a result, latents often entangle irrelevant scene details or information about future observations with true state changes and miscalibrate motion magnitude. We",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "reason": "学习具有加法组合结构的潜在动作以利用互联网视频数据。理论上有吸引力，但需验证其在真实机器人任务中的泛化效果。",
+      "affiliation": "[Alex Lamb]"
     },
     {
       "title": "VLA-Forget: Vision-Language-Action Unlearning for Embodied Foundation Models",
@@ -463,7 +463,7 @@
       "abstract_snippet": "arXiv:2604.03956v1 Announce Type: cross Abstract: Vision-language-action (VLA) models are emerging as embodied foundation models for robotic manipulation, but their deployment introduces a new unlearning challenge: removing unsafe, spurious, or privacy-sensitive behaviors without degrading perception, language grounding, and action control. In OpenVLA-style policies, behavior is produced through a fused visual encoder, a cross-modal projector, and a language backbone that predicts tokenized robo",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "提出 VLA 模型的“遗忘”机制以移除不安全或隐私敏感行为。填补 VLA 安全卸载空白，属新兴的安全对齐子方向。",
       "affiliation": ""
     },
     {
@@ -478,8 +478,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04759v1 Announce Type: cross Abstract: OpenClaw, the most widely deployed personal AI agent in early 2026, operates with full local system access and integrates with sensitive services such as Gmail, Stripe, and the filesystem. While these broad privileges enable high levels of automation and powerful personalization, they also expose a substantial attack surface that existing sandboxed evaluations fail to capture. To address this gap, we present the first real-world safety evaluation",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "对 OpenClaw 个人 AI 代理的安全分析，侧重软件代理权限与隐私风险，非物理实体机器人操作或 VLA 模型研究。",
       "affiliation": ""
     },
     {
@@ -495,7 +495,7 @@
       "abstract_snippet": "arXiv:2604.04843v1 Announce Type: cross Abstract: Human-object-scene interactions (HOSI) generation has broad applications in embodied AI, simulation, and animation. Unlike human-object interaction (HOI) and human-scene interaction (HSI), HOSI generation requires reasoning over dynamic object-scene changes, yet suffers from limited annotated data. To address these issues, we propose a coarse-to-fine instruction-conditioned interaction generation framework that is explicitly aligned with the iter",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "生成人体 - 物体 - 场景交互数据，服务于仿真与动画。虽可用于数据增强，但核心贡献在于生成模型而非机器人策略学习。",
       "affiliation": ""
     },
     {
@@ -510,8 +510,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03497v1 Announce Type: new Abstract: Deploying reinforcement learning policies trained in simulation to real autonomous vehicles remains a fundamental challenge, particularly for VLM-guided RL frameworks whose policies are typically learned with simulator-native observations and simulator-coupled action semantics that are unavailable on physical platforms. This paper presents Sim2Real-AD, a modular framework for zero-shot sim-to-real transfer of CARLA-trained VLM-guided RL policies to",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "面向自动驾驶的 VLM 引导 RL 仿真到现实框架，应用场景限定为车辆，不符合通用机器人操作的研究定位。",
       "affiliation": ""
     },
     {
@@ -527,7 +527,7 @@
       "abstract_snippet": "arXiv:2604.03523v1 Announce Type: new Abstract: Robot reinforcement learning from demonstrations (RLfD) assumes that expert data is abundant; this is usually unrealistic in the real world given data scarcity as well as high collection cost. Furthermore, imitation learning algorithms assume that the data is independently and identically distributed, which ultimately results in poorer performance as gradual errors emerge and compound within test-time trajectories. We address these issues by introd",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "利用偏好遗憾优化少样本下的神经机器人策略。方法针对数据稀缺问题，但摘要未展示在标准 VLA 基准上的对比优势。",
       "affiliation": ""
     },
     {
@@ -543,8 +543,8 @@
       "abstract_snippet": "arXiv:2604.03613v1 Announce Type: new Abstract: Collecting human demonstrations via teleoperation is a common approach for teaching robots task-specific skills. However, when only a limited number of demonstrations are available, policies are prone to entering out-of-distribution (OOD) states due to compounding errors or environmental stochasticity. Existing interactive imitation learning or human-in-the-loop methods try to address this issue by following the Human-Gated DAgger (HG-DAgger) parad",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": "[UCSD|Wang]"
+      "reason": "提出人机副驾驶模式以提高模仿学习效率，处理 OOD 状态。交互模式创新，但需更多实验证明其对 VLA 训练的普适增益。",
+      "affiliation": "[Xiaolong Wang]"
     },
     {
       "title": "Learning Dexterous Grasping from Sparse Taxonomy Guidance",
@@ -559,7 +559,7 @@
       "abstract_snippet": "arXiv:2604.04138v1 Announce Type: new Abstract: Dexterous manipulation requires planning a grasp configuration suited to the object and task, which is then executed through coordinated multi-finger control. However, specifying grasp plans with dense pose or contact targets for every object and task is impractical. Meanwhile, end-to-end reinforcement learning from task rewards alone lacks controllability, making it difficult for users to intervene when failures occur. To this end, we present GRIT",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "从稀疏分类指导中学习灵巧抓取，减少密集标注依赖。针对灵巧手操作的数据效率问题，但技术路线较为常规。",
       "affiliation": ""
     },
     {
@@ -575,7 +575,7 @@
       "abstract_snippet": "arXiv:2604.03322v1 Announce Type: cross Abstract: Quality inspection in smart manufacturing requires identifying intrinsic material and surface properties beyond visible geometry, yet vision-only methods remain vulnerable to occlusion and reflection. We propose VitaTouch, a property-aware vision-tactile-language model for material-property inference and natural-language attribute description. VitaTouch uses modality-specific encoders and a dual Q-Former to extract language-relevant visual and ta",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "融合视觉、触觉与语言的质检模型，识别材料表面属性。垂直领域应用（制造质检），非通用 VLA 基础架构研究。",
       "affiliation": ""
     },
     {
@@ -591,7 +591,7 @@
       "abstract_snippet": "arXiv:2509.13095v3 Announce Type: replace Abstract: Model-based reinforcement learning (MBRL) has achieved remarkable success in robotics due to its high sample efficiency and planning capability. However, extending MBRL to physical multi-robot cooperation remains challenging due to the complexity of joint dynamics. To address this challenge, we propose the Sequential World Model (SeqWM), a novel framework that integrates the sequential paradigm into multi-robot MBRL. SeqWM employs independent,",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "利用序列世界模型赋能多机器人协作。侧重多智能体 MBRL，非单机器人 VLA 核心架构或策略创新。",
       "affiliation": ""
     },
     {
@@ -607,8 +607,8 @@
       "abstract_snippet": "arXiv:2509.18455v3 Announce Type: replace Abstract: Nonprehensile manipulation, such as pushing and pulling, enables robots to move, align, or reposition objects that may be difficult to grasp due to their geometry, size, or relationship to the robot or the environment. Much of the existing work in nonprehensile manipulation relies on parallel-jaw grippers or tools such as rods and spatulas. In contrast, multi-fingered dexterous hands offer richer contact modes and versatility for handling diver",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "reason": "学习几何感知的非抓取式推拉操作，扩展灵巧手技能边界。具体操作技能研究，缺乏 VLA 层面的通用性突破。",
+      "affiliation": "[USC|Sukhatme]"
     },
     {
       "title": "SERNF: Sample-Efficient Real-World Dexterous Policy Fine-Tuning via Action-Chunked Critics and Normalizing Flows",
@@ -622,9 +622,9 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2602.09580v3 Announce Type: replace Abstract: Real-world fine-tuning of dexterous manipulation policies remains challenging due to limited real-world interaction budgets and highly multimodal action distributions. Diffusion-based policies, while expressive, do not permit conservative likelihood-based updates during fine-tuning because action probabilities are intractable. In contrast, conventional Gaussian policies collapse under multimodality, particularly when actions are executed in chu",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
-      "affiliation": ""
+      "rating": "🔧",
+      "reason": "结合动作分块评论家与归一化流，实现样本高效的真实世界灵巧策略微调。直接解决真机微调成本高痛点，方法具体可复用。",
+      "affiliation": "[ETH]"
     },
     {
       "title": "PalpAid: Multimodal Pneumatic Tactile Sensor for Tissue Palpation",
@@ -638,8 +638,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2512.19010v3 Announce Type: replace-cross Abstract: The tactile properties of tissue, such as elasticity and stiffness, often play an important role in surgical oncology when identifying tumors and pathological tissue boundaries. Though extremely valuable, robot-assisted surgery comes at the cost of reduced sensory information to the surgeon, with vision being the primary. Sensors proposed to overcome this sensory desert are often bulky, complex, and incompatible with the surgical workflow",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "新型多模态气动触觉传感器设计，用于手术组织触诊。属硬件传感器研发，非 VLA 算法或软件架构研究。",
       "affiliation": ""
     },
     {
@@ -655,7 +655,7 @@
       "abstract_snippet": "arXiv:2604.04646v1 Announce Type: cross Abstract: Flow-based models learn a target distribution by modeling a marginal velocity field, defined as the average of sample-wise velocities connecting each sample from a simple prior to the target data. When sample-wise velocities conflict at the same intermediate state, however, this averaged velocity can misguide samples toward low-density regions, degrading generation quality. To address this issue, we propose the Flow Divergence Sampler (FDS), a tr",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "提出无需训练的基于散度的采样方法优化 Flow Matching。纯生成模型算法改进，未明确展示在机器人策略任务上的应用效果。",
       "affiliation": ""
     },
     {
@@ -671,7 +671,7 @@
       "abstract_snippet": "arXiv:2602.14351v2 Announce Type: replace-cross Abstract: Model-based reinforcement learning promises strong sample efficiency but often underperforms in practice due to compounding model error, unimodal world models that average over multi-modal dynamics, and overconfident predictions that bias learning. We introduce WIMLE, a model-based method that extends Implicit Maximum Likelihood Estimation (IMLE) to the model-based RL framework to learn stochastic, multi-modal world models without iterati",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "结合隐式最大似然估计构建不确定性感知世界模型，提升连续控制样本效率。MBRL 方向进展，与 VLA 直接关联度一般。",
       "affiliation": ""
     },
     {
@@ -686,8 +686,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2603.24936v2 Announce Type: replace-cross Abstract: Human trajectory forecasting is important for intelligent multimedia systems operating in visually complex environments, such as autonomous driving and crowd surveillance. Although Conditional Flow Matching (CFM) has shown strong ability in modeling trajectory distributions from spatio-temporal observations, existing approaches still focus primarily on supervised fitting, which may leave social norms and scene constraints insufficiently r",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "行人轨迹预测方法，应用于自动驾驶与监控场景。属于预测任务，非机器人主动操作或 VLA 控制策略研究。",
       "affiliation": ""
     },
     {
@@ -703,7 +703,7 @@
       "abstract_snippet": "arXiv:2604.04707v1 Announce Type: new Abstract: World models have garnered significant attention as a promising research direction in artificial intelligence, yet a clear and unified definition remains lacking. In this paper, we introduce OpenWorldLib, a comprehensive and standardized inference framework for Advanced World Models. Drawing on the evolution of world models, we propose a clear definition: a world model is a model or framework centered on perception, equipped with interaction and lo",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "推出统一的世界模型代码库与定义标准。基础设施类工作，有助于规范化研究，但本身非算法创新。",
       "affiliation": ""
     },
     {
@@ -719,7 +719,7 @@
       "abstract_snippet": "arXiv:2604.04913v1 Announce Type: new Abstract: Anticipating diverse future states is a central challenge in video world modeling. Discriminative world models produce a deterministic prediction that implicitly averages over possible futures, while existing generative world models remain computationally expensive. Recent work demonstrates that predicting the future in the feature space of a vision foundation model (VFM), rather than a latent space optimized for pixel reconstruction, requires sign",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "利用增量 token 高效生成世界模型，降低视频预测计算量。视频建模效率优化，需进一步验证在机器人控制闭环中的表现。",
       "affiliation": ""
     },
     {
@@ -735,7 +735,7 @@
       "abstract_snippet": "arXiv:2503.08751v3 Announce Type: replace Abstract: Training visual reinforcement learning (RL) in practical scenarios presents a significant challenge, $\\textit{i.e.,}$ RL agents suffer from low sample efficiency in environments with variations. While various approaches have attempted to alleviate this issue by disentangled representation learning, these methods usually start learning from scratch without prior knowledge of the world. This paper, in contrast, tries to learn and understand under",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "学习解耦世界模型以从干扰视频中迁移语义知识。提升 RL 在变化环境中的鲁棒性，但非 VLA 专属架构创新。",
       "affiliation": ""
     },
     {
@@ -751,7 +751,7 @@
       "abstract_snippet": "arXiv:2603.26357v2 Announce Type: replace Abstract: Transformer architectures, particularly Diffusion Transformers (DiTs), have become widely used in diffusion and flow-matching models due to their strong performance compared to convolutional UNets. However, the isotropic design of DiTs processes the same number of patchified tokens in every block, leading to relatively heavy computation during training process. In this work, we introduce a multi-patch transformer design in which early blocks op",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "提出多 patch 全局到局部 Transformer 架构加速扩散与流匹配模型。底层生成模型架构优化，尚未体现机器人领域特异性。",
       "affiliation": ""
     },
     {
@@ -766,8 +766,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04291v1 Announce Type: new Abstract: Flow Matching is typically built from Gaussian sources and Euclidean probability paths. For heavy-tailed or anisotropic data, however, a Gaussian source induces a structural mismatch already at the level of the radial distribution. We introduce \\textit{Radial--Angular Flow Matching (RAFM)}, a framework that explicitly corrects this source mismatch within the standard simulation-free Flow Matching template. RAFM uses a source whose radial law matche",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "修正流匹配中的源分布不匹配问题，纯数学/统计学习方法改进，无机器人应用背景或实验验证。",
       "affiliation": ""
     },
     {
@@ -782,8 +782,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04491v1 Announce Type: new Abstract: Flow Matching (FM) constructs linear conditional probability paths, but the learned marginal velocity field inevitably exhibits strong curvature due to trajectory superposition. This curvature severely inflates numerical truncation errors, bottlenecking few-step sampling. To overcome this, we introduce Isokinetic Flow Matching (Iso-FM), a lightweight, Jacobian-free dynamical regularizer that directly penalizes pathwise acceleration. By using a self",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "提出等动力学流匹配以拉直生成路径，理论性较强。无机器人相关实验，属于纯生成模型理论研究。",
       "affiliation": ""
     },
     {
@@ -798,8 +798,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.03459v1 Announce Type: cross Abstract: Regional climate information at kilometer scales is essential for assessing the impacts of climate change, but generating it with global climate models is too expensive due to their high computational costs. Machine learning models offer a fast alternative, yet they often violate basic physical laws and degrade when applied to climates outside of their training distribution. We present Physics-Constrained Adaptive Flow Matching (PC-AFM), a genera",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "应用于气候降尺度的物理约束流匹配，属地球科学 AI 应用，与机器人操作完全无关。",
       "affiliation": ""
     },
     {
@@ -814,8 +814,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2604.04453v1 Announce Type: cross Abstract: Granular flows govern many natural and industrial processes, yet their interior kinematics and mechanics remain largely unobservable, as experiments access only boundaries or free surfaces. Conventional numerical simulations are computationally expensive for fast inverse reconstruction, and deterministic models tend to collapse to over-smoothed mean predictions in ill-posed settings. This study, to the best of the authors' knowledge, presents the",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "颗粒流的生成建模，属物理模拟与流体力学交叉领域，非机器人控制或 VLA 研究范畴。",
       "affiliation": ""
     },
     {
@@ -830,8 +830,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2410.07430v3 Announce Type: replace Abstract: Continuous-time event sequences, in which events occur at irregular intervals, are ubiquitous across a wide range of industrial and scientific domains. The contemporary modeling paradigm is to treat such data as realizations of a temporal point process, and in machine learning it is common to model temporal point processes in an autoregressive fashion using a neural network. While autoregressive models are successful in predicting the time of a",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "利用流匹配预测时间点过程，应用于工业与科学领域事件序列。非机器人时空轨迹或动作生成任务。",
       "affiliation": ""
     },
     {
@@ -847,7 +847,7 @@
       "abstract_snippet": "arXiv:2510.26433v2 Announce Type: replace Abstract: Adapting pretrained video generation models into controllable world models via latent actions is a promising step towards creating generalist world models. The dominant paradigm adopts a two-stage approach that trains latent action model (LAM) and the world model separately, resulting in redundant training and limiting their potential for co-adaptation. A conceptually simple and appealing idea is to directly replace the forward dynamic model in",
       "pub_date": "2026-04-07",
       "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "reason": "协同进化潜在动作世界模型，改进视频生成模型的可控性。世界模型方向进展，但需更多机器人任务验证其有效性。",
       "affiliation": ""
     },
     {
@@ -862,8 +862,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2603.21717v3 Announce Type: replace Abstract: Distribution-to-distribution generative models support scientific imaging tasks ranging from modeling cellular perturbation responses to translating medical images across conditions. Trustworthy generation requires both reliability (generalization across labs, devices, and experimental conditions) and accountability (detecting out-of-distribution cases where predictions may be unreliable). Uncertainty quantification (UQ) based approaches serve",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "科学成像中的分布到分布流匹配不确定性量化，属医疗/生物图像分析，与机器人操作无关。",
       "affiliation": ""
     },
     {
@@ -878,8 +878,8 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2508.13831v3 Announce Type: replace-cross Abstract: Functional data, i.e., smooth random functions observed over a continuous domain, are increasingly available in areas such as biomedical research, health informatics, and epidemiology. However, effective statistical analysis for functional data is often hindered by challenges such as privacy constraints, sparse and irregular sampling, infinite-dimensionality, and non-Gaussian structures. To address these challenges, we introduce a novel f",
       "pub_date": "2026-04-07",
-      "rating": "📖",
-      "reason": "解析失败，默认存档",
+      "rating": "❌",
+      "reason": "用于合成功能数据的平滑流匹配，应用于生物医学统计。纯数据统计方法，无机器人应用场景。",
       "affiliation": ""
     }
   ]
