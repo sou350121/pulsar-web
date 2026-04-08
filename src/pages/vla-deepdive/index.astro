@@ -53,17 +53,16 @@ for (const a of olderAll) { (byTopicAll[a.topic] ??= []).push(a); }
 // Sort topics by article count descending
 const topics = Object.keys(byTopicAll).sort((a, b) => byTopicAll[b].length - byTopicAll[a].length);
 const TOPIC_LABELS: Record<string, string> = {
-  'frontier':    '🔬 Frontier Research',
-  'theory':      '📐 Theory & Foundations',
-  'methods':     '🔧 Methods & Techniques',
-  'engineering': '⚙️ Engineering & Architecture',
-  'tactile':     '🤚 Tactile Perception',
-  'robotics':    '🤖 Robotics & Hardware',
-  'rl':          '🎮 Reinforcement Learning',
-  'foundation':  '🏗️ Foundation Models',
-  'reasoning':   '🧠 Reasoning & Planning',
-  'world-model': '🌍 World Models',
-  'general':     '📄 General',
+  'vla-core':       '🏛️ VLA Core',
+  'diffusion-flow': '🌊 Diffusion & Flow',
+  'world-model':    '🌍 World Models',
+  'rl':             '🎮 Reinforcement Learning',
+  'tactile':        '🤚 Tactile Perception',
+  'perception':     '👁️ Perception & 3D',
+  'planning':       '🧠 Planning & Reasoning',
+  'foundation':     '🏗️ Foundation & Training',
+  'deployment':     '🔧 Deployment & Hardware',
+  'frontier':       '🔬 Frontier Research',
 };
 
 function dotDate(iso: string) {
