@@ -63,6 +63,7 @@ jobs:
                  sudo timeout 30 python3.11 /home/admin/clawd/pulsar-web/scripts/build-atlas-data.py 2>&1 | tail -5 && \
                  sudo python3.11 /home/admin/clawd/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
                  sudo python3.11 /home/admin/clawd/scripts/push-data-to-web.py --verbose 2>&1 | tail -10; \
+                 sudo timeout 60 python3.11 /home/admin/clawd/scripts/fix-theory-root-files.py --apply 2>&1 | tail -5 || true; \
                  cd /home/admin/clawd/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"; then
               echo "SSH sync succeeded on attempt $attempt"
               break
