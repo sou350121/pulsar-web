@@ -98,6 +98,11 @@ function checkFeed(spec: FeedSpec): CheckResult {
   return r;
 }
 
+// NOTE: we deliberately don't fetch-check link reachability in CI.
+// External 404s (e.g. arxiv down, GitHub rate-limit) would cause flaky builds.
+// Stale path issues (e.g. VLA-Handbook reorg) are a pipeline-data concern,
+// tracked upstream.
+
 // -------------------------------------------------------------------------
 
 const results = FEEDS.map(checkFeed);

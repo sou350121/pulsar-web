@@ -9,8 +9,14 @@ import {
 
 const SITE = 'https://sou350121.github.io/pulsar-web';
 const FEED_URL = `${SITE}/rss/weekly.xml`;
-const GITHUB_VLA = 'https://github.com/sou350121/VLA-Handbook/blob/main/memory/reports';
-const GITHUB_AP = 'https://github.com/sou350121/Agent-Playbook/blob/main/memory/reports';
+
+// URL scheme on pulsar-web's /reports/[date].astro:
+//   /reports/YYYY-MM-DD            → VLA biweekly
+//   /reports/YYYY-MM-DD-reflection → VLA reflection
+//   /reports/ai-YYYY-MM-DD         → AI biweekly
+//   /reports/w-YYYY-MM-DD          → VLA weekly
+//   /reports/w-ai-YYYY-MM-DD       → AI weekly
+// (AI reflection not currently published as separate route — falls back to index)
 
 type Kind =
   | 'vla-weekly'
@@ -25,6 +31,16 @@ interface Entry {
   kind: Kind;
   title: string;
   link: string;
+}
+
+function reportUrl(kind: Kind, date: string): string {
+  switch (kind) {
+    case 'vla-weekly':          return `${SITE}/reports/w-${date}`;
+    case 'ai-weekly':           return `${SITE}/reports/w-ai-${date}`;
+    case 'vla-biweekly':        return `${SITE}/reports/${date}`;
+    case 'ai-biweekly':         return `${SITE}/reports/ai-${date}`;
+    case 'biweekly-reflection': return `${SITE}/reports/${date}-reflection`;
+  }
 }
 
 function classify(name: string): Omit<Entry, 'filename' | 'link'> | null {
@@ -86,9 +102,7 @@ export const GET: APIRoute = async () => {
       for (const f of files) {
         const meta = classify(f);
         if (!meta) continue;
-        const isAi = meta.kind.startsWith('ai') || (meta.kind === 'biweekly-reflection' && f.includes('ai'));
-        const base = isAi ? GITHUB_AP : GITHUB_VLA;
-        const link = `${base}/${f.replace(/^_/, '')}`;
+        const link = reportUrl(meta.kind, meta.date);
         let firstPara = '';
         try {
           firstPara = firstMeaningfulPara(readDataFile(f));
