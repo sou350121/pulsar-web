@@ -1,0 +1,274 @@
+---
+/**
+ * /subscribe — RSS subscription landing page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const feeds = [
+  {
+    slug: 'vla-theory',
+    title: 'VLA 新文章',
+    emoji: '🧠',
+    description: 'VLA-Handbook 理论章节每日新增文章（多时段自动更新）',
+    frequency: '每天 3-5 篇',
+    ttl: '60 min',
+  },
+  {
+    slug: 'vla-daily',
+    title: 'VLA 每日信号',
+    emoji: '⚡',
+    description: '当日筛选的 ⚡🔧 级论文 + SOTA 榜变动（📖❌ 不进此 feed）',
+    frequency: '每天 09:05-10:00',
+    ttl: '60 min',
+  },
+  {
+    slug: 'ai-daily',
+    title: 'AI 每日',
+    emoji: '📘',
+    description: 'AI Agent 生态每日精选（3 条）+ AI 深度解读文章',
+    frequency: '每天 08:00-17:00',
+    ttl: '60 min',
+  },
+  {
+    slug: 'weekly',
+    title: '周/双周深度报告',
+    emoji: '📚',
+    description: 'VLA + AI 周报（前瞻侦察）和双周报（回顾分析）',
+    frequency: '每周五 / 每两周',
+    ttl: '180 min',
+  },
+];
+
+const feedUrl = (slug: string) => `${base}/rss/${slug}.xml`;
+const opmlUrl = `${base}/rss/opml.xml`;
+---
+
+<BaseLayout title="订阅 · Subscribe" description="订阅 Pulsar 照見 RSS feed — VLA + AI 每日研究信号，绕开算法推荐直达你的阅读器。">
+  <main class="container subscribe-page">
+    <header class="page-header">
+      <h1>订阅 Pulsar 照見</h1>
+      <p class="lede">
+        每天自动更新 · 绕开社交算法 · 一次订阅持久回报
+        <br />
+        选择你感兴趣的主题，或 <a href={opmlUrl}>一键导入全部 (OPML)</a>
+      </p>
+    </header>
+
+    <section class="feeds-grid">
+      {feeds.map((f) => (
+        <article class="feed-card">
+          <div class="feed-head">
+            <span class="feed-emoji" aria-hidden="true">{f.emoji}</span>
+            <h2>{f.title}</h2>
+          </div>
+          <p class="feed-desc">{f.description}</p>
+          <dl class="feed-meta">
+            <div><dt>更新节奏</dt><dd>{f.frequency}</dd></div>
+            <div><dt>建议轮询</dt><dd>{f.ttl}</dd></div>
+          </dl>
+          <div class="feed-actions">
+            <a class="btn btn-primary" href={feedUrl(f.slug)} rel="alternate" type="application/rss+xml">
+              订阅 RSS
+            </a>
+            <button class="btn btn-secondary" type="button" data-copy={feedUrl(f.slug)}>
+              复制链接
+            </button>
+          </div>
+          <code class="feed-url">{feedUrl(f.slug)}</code>
+        </article>
+      ))}
+    </section>
+
+    <section class="how-to">
+      <h2>怎么用 RSS？</h2>
+      <div class="readers">
+        <div>
+          <h3>桌面</h3>
+          <ul>
+            <li><a href="https://feedly.com/" target="_blank" rel="noreferrer">Feedly</a> — 最流行的网页版</li>
+            <li><a href="https://www.inoreader.com/" target="_blank" rel="noreferrer">Inoreader</a> — 专业功能最多</li>
+            <li><a href="https://netnewswire.com/" target="_blank" rel="noreferrer">NetNewsWire</a> — macOS 原生免费</li>
+          </ul>
+        </div>
+        <div>
+          <h3>手机</h3>
+          <ul>
+            <li>iOS：Reeder 5、NetNewsWire</li>
+            <li>Android：FeedMe、Readably</li>
+          </ul>
+        </div>
+        <div>
+          <h3>命令行 / 自动化</h3>
+          <ul>
+            <li><code>curl {feedUrl('vla-theory')}</code></li>
+            <li>Zapier / n8n 可把 feed 接到 Slack / Discord / 邮件</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="license-note">
+      <h2>许可 · License</h2>
+      <p>
+        Pulsar 照見 内容使用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>。
+        转载、AI 训练、商用均允许，只需署名 <code>sou350121 · Pulsar 照見</code> 并附上源链接。
+      </p>
+    </section>
+  </main>
+
+  <script is:inline>
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-copy]');
+      if (!btn) return;
+      const url = btn.getAttribute('data-copy');
+      navigator.clipboard.writeText(url).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '已复制 ✓';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    });
+  </script>
+
+  <style>
+    .subscribe-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .page-header h1 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0 0 0.5rem;
+      color: var(--text-primary);
+    }
+    .lede {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .feeds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+    .feed-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .feed-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feed-emoji {
+      font-size: 1.5rem;
+    }
+    .feed-head h2 {
+      font-size: 1.1rem;
+      margin: 0;
+      color: var(--text-primary);
+    }
+    .feed-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .feed-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+    .feed-meta div { display: flex; flex-direction: column; }
+    .feed-meta dt { margin: 0; font-weight: 500; }
+    .feed-meta dd { margin: 0; color: var(--text-secondary); }
+    .feed-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .btn {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: var(--bg-alt); }
+    .btn-primary {
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber);
+      font-weight: 500;
+    }
+    .btn-primary:hover { background: var(--accent-amber); color: #fff; }
+    .feed-url {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      word-break: break-all;
+      background: var(--bg-alt);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      display: block;
+    }
+    .how-to {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .how-to h2 {
+      margin: 0 0 1rem;
+      font-size: 1.2rem;
+      color: var(--text-primary);
+    }
+    .readers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .readers h3 {
+      font-size: 0.95rem;
+      margin: 0 0 0.5rem;
+      color: var(--text-primary);
+    }
+    .readers ul { padding-left: 1.1rem; margin: 0; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; }
+    .readers a { color: var(--accent-cyan); }
+    .license-note {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding: 1rem 1.25rem;
+      background: var(--bg-alt);
+      border-radius: 8px;
+    }
+    .license-note h2 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .license-note a { color: var(--accent-cyan); }
+    .license-note code {
+      background: var(--surface);
+      padding: 0 0.25rem;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+  </style>
+</BaseLayout>
