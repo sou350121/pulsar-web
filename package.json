@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node --experimental-strip-types scripts/verify-feeds.ts",
     "preview": "astro preview",
-    "sync-data": "python3.11 scripts/sync-data.py"
+    "sync-data": "python3.11 scripts/sync-data.py",
+    "verify-feeds": "node --experimental-strip-types scripts/verify-feeds.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.0",

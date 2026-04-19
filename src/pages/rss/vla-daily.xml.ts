@@ -1,13 +1,11 @@
 import type { APIRoute } from 'astro';
-import { renderRss, rssHeaders } from '../../lib/rss';
-import hotspots from '../../data/vla-daily-hotspots.json';
-import sotaData from '../../data/vla-sota-tracker.json';
+import { safeBuildFeed, rssHeaders, readDataJson, type RawItemInput } from '../../lib/rss';
 
 interface HotspotPaper {
-  title: string;
-  date: string;
-  url: string;
-  source: string;
+  title?: string;
+  date?: string;
+  url?: string;
+  source?: string;
   tag?: string;
   repo_url?: string;
   abstract_snippet?: string;
@@ -17,13 +15,13 @@ interface HotspotPaper {
 }
 
 interface SotaEntry {
-  benchmark: string;
+  benchmark?: string;
   split?: string;
-  metric: string;
-  value: string | number;
-  model: string;
+  metric?: string;
+  value?: string | number;
+  model?: string;
   paper_id?: string;
-  date: string;
+  date?: string;
   source?: string;
   leaderboard_url?: string;
 }
@@ -32,57 +30,64 @@ const SITE = 'https://sou350121.github.io/pulsar-web';
 const FEED_URL = `${SITE}/rss/vla-daily.xml`;
 
 export const GET: APIRoute = async () => {
-  const papers = ((hotspots as { reported_papers?: HotspotPaper[] }).reported_papers) || [];
-  const sotas = ((sotaData as { 'vla-sota-tracker'?: SotaEntry[] })['vla-sota-tracker']) || [];
+  const xml = safeBuildFeed(
+    'vla-daily',
+    {
+      title: 'Pulsar 照見 · VLA 每日信号',
+      link: `${SITE}/daily`,
+      feedSelfLink: FEED_URL,
+      description:
+        'VLA 每日筛选的⚡🔧级论文 + SOTA 榜变动。仅保留 Pulsar 评级认为值得读的工作 · ❌和📖不进此 feed。',
+      language: 'zh-CN',
+      ttl: 60,
+    },
+    () => {
+      const hotspots = readDataJson<{ reported_papers?: HotspotPaper[] }>('vla-daily-hotspots.json');
+      const sotaData = readDataJson<{ 'vla-sota-tracker'?: SotaEntry[] }>('vla-sota-tracker.json');
 
-  // ⚡ and 🔧 rated papers only — ❌ and 📖 are too noisy for a daily feed
-  const curatedPapers = papers
-    .filter((p) => p.date && p.title && (p.rating === '⚡' || p.rating === '🔧'))
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 30)
-    .map((p) => ({
-      title: `${p.rating || ''} ${p.title}`.trim(),
-      link: p.url,
-      guid: `hotspot:${p.url}`,
-      pubDate: new Date(p.date),
-      categories: ['VLA 每日热点', p.tag, p.affiliation].filter(Boolean) as string[],
-      description: [
-        p.reason ? `理由：${p.reason}` : '',
-        p.abstract_snippet ? `摘要：${p.abstract_snippet}` : '',
-        p.repo_url ? `代码：${p.repo_url}` : '',
-        `来源：${p.source}`,
-      ]
-        .filter(Boolean)
-        .join('\n\n'),
-    }));
+      const papers = hotspots.reported_papers || [];
+      const sotas = sotaData['vla-sota-tracker'] || [];
 
-  const recentSota = sotas
-    .filter((s) => s.date && s.benchmark && s.model)
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 15)
-    .map((s) => ({
-      title: `🏆 SOTA: ${s.model} on ${s.benchmark} — ${s.metric} ${s.value}`,
-      link: s.leaderboard_url || s.source || `${SITE}/vla-deepdive`,
-      guid: `sota:${s.benchmark}:${s.model}:${s.date}`,
-      pubDate: new Date(s.date),
-      categories: ['SOTA 榜', s.benchmark].filter(Boolean) as string[],
-      description: `Benchmark：${s.benchmark}${s.split ? ` · split=${s.split}` : ''}\n指标：${s.metric} = ${s.value}\n模型：${s.model}${s.paper_id ? ` · ${s.paper_id}` : ''}`,
-    }));
+      // ⚡🔧 only — filters noise
+      const curated = papers
+        .filter((p) => p.date && p.title && p.url && (p.rating === '⚡' || p.rating === '🔧'))
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+        .slice(0, 30)
+        .map<RawItemInput>((p) => ({
+          title: `${p.rating || ''} ${p.title}`.trim(),
+          link: p.url,
+          guid: `hotspot:${p.url}`,
+          pubDate: p.date,
+          categories: ['VLA 每日热点', p.tag, p.affiliation].filter((x): x is string => !!x),
+          description: [
+            p.reason ? `理由：${p.reason}` : '',
+            p.abstract_snippet ? `摘要：${p.abstract_snippet}` : '',
+            p.repo_url ? `代码：${p.repo_url}` : '',
+            p.source ? `来源：${p.source}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+        }));
 
-  const items = [...curatedPapers, ...recentSota]
-    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
-    .slice(0, 50);
+      const recentSota = sotas
+        .filter((s) => s.date && s.benchmark && s.model)
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+        .slice(0, 15)
+        .map<RawItemInput>((s) => {
+          const link = s.leaderboard_url || s.source || `${SITE}/vla-deepdive`;
+          return {
+            title: `🏆 SOTA: ${s.model} on ${s.benchmark} — ${s.metric} ${s.value}`,
+            link,
+            guid: `sota:${s.benchmark}:${s.model}:${s.date}`,
+            pubDate: s.date,
+            categories: ['SOTA 榜', s.benchmark].filter((x): x is string => !!x),
+            description: `Benchmark：${s.benchmark}${s.split ? ` · split=${s.split}` : ''}\n指标：${s.metric} = ${s.value}\n模型：${s.model}${s.paper_id ? ` · ${s.paper_id}` : ''}`,
+          };
+        });
 
-  const xml = renderRss({
-    title: 'Pulsar 照見 · VLA 每日信号',
-    link: `${SITE}/daily`,
-    feedSelfLink: FEED_URL,
-    description:
-      'VLA 每日筛选的⚡🔧级论文 + SOTA 榜变动。仅保留 Pulsar 评级认为值得读的工作 · ❌和📖不进此 feed。',
-    language: 'zh-CN',
-    ttl: 60,
-    items,
-  });
+      return [...curated, ...recentSota];
+    },
+  );
 
   return new Response(xml, { headers: rssHeaders });
 };
