@@ -15,6 +15,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import DigestFeed from '../components/DigestFeed.astro';
+import ActivityPulse from '../components/ActivityPulse.astro';
 import {
   loadAIDailyPicks,
   loadVLADailyPicks,
@@ -463,6 +464,11 @@ const RULE_LABELS: Record<string, string> = {
       </div>
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       2.7. ACTIVITY PULSE — live indicator + subscribe CTA
+       ═══════════════════════════════════════════════════════════════ -->
+  <ActivityPulse />
 
   <!-- ═══════════════════════════════════════════════════════════════
        3. HERO — stat strip + two featured cards
