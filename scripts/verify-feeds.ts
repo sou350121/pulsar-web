@@ -98,22 +98,85 @@ function checkFeed(spec: FeedSpec): CheckResult {
   return r;
 }
 
-// NOTE: we deliberately don't fetch-check link reachability in CI.
-// External 404s (e.g. arxiv down, GitHub rate-limit) would cause flaky builds.
-// Stale path issues (e.g. VLA-Handbook reorg) are a pipeline-data concern,
-// tracked upstream.
+/**
+ * Sample N item <link> URLs, HEAD-check each. Returns 404s as warnings.
+ * Intentionally does NOT fail the build — network is flaky and a transient
+ * 404 shouldn't block deployment. Warning is enough for human triage.
+ *
+ * Respects env var SKIP_LINK_CHECK=1 for offline CI / dev.
+ */
+async function sampleLinkHealth(spec: FeedSpec, xml: string, sample: number): Promise<string[]> {
+  if (process.env.SKIP_LINK_CHECK === '1') return [];
+  if (spec.minItems === 0) return []; // OPML etc. — no item links
+
+  // Pick N random item links (not channel self-link)
+  const matches = [...xml.matchAll(/<item>[\s\S]*?<link>(https?:\/\/[^<]+)<\/link>/g)];
+  // Unescape XML entities back into real URL
+  const urls = matches.map((m) =>
+    m[1]
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'"),
+  );
+  if (urls.length === 0) return [];
+
+  // Uniform random sample — seeded by feed name for reproducibility in logs
+  const picks: string[] = [];
+  const step = Math.max(1, Math.floor(urls.length / sample));
+  for (let i = 0; i < urls.length && picks.length < sample; i += step) picks.push(urls[i]);
+
+  const warnings: string[] = [];
+  await Promise.all(
+    picks.map(async (url) => {
+      try {
+        const controller = new AbortController();
+        const to = setTimeout(() => controller.abort(), 5000);
+        // GET not HEAD — many sites (news, Cloudflare) block HEAD and return
+        // false 403/404. Browser UA avoids anti-bot false positives.
+        const r = await fetch(url, {
+          method: 'GET',
+          redirect: 'follow',
+          signal: controller.signal,
+          headers: { 'User-Agent': 'Mozilla/5.0 (Pulsar-FeedVerify; +https://sou350121.github.io/pulsar-web)' },
+        });
+        clearTimeout(to);
+        if (r.status === 404) warnings.push(`404: ${url}`);
+        else if (r.status >= 500) warnings.push(`${r.status}: ${url}`);
+      } catch (e) {
+        // Network/timeout — don't treat as failure (not our problem)
+      }
+    }),
+  );
+  return warnings;
+}
 
 // -------------------------------------------------------------------------
 
 const results = FEEDS.map(checkFeed);
 const failed = results.filter((r) => !r.ok);
 
+// Sample link health — warning only, doesn't fail build
 console.log('\n🔍 RSS Feed Verification\n' + '─'.repeat(50));
+const linkWarnings: Record<string, string[]> = {};
+for (const spec of FEEDS) {
+  if (spec.minItems === 0) continue;
+  try {
+    const xml = fs.readFileSync(path.resolve(spec.file), 'utf8');
+    const warns = await sampleLinkHealth(spec, xml, 3);
+    if (warns.length > 0) linkWarnings[spec.name] = warns;
+  } catch { /* file missing already reported */ }
+}
+
 for (const r of results) {
   const icon = r.ok ? '✓' : '✗';
   console.log(`${icon} ${r.name.padEnd(14)} ${r.bytes.toString().padStart(7)}B  ${r.items.toString().padStart(4)} items`);
   if (r.errors.length > 0) {
     for (const err of r.errors) console.log(`    ⛔ ${err}`);
+  }
+  if (linkWarnings[r.name]?.length) {
+    for (const w of linkWarnings[r.name]) console.log(`    ⚠️  ${w}`);
   }
 }
 console.log('─'.repeat(50));

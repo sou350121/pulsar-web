@@ -4,6 +4,7 @@ import {
   rssHeaders,
   readDataFile,
   listDataFiles,
+  withUtm,
   type RawItemInput,
 } from '../../lib/rss';
 
@@ -117,7 +118,7 @@ export const GET: APIRoute = async () => {
         .slice(0, 40)
         .map<RawItemInput>((e) => ({
           title: e.title,
-          link: e.link,
+          link: withUtm(e.link, 'weekly'),
           guid: `weekly:${e.filename}`,
           pubDate: e.date,
           categories: [e.kind],

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { safeBuildFeed, rssHeaders, readDataJson, type RawItemInput } from '../../lib/rss';
+import { safeBuildFeed, rssHeaders, readDataJson, withUtm, type RawItemInput } from '../../lib/rss';
 
 interface HotspotPaper {
   title?: string;
@@ -55,7 +55,7 @@ export const GET: APIRoute = async () => {
         .slice(0, 30)
         .map<RawItemInput>((p) => ({
           title: `${p.rating || ''} ${p.title}`.trim(),
-          link: p.url,
+          link: withUtm(p.url as string, 'vla-daily'),
           guid: `hotspot:${p.url}`,
           pubDate: p.date,
           categories: ['VLA 每日热点', p.tag, p.affiliation].filter((x): x is string => !!x),
@@ -74,10 +74,10 @@ export const GET: APIRoute = async () => {
         .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
         .slice(0, 15)
         .map<RawItemInput>((s) => {
-          const link = s.leaderboard_url || s.source || `${SITE}/vla-deepdive`;
+          const rawLink = s.leaderboard_url || s.source || `${SITE}/vla-deepdive`;
           return {
             title: `🏆 SOTA: ${s.model} on ${s.benchmark} — ${s.metric} ${s.value}`,
-            link,
+            link: withUtm(rawLink as string, 'vla-daily-sota'),
             guid: `sota:${s.benchmark}:${s.model}:${s.date}`,
             pubDate: s.date,
             categories: ['SOTA 榜', s.benchmark].filter((x): x is string => !!x),

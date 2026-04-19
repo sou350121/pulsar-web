@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { safeBuildFeed, rssHeaders, readDataJson, type RawItemInput } from '../../lib/rss';
+import { safeBuildFeed, rssHeaders, readDataJson, withUtm, type RawItemInput } from '../../lib/rss';
 
 const SITE = 'https://sou350121.github.io/pulsar-web';
 const FEED_URL = `${SITE}/rss/vla-theory.xml`;
@@ -37,7 +37,7 @@ export const GET: APIRoute = async () => {
         .slice(0, 50)
         .map<RawItemInput>((a) => ({
           title: a.title,
-          link: a.html_url || a.url,
+          link: withUtm((a.html_url || a.url) as string, 'vla-theory'),
           guid: a.sha || a.html_url || a.url,
           pubDate: a.date,
           categories: a.topic ? [a.topic] : undefined,

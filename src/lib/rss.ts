@@ -47,6 +47,29 @@ export interface RawItemInput {
 }
 
 /**
+ * Append UTM params to outbound links so we can attribute traffic to feed
+ * when/if we add analytics later. Deliberately standard utm_* so any
+ * destination that tracks referrers (Umami / Plausible / GA) can segment.
+ *
+ * Skips links that already have query params (avoid double-?), and skips
+ * arxiv / doi permalinks where UTM is noise.
+ */
+export function withUtm(url: string, campaign: string): string {
+  if (!url || typeof url !== 'string') return url;
+  try {
+    const u = new URL(url);
+    // Don't touch permalink-like targets that already have state
+    if (u.hostname === 'arxiv.org' || u.hostname === 'doi.org') return url;
+    u.searchParams.set('utm_source', 'rss');
+    u.searchParams.set('utm_medium', 'feed');
+    u.searchParams.set('utm_campaign', campaign);
+    return u.toString();
+  } catch {
+    return url; // malformed URL — let validator catch it
+  }
+}
+
+/**
  * Validate and coerce a raw item. Returns null if any required field is bad.
  * Required: title (non-empty string), link (http[s]://...), pubDate (valid Date).
  */

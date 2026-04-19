@@ -41,8 +41,16 @@ const feeds = [
   },
 ];
 
+const SITE = 'https://sou350121.github.io/pulsar-web';
 const feedUrl = (slug: string) => `${base}/rss/${slug}.xml`;
+const absFeedUrl = (slug: string) => `${SITE}/rss/${slug}.xml`;
 const opmlUrl = `${base}/rss/opml.xml`;
+
+// Deep-link one-click subscribe URLs for popular readers
+const feedlyUrl = (slug: string) =>
+  `https://feedly.com/i/subscription/feed/${encodeURIComponent(absFeedUrl(slug))}`;
+const inoreaderUrl = (slug: string) =>
+  `https://www.inoreader.com/?add_feed=${encodeURIComponent(absFeedUrl(slug))}`;
 ---
 
 <BaseLayout title="订阅 · Subscribe" description="订阅 Pulsar 照見 RSS feed — VLA + AI 每日研究信号，绕开算法推荐直达你的阅读器。">
@@ -69,14 +77,19 @@ const opmlUrl = `${base}/rss/opml.xml`;
             <div><dt>建议轮询</dt><dd>{f.ttl}</dd></div>
           </dl>
           <div class="feed-actions">
-            <a class="btn btn-primary" href={feedUrl(f.slug)} rel="alternate" type="application/rss+xml">
-              订阅 RSS
+            <a class="btn btn-primary" href={feedlyUrl(f.slug)} target="_blank" rel="noopener noreferrer">
+              Feedly
             </a>
-            <button class="btn btn-secondary" type="button" data-copy={feedUrl(f.slug)}>
-              复制链接
+            <a class="btn btn-primary" href={inoreaderUrl(f.slug)} target="_blank" rel="noopener noreferrer">
+              Inoreader
+            </a>
+            <button class="btn btn-secondary" type="button" data-copy={absFeedUrl(f.slug)}>
+              复制 URL
             </button>
           </div>
-          <code class="feed-url">{feedUrl(f.slug)}</code>
+          <a class="feed-url" href={feedUrl(f.slug)} rel="alternate" type="application/rss+xml">
+            {feedUrl(f.slug)}
+          </a>
         </article>
       ))}
     </section>

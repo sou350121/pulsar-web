@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { safeBuildFeed, rssHeaders, readDataJson, type RawItemInput } from '../../lib/rss';
+import { safeBuildFeed, rssHeaders, readDataJson, withUtm, type RawItemInput } from '../../lib/rss';
 
 interface DailyItem {
   title?: string;
@@ -60,7 +60,7 @@ export const GET: APIRoute = async () => {
             .filter((it) => it.title && it.url)
             .map<RawItemInput>((it, idx) => ({
               title: `⭐ ${it.title}`,
-              link: it.url,
+              link: withUtm(it.url as string, 'ai-daily-pick'),
               guid: `pick:${rec.date}:${idx}:${it.url}`,
               pubDate: rec.date,
               categories: ['AI 每日精选', it.category, it.source].filter((x): x is string => !!x),
@@ -80,7 +80,7 @@ export const GET: APIRoute = async () => {
         .slice(0, 30)
         .map<RawItemInput>((a) => ({
           title: `📘 ${a.title}`,
-          link: a.html_url || a.url,
+          link: withUtm((a.html_url || a.url) as string, 'ai-daily-deep'),
           guid: `ai-deep:${a.slug || a.github_path || a.html_url || a.url}`,
           pubDate: a.date,
           categories: ['AI 深度解读', a.signal_type].filter((x): x is string => !!x),
