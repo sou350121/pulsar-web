@@ -1,0 +1,104 @@
+{
+  "date": "2026-04-20",
+  "generated_at": "2026-04-20T11:00:00+08:00",
+  "status": "ok",
+  "summary": {
+    "assumptions_total": 20,
+    "vla_assumptions": 10,
+    "ai_assumptions": 6,
+    "system_assumptions": 4,
+    "signals_total": 97,
+    "vla_signals": 39,
+    "ai_signals": 61
+  },
+  "source_stats": {
+    "vla_rss": 0,
+    "vla_hotspots": 0,
+    "vla_social": 2,
+    "vla_sota": 0,
+    "vla_release": 10,
+    "ai_rss": 40,
+    "ai_daily": 1,
+    "ai_social": 2,
+    "ai_pick": 3
+  },
+  "boost_applied": {
+    "watch_list_boost": {
+      "enabled": true,
+      "assumptions_boosted": 2,
+      "details": [
+        {"id": "V-001", "boost": "+5 signals"},
+        {"id": "V-008", "boost": "+2 signals"}
+      ]
+    },
+    "semantic_boost": {
+      "enabled": true,
+      "chunks_available": 890,
+      "signals_added": 52
+    }
+  },
+  "assumption_coverage": {
+    "vla": [
+      {"id": "V-001", "signals": 5, "coverage": "normal", "watch_list": true},
+      {"id": "V-002", "signals": 3, "coverage": "normal", "watch_list": false},
+      {"id": "V-003", "signals": 4, "coverage": "normal", "watch_list": false},
+      {"id": "V-004", "signals": 6, "coverage": "normal", "watch_list": false},
+      {"id": "V-005", "signals": 4, "coverage": "normal", "watch_list": false},
+      {"id": "V-006", "signals": 3, "coverage": "normal", "watch_list": false},
+      {"id": "V-007", "signals": 5, "coverage": "normal", "watch_list": false},
+      {"id": "V-008", "signals": 4, "coverage": "normal", "watch_list": true},
+      {"id": "V-009", "signals": 2, "coverage": "low", "watch_list": false},
+      {"id": "V-010", "signals": 3, "coverage": "normal", "watch_list": false}
+    ],
+    "ai_agent": [
+      {"id": "A-001", "signals": 12, "coverage": "high", "watch_list": false},
+      {"id": "A-002", "signals": 8, "coverage": "normal", "watch_list": false},
+      {"id": "A-003", "signals": 10, "coverage": "normal", "watch_list": false},
+      {"id": "A-004", "signals": 15, "coverage": "high", "watch_list": false},
+      {"id": "A-005", "signals": 9, "coverage": "normal", "watch_list": false},
+      {"id": "A-006", "signals": 7, "coverage": "normal", "watch_list": false}
+    ],
+    "system": [
+      {"id": "T-003", "signals": 4, "coverage": "normal", "watch_list": false},
+      {"id": "T-004", "signals": 3, "coverage": "normal", "watch_list": false},
+      {"id": "S-001", "signals": 11, "coverage": "high", "watch_list": false},
+      {"id": "S-002", "signals": 5, "coverage": "normal", "watch_list": false}
+    ]
+  },
+  "flags": [
+    {
+      "type": "low_coverage",
+      "assumption_id": "V-009",
+      "domain": "vla",
+      "hypothesis": "Cross-embodiment zero-shot transfer of VLA policies remains hard",
+      "signals": 2,
+      "threshold": 3,
+      "recommendation": "Monitor for 3 consecutive days; if persists, consider expanding keywords or semantic boost weight"
+    },
+    {
+      "type": "zero_source",
+      "source": "vla_rss",
+      "recommendation": "VLA RSS produced 0 signals today - check RSS feed health and collector script"
+    },
+    {
+      "type": "zero_source",
+      "source": "vla_hotspots",
+      "recommendation": "VLA Hotspots produced 0 signals today - may indicate low activity or collector issue"
+    },
+    {
+      "type": "zero_source",
+      "source": "vla_sota",
+      "recommendation": "VLA SOTA produced 0 signals today - expected if not scheduled, verify cron"
+    }
+  ],
+  "health_check": {
+    "pipeline_status": "healthy",
+    "assumptions_monitored": 20,
+    "assumptions_with_low_coverage": 1,
+    "zero_signal_sources": 3,
+    "watch_list_active": true,
+    "semantic_boost_effective": true
+  },
+  "candidates_path": "/home/admin/clawd/memory/tmp/_calibration_candidates_2026-04-20.json",
+  "next_calibration": "2026-04-21T11:00:00+08:00"
+}

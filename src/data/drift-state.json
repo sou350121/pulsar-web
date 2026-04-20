@@ -1,18 +1,18 @@
 {
-  "last_check": "2026-04-19",
+  "last_check": "2026-04-20",
   "metrics": {
     "vla_papers_scanned": {
-      "streak": 1,
+      "streak": 2,
       "alerted_at_streak": 0,
       "last_value": 352,
-      "baseline": 1102.14,
+      "baseline": 1103.29,
       "ratio": 0.319
     },
     "vla_final_in_report": {
-      "streak": 2,
-      "alerted_at_streak": 2,
+      "streak": 4,
+      "alerted_at_streak": 4,
       "last_value": 0,
-      "baseline": 19.0,
+      "baseline": 18.71,
       "ratio": 0.0,
       "sustained_degradation": true
     },
@@ -20,8 +20,8 @@
       "streak": 0,
       "alerted_at_streak": 0,
       "last_value": 12,
-      "baseline": 14.71,
-      "ratio": 0.816
+      "baseline": 14.86,
+      "ratio": 0.808
     },
     "vla_tg_msg_len": {
       "streak": 0,
@@ -34,16 +34,16 @@
     "aiapp_items_scanned": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 253,
-      "baseline": 322.71,
-      "ratio": 0.784
+      "last_value": 250,
+      "baseline": 322.86,
+      "ratio": 0.774
     },
     "aiapp_items_report": {
-      "streak": 2,
-      "alerted_at_streak": 0,
-      "last_value": 2,
-      "baseline": 6.0,
-      "ratio": 0.333
+      "streak": 4,
+      "alerted_at_streak": 4,
+      "last_value": 1,
+      "baseline": 5.86,
+      "ratio": 0.171
     },
     "vla_upstream_count": {
       "streak": 0,
@@ -54,9 +54,9 @@
     }
   },
   "last_remediation": {
-    "vla_final_in_report": "2026-04-19",
+    "vla_final_in_report": "2026-04-20",
     "vla_papers_scanned": "2026-03-23",
-    "aiapp_items_report": "2026-03-23"
+    "aiapp_items_report": "2026-04-20"
   },
   "remediation_log": [
     {
@@ -138,6 +138,22 @@
       "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
       "ok": false,
       "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
+    },
+    {
+      "date": "2026-04-20",
+      "key": "vla_final_in_report",
+      "label": "VLA 評級重跑",
+      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
+      "ok": false,
+      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
+    },
+    {
+      "date": "2026-04-20",
+      "key": "aiapp_items_report",
+      "label": "AI 過濾重跑",
+      "script": "/home/admin/clawd/scripts/prep-ai-app-rss-filtered.py",
+      "ok": true,
+      "detail": "{\"ok\": true, \"date\": \"2026-04-20\", \"output\": \"/home/admin/clawd/memory/ai-app-rss-filtered-2026-04-20.json\", \"total_before\": 250, \"after\": 1, \"too_old\": 249, \"no_date_capped\": 0, \"jaccard_dedup\": 0, \""
     }
   ]
 }
