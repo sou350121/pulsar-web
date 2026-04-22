@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-04-22",
+      "items": [
+        {
+          "title": "SpaceX 洽以 600 亿美元收购 Cursor",
+          "category": "行业",
+          "source": "HN+ReadHub+NYT",
+          "url": "https://www.nytimes.com/2026/04/21/business/spacex-cursor-deal.html",
+          "why_picked": "SpaceX 与 Cursor 达成 $60B 收购协议（或 $10B 合作项目），Cursor 正洽谈 $20B 融资（a163 领投，NVIDIA 参与），AI IDE 赛道格局或将剧变",
+          "so_what": "如果你在选择 AI 编码工具：Cursor 被 SpaceX 收购后可能加速企业化路线，API 定价和可用性或有变化。建议同时评估 Copilot、Windsurf 等替代方案，避免 vendor lock-in。关注 a163 领投的 $20B 融资轮进展，这可能是 IDE 赛道最大一笔融资。"
+        },
+        {
+          "title": "Kimi K2.6 正式开源：SWE-Bench Pro 58.6%、300 Agent 集群",
+          "category": "新发布",
+          "source": "36kr+HuggingFace",
+          "url": "https://huggingface.co/moonshotai/Kimi-K2.6",
+          "why_picked": "月之暗面正式发布 K2.6 并开源 BF16 权重（595GB），SWE-Bench Pro 超越所有闭源模型，支持 300 子 Agent 并行 4000 协作步骤，长程编码 13 小时",
+          "so_what": "如果你在做 Agent 编排：K2.6 的 300-Agent 集群架构展示了大规模并行化的可行路径——每 Agent 专精不同技能、由主 Agent 调度。可参考其架构设计你的 multi-agent pipeline。API 输入价 6.5 元/M token（缓存命中 1.1 元），成本可控。BF16 权重可直接下载部署。"
+        },
+        {
+          "title": "Claude Code 从 Pro 套餐中移除",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://news.ycombinator.com/item?id=47855565",
+          "why_picked": "HN 153 分 87 评论。Anthropic 将 Claude Code 从 $20/月 Pro 套餐中剥离，用户需单独订阅或升级至 $100+ Pro+ 计划，引发开发者社区广泛讨论",
+          "so_what": "如果你在用 Claude Code：$20 Pro 用户需立即评估迁移路径——单独订阅 Claude Code 或升级 Pro+。建议核算实际 token 用量，对比 Cursor Pro（$20 含 unlimited）和 Copilot（$19）的性价比。关注 Anthropic 是否推出独立低价 tier。"
+        },
+        {
+          "title": "Vercel OAuth 供应链攻击：Context.ai 泄露成突破口",
+          "category": "行业",
+          "source": "TrendMicro",
+          "url": "https://www.trendmicro.com/en_us/research/26/d/vercel-breach-oauth-supply-chain.html",
+          "why_picked": "TrendMicro 深度分析：攻击者通过 Context.ai 的 Lumma Stealer 感染 → 窃取 Google Workspace OAuth token → 入侵 Vercel 内部系统，暴露客户环境变量。2026 年 CI/CD 供应链攻击模式持续演化",
+          "so_what": "如果你在用 Vercel 或任何云平台：立即审计所有第三方 OAuth 应用权限，将平台密钥标记为 sensitive，启用短期 token 轮换。此事件与 LiteLLM、Axios 泄露同属一类模式——攻击者专攻开发者凭证链。建议部署 CrabTrap 类代理安全层。"
+        },
+        {
+          "title": "CrabTrap：Brex 开源 LLM-as-a-judge Agent 安全代理",
+          "category": "工具",
+          "source": "Brex",
+          "url": "https://www.brex.com/journal/building-crabtrap-open-source",
+          "why_picked": "Brex 开源 HTTP/HTTPS 代理，拦截 AI Agent 所有外发请求，用 LLM-as-a-judge 判定是否符合策略。双阶段：静态规则（微秒级）+ LLM 裁决（长尾），TLS 拦截无需 SDK",
+          "so_what": "如果你在生产环境部署 AI Agent：CrabTrap 提供了框架无关的安全层——设 HTTP_PROXY 即可接入，比 MCP gateway 更通用。用其 policy builder 从实际流量自动生成策略，避免手工编写规则的盲区。配合 iptables 阻断直连可形成强制安全边界。"
+        },
+        {
+          "title": "nateherkai/token-dashboard：Claude Code token 消耗可视化",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/nateherkai/token-dashboard",
+          "why_picked": "GitHub Trending（⭐149），将 Claude Code JSONL 转录转为本地 token 消耗仪表盘，直观展示模型、任务、时间的 token 分布",
+          "so_what": "如果你在用 Claude Code 控制成本：此工具可快速定位高消耗任务（如大文件分析、反复重试），帮助优化 prompt 和文件范围。JSONL 转录是 Claude Code 内置功能，导入即可用。建议与 token 预算工具配合使用。"
+        }
+      ]
+    },
+    {
       "date": "2026-04-21",
       "items": [
         {
@@ -1398,18 +1451,6 @@
           "url": "https://readhub.cn/topic/8rZ1K2jMnXY",
           "why_picked": "小米 CEO 雷军公开回应电脑版 OpenClaw 类 Agent 框架开发计划，确认「正在开发之中」，国产 AI 编程助手竞争再升温",
           "so_what": "如果你在选型 AI 编程助手：关注小米生态链与现有工具链（如 Cursor/Claude Code）的兼容性；评估跨平台支持能力；留意国产工具的本地化优势（中文 prompt、国内 API 访问）；但生产环境建议等待成熟版本。"
-        }
-      ]
-    },
-    {
-      "date": "2026-03-22",
-      "items": [
-        {
-          "title": "小米 MiMo V2 模型发布：联合 OpenClaw 等五大 Agent 框架限免开放",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://m.ithome.com/html/931298.htm",
-          "why_picked": "小米正式发布 MiMo-V2-Pro、MiMo-V2-Omni 和 MiMo-V2-TTS 三款大模型，联合 OpenClaw、OpenCode、KiloCode、Cline、BLACKBOXAI 五大主流 Agent 框架开放为期一周的免费 API，降低开发者接入门槛"
         }
       ]
     }
