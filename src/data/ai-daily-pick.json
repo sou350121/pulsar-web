@@ -1,6 +1,43 @@
 {
   "daily_picks": [
     {
+      "date": "2026-04-23",
+      "items": [
+        {
+          "title": "ChatGPT Images 2.0 发布：首个「会思考」的图像模型",
+          "category": "新发布",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3777221631150343",
+          "why_picked": "OpenAI 正式发布 ChatGPT Images 2.0，具备推理能力（Thinking Mode），可联网搜索+自检，支持中日韩等多语言精准渲染，一次生成8张连贯画面，Arena榜单登顶",
+          "so_what": "如果你在做图像生成管线：Images 2.0 的 Thinking Mode 引入了推理+搜索+自检的三阶段流程，这意味着图像生成正在从「纯渲染」转向「视觉推理」。建议关注其 API 开放节奏——如果你的应用需要多语言文本渲染或连贯多图生成，这是目前最强的选项。"
+        },
+        {
+          "title": "Firefox 150 用 Claude Mythos 发现 271 个漏洞",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Apr/22/bobby-holley/",
+          "why_picked": "Firefox CTO Bobby Holley 分享将 Claude Mythos Preview 应用于 Firefox 的经验，首轮评估即发现 271 个漏洞，标志着 AI 安全审计进入实用阶段",
+          "so_what": "如果你在做安全审计或代码审查：Claude Mythos 在 Firefox 上的实战证明 AI 漏洞发现已从实验走向生产。考虑将类似工具集成到 CI 流程中——特别是对于 C/C++ 等内存安全敏感项目，AI 辅助审计可以显著扩大覆盖范围。"
+        },
+        {
+          "title": "OpenAI 推出 ChatGPT for Clinicians，对认证医师免费",
+          "category": "行业",
+          "source": "OpenAI 官方博客",
+          "url": "https://openai.com/index/making-chatgpt-better-for-clinicians",
+          "why_picked": "OpenAI 正式发布垂直版本 ChatGPT for Clinicians，面向美国认证医师/NP/药剂师免费开放，配套开源 HealthBench Professional 基准",
+          "so_what": "如果你在做垂直领域 Agent：OpenAI 正在用「免费+认证」模式占领医疗场景。这验证了垂直化是 LLM 商业化的重要路径——通用模型打底，垂直场景做深。如果你的领域也有强合规需求，可以参考这个模式。"
+        },
+        {
+          "title": "AWS SageMaker AI 推出 GenAI 推理优化推荐",
+          "category": "工具",
+          "source": "AWS ML Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-ai-now-supports-optimized-generative-ai-inference-recommendations/",
+          "why_picked": "SageMaker AI 新增推理配置推荐功能，集成 NVIDIA AIPerf 自动 benchmark，将原本需数周的 GPU 配置调优自动化",
+          "so_what": "如果你在生产环境部署 LLM：SageMaker 的推理推荐消除了手动调优 GPU 实例+并行策略+优化技术的组合爆炸问题。如果你的团队正在为推理延迟/成本发愁，这个功能可以把部署周期从几周压缩到几小时。"
+        }
+      ]
+    },
+    {
       "date": "2026-04-22",
       "items": [
         {
@@ -1406,51 +1443,6 @@
           "url": "https://simonwillison.net/2026/Mar/23/david-abram/#atom-everything",
           "why_picked": "Simon 引用 David Abram 观点：编码工作最困难的部分从来不是敲代码，而是理解系统、调试无意义的问题、设计架构——这正是 agent 时代人类的核心价值",
           "so_what": "如果你在管理 AI 编程团队：重新定义工程师价值从「写代码」转向「定义问题 + 验证结果」；投资系统文档和架构可视化工具；培养团队的问题分解和架构设计能力；用 agent 处理重复编码，人专注高价值判断。"
-        }
-      ]
-    },
-    {
-      "date": "2026-03-23",
-      "items": [
-        {
-          "title": "OpenClaw 安全争议：274 分 HN 热议「安全噩梦还是白日梦」",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://composio.dev/content/openclaw-security-and-vulnerabilities",
-          "why_picked": "HN 274 分/191 评论深度辩论：OpenClaw 类开源 Agent 框架的安全边界问题，涉及权限控制、供应链攻击、生产环境部署风险",
-          "so_what": "如果你在生产环境部署 AI Agent：立即审查现有 Agent 的权限范围和命令执行边界，实施最小权限原则；考虑引入沙盒执行层（如 Docker/Agent Safehouse）；建立命令白名单和人工审批流程，避免 Claude Code 误删数据库类事故重演。"
-        },
-        {
-          "title": "Delve 审计数据泄露：533 份报告、455 家公司 99.8% 雷同",
-          "category": "行业",
-          "source": "HN",
-          "url": "https://trustcompliance.xyz",
-          "why_picked": "HN 113 分热议：AI 合规审计行业数据泄露，揭示大量审计报告高度雷同，引发对 AI 生成合规报告真实性的质疑",
-          "so_what": "如果你在采购 AI 合规/审计工具：要求供应商提供人工审核比例和报告生成流程透明化；交叉验证审计报告中的关键发现；警惕纯 AI 生成的合规报告可能存在的模板化风险，关键场景需人工复核。"
-        },
-        {
-          "title": "Simon Willison：编码 Agent 的 Git 工作流最佳实践",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/guides/agentic-engineering-patterns/using-git-with-coding-agents/",
-          "why_picked": "Agentic Engineering Patterns 系列更新：详解如何让 coding agent 有效使用 Git，包括分支策略、提交信息规范、代码审查流程",
-          "so_what": "如果你在用 Claude Code/Codex 等 agent：配置 agent 使用独立分支而非直接提交 main；要求 agent 为每次修改生成描述性提交信息；设置 pre-commit hook 拦截危险操作；定期 review agent 的 git history 理解其行为模式。"
-        },
-        {
-          "title": "实战：教 Claude 做移动端 App QA 测试",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://christophermeiklejohn.com/ai/zabriskie/development/android/ios/2026/03/22/teaching-claude-to-qa-a-mobile-app.html",
-          "why_picked": "详细记录如何用 Claude 进行移动端 App 质量测试，包括测试用例生成、自动化执行、结果分析完整流程",
-          "so_what": "如果你在构建 Agent 测试流程：参考其 prompt 设计模式让 agent 理解 UI 层级和交互逻辑；结合截图 + 元素树让 agent 定位问题；建立测试用例模板库供 agent 复用；将测试结果结构化存储便于后续分析。"
-        },
-        {
-          "title": "雷军确认电脑版「龙虾」开发中",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8rZ1K2jMnXY",
-          "why_picked": "小米 CEO 雷军公开回应电脑版 OpenClaw 类 Agent 框架开发计划，确认「正在开发之中」，国产 AI 编程助手竞争再升温",
-          "so_what": "如果你在选型 AI 编程助手：关注小米生态链与现有工具链（如 Cursor/Claude Code）的兼容性；评估跨平台支持能力；留意国产工具的本地化优势（中文 prompt、国内 API 访问）；但生产环境建议等待成熟版本。"
         }
       ]
     }
