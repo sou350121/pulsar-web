@@ -168,10 +168,13 @@ function checkRecentRatingHealth(): string[] {
   const files = fs
     .readdirSync(dataDir)
     .filter((f) => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
-    .sort()
-    .slice(-7); // last 7 days
+    .sort();
 
-  for (const f of files) {
+  const recent7 = files.slice(-7);
+  const recent14 = files.slice(-14);
+
+  // Check 1: parse-failure regression (each file)
+  for (const f of recent7) {
     try {
       const data = JSON.parse(fs.readFileSync(path.join(dataDir, f), 'utf8'));
       const papers = data.papers || [];
@@ -187,9 +190,58 @@ function checkRecentRatingHealth(): string[] {
         );
       }
     } catch {
-      /* skip malformed */
+      /* skip */
     }
   }
+
+  // Check 2: ⚡ drought — calibration may be drifting strict if <3 ⚡ in 14 days
+  let flashTotal = 0;
+  let validDays = 0;
+  for (const f of recent14) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(dataDir, f), 'utf8'));
+      const papers = data.papers || [];
+      if (papers.length < 3) continue;
+      const fails = papers.filter((p: any) =>
+        /^解析失败[，,]?\s*默认存档?$/.test((p.reason || '').trim()),
+      ).length;
+      if (fails / papers.length > 0.5) continue;
+      validDays++;
+      flashTotal += papers.filter((p: any) => p.rating === '⚡').length;
+    } catch {
+      /* skip */
+    }
+  }
+  if (validDays >= 7 && flashTotal < 3) {
+    warnings.push(
+      `⚡ drought: only ${flashTotal} ⚡ papers in last ${validDays} valid days → possible calibration drift (rater too strict)`,
+    );
+  }
+
+  // Check 3: consecutive ⚡-zero days at the end (recent drift signal)
+  let consecutiveZero = 0;
+  for (let i = recent14.length - 1; i >= 0; i--) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(dataDir, recent14[i]), 'utf8'));
+      const papers = data.papers || [];
+      if (papers.length < 3) continue;
+      const fails = papers.filter((p: any) =>
+        /^解析失败[，,]?\s*默认存档?$/.test((p.reason || '').trim()),
+      ).length;
+      if (fails / papers.length > 0.5) continue;
+      const flash = papers.filter((p: any) => p.rating === '⚡').length;
+      if (flash === 0) consecutiveZero++;
+      else break;
+    } catch {
+      break;
+    }
+  }
+  if (consecutiveZero >= 4) {
+    warnings.push(
+      `⚡ recent streak: ${consecutiveZero} consecutive days with 0 ⚡ → watch for calibration drift`,
+    );
+  }
+
   return warnings;
 }
 
