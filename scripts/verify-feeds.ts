@@ -154,8 +154,48 @@ async function sampleLinkHealth(spec: FeedSpec, xml: string, sample: number): Pr
 
 // -------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Extra health: scan recent VLA rating files for parse-failure regressions
+// If >30% of a day's papers are parse-failures, the pipeline had a bad day.
+// This is a WARNING only (not fail build) — helps catch silent regressions
+// like 2026-04-15 (30/30 fails) and 2026-04-21 (17/17 fails).
+// ---------------------------------------------------------------------------
+function checkRecentRatingHealth(): string[] {
+  const warnings: string[] = [];
+  const dataDir = path.resolve('src/data');
+  if (!fs.existsSync(dataDir)) return warnings;
+
+  const files = fs
+    .readdirSync(dataDir)
+    .filter((f) => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+    .sort()
+    .slice(-7); // last 7 days
+
+  for (const f of files) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(dataDir, f), 'utf8'));
+      const papers = data.papers || [];
+      if (papers.length === 0) continue;
+      const fails = papers.filter((p: any) =>
+        /^解析失败[，,]?\s*默认存档?$/.test((p.reason || '').trim()),
+      ).length;
+      const ratio = fails / papers.length;
+      if (ratio > 0.3) {
+        const date = f.replace('vla-daily-rating-out-', '').replace('.json', '');
+        warnings.push(
+          `${date}: ${fails}/${papers.length} (${(ratio * 100).toFixed(0)}%) parse-failures → pipeline regression`,
+        );
+      }
+    } catch {
+      /* skip malformed */
+    }
+  }
+  return warnings;
+}
+
 const results = FEEDS.map(checkFeed);
 const failed = results.filter((r) => !r.ok);
+const ratingWarnings = checkRecentRatingHealth();
 
 // Sample link health — warning only, doesn't fail build
 console.log('\n🔍 RSS Feed Verification\n' + '─'.repeat(50));
@@ -178,6 +218,12 @@ for (const r of results) {
   if (linkWarnings[r.name]?.length) {
     for (const w of linkWarnings[r.name]) console.log(`    ⚠️  ${w}`);
   }
+}
+
+// VLA rating quality warnings (upstream pipeline health)
+if (ratingWarnings.length > 0) {
+  console.log('\n⚠️  Upstream rating pipeline warnings:');
+  for (const w of ratingWarnings) console.log(`    ⚠️  ${w}`);
 }
 console.log('─'.repeat(50));
 

@@ -429,13 +429,14 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
       daText: data?.da_text || '',
       items: papers
         .filter(p => p.rating !== '❌')
+        // Drop parse-failure placeholders entirely — these entries have no
+        // meaningful rating/reason (LLM couldn't parse its output). Keeping
+        // them shows low-quality 📖 items with fake judgments. Days with
+        // 100% parse-fail (2026-04-15, 2026-04-21) disappear from display.
+        .filter(p => !/^解析失败[，,]?\s*默认存档?$/.test((p.reason || '').trim()))
         .map((raw): DailyPickItem => {
-          const rawReason = (raw.reason || '').trim()
-            .replace(/\s*\[Pass3.*$/i, '');  // strip pipeline Pass3 annotations
-          // Strip pipeline parse-failure placeholders so they never reach UI.
-          // These appear when LLM rating output couldn't be parsed on a given
-          // day (e.g. 2026-04-15 had 30 such entries). Show abstract only.
-          const r = /^解析失败[，,]?\s*默认存档?$/.test(rawReason) ? '' : rawReason;
+          const r = (raw.reason || '').trim()
+            .replace(/\s*\[Pass3.*$/i, '');
           const abs = (raw.abstract_snippet || '')
             .replace(/^arXiv:\S+\s+Announce Type:\s*\S+\s*/i, '')
             .replace(/^Abstract:\s*/i, '')
@@ -500,12 +501,10 @@ export function loadVLADailyPicksV2(n: number = 7): VLAPickDay[] {
         date,
         items: papers
           .filter(p => p.rating !== '❌')
+          // Drop parse-failure placeholder entries — see V1 loader comment.
+          .filter(p => !/^解析失败[，,]?\s*默认存档?$/.test((p.reason || '').trim()))
           .map((raw): VLAPickItem => {
-            // Build summary with author byline (same logic as V1 loader).
-            // Strip parse-failure placeholder so it never shows in UI.
-            const reason = raw.reason || '';
-            const cleanReason = /^解析失败[，,]?\s*默认存档?$/.test(reason.trim()) ? '' : reason;
-            let summary = cleanReason || raw.abstract_snippet || '';
+            let summary = raw.reason || raw.abstract_snippet || '';
             const authors = (raw.authors || '').trim();
             if (authors) {
               const parts = authors.split(',');
