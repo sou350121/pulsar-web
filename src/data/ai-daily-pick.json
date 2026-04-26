@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-04-26",
+      "items": [
+        {
+          "title": "DeepSeek-V4-Pro/Flash 正式发布：百万上下文 MoE，价格仅为 frontier 1/10",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Apr/24/deepseek-v4/",
+          "why_picked": "1.6T 参数 MoE，1M 上下文窗口，Pro 版输入 $1.74/M tokens，Flash 版 $0.14/M tokens——当前最便宜 frontier 模型",
+          "so_what": "如果你在用 Claude/GPT 跑日常推理：Flash 版可替代 GPT-5.4 Nano 做轻量任务，成本降 30%；Pro 版可替代 Sonnet 4.6 做复杂任务，成本降 60%。1M 上下文窗口意味着可直接喂入整本技术文档做 RAG 替代方案。"
+        },
+        {
+          "title": "GPT-5.5 通过 Codex CLI 半开放访问，API 暂未开放",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Apr/23/gpt-5-5/",
+          "why_picked": "OpenAI 最新模型，目前仅通过 Codex CLI 和 ChatGPT 订阅可用，API 开放待定",
+          "so_what": "如果你在做 Agent 管线集成：目前无法通过 API 调用 GPT-5.5，需等 OpenAI 发布 API 版本。但可通过 llm-openai-via-codex 插件利用已有 ChatGPT 订阅额度，适合原型验证。"
+        },
+        {
+          "title": "ChatGPT Images 2.0 自主添加 'WHY ARE YOU LIKE THIS' 标签",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Apr/25/why-are-you-like-this/",
+          "why_picked": "模型在生成嵌套图像时自主添加元标签，展示了 text-to-image 模型的新涌现行为",
+          "so_what": "如果你在评估多模态生成模型质量：这个案例说明 GPT-5.5 系列的图像模型开始有「自我评论」能力，可用于自动化生成图像描述和质检标签，但也要注意模型可能产生非预期的元行为。"
+        },
+        {
+          "title": "GitHub Trending：Claude Code 生态工具爆发",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/trending",
+          "why_picked": "free-claude-code、claude-code-templates、davila7/claude-code-templates 同时上榜，反映 Claude Code 生态快速增长",
+          "so_what": "如果你在用 Claude Code 做开发：claude-code-templates 提供 CLI 配置和监控能力，适合团队统一 Agent 行为模板；free-claude-code 可通过 Discord/VSCode 扩展免费使用，适合预算有限的团队做原型。"
+        },
+        {
+          "title": "HuggingFace 开源 ml-intern：能读论文、训练模型、部署上线的 ML 工程师",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/huggingface/ml-intern",
+          "why_picked": "HuggingFace 出品的开源 ML 工程师 Agent，覆盖从论文阅读到模型训练到部署的完整管线",
+          "so_what": "如果你在搭建 ML 团队自动化管线：ml-intern 可作为内部 ML 助手，自动跟踪最新论文并复现实验。适合研究密集型团队减少重复性实验工作。"
+        },
+        {
+          "title": "HN 热帖：用 AI 编程工具复活你永远不会完成的项目",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://news.ycombinator.com/item?id=47902525",
+          "why_picked": "156 points, 95 comments — 开发者分享用 Claude Code + Godot 复活废弃游戏项目的经历",
+          "so_what": "如果你在用 AI 辅助编程：这个讨论揭示了一个被忽视的使用场景——AI 最适合的不是从零写代码，而是理解和延续已有代码库。把你的半成品项目丢给 Claude Code，可能比写新项目效果更好。"
+        }
+      ]
+    },
+    {
       "date": "2026-04-24",
       "items": [
         {
@@ -1305,144 +1358,6 @@
           "url": "https://simonwillison.net/2026/Mar/27/richard-fontana/",
           "why_picked": "Richard Fontana（前 SFC 律师）分析 chardet 7.0.0 是否必须 LGPL 发布；开源授权边界的技术法律讨论",
           "so_what": "如果你在使用/分发开源 Python 库：关注传递依赖的授权条款变化；chardet 等基础库授权变更可能影响商业产品；建立依赖授权审计流程，避免合规风险。"
-        }
-      ]
-    },
-    {
-      "date": "2026-03-26",
-      "items": [
-        {
-          "title": "谷歌发布 Lyria 3 Pro 音乐生成模型，支持 3 分钟曲目",
-          "category": "新发布",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8rnDePnvOgi",
-          "why_picked": "Google 升级 Lyria 3 至 Pro 版本，生成时长从短片段扩展至 3 分钟，增强创作控制力；将整合进 Gemini 付费版、Google Vids 和 ProducerAI",
-          "so_what": "如果你在做 AI 音乐/视频创作应用：评估 Lyria 3 Pro 对比 Suno/Udio 的商业授权条款；关注 3 分钟时长对完整歌曲创作的意义；考虑通过 Vertex AI 或 Gemini API 集成，注意仅限付费订阅用户可用。"
-        },
-        {
-          "title": "OpenAI 发布 Model Spec：模型行为公开框架",
-          "category": "观点",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/our-approach-to-the-model-spec",
-          "why_picked": "OpenAI 官方博客详解 Model Spec 设计理念，作为模型行为的公开框架，平衡安全性、用户自由和问责制；回应外界对模型行为透明度的关切",
-          "so_what": "如果你在企业部署 LLM 应用：参考 Model Spec 设计自己的 AI 系统行为准则；将其作为供应商评估维度（是否有明确的行为框架和问责机制）；关注 OpenAI 如何将此框架落实到具体产品策略中。"
-        },
-        {
-          "title": "90% 的 Claude 代码输出流向低星仓库（<2 stars）",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://www.claudescode.dev/?window=since_launch",
-          "why_picked": "HN 135 分/76 评论热议：claudescode.dev 数据显示 90% Claude Code 生成的代码提交到少于 2 星的仓库，反映 AI 编程助手主要服务于个人/小团队项目",
-          "so_what": "如果你在推广 AI 编程工具：个人开发者和小团队是核心用户群，企业级渗透率仍低；评估 Claude Code 在企业环境的 adoption 障碍（安全审查、代码所有权、审计需求）；考虑针对小团队设计轻量级部署方案。"
-        },
-        {
-          "title": "LiteLLM 遭 PyPI 投毒攻击，4.7 万下载受影响",
-          "category": "行业",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Mar/25/litellm-hack/",
-          "why_picked": "Simon Willison 追踪 LiteLLM 包被恶意投毒事件：攻击者在 46 分钟内获得 47,000 次下载，暴露 Python 包供应链安全风险",
-          "so_what": "如果你在生产环境使用 Python AI 库：立即检查 requirements.txt 中 LiteLLM 版本是否在被攻击时间窗口内；启用 pip hash 验证或锁定具体版本号；考虑使用私有 PyPI 镜像 + 人工审核流程；评估 poetry/pipenv 等锁定工具的供应链保护能力。"
-        },
-        {
-          "title": "Health NZ 禁止员工用 ChatGPT 写临床笔记",
-          "category": "行业",
-          "source": "HN",
-          "url": "https://www.rnz.co.nz/news/national/590645/health-nz-staff-told-to-stop-using-chatgpt-to-write-clinical-notes",
-          "why_picked": "新西兰卫生部要求员工停止使用 ChatGPT 撰写临床笔记，HN 57 分讨论；反映医疗行业对 AI 生成内容的合规性和准确性担忧",
-          "so_what": "如果你在做医疗/法律等合规敏感领域的 AI 应用：预先设计内容审核和人工复核流程；记录 AI 生成内容的完整审计日志；评估数据隐私合规（HIPAA/GDPR）；准备应对监管审查的文档和解释框架。"
-        },
-        {
-          "title": "datasette-llm 0.1a1：Datasette 的 LLM 基础插件",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Mar/25/datasette-llm/",
-          "why_picked": "Simon Willison 发布 datasette-llm 0.1a1，为 Datasette 生态提供 LLM 模型接入基础插件，支持其他插件（如 datasette-enrichments-llm）调用",
-          "so_what": "如果你在用 Datasette 做数据探索：安装 datasette-llm 后可直接在数据表中调用 LLM 做文本分析/摘要/分类；参考其 plugin hook 设计（register_llm_purposes）为自己的 Datasette 插件添加 AI 能力；适合快速原型验证场景。"
-        },
-        {
-          "title": "Simon Willison：AI 工程需要「慢下来」",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Mar/25/thoughts-on-slowing-the-fuck-down/",
-          "why_picked": "Simon 引用 Pi agent 框架作者 Mario Zechner 观点：当前 AI Agent 工程过于追求自动化速度，忽视可靠性和可调试性；呼吁行业反思",
-          "so_what": "如果你在设计 Agent 系统：在自动化和可调试性之间找平衡，为关键路径添加人工确认点；建立完善的日志和追踪系统（如 LangSmith）；参考 Mario 的 Pi 框架设计理念，优先保证行为可预测而非执行速度。"
-        },
-        {
-          "title": "AWS Bedrock 多模态视频理解架构详解",
-          "category": "工具",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/unlocking-video-insights-at-scale-with-amazon-bedrock-multimodal-models/",
-          "why_picked": "AWS 官方博客详解三种视频理解架构方案，针对不同用例（实时分析/批量处理/交互式查询）提供设计参考",
-          "so_what": "如果你在做视频分析应用：根据延迟需求选择架构（实时用流式处理，批量用异步任务）；评估 Bedrock 多模态模型对比自建方案的成本效益；参考其分片处理策略优化长视频分析性能。"
-        }
-      ]
-    },
-    {
-      "date": "2026-03-25",
-      "items": [
-        {
-          "title": "OpenAI 宣布关闭 Sora 视频生成服务",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://twitter.com/soraofficialapp/status/2036532795984715896",
-          "why_picked": "OpenAI 正式宣布停止 Sora 视频生成服务，标志 AI 视频生成赛道洗牌；HN 热议链接显示社区对技术路线的反思",
-          "so_what": "如果你在做 AI 视频/多模态应用：关注 Runway/Pika/Luma 等替代方案；评估自建视频生成管线的成本效益；Sora 关闭反映纯生成式视频商业化困难，考虑结合编辑工具而非纯生成。"
-        },
-        {
-          "title": "Anthropic Claude 新增电脑操作能力，AI Agent 实用化加速",
-          "category": "新发布",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8rkwhU9VdtO",
-          "why_picked": "Anthropic 宣布 Claude 可操纵用户电脑完成任务（打开应用、浏览网页、填写表格），已在 macOS 版 Claude Cowork 和 Claude Code 提供；与 OpenClaw 形成直接竞争",
-          "so_what": "如果你在构建 AI Agent 系统：参考 Claude 的权限边界设计（Anthropic 明确提醒风险控制）；评估现有 Agent 的命令执行沙盒机制；考虑引入人工审批层处理敏感操作；对比 OpenClaw/Claude Code 的权限模型差异。"
-        },
-        {
-          "title": "OpenAI 拟融资 100 亿美元，MGX/Coatue/Thrive 参投",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8rlh8Mm7G9H",
-          "why_picked": "OpenAI 据悉正从 MGX、Coatue、Thrive 筹集约 100 亿美元，反映大模型公司持续烧钱态势；结合此前对微软依赖风险披露，融资独立性成关键",
-          "so_what": "如果你在企业 AI 选型：关注大模型供应商财务独立性，避免供应商资金链风险影响服务；评估多云部署策略降低单一供应商依赖；长期看，融资能力强的公司更可能持续投入模型迭代。"
-        },
-        {
-          "title": "ServiceNow 发布 EVA：语音 Agent 评估新框架",
-          "category": "工具",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/ServiceNow-AI/eva",
-          "why_picked": "ServiceNow 在 HuggingFace 博客发布 EVA（Evaluating Voice Agents）框架，填补语音 Agent 评估空白；提供标准化 benchmark 和评估指标",
-          "so_what": "如果你在开发语音 Agent 或客服系统：立即试用 EVA 框架评估现有语音 pipeline；参考其评估维度（意图识别准确率、多轮对话连贯性、错误恢复能力）；将 EVA 集成到 CI/CD 流程做回归测试。"
-        },
-        {
-          "title": "Gap × Google Gemini：AI 平台内直接购物结账",
-          "category": "趋势",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8rlLlLCfJAw",
-          "why_picked": "Gap 与谷歌合作，Gemini 允许用户直接在 AI 平台内购买 Gap 产品，无需跳转网站，通过 Google Pay 结账；AI 从信息助手转向交易入口",
-          "so_what": "如果你在做 AI 电商/导购应用：评估 AI 内嵌交易闭环的用户体验优势；关注 Google Pay/Stripe 等支付集成方案；警惕平台抽成风险；考虑 AI 推荐转化率与传统电商漏斗的差异。"
-        },
-        {
-          "title": "AWS SageMaker 推出 GPU 容量预留训练计划",
-          "category": "工具",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/deploy-sagemaker-ai-inference-endpoints-with-set-gpu-capacity-using-training-plans/",
-          "why_picked": "AWS 官方博客详解如何用训练计划预留 p 系列 GPU 容量部署推理端点，解决 GPU 资源不稳定问题；适合企业级 AI 服务 SLA 保障",
-          "so_what": "如果你在 AWS 部署 AI 推理服务：评估训练计划预留 GPU 的成本效益（对比按需实例）；为生产端点设置容量预留避免高峰期资源竞争；结合 Spot 实例做开发/测试环境降低成本。"
-        },
-        {
-          "title": "Simon Willison：AI 完全控制电脑是愚蠢的",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Mar/24/christopher-mims/#atom-everything",
-          "why_picked": "Simon 引用 Christopher Mims 观点：给 AI 完全控制电脑看起来会在 retrospect 中显得愚蠢；对当前 AI Agent 热潮提出冷静反思",
-          "so_what": "如果你在设计 Agent 权限系统：参考最小权限原则而非全权委托；为敏感操作（文件删除、网络请求、支付）设置人工确认层；记录 Agent 所有操作日志便于审计；考虑时间/范围限制的临时授权机制。"
-        },
-        {
-          "title": "Simon Willison：Streaming Experts 让大 MoE 模型跑在小显存上",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Mar/24/streaming-experts/#atom-everything",
-          "why_picked": "Simon 详解 Dan Woods 的 streaming experts 实验：通过流式加载 MoE 模型的 expert 层，让显存不足的硬件也能跑大模型；实用技巧",
-          "so_what": "如果你在本地部署大 MoE 模型：参考其流式加载策略（按需 swap expert 层到 GPU）；评估 vLLM/TensorRT-LLM 的类似功能；权衡推理延迟 vs 显存占用；适合资源受限的边缘部署场景。"
         }
       ]
     }
