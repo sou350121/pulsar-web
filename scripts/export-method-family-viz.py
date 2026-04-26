@@ -135,71 +135,126 @@ def build_svg(series, last_date, total, days):
     fams = sorted(series.items(), key=lambda x: -x[1]['count_7d'])
     n = len(fams)
 
+    # Counts for executive summary
+    n_accel = sum(1 for _, f in fams if f['accel_7d'] >= 1.25)
+    n_decl = sum(1 for _, f in fams if f['accel_7d'] <= 0.80)
+    n_stable = n - n_accel - n_decl
+
     # Dimensions
-    W = 960
-    row_h = 34
-    header_h = 88
-    footer_h = 62
+    W = 980
+    row_h = 36
+    title_h = 66
+    summary_h = 56
+    col_h = 28
+    header_h = title_h + summary_h + col_h  # 150
+    footer_h = 76
     H = header_h + n * row_h + footer_h
 
-    # Column positions (left-aligned x)
-    col_name_x = 24
-    col_bar_x = 180
-    col_bar_w = 200
-    col_7d_x = 410
-    col_14d_x = 456
-    col_30d_x = 502
-    col_a7_x = 560
-    col_a14_x = 620
-    col_a30_x = 680
-    col_spark_x = 740
-    col_spark_w = 150
-    col_status_x = 912
+    # Column positions
+    col_rank_x = 28
+    col_name_x = 70
+    col_bar_x = 224
+    col_bar_w = 188
+    col_7d_x = 442
+    col_14d_x = 490
+    col_30d_x = 538
+    col_a7_x = 600
+    col_a14_x = 660
+    col_a30_x = 720
+    col_spark_x = 770
+    col_spark_w = 162
+    col_status_x = 950
 
-    # Bar scaling: width by count_7d proportion to max
+    # Bar scaling
     max_7d = max((f[1]['count_7d'] for f in fams), default=1) or 1
 
     svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" '
            f'font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" '
            f'style="background:{BG}">']
 
-    # Background + subtle gradient sheen
+    # Defs: gradients for sheen, bars, and subtle sparkline glow
     svg.append(f'<defs>'
                f'<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">'
                f'<stop offset="0%" stop-color="{BG}"/>'
-               f'<stop offset="100%" stop-color="#141822"/>'
+               f'<stop offset="100%" stop-color="#101521"/>'
                f'</linearGradient>'
                f'<linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">'
-               f'<stop offset="0%" stop-color="{AMBER}" stop-opacity="0.8"/>'
-               f'<stop offset="100%" stop-color="{AMBER_DIM}" stop-opacity="0.4"/>'
+               f'<stop offset="0%" stop-color="{AMBER}" stop-opacity="0.9"/>'
+               f'<stop offset="100%" stop-color="{AMBER_DIM}" stop-opacity="0.35"/>'
+               f'</linearGradient>'
+               f'<linearGradient id="title-glow" x1="0" y1="0" x2="0" y2="1">'
+               f'<stop offset="0%" stop-color="{AMBER}" stop-opacity="0"/>'
+               f'<stop offset="100%" stop-color="{AMBER}" stop-opacity="0.05"/>'
                f'</linearGradient>'
                f'</defs>')
     svg.append(f'<rect x="0" y="0" width="{W}" height="{H}" fill="url(#bg)"/>')
+    # Subtle title glow band
+    svg.append(f'<rect x="0" y="0" width="{W}" height="{title_h}" fill="url(#title-glow)"/>')
 
-    # Header
-    svg.append(f'<g>')
-    # Title
-    svg.append(f'<text x="{col_name_x}" y="36" fill="{AMBER}" font-size="18" font-weight="700" '
-               f'letter-spacing="0.12em">METHOD FAMILY TRENDS</text>')
-    # Subtitle
-    svg.append(f'<text x="{col_name_x}" y="58" fill="{TEXT_DIM}" font-size="11" '
-               f'letter-spacing="0.05em">VLA RESEARCH MOMENTUM · PULSAR 照見</text>')
+    # === HEADER ===
+    # Vertical accent bar to left of title
+    svg.append(f'<rect x="0" y="14" width="4" height="40" fill="{AMBER}"/>')
+
+    # Title group
+    svg.append(f'<text x="{col_rank_x}" y="36" fill="{AMBER}" font-size="20" font-weight="700" '
+               f'letter-spacing="0.14em">METHOD FAMILY TRENDS</text>')
+    svg.append(f'<text x="{col_rank_x}" y="55" fill="{TEXT_DIM}" font-size="11" '
+               f'letter-spacing="0.06em">VLA RESEARCH MOMENTUM · PULSAR 照見 · 每日自動更新</text>')
 
     # Right side stats chip
-    chip_x = W - 24
-    svg.append(f'<text x="{chip_x}" y="30" fill="{CYAN}" font-size="11" text-anchor="end" '
-               f'letter-spacing="0.08em">DATA · {last_date}</text>')
+    chip_x = W - 28
+    svg.append(f'<text x="{chip_x}" y="28" fill="{CYAN}" font-size="11" text-anchor="end" '
+               f'letter-spacing="0.1em" font-weight="600">DATA · {last_date}</text>')
     svg.append(f'<text x="{chip_x}" y="46" fill="{TEXT_DIM}" font-size="10" text-anchor="end">'
                f'{total} papers · {days}d window · {n} families</text>')
-    svg.append(f'<text x="{chip_x}" y="62" fill="{TEXT_SUBTLE}" font-size="9" text-anchor="end">'
-               f'sou350121.github.io/pulsar-web</text>')
 
-    # Divider
-    svg.append(f'<line x1="{col_name_x}" y1="74" x2="{W-24}" y2="74" stroke="{GRID}" stroke-width="1"/>')
+    # Title divider
+    svg.append(f'<line x1="0" y1="{title_h}" x2="{W}" y2="{title_h}" stroke="{GRID}" stroke-width="1"/>')
 
-    # Column headers — numeric cols right-aligned to same x as numbers below
-    hy = header_h - 6
+    # === EXECUTIVE SUMMARY BAND ===
+    sy_top = title_h
+    sy_mid = title_h + summary_h // 2 + 4
+
+    # Big momentum chips
+    chips = [
+        ('▲', n_accel, GREEN, 'ACCELERATING'),
+        ('◆', n_stable, NEUTRAL, 'STABLE'),
+        ('▼', n_decl, RED, 'DECLINING'),
+    ]
+    chip_w = 200
+    chip_pad = 18
+    cx = col_rank_x
+    for glyph, count, col, label in chips:
+        svg.append(f'<g>')
+        # Subtle chip background
+        svg.append(f'<rect x="{cx}" y="{sy_top + 10}" width="{chip_w}" height="{summary_h - 18}" '
+                   f'fill="{col}" opacity="0.08" rx="3"/>')
+        # Glyph + count
+        svg.append(f'<text x="{cx + 16}" y="{sy_mid + 4}" fill="{col}" font-size="22" '
+                   f'font-weight="700">{glyph}</text>')
+        svg.append(f'<text x="{cx + 50}" y="{sy_mid + 5}" fill="{col}" font-size="22" '
+                   f'font-weight="700">{count}</text>')
+        # Label
+        svg.append(f'<text x="{cx + 96}" y="{sy_mid + 5}" fill="{TEXT_DIM}" font-size="10" '
+                   f'letter-spacing="0.1em">{label}</text>')
+        svg.append(f'</g>')
+        cx += chip_w + chip_pad
+
+    # Right-side: total coverage
+    total_coverage = sum(f['count_7d'] for _, f in fams)
+    svg.append(f'<text x="{chip_x}" y="{sy_mid - 4}" fill="{TEXT}" font-size="22" '
+               f'text-anchor="end" font-weight="700">{total_coverage}</text>')
+    svg.append(f'<text x="{chip_x}" y="{sy_mid + 14}" fill="{TEXT_SUBTLE}" font-size="9" '
+               f'text-anchor="end" letter-spacing="0.1em">PAPERS / 7D</text>')
+
+    # Summary divider
+    svg.append(f'<line x1="0" y1="{title_h + summary_h}" x2="{W}" y2="{title_h + summary_h}" '
+               f'stroke="{GRID}" stroke-width="1"/>')
+
+    # === COLUMN HEADERS ===
+    hy = header_h - 8
     header_labels = [
+        (col_rank_x - 4, '#', 'start'),
         (col_name_x, 'FAMILY', 'start'),
         (col_bar_x, '7d VOLUME', 'start'),
         (col_7d_x + 36, '7d', 'end'),
@@ -208,58 +263,72 @@ def build_svg(series, last_date, total, days):
         (col_a7_x + 25, 'Δ7d', 'middle'),
         (col_a14_x + 25, 'Δ14d', 'middle'),
         (col_a30_x + 25, 'Δ30d', 'middle'),
-        (col_spark_x + col_spark_w // 2, 'TREND', 'middle'),
+        (col_spark_x + col_spark_w // 2, 'TREND · 30D', 'middle'),
         (col_status_x, 'ST', 'middle'),
     ]
     for x, t, anchor in header_labels:
         svg.append(f'<text x="{x}" y="{hy}" fill="{TEXT_SUBTLE}" font-size="9" '
-                   f'letter-spacing="0.1em" text-anchor="{anchor}">{t}</text>')
-    svg.append(f'</g>')
+                   f'letter-spacing="0.12em" font-weight="600" text-anchor="{anchor}">{t}</text>')
+    svg.append(f'<line x1="0" y1="{header_h - 1}" x2="{W}" y2="{header_h - 1}" '
+               f'stroke="{GRID}" stroke-width="1"/>')
 
-    # Rows
+    # === ROWS ===
+    spark_h = 22  # sparkline height
     for i, (fam_name, fam) in enumerate(fams):
         y = header_h + i * row_h
         row_center_y = y + row_h // 2 + 4
 
-        # Subtle row highlight for accelerating / declining
+        # Subtle row highlight + alternating zebra
         if fam['accel_7d'] >= 1.25:
-            # Faint green tint for accelerating rows
-            svg.append(f'<rect x="{col_name_x - 8}" y="{y}" width="{W - 40}" height="{row_h}" '
+            svg.append(f'<rect x="0" y="{y}" width="{W}" height="{row_h}" '
                        f'fill="{GREEN}" opacity="0.06"/>')
-            svg.append(f'<rect x="{col_name_x - 8}" y="{y}" width="3" height="{row_h}" '
-                       f'fill="{GREEN}" opacity="0.6"/>')
+            svg.append(f'<rect x="0" y="{y}" width="3" height="{row_h}" '
+                       f'fill="{GREEN}" opacity="0.7"/>')
         elif fam['accel_7d'] <= 0.80:
-            svg.append(f'<rect x="{col_name_x - 8}" y="{y}" width="{W - 40}" height="{row_h}" '
+            svg.append(f'<rect x="0" y="{y}" width="{W}" height="{row_h}" '
                        f'fill="{RED}" opacity="0.04"/>')
-            svg.append(f'<rect x="{col_name_x - 8}" y="{y}" width="3" height="{row_h}" '
-                       f'fill="{RED}" opacity="0.5"/>')
+            svg.append(f'<rect x="0" y="{y}" width="3" height="{row_h}" '
+                       f'fill="{RED}" opacity="0.55"/>')
+        elif i % 2 == 1:
+            # zebra striping for stable rows
+            svg.append(f'<rect x="0" y="{y}" width="{W}" height="{row_h}" '
+                       f'fill="{TEXT_SUBTLE}" opacity="0.025"/>')
 
-        # Row separator (subtle)
+        # Hairline row separator
         if i > 0:
-            svg.append(f'<line x1="{col_name_x}" y1="{y}" x2="{W-24}" y2="{y}" '
-                       f'stroke="{GRID}" stroke-width="0.5"/>')
+            svg.append(f'<line x1="{col_rank_x - 4}" y1="{y}" x2="{W-24}" y2="{y}" '
+                       f'stroke="{GRID}" stroke-width="0.4" opacity="0.4"/>')
 
-        # Family name
+        # Rank number (mono, dim)
+        rank = i + 1
+        svg.append(f'<text x="{col_rank_x}" y="{row_center_y}" fill="{TEXT_SUBTLE}" font-size="11" '
+                   f'font-weight="600" letter-spacing="0.05em">{rank:02d}</text>')
+
+        # Family name (slightly larger, primary)
         display_name = fam_name.replace('_', ' ')
-        svg.append(f'<text x="{col_name_x}" y="{row_center_y}" fill="{TEXT}" font-size="12">'
-                   f'{display_name}</text>')
+        svg.append(f'<text x="{col_name_x}" y="{row_center_y}" fill="{TEXT}" font-size="13" '
+                   f'font-weight="500">{display_name}</text>')
 
-        # Volume bar
+        # Volume bar with rounded corners + frame
         bar_w = (fam['count_7d'] / max_7d) * col_bar_w
-        svg.append(f'<rect x="{col_bar_x}" y="{y + row_h//2 - 8}" width="{bar_w:.1f}" height="16" '
+        bar_y = y + row_h // 2 - 7
+        # Frame first
+        svg.append(f'<rect x="{col_bar_x}" y="{bar_y}" width="{col_bar_w}" height="14" '
+                   f'fill="{PANEL}" stroke="{GRID}" stroke-width="0.5" rx="2"/>')
+        # Filled bar
+        svg.append(f'<rect x="{col_bar_x}" y="{bar_y}" width="{bar_w:.1f}" height="14" '
                    f'fill="url(#bar)" rx="2"/>')
-        # Bar frame
-        svg.append(f'<rect x="{col_bar_x}" y="{y + row_h//2 - 8}" width="{col_bar_w}" height="16" '
-                   f'fill="none" stroke="{GRID}" stroke-width="0.5" rx="2"/>')
 
-        # Numbers (right-aligned within their columns)
-        for x, val in [(col_7d_x + 36, fam['count_7d']),
-                       (col_14d_x + 36, fam['count_14d']),
+        # Numbers (right-aligned)
+        # primary 7d slightly bolder
+        svg.append(f'<text x="{col_7d_x + 36}" y="{row_center_y}" fill="{TEXT}" font-size="13" '
+                   f'text-anchor="end" font-weight="600">{fam["count_7d"]}</text>')
+        for x, val in [(col_14d_x + 36, fam['count_14d']),
                        (col_30d_x + 36, fam['count_30d'])]:
-            svg.append(f'<text x="{x}" y="{row_center_y}" fill="{TEXT}" font-size="12" '
+            svg.append(f'<text x="{x}" y="{row_center_y}" fill="{TEXT_DIM}" font-size="12" '
                        f'text-anchor="end">{val}</text>')
 
-        # Accel pills
+        # Accel pills (color by intensity)
         for x, accel_v in [(col_a7_x + 25, fam['accel_7d']),
                            (col_a14_x + 25, fam['accel_14d']),
                            (col_a30_x + 25, fam['accel_30d'])]:
@@ -268,50 +337,72 @@ def build_svg(series, last_date, total, days):
             svg.append(f'<text x="{x}" y="{row_center_y}" fill="{col}" font-size="11" '
                        f'text-anchor="middle" font-weight="600">{txt}</text>')
 
-        # Sparkline chart area
+        # Sparkline (with baseline)
         if fam['counts']:
             counts = fam['counts']
             max_c = max(counts) or 1
+            spark_y_base = y + row_h // 2 + spark_h // 2
+            spark_y_top = y + row_h // 2 - spark_h // 2
+
+            # Subtle baseline
+            svg.append(f'<line x1="{col_spark_x}" y1="{spark_y_base + 0.5}" '
+                       f'x2="{col_spark_x + col_spark_w}" y2="{spark_y_base + 0.5}" '
+                       f'stroke="{GRID}" stroke-width="0.5"/>')
+
             bar_w_inner = col_spark_w / max(len(counts), 1)
             for j, c in enumerate(counts):
                 bx = col_spark_x + j * bar_w_inner
-                bh = (c / max_c) * 20 if max_c > 0 else 0
-                by = y + row_h // 2 + 10 - bh
-                # Latest bar is amber, others cyan fade
+                bh = (c / max_c) * spark_h if max_c > 0 else 0
+                by = spark_y_base - bh
                 is_latest = (j == len(counts) - 1)
                 fill = AMBER if is_latest else CYAN
-                op = 0.85 if is_latest else 0.4 + 0.35 * (j / len(counts))
-                svg.append(f'<rect x="{bx:.1f}" y="{by:.1f}" width="{max(bar_w_inner-1,1):.1f}" '
-                           f'height="{max(bh, 1):.1f}" fill="{fill}" opacity="{op:.2f}"/>')
+                op = 0.95 if is_latest else 0.30 + 0.40 * (j / len(counts))
+                svg.append(f'<rect x="{bx:.1f}" y="{by:.1f}" '
+                           f'width="{max(bar_w_inner-1,1):.1f}" '
+                           f'height="{max(bh, 0.5):.1f}" fill="{fill}" '
+                           f'opacity="{op:.2f}" rx="0.5"/>')
 
         # Status glyph
         gc = status_color(fam['accel_7d'])
-        svg.append(f'<text x="{col_status_x}" y="{row_center_y}" fill="{gc}" font-size="14" '
+        svg.append(f'<text x="{col_status_x}" y="{row_center_y + 1}" fill="{gc}" font-size="15" '
                    f'text-anchor="middle" font-weight="700">{status_glyph(fam["accel_7d"])}</text>')
 
-    # Footer
-    fy = H - footer_h + 18
-    svg.append(f'<line x1="{col_name_x}" y1="{H - footer_h + 6}" x2="{W-24}" y2="{H - footer_h + 6}" '
-               f'stroke="{GRID}" stroke-width="1"/>')
-    # Legend
+    # === FOOTER ===
+    fy_top = H - footer_h
+    svg.append(f'<line x1="0" y1="{fy_top}" x2="{W}" y2="{fy_top}" stroke="{GRID}" stroke-width="1"/>')
+
+    # Legend (line 1)
+    fy = fy_top + 24
     legend_items = [
-        (GREEN, '▲', '加速（≥1.25x）'),
-        (NEUTRAL, '◆', '稳定（0.80-1.25x）'),
-        (RED, '▼', '减速（≤0.80x）'),
+        (GREEN, '▲', '加速 ≥ 1.25×'),
+        (NEUTRAL, '◆', '稳定 0.80-1.25×'),
+        (RED, '▼', '减速 ≤ 0.80×'),
     ]
-    lx = col_name_x
+    lx = col_rank_x
     for col, glyph, text in legend_items:
-        svg.append(f'<text x="{lx}" y="{fy}" fill="{col}" font-size="12" font-weight="700">{glyph}</text>')
-        svg.append(f'<text x="{lx + 18}" y="{fy}" fill="{TEXT_DIM}" font-size="10">{text}</text>')
-        lx += 170
-    # Build credit
-    svg.append(f'<text x="{W-24}" y="{fy}" fill="{TEXT_SUBTLE}" font-size="9" text-anchor="end">'
-               f'Generated {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")} · '
-               f'CC BY 4.0</text>')
-    # Source note
-    svg.append(f'<text x="{col_name_x}" y="{fy + 20}" fill="{TEXT_SUBTLE}" font-size="9">'
-               f'Δ = ratio of recent-window daily-avg / prior-window daily-avg '
-               f'(&gt;1 = acceleration, &lt;1 = deceleration)</text>')
+        svg.append(f'<text x="{lx}" y="{fy}" fill="{col}" font-size="13" '
+                   f'font-weight="700">{glyph}</text>')
+        svg.append(f'<text x="{lx + 20}" y="{fy}" fill="{TEXT_DIM}" font-size="10">{text}</text>')
+        lx += 158
+
+    # Right side credit
+    svg.append(f'<text x="{W-28}" y="{fy}" fill="{TEXT_SUBTLE}" font-size="9" '
+               f'text-anchor="end" letter-spacing="0.05em">'
+               f'Generated {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}'
+               f' · CC BY 4.0</text>')
+
+    # Methodology (line 2)
+    fy2 = fy_top + 46
+    svg.append(f'<text x="{col_rank_x}" y="{fy2}" fill="{TEXT_SUBTLE}" font-size="9" '
+               f'letter-spacing="0.04em">'
+               f'Δ = recent-window daily-avg / prior-window daily-avg · TREND chart shows '
+               f'rolling 7d count over 30d · sparkline latest = amber'
+               f'</text>')
+
+    # Bottom-right URL chip
+    svg.append(f'<text x="{W-28}" y="{fy2}" fill="{CYAN}" font-size="9" '
+               f'text-anchor="end" letter-spacing="0.06em" font-weight="600">'
+               f'sou350121.github.io/pulsar-web/vla-deepdive</text>')
 
     svg.append('</svg>')
     return '\n'.join(svg)
