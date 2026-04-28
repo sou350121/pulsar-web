@@ -105,10 +105,19 @@ export const GET: APIRoute = async () => {
         if (!meta) continue;
         const link = reportUrl(meta.kind, meta.date);
         let firstPara = '';
+        let raw = '';
         try {
-          firstPara = firstMeaningfulPara(readDataFile(f));
+          raw = readDataFile(f);
+          firstPara = firstMeaningfulPara(raw);
         } catch (e) {
           console.warn(`[RSS weekly] could not read ${f}:`, (e as Error).message);
+        }
+        // Defense: skip stub/empty weekly files (pipeline LLM-fail produces
+        // ~50B placeholder). Threshold 200B excludes those without losing
+        // genuine terse reports (smallest valid is 2079B).
+        if (raw.trim().length < 200) {
+          console.warn(`[RSS weekly] skipping thin file (${raw.length}B): ${f}`);
+          continue;
         }
         entries.push({ filename: f, ...meta, link, firstPara });
       }

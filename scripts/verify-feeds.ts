@@ -218,7 +218,23 @@ function checkRecentRatingHealth(): string[] {
     );
   }
 
-  // Check 3: consecutive ⚡-zero days at the end (recent drift signal)
+  // Check 3: weekly/biweekly stub files (pipeline LLM-fail produces ~50B placeholder)
+  // Scan recent 14 weekly + biweekly files; warn if any < 200 bytes
+  try {
+    const allMd = fs
+      .readdirSync(dataDir)
+      .filter((f) => /^_(?:ai_)?(?:weekly|biweekly)/.test(f) && f.endsWith('.md'))
+      .sort()
+      .slice(-14);
+    for (const f of allMd) {
+      const stat = fs.statSync(path.join(dataDir, f));
+      if (stat.size < 200) {
+        warnings.push(`${f}: only ${stat.size}B → pipeline stub (LLM call likely failed)`);
+      }
+    }
+  } catch { /* skip */ }
+
+  // Check 4: consecutive ⚡-zero days at the end (recent drift signal)
   let consecutiveZero = 0;
   for (let i = recent14.length - 1; i >= 0; i--) {
     try {

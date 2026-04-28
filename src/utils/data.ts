@@ -749,7 +749,13 @@ export function loadWeeklyReports(
   const all = [
     ...vlaFiles.map(f => toEntry(f, 'vla')),
     ...aiFiles.map(f => toEntry(f, 'ai')),
-  ].sort((a, b) => b.date.localeCompare(a.date));
+  ]
+    // Defense: skip empty / stub weekly files. Pipeline sometimes writes
+    // a 50-byte placeholder when LLM call fails. Threshold 200B excludes
+    // those without losing genuinely terse weekly reports (smallest valid
+    // _ai_weekly_2026-03-27.md is 2079 B).
+    .filter(e => (e.content || '').trim().length >= 200)
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   return all.slice(0, n);
 }
