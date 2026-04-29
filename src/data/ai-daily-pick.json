@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-04-29",
+      "items": [
+        {
+          "title": "OpenAI 与微软解除独家绑定，七年合作进入新阶段",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/next-phase-of-microsoft-partnership/",
+          "why_picked": "微软与 OpenAI 联合宣布修订合作协议：云独家限制解除、IP 授权从独家变非独家、收入分成重设上限。七年强绑定关系正式松绑，AI 行业格局重塑。",
+          "so_what": "如果你在选择云模型供应商：OpenAI 模型不再绑定 Azure，AWS Bedrock 也已上线 GPT 系列。可以重新评估多云策略，不再被单一云锁定。"
+        },
+        {
+          "title": "OpenAI 最新模型与 Codex 编程助手登陆 Amazon Bedrock",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/bedrock/openai/",
+          "why_picked": "OpenAI 在 AWS 上正式推出 GPT 系列模型和 Codex 编程助手，同时推出 Bedrock Managed Agents 服务，打破微软三年独占。",
+          "so_what": "如果你在用 AWS 构建 Agent 管线：现在可以直接在 Bedrock 上调用 GPT 系列 + 使用 Managed Agents 托管代理，无需跨云部署。"
+        },
+        {
+          "title": "小米 MiMo-V2.5-Pro 开源：1T 参数 MoE 超越 DeepSeek-V4-Pro",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://mimo.xiaomi.com/index#blog",
+          "why_picked": "罗福莉团队发布 MiMo-V2.5-Pro（1.02T 参数/42B 激活），MIT 协议开源，1M 上下文，首日适配 7 家芯片 + vLLM/SGLang。基准超越 DeepSeek-V4-Pro 和 Kimi K2.6。",
+          "so_what": "如果你在做开源模型选型：MiMo-V2.5-Pro 是近期最强的中文 MoE 开源模型之一，MIT 协议无商用限制，1M 上下文适合长文档 Agent 场景。"
+        },
+        {
+          "title": "Anthropic 成为 Blender 开发基金企业级赞助方",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.blender.org/press/anthropic-joins-the-blender-development-fund-as-corporate-patron/",
+          "why_picked": "Anthropic 以 Patron 级别加入 Blender 开发基金，支持 Python API 等核心开发。HN 237 分 181 评论，社区对 AI 公司赞助开源 3D 工具反应热烈。",
+          "so_what": "如果你在用 Blender 做 3D Agent 训练数据生成：Anthropic 的赞助意味着 Blender Python API 生态会持续改善，对 3D 多模态 Agent 的数据管线有利。"
+        },
+        {
+          "title": "NVIDIA Nemotron 3 Nano Omni 上线 Together AI：3B 激活参数的多模态 Agent 模型",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/together-ai-brings-nvidia-nemotron-3-nano-omni-to-developers-on-day-0",
+          "why_picked": "单一模型统一推理视频/图像/音频/文本，混合 Mamba-Transformer MoE 架构，30B 总参数仅激活 ~3B，专为 Agent 工作负载优化。",
+          "so_what": "如果你在做多模态 Agent：Nemotron 3 Nano Omni 用 3B 激活参数实现跨模态推理，比多模型管线更高效，适合部署在资源受限的 Agent 循环中。"
+        },
+        {
+          "title": "pip 26.1 正式发布：支持 pylock.toml 锁文件和依赖冷却期",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Apr/28/pip-261/#atom-everything",
+          "why_picked": "pip 首次支持 lockfile（pip lock）和依赖冷却期（--uploaded-prior-to P4D 防供应链攻击），Python 生态工具链的重要里程碑。",
+          "so_what": "如果你在管理 Python Agent 项目的依赖：pip lock 可生成确定性 pylock.toml，--uploaded-prior-to 可避免刚发布的恶意包，建议升级 pip 并纳入 CI 流程。"
+        }
+      ]
+    },
+    {
       "date": "2026-04-28",
       "items": [
         {
@@ -1326,59 +1379,6 @@
           "url": "https://simonwillison.net/2026/Mar/29/python-vulnerability-lookup/#atom-everything",
           "why_picked": "Simon Willison 用 Claude Code 构建：基于 OSV.dev API 的 Python 依赖漏洞扫描工具，粘贴 requirements.txt 即可查询",
           "so_what": "如果你在生产环境部署 AI 应用：将此类工具集成到 CI/CD 流程，自动扫描依赖漏洞；OSV.dev 覆盖主流 CVE 数据库；考虑锁定具体版本号而非范围依赖，减少攻击面。"
-        }
-      ]
-    },
-    {
-      "date": "2026-03-29",
-      "items": [
-        {
-          "title": "Domscribe：给 AI 编程 Agent 装上「前端透视眼」",
-          "category": "工具",
-          "source": "Product Hunt",
-          "url": "https://www.producthunt.com/products/domscribe",
-          "why_picked": "Product Hunt 新上架：让 AI 编程 Agent 能看见运行中的前端界面，解决 Agent 无法调试动态 UI 的痛点",
-          "so_what": "如果你在用 AI Agent 开发前端：Domscribe 提供运行时 DOM 状态可视化，Agent 可定位动态渲染问题；对比传统截图方案，它能捕获状态变化序列；适合调试 React/Vue 等框架的异步渲染问题。"
-        },
-        {
-          "title": "Lexaclaw：基于 OpenClaw 的初创法律合规 Agent",
-          "category": "新发布",
-          "source": "Product Hunt",
-          "url": "https://www.producthunt.com/products/lexaclaw",
-          "why_picked": "Product Hunt 新发布：将 OpenClaw 能力应用于初创公司法律合规场景，自动化合规检查与文档生成",
-          "so_what": "如果你在构建垂直领域 Agent：参考 Lexaclaw 的「通用 Agent 框架 + 领域知识」模式；法律合规模糊边界需人工复核层；评估 OpenClaw 在敏感场景的权限控制策略。"
-        },
-        {
-          "title": "Knuth「Claude Cycles」问题被 AI + 证明助手完全解决",
-          "category": "观点",
-          "source": "Twitter / HN",
-          "url": "https://twitter.com/BoWang87/status/2037648937453232504",
-          "why_picked": "计算机科学传奇人物 Knuth 提出的「Claude Cycles」问题，现被 LLM + 证明助手协作完全解决，标志 AI 辅助形式化验证新里程碑",
-          "so_what": "如果你关注 AI + 形式化方法：LLM 生成证明思路 + 证明助手验证的组合模式已能解决开放问题；参考其人机协作流程设计；形式化验证可能是 AI 编程的下一个突破点。"
-        },
-        {
-          "title": "Matt Webb：Agent 会把问题「磨成粉末」",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Mar/28/matt-webb/#atom-everything",
-          "why_picked": "Matt Webb 洞察：给 Agent 一个问题和 while 循环，长期来看它会解决问题——即使要烧掉一万亿 token 或重写整个系统",
-          "so_what": "如果你在设计 Agent 系统：理解 Agent 的「暴力求解」倾向，设置合理的资源上限和终止条件；利用这种特性处理复杂问题，但需监控成本；考虑引入「早停」机制避免过度优化。"
-        },
-        {
-          "title": "AI 的真正风险：让「懒惰」看起来像生产力",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=47555081",
-          "why_picked": "HN 热议：AI 不会让我们变懒，但会让「懒惰」看起来像生产力——工程师学习习惯正在被 LLM 快速搜索和摘要改变",
-          "so_what": "如果你在用 AI 辅助学习：警惕「摘要代替原文」的陷阱，关键概念仍需深度阅读；建立 AI 辅助学习的边界（如：AI 生成大纲→人工精读核心章节）；定期做无 AI 的知识巩固练习。"
-        },
-        {
-          "title": "Glance：给 Claude Code 用的真实浏览器",
-          "category": "工具",
-          "source": "Product Hunt",
-          "url": "https://www.producthunt.com/products/glance-give-claude-code-a-real-browser",
-          "why_picked": "Product Hunt 新上架：为 Claude Code 提供真实浏览器环境，支持测试、截图、自动化操作",
-          "so_what": "如果你在用 Claude Code 做前端开发：Glance 提供真实 DOM 环境而非模拟，Agent 可执行端到端测试；对比 Playwright 等方案，它针对 Agent 交互优化；注意浏览器沙盒安全配置。"
         }
       ]
     }
