@@ -1,6 +1,162 @@
 {
   "reported_papers": [
     {
+      "title": "Lifting Embodied World Models for Planning and Control",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2604.26182",
+      "source": "cs.AI",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2604.26182v1 Announce Type: cross Abstract: World models of embodied agents predict future observations conditioned on an action taken by the agent. For complex embodiments, action spaces are high-dimensional and difficult to specify: for example, precisely controlling a human agent requires specifying the motion of each joint. This makes the world model hard to control and expensive to plan with as search-based methods like CEM scale poorly with action dimensionality. To address this issu",
+      "rating": "🔧",
+      "reason": "提出提升具身世界模型以支持高层规划与控制。解决高维动作空间建模难题，为VLA提供分层控制新思路。",
+      "affiliation": "[Berkeley|Darrell]"
+    },
+    {
+      "title": "SD2AIL: Adversarial Imitation Learning from Synthetic Demonstrations via Diffusion Models",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2512.18583",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2512.18583v2 Announce Type: replace-cross Abstract: Adversarial Imitation Learning (AIL) is a dominant framework in imitation learning that infers rewards from expert demonstrations to guide policy optimization. Although providing more expert demonstrations typically leads to improved performance and greater stability, collecting such demonstrations can be challenging in certain scenarios. Inspired by the success of diffusion models in data generation, we propose SD2AIL, which utilizes syn",
+      "rating": "📖",
+      "reason": "利用扩散模型从合成数据中进行对抗模仿学习。方法通用但缺乏针对VLA特性的专门验证，相关性中等。",
+      "affiliation": ""
+    },
+    {
+      "title": "EvolvingAgent: Curriculum Self-evolving Agent with Continual World Model for Long-Horizon Tasks",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2502.05907",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2502.05907v3 Announce Type: replace Abstract: Completing Long-Horizon (LH) tasks in open-ended worlds is an important yet difficult problem for embodied agents. Existing approaches suffer from two key challenges: (1) they heavily rely on experiences obtained from human-created data or curricula, failing to autonomously update and select multimodal experiences, and (2) they may encounter catastrophic forgetting issues when faced with new tasks, failing to autonomously update world knowledge",
+      "rating": "🔧",
+      "reason": "结合课程学习与持续世界模型实现代理自进化。解决长程任务依赖人工数据的问题，提供Agentic VLA新范式。",
+      "affiliation": ""
+    },
+    {
+      "title": "World2VLM: Distilling World Model Imagination into VLMs for Dynamic Spatial Reasoning",
+      "date": "2026-05-01",
+      "url": "https://tldr.takara.ai/p/2604.26934",
+      "source": "hf-papers",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "Vision-language models (VLMs) have shown strong performance on static visual understanding, yet they still struggle with dynamic spatial reasoning that requires imagining how scenes evolve under egocentric motion. Recent efforts address this limitation either by scaling spatial supervision with synthetic data or by coupling VLMs with world models at inference time. However, the former often lacks explicit modeling of motion-conditioned state transitions, while the latter incurs substantial compu",
+      "rating": "🔧",
+      "reason": "将世界模型想象力蒸馏至VLM以增强动态空间推理。提升VLM对时序变化的理解，直接增强VLA感知模块。",
+      "affiliation": ""
+    },
+    {
+      "title": "Multiple Consistent 2D-3D Mappings for Robust Zero-Shot 3D Visual Grounding",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2604.26261",
+      "source": "cs.CV",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2604.26261v1 Announce Type: new Abstract: Zero-shot 3D Visual Grounding (3DVG) is a critical capability for open-world embodied AI. However, existing methods are fundamentally bottlenecked by the poor quality of open-vocabulary 3D proposals, suffering from inaccurate categories and imprecise geometries, as well as the spatial redundancy of exhaustive multi-view reasoning. To address these challenges, we propose MCM-VG, a novel framework that achieves robust zero-shot 3DVG by explicitly est",
+      "rating": "📖",
+      "reason": "改进零样本3D视觉定位的映射一致性。属感知基础能力，虽有用但未结合语言动作策略，非核心VLA。",
+      "affiliation": ""
+    },
+    {
+      "title": "Value-Guided Iterative Refinement and the DIQ-H Benchmark for Evaluating VLM Robustness",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2512.03992",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2512.03992v2 Announce Type: replace-cross Abstract: Vision-Language Models (VLMs) are essential for embodied AI and safety-critical applications, such as robotics and autonomous systems. However, existing benchmarks primarily focus on static or curated visual inputs, neglecting the challenges posed by adversarial conditions, value misalignment, and error propagation in continuous deployment. Current benchmarks either overlook the impact of real-world perturbations, or fail to account for t",
+      "rating": "📖",
+      "reason": "引入DIQ-H基准评估VLM鲁棒性。聚焦感知层评估而非动作策略，对VLA端到端训练的直接指导有限。",
+      "affiliation": ""
+    },
+    {
+      "title": "Inferix: A Block-Diffusion based Next-Generation Inference Engine for World Simulation",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2511.20714",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2511.20714v2 Announce Type: replace-cross Abstract: World models serve as core simulators for fields such as agentic AI, embodied AI, and gaming, capable of generating long, physically realistic, and interactive high-quality videos. Moreover, scaling these models could unlock emergent capabilities in visual perception, understanding, and reasoning, paving the way for a new paradigm that moves beyond current LLM-centric vision foundation models. A key breakthrough empowering them is the sem",
+      "rating": "📖",
+      "reason": "提出块扩散推理引擎用于世界模拟。侧重生成效率，与VLA控制闭环的直接关联较弱，暂归为相关工具。",
+      "affiliation": ""
+    },
+    {
+      "title": "R2RGEN: Real-to-Real 3D Data Generation for Spatially Generalized Manipulation",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2510.08547",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2510.08547v2 Announce Type: replace Abstract: Towards the aim of generalized robotic manipulation, spatial generalization is the most fundamental capability that requires the policy to work robustly under different spatial distribution of objects, environment and agent itself. To achieve this, substantial human demonstrations need to be collected to cover different spatial configurations for training a generalized visuomotor policy via imitation learning. Prior works explore a promising di",
+      "rating": "🔧",
+      "reason": "通过实到实3D数据生成解决空间泛化问题。提供无需仿真的数据增强路径，可直接用于提升VLA鲁棒性。",
+      "affiliation": "[清华]"
+    },
+    {
+      "title": "STARRY: Spatial-Temporal Action-Centric World Modeling for Robotic Manipulation",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2604.26848",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2604.26848v1 Announce Type: new Abstract: Robotic manipulation critically requires reasoning about future spatial-temporal interactions, yet existing VLA policies and world-model-enhanced policies do not fully model action-relevant spatial-temporal interaction structure. We propose STARRY, a world-model-enhanced action-generation policy that aligns spatial-temporal prediction with action generation. STARRY jointly denoises future spatial-temporal latents and action sequences, and introduce",
+      "rating": "🔧",
+      "reason": "提出时空动作中心世界模型STARRY，增强VLA对交互结构的推理。填补动态空间建模空白，提升长程操作泛化。",
+      "affiliation": ""
+    },
+    {
+      "title": "Walk With Me: Long-Horizon Social Navigation for Human-Centric Outdoor Assistance",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2604.26839",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2604.26839v1 Announce Type: new Abstract: Assisting humans in open-world outdoor environments requires robots to translate high-level natural-language intentions into safe, long-horizon, and socially compliant navigation behavior. Existing map-based methods rely on costly pre-built HD maps, while learning-based policies are mostly limited to indoor and short-horizon settings. To bridge this gap, we propose Walk with Me, a map-free framework for long-horizon social navigation from high-leve",
+      "rating": "❌",
+      "reason": "聚焦户外社交导航，非机械臂操作或VLA架构。虽涉语言指令，但任务场景偏离Embodied Manipulation核心。",
+      "affiliation": ""
+    },
+    {
+      "title": "3D Generation for Embodied AI and Robotic Simulation: A Survey",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2604.26509",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2604.26509v1 Announce Type: new Abstract: Embodied AI and robotic systems increasingly depend on scalable, diverse, and physically grounded 3D content for simulation-based training and real-world deployment. While 3D generative modeling has advanced rapidly, embodied applications impose requirements far beyond visual realism: generated objects must carry kinematic structure and material properties, scenes must support interaction and task execution, and the resulting content must bridge th",
+      "rating": "📖",
+      "reason": "综述3D生成在具身智能仿真中的应用。涵盖广泛但无具体新方法，适合作为背景阅读了解数据合成趋势。",
+      "affiliation": ""
+    },
+    {
+      "title": "Reactive Motion Generation via Phase-varying Neural Potential Functions",
+      "date": "2026-05-01",
+      "url": "https://arxiv.org/abs/2604.26450",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2604.26450v1 Announce Type: new Abstract: Dynamical systems (DS) methods for Learning-from-Demonstration (LfD) provide stable, continuous policies from few demonstrations. First-order dynamical systems (DS) are effective for many point-to-point and periodic tasks, as long as a unique velocity is defined for each state. For tasks with intersections (e.g., drawing an \"8\"), extensions such as second-order dynamics or phase variables are often used. However, by incorporating velocity, second-o",
+      "rating": "❌",
+      "reason": "基于动力系统的运动生成方法，未涉及视觉语言或多模态对齐。属于传统控制领域，非VLA核心方向。",
+      "affiliation": ""
+    },
+    {
+      "title": "DAIMON Robotics Wants to Give Robot Hands a Sense of Touch",
+      "date": "2026-05-01",
+      "url": "https://spectrum.ieee.org/daimon-robotics-physical-ai",
+      "source": "ieee-spectrum-robotics",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "This article is brought to you by DAIMON Robotics . This April, Hong Kong-based DAIMON Robotics has released Daimon-Infinity , which it describes as the largest omni-modal robotic dataset for physical AI, featuring high resolution tactile sensing and spanning a wide range of tasks from folding laundry at home to manufacturing on factory assembly lines. The project is supported by collaborative efforts of partners across China and the globe, including Google DeepMind, Northwestern University, and",
+      "rating": "📖",
+      "reason": "介绍Daimon-Infinity数据集，强调高分辨率触觉传感。填补触觉VLA数据空白，但属新闻综述而非技术论文。",
+      "affiliation": "[Google DeepMind]"
+    },
+    {
       "title": "Conditional Flow Matching for Probabilistic Downscaling of Maximum 3-day Snowfall in Alaska",
       "date": "2026-04-30",
       "url": "https://arxiv.org/abs/2604.25172",
@@ -14289,5 +14445,5 @@
     }
   ],
   "last_report_date": "2026-02-21",
-  "last_updated": "2026-04-30T09:15:06.025621+08:00"
+  "last_updated": "2026-05-01T09:17:27.843082+08:00"
 }

@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-01",
+      "items": [
+        {
+          "title": "DeepSeek 上线识图模式：多模态能力终于来了",
+          "category": "新发布",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3788474106715144",
+          "why_picked": "DeepSeek 上周刚发布 V4，今天突然灰测上线识图模式，研究员陈小康在 X 发文 Now we see you。实测显示能理解梗图隐喻、自我纠正推理，半秒响应。国产模型多模态格局或将再变",
+          "so_what": "如果你在选择 Agent 基础模型：这意味着 DeepSeek 从纯文本正式进入多模态，V4 + 识图的组合在中文场景的性价比极具竞争力。建议关注其 API 开放节奏——如果你的 Agent 管线需要图文理解，DeepSeek 可能成为 GPT-4o / Claude 的平价替代。注意目前仅灰测且不支持联网搜索和 HEIF 格式。"
+        },
+        {
+          "title": "OpenAI Advanced Account Security：passkey-only 登录 + Codex 覆盖",
+          "category": "新发布",
+          "source": "OpenAI Blog",
+          "url": "https://openai.com/index/advanced-account-security",
+          "why_picked": "OpenAI 推出可选的高级账户安全模式：强制 passkey/安全密钥登录、禁用密码和短信恢复、缩短会话窗口、自动排除训练。保护范围覆盖 ChatGPT 和 Codex，面向高安全需求用户",
+          "so_what": "如果你在生产环境使用 Codex：这意味着你的 Codex 账户可以享受与 ChatGPT 同等的安全强化。建议安全敏感团队（金融/医疗/政府）立即启用 passkey-only 模式。注意启用后 OpenAI Support 无法协助账户恢复——务必配置 backup passkey。"
+        },
+        {
+          "title": "Codex CLI 0.128.0 新增 /goal：Ralph loop 风格自主循环",
+          "category": "工具",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Apr/30/codex-goals/",
+          "why_picked": "Codex CLI 新增 /goal 命令，设定目标后 Agent 自动循环执行直到目标完成或 token 预算耗尽，类似 Ralph loop 模式。通过 system prompt 模板实现，无需修改核心代码",
+          "so_what": "如果你在用 Codex 做 CI/CD 或自动化任务：/goal 让你只需描述最终状态（如 All tests pass），Agent 自动迭代修复。配合 token budget 控制成本，适合跑回归测试、批量代码修复等场景。注意它依赖 prompt 模板注入，复杂目标可能需要多轮引导。"
+        },
+        {
+          "title": "IBM Granite 4.1 开源：8B 超越前代 32B MoE，Apache 2.0",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ibm-granite/granite-4-1",
+          "why_picked": "IBM 发布 Granite 4.1 系列（3B/8B/30B 密集模型），15T tokens 预训练 + 410万 SFT 样本 + GRPO 强化学习。8B instruct 模型性能超越前代 32B-A9B MoE，Apache 2.0 协议",
+          "so_what": "如果你在做 SLM 选型：Granite 4.1 的 8B 模型用更简单的密集架构超越前代 MoE，说明数据质量 > 架构复杂度。Apache 2.0 无商用限制，适合企业级 Agent 后端。关注其 512K 上下文窗口——可直接处理大型代码库。"
+        },
+        {
+          "title": "Mistral Medium 3.5 发布：128B 参数专注代码与推理",
+          "category": "新发布",
+          "source": "Product Hunt",
+          "url": "https://www.producthunt.com/products/mistral-medium-3-5",
+          "why_picked": "Mistral 推出 Medium 3.5 模型，128B 参数规模，专注于代码生成、复杂推理和长任务处理。作为 Mistral 中等尺寸产品线的重要升级",
+          "so_what": "如果你需要中尺寸模型平衡成本与能力：128B 参数处于 SLM 和 frontier 之间的甜蜜点——比 7B 强得多，比 400B+ 便宜得多。适合需要强代码能力的 Agent 场景，同时保持合理的推理延迟。对比 Granite 4.1 30B 和 DeepSeek V4 做 A/B 测试。"
+        },
+        {
+          "title": "Simon Willison 发布 llm 0.32a0：重大向后兼容重构",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://simonwillison.net/2026/Apr/29/llm/",
+          "why_picked": "Simon Willison 的 llm Python/CLI 工具库发布 0.32a0，包含重大内部重构但保持向后兼容。修复了 tool-calling 对话从 SQLite 恢复的 bug",
+          "so_what": "如果你在用 llm 插件生态管理多模型调用：0.32 的重构为后续功能扩展打下基础，tool-calling 修复意味着 Agent 管线中函数调用的持久化更可靠。建议升级到 alpha 版本测试兼容性，享受更好的插件开发体验。"
+        }
+      ]
+    },
+    {
       "date": "2026-04-30",
       "items": [
         {
@@ -1326,51 +1379,6 @@
           "url": "https://aws.amazon.com/blogs/machine-learning/build-a-finops-agent-using-amazon-bedrock-agentcore/",
           "why_picked": "AWS 官方教程：使用 Bedrock AgentCore 构建 FinOps Agent，帮助财务团队跨多账户管理 AWS 成本",
           "so_what": "如果你在用 Bedrock AgentCore：参考其多数据源整合模式（Cost Explorer + 预算 API + 标签）；FinOps 是 Agent 高 ROI 场景（直接节省成本）；评估 AgentCore 对比自建 Agent 的开发效率/运维成本。"
-        }
-      ]
-    },
-    {
-      "date": "2026-03-31",
-      "items": [
-        {
-          "title": "Mr. Chatterbox：维多利亚时代伦理训练的可本地运行模型",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Mar/30/mr-chatterbox/",
-          "why_picked": "Simon Willison 推荐：Trip Venturella 发布的 Mr. Chatterbox 模型，完全使用英国图书馆版权过期文本训练，可在本地运行",
-          "so_what": "如果你在做垂直领域模型：参考「版权清晰数据源 + 小规模训练」路线，避免版权风险；维多利亚时代文本提供独特的语言风格，适合文学/历史类应用；评估小模型在特定语域的表现，不一定需要海量数据。"
-        },
-        {
-          "title": "llm-mrchatterbox 0.1：Simon Willison 的 LLM 插件",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://simonwillison.net/2026/Mar/30/llm-mrchatterbox-2/",
-          "why_picked": "Simon Willison 发布的 llm 插件，集成 Mr. Chatterbox 模型到其 llm 命令行工具链",
-          "so_what": "如果你在用 Simon 的 llm 工具链：可直接通过插件调用 Mr. Chatterbox；参考其插件架构设计，快速集成新模型；适合构建模块化模型切换层，支持多模型对比测试。"
-        },
-        {
-          "title": "Volkswagen 用生成式 AI 重构营销内容生产",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/reimagine-marketing-at-volkswagen-group-with-generative-ai/",
-          "why_picked": "AWS 官方博客：大众汽车集团使用生成式 AI 解决品牌合规营销素材规模化生产难题，生成逼真车辆图像",
-          "so_what": "如果你在做企业级 AI 应用：参考大众的「品牌合规 + 规模化」双目标设计；生成式 AI 在营销场景的 ROI 可量化（减少外包成本、加速生产周期）；评估类似方案在汽车/零售等视觉密集型行业的复制潜力。"
-        },
-        {
-          "title": "AI Agent 最佳落地容器：汽车而非「龙虾」机器人",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3744635209138441",
-          "why_picked": "36Kr 深度分析：汽车作为 AI Agent 落地场景比人形机器人更现实——封闭环境、明确任务、高付费意愿",
-          "so_what": "如果你在选 Agent 落地场景：优先评估「环境可控 + 任务明确 + 付费能力强」的垂直领域；汽车场景（自动驾驶 + 座舱交互）比通用人形机器人商业化路径更短；参考其场景评估框架，避免技术驱动而非需求驱动的陷阱。"
-        },
-        {
-          "title": "Multi-Agent 架构入门：实践指南",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://juejin.cn/post/7621453614445068328",
-          "why_picked": "掘金技术文章：wangEditor 作者双越的 Multi-agent 架构入门与实践，涵盖设计模式与工程实现",
-          "so_what": "如果你在构建多 Agent 系统：参考其任务分解、Agent 通信、结果聚合的标准模式；注意中文技术社区对 Agent 架构的本土化实践；对比 LangGraph/CrewAI 等框架，评估自研 vs 采用开源框架的权衡。"
         }
       ]
     }
