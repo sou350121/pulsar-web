@@ -1,6 +1,43 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-03",
+      "items": [
+        {
+          "title": "马斯克当庭承认Grok蒸馏ChatGPT，OpenAI庭审引爆AI行业伦理争论",
+          "category": "行业",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3791460373929221",
+          "why_picked": "OpenAI诉OpenAI案第四天，马斯克在宣誓证词中承认xAI蒸馏了ChatGPT。同时他给AI公司排名：Anthropic第一、OpenAI第二、谷歌第三、开源第四、xAI最小。一手来源包括The Verge、CNBC、Business Insider庭审报道",
+          "so_what": "如果你在生产环境使用 competitor 模型：这意味着模型蒸馏在法律上仍是灰色地带——可能不违法但违反服务条款。建议审查你使用的模型API条款，避免潜在的合规风险。同时，xAI自认规模仅为OpenAI 1/10，反映frontier竞赛中资源差距正在拉大。"
+        },
+        {
+          "title": "Flue：TypeScript Agent Harness 框架，HN 80分",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://flueframework.com/",
+          "why_picked": "Flue提出 Agent = Model + Harness 架构，将Claude Code/Codex的核心能力（规划、上下文收集、文件操作、子Agent调度）抽象为可编程框架。内置零配置沙箱，支持部署为HTTP Server或CLI。HN 80分43评",
+          "so_what": "如果你在构建自定义Agent系统：Flue的Harness模式让你不必从头搭建Agent基础设施。22行TypeScript即可实现AI issue triage（替代Dosu/Greptile/CodeRabbit）。注意它选择TypeScript而非Go/Rust——需评估npm生态安全性。"
+        },
+        {
+          "title": "Zig项目全面禁止LLM辅助贡献：开源AI伦理的分水岭",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Apr/30/zig-anti-ai/",
+          "why_picked": "Zig Software Foundation副总裁Loris Cro撰文解释为何禁止LLM辅助PR：Zig重视贡献者胜过贡献本身，LLM生成的PR增加了审核负担、降低了社区多样性。Bun因LLM贡献被拒而fork Zig未上游合并。这是最 stringent 的开源反AI政策",
+          "so_what": "如果你在维护开源项目或贡献代码：这预示更多项目可能跟进LLM限制政策。建议在你的项目CONTRIBUTING.md中明确LLM使用政策。同时，Bun fork Zig不上游的案例说明——即使技术正确，社区政策也可能阻碍代码合并。"
+        },
+        {
+          "title": "Simon Willison：用RSS分发vibe-coded应用",
+          "category": "趋势",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Apr/30/rss-vibe-coded-apps/",
+          "why_picked": "Matt Webb提出vibe-coded应用需要RSS feed + Install按钮，Simon Willison用Claude Code在手机上实现了这个原型。核心观点：当AI加速应用开发，微应用的发布频率将接近博客文章，需要新的分发机制",
+          "so_what": "如果你在构建AI应用分发平台：这意味着传统的App Store模式可能不够——vibe-coded应用更个人化、更频繁、更场景化。RSS + Install按钮的组合可能是轻量级分发的答案。关注App Agent协议（如MCP）与RSS的结合点。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-02",
       "items": [
         {
@@ -1326,43 +1363,6 @@
           "url": "https://www.36kr.com/p/3749136506913543",
           "why_picked": "Claude Code 源码被曝高危漏洞可导致用户无感知被拍摄，触发大规模依赖库封杀行动，AI 编程工具供应链安全再受关注",
           "so_what": "如果你在用 AI 编程助手：立即审查项目中 Claude Code 相关依赖版本；评估 CLI 工具的权限范围和敏感操作（摄像头/麦克风/文件访问）；企业部署需增加安全审计层，监控异常系统调用。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-02",
-      "items": [
-        {
-          "title": "OpenAI 为 Claude Code 发布 Codex 插件",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/openai/codex-plugin-cc",
-          "why_picked": "OpenAI 罕见为竞品工具开发插件：codex-plugin-cc 让 Claude Code 用户可直接调用 Codex 做代码审查或任务分发，标志 AI 编程工具从封闭竞争转向互操作",
-          "so_what": "如果你在用 AI 编程助手：评估多模型协作工作流（Claude 做架构设计 + Codex 做代码审查）；参考其插件架构设计自己的工具链集成；跨模型协作可能成行业标准，避免单一供应商锁定。"
-        },
-        {
-          "title": "Claude Code 源码泄露细节：卧底模式 + 反蒸馏机制曝光",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.oschina.net/news/416503/2026-03-31-claude-code-source-leak",
-          "why_picked": "泄露源码揭示 Anthropic 的隐藏机制：针对蒸馏检测注入假工具、通过正则监控用户挫折感、可能的封号策略；这是继模型规范文档泄露后一周内第二起事故",
-          "so_what": "如果你在用 AI 编程助手：理解厂商的滥用检测机制，避免触发误判；企业部署需审计 CLI 工具的遥测和数据回传；参考其架构设计但注意隐私边界。"
-        },
-        {
-          "title": "datasette-extract 0.3a0 / enrichments-llm 0.2a0 / llm-usage 0.2a0",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/1/datasette-extract/#atom-everything",
-          "why_picked": "Simon Willison 一日三连发：datasette-llm 生态三大插件更新，统一用 datasette-llm 管理模型配置，支持按 purpose 控制可用模型",
-          "so_what": "如果你在用 Datasette 做数据探索：安装 datasette-llm 后可在数据表中直接调用 LLM 做提取/富化/用量追踪；参考其插件 hook 设计（register_llm_purposes）为自己的工具添加 AI 能力；适合快速原型验证。"
-        },
-        {
-          "title": "你的工作，能被一个 Agent 跑完吗？",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.woshipm.com/?p=6368829",
-          "why_picked": "深度拆解 AI 时代职业生存法则：为何「默会知识」比算法更坚固？为何情绪交付是 AI 无法逾越的护城河？用真实案例展示数据分析团队从 10 人减至 3 人但产出不变",
-          "so_what": "如果你在做 AI 应用落地：识别工作中不可自动化的部分（跨部门沟通、模糊需求澄清、利益相关者管理）；建立「AI 处理重复 + 人处理例外」的混合工作流；投资默会知识文档化但保留人际判断权。"
         }
       ]
     }
