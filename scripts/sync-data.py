@@ -85,6 +85,7 @@ MARKDOWN_PATTERNS = [
     ("calibration-check-",     14,   0),   # calibration check JSONs
     ("_weekly_",               12, 200),   # VLA weekly recon reports
     ("_ai_weekly_",            12, 200),   # AI weekly recon reports
+    ("funnel-diagnostic-",     14, 200),   # diagnose-funnel.py output
 ]
 
 # How many days back to look for markdown files (avoid loading ancient files)
