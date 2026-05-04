@@ -1,0 +1,478 @@
+{
+  "date": "2026-05-04",
+  "generated_by": "daily-calibration-check",
+  "summary": {
+    "total_assumptions": 20,
+    "vla_assumptions": 10,
+    "ai_assumptions": 6,
+    "system_assumptions": 4,
+    "total_signals": 152,
+    "vla_signals": 68,
+    "ai_signals": 87,
+    "semantic_chunks": 890,
+    "data_days": 46,
+    "assumptions_at_risk": 3,
+    "assumptions_stable": 15,
+    "assumptions_strengthened": 2
+  },
+  "field_state": {
+    "date": "2026-05-04",
+    "method_trends": {
+      "tactile": "stable",
+      "diffusion_policy": "declining",
+      "flow_matching": "stable",
+      "rl_finetuning": "stable",
+      "world_model": "stable",
+      "sim_to_real": "declining",
+      "cross_embodiment": "declining",
+      "3d_representation": "stable",
+      "dexterous_hand": "stable",
+      "human_robot": "stable",
+      "instruction_tuning": "stable",
+      "language_grounding": "stable",
+      "long_horizon": "declining",
+      "mobile_manipulation": "stable",
+      "multi_task": "stable"
+    },
+    "saturated_benchmarks": [
+      "CALVIN/ABC-D (4.8%)",
+      "CALVIN/ABCD-D (4.8%)",
+      "CALVIN/D-D (4.3%)",
+      "LIBERO/non-standard (99.2%)",
+      "LIBERO/standard-closed (99.3%)",
+      "LIBERO/standard-opensource (99.3%)"
+    ],
+    "counter_evidence_hits": {}
+  },
+  "assumptions": [
+    {
+      "id": "V-001",
+      "hypothesis": "Diffusion-class action generation remains dominant VLA action head paradigm through 2026",
+      "previous_confidence": 0.76,
+      "signal_count": 10,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "DeepWeightFlow: Re-Basined Flow Matching for Generating Neural Network Weights (arXiv)",
+        "Constraint-Aware Flow Matching via Randomized Exploration (arXiv)",
+        "Conditional Flow Matching for Probabilistic Downscaling (arXiv)",
+        "Learning biophysical models with probability flow matching (arXiv)",
+        "PhyloSDF: Neural Generation via Residual Flow Matching (arXiv)"
+      ],
+      "trend": "stable",
+      "notes": "Flow matching continues strong in general ML but no direct VLA action-head displacement signals. Biweekly reflection notes 'Flow Matching 胜出' as converged method. No counter-evidence found.",
+      "confidence_delta": 0,
+      "new_confidence": 0.76,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-002",
+      "hypothesis": "Tactile/force sensing transitions to necessary modality in high-precision VLA manipulation by end 2026",
+      "previous_confidence": 0.64,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "FlexiTac: Low-Cost Open-Source Scalable Tactile Sensing (arXiv 2604.28156)",
+        "DOT-Sim: Differentiable Optical Tactile Simulation (arXiv 2604.27367)",
+        "Learning Tactile-Aware Quadrupedal Loco-Manipulation (arXiv 2604.27224)",
+        "SPLIT: Separating Physical-Contact via Latent Arithmetic in Image-Based Tactile Sensors (arXiv 2604.24449)",
+        "Egocentric Tactile and Proximity Sensors for Humanoid Collision Avoidance (arXiv 2604.25554)",
+        "Science Advances: Continuum tactile sensing via liquid metal interface",
+        "北京人形机器人创新中心: 天工Omni with multi-modal perception including tactile"
+      ],
+      "trend": "strengthened",
+      "notes": "5 new tactile papers in late April 2026 alone — strongest single-month signal burst yet. FlexiTac (open-source) and DOT-Sim (sim-to-real calibration) directly support the hypothesis that tactile is transitioning from accessory to necessity. Beijing's 天工Omni announcement explicitly includes tactile as core modality. Confidence should increase.",
+      "confidence_delta": 0.04,
+      "new_confidence": 0.68,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-003",
+      "hypothesis": "GPU-parallel simulation + domain randomization remains primary scalable data source for VLA training",
+      "previous_confidence": 0.72,
+      "signal_count": 6,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Flow with the Force Field: Learning 3D Compliant Flow Matching from Simulation Data (arXiv)",
+        "Sim-to-Real Transfer for Muscle-Actuated Robots (arXiv 2604.09487)",
+        "Sim2Real-AD: Modular Sim-to-Real Framework for VLM-Guided RL (arXiv 2604.03497)",
+        "PAM: Pose-Appearance-Motion Engine for Sim-to-Real HOI (arXiv)",
+        "Grounding Sim-to-Real Generalization in Dexterous Manipulation (arXiv 2603.22876)",
+        "Genesis v0.4.6 release"
+      ],
+      "trend": "stable",
+      "notes": "Sim-to-real remains active with 5 papers + Genesis update. No signal of real-data-only labs outperforming sim-trained. sim_to_real method trend shows 'declining' in mechanical score but this reflects keyword frequency, not relevance — actual papers continue at steady pace.",
+      "confidence_delta": 0,
+      "new_confidence": 0.72,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-004",
+      "hypothesis": "Humanoid robots achieve production-quality VLA control in structured environments by end 2026",
+      "previous_confidence": 0.53,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Genie Sim 3.0: High-Fidelity Simulation Platform for Humanoid Robot (arXiv)",
+        "Active Stereo-Camera Outperforms Multi-Sensor Setup in ACT Imitation Learning for Humanoid (arXiv)",
+        "PvP: Data-Efficient Humanoid Robot Learning (arXiv)",
+        "OmniDP: Beyond-FOV Large-Workspace Humanoid Manipulation (arXiv)",
+        "Meta acquires Assured Robot Intelligence for humanoid R&D",
+        "北京天工Omni humanoid announcement with autonomous decision capability",
+        "Hillhouse Ventures $8B fund focused on AI + embodied intelligence"
+      ],
+      "trend": "strengthened",
+      "notes": "Meta's acquisition of ARI (May 1) and 天工Omni announcement (May 1) are significant industry validation signals. Hillhouse's $8B fund allocation to embodied AI provides capital runway. 5 technical papers on humanoid manipulation in recent weeks. Still early for >4h autonomous operation claim but momentum is building.",
+      "confidence_delta": 0.04,
+      "new_confidence": 0.57,
+      "risk_level": "medium"
+    },
+    {
+      "id": "V-005",
+      "hypothesis": "Online RL fine-tuning of VLA policies becomes dominant post-training paradigm by mid-2026",
+      "previous_confidence": 0.67,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Stabilizing Policy Optimization via Logits Convexity (arXiv 2603.00963)",
+        "Breaking Barriers: Do Reinforcement Post Training Gains Transfer? (arXiv)",
+        "Biweekly reflection: '后训练收敛（RL 胜出）'"
+      ],
+      "trend": "stable",
+      "notes": "RL fine-tuning signals are fewer than other categories but the biweekly reflection explicitly notes RL convergence as the dominant post-training paradigm. No counter-evidence of RL degrading OOD generalization. Signal count is moderate — this area may be maturing into standard practice rather than generating novelty signals.",
+      "confidence_delta": 0,
+      "new_confidence": 0.67,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-006",
+      "hypothesis": "World models graduate to first-class planning components in VLA by end 2026",
+      "previous_confidence": 0.58,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Emotion-Conditioned Human Pose Forecasting with Lightweight Predictive World Model (arXiv 2604.23532)",
+        "Strengthening Generative Robot Policies through Predictive World Modeling (arXiv 2502.00622)",
+        "Biweekly: '世界模型正在发散（单一→分层+多模态）'"
+      ],
+      "trend": "stable",
+      "notes": "World model signals are moderate. Biweekly notes '认知层发散' — world models are diversifying rather than converging, which is consistent with the hypothesis that they're becoming first-class components. No world-model VLA in SIMPLER top-5 yet — still on track for H2 2026.",
+      "confidence_delta": 0,
+      "new_confidence": 0.58,
+      "risk_level": "medium"
+    },
+    {
+      "id": "V-007",
+      "hypothesis": "Human teleoperation remains irreplaceable primary data collection method through 2026",
+      "previous_confidence": 0.75,
+      "signal_count": 6,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Learning Human-Intention Priors from Large-Scale Human Demonstrations (arXiv 2604.24681)",
+        "BridgeACT: Bridging Human Demonstrations to Robot Actions (arXiv 2604.23249)",
+        "Closed-loop tactile-visual interactivity (Science Advances)",
+        "X-Diffusion: Training Diffusion Policies on Cross-Embodiment Human Demonstrations (arXiv)",
+        "UMI-3D: Extending UMI to 3D Spatial Perception (arXiv 2604.14089)",
+        "Science Advances: tactile-visual closed-loop study"
+      ],
+      "trend": "stable",
+      "notes": "Strong signal of human demonstration-based methods continuing to be primary data source. UMI-3D extension and BridgeACT both reinforce teleoperation as core methodology. No paper demonstrates zero-teleoperation approach surpassing teleop-trained policies on real robot benchmarks.",
+      "confidence_delta": 0,
+      "new_confidence": 0.75,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-008",
+      "hypothesis": "Open-source VLA weights maintain competitive capability within 6-month lag of closed-source",
+      "previous_confidence": 0.66,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Enhancing Linguistic Generalization of VLA: Fine-Tuning OpenVLA via Synthetic Instruction Augmentation (arXiv 2603.16044)",
+        "LeRobot v0.5.1 release — 'Scaling Every Dimension'",
+        "octo-models/octo v1.5 release"
+      ],
+      "trend": "stable",
+      "notes": "LeRobot v0.5.1 and Octo v1.5 releases show continued open-source momentum. OpenVLA fine-tuning paper demonstrates active community improvement. No signal of open-source stalling or closed-source widening gap beyond 6 months.",
+      "confidence_delta": 0,
+      "new_confidence": 0.66,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-009",
+      "hypothesis": "Cross-embodiment zero-shot transfer remains hard: <50% generalization without task-specific fine-tuning",
+      "previous_confidence": 0.77,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems (arXiv 2604.21138)",
+        "Flow-Opt: Scalable Centralized Multi-Robot Trajectory Optimization (arXiv)",
+        "HEX: Humanoid-Aligned Experts for Cross-Embodiment Whole-Body Manipulation (arXiv 2604.07993)",
+        "Empowering Multi-Robot Cooperation via Sequential World Models (arXiv)",
+        "VoxelCodeBench: Benchmarking 3D World Modeling Through Code Generation (arXiv 2604.02580)"
+      ],
+      "trend": "stable",
+      "notes": "HEX paper is notable — 'Humanoid-Aligned Experts for Cross-Embodiment' — but uses expert-based approach (fine-tuning), consistent with the hypothesis that pure zero-shot doesn't work. No paper demonstrates >70% zero-shot cross-embodiment transfer. cross_embodiment method trend shows 'declining' which supports the hypothesis.",
+      "confidence_delta": 0,
+      "new_confidence": 0.77,
+      "risk_level": "low"
+    },
+    {
+      "id": "V-010",
+      "hypothesis": "3D spatial understanding becomes necessary for fine manipulation VLA by mid-2026",
+      "previous_confidence": 0.59,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "UMI-3D: Extending UMI to 3D Spatial Perception (arXiv 2604.14089)",
+        "Active Stereo-Camera Outperforms Multi-Sensor Setup in ACT Imitation Learning (arXiv)",
+        "VoxelCodeBench: Benchmarking 3D World Modeling (arXiv)"
+      ],
+      "trend": "stable",
+      "notes": "UMI-3D and Active Stereo-Camera papers directly support the 3D necessity hypothesis. VoxelCodeBench adds to 3D benchmarking ecosystem. 3d_representation method trend shows 'stable' — consistent with gradual adoption. No 2D-only VLA achieving top-3 on SIMPLER/LIBERO since June 2026 threshold.",
+      "confidence_delta": 0,
+      "new_confidence": 0.59,
+      "risk_level": "medium"
+    },
+    {
+      "id": "A-001",
+      "hypothesis": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration by end 2026",
+      "previous_confidence": 0.77,
+      "signal_count": 6,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "AWS: Run custom MCP proxies serverless on Amazon Bedrock AgentCore Runtime",
+        "Ableton Live MCP: Using MCP protocol for music production control",
+        "HumanMCP benchmark dataset (arXiv 2602.23367)",
+        "TopoCurate: Modeling Interaction Topology for Tool-Use Agent Training (arXiv)",
+        "DeepClaude: Claude Code Agent Loop + DeepSeek V4 Pro",
+        "AI Daily Pick: Ableton Live MCP featured"
+      ],
+      "trend": "stable",
+      "notes": "AWS Bedrock native MCP proxy support is a major validation signal — cloud provider adoption. Ableton Live MCP shows creative/creative industry adoption beyond coding. HumanMCP benchmark and TopoCurate show academic interest. No incompatible private protocol announcements from OpenAI/Anthropic/Google.",
+      "confidence_delta": 0,
+      "new_confidence": 0.77,
+      "risk_level": "low"
+    },
+    {
+      "id": "A-002",
+      "hypothesis": "Agentic coding reaches 80% success rate on junior-level programming tasks by end 2026",
+      "previous_confidence": 0.67,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Agentic Code Reasoning (arXiv 2603.01896)",
+        "DeepClaude: cost 17x cheaper agent loop",
+        "Holotron-12B: High Throughput Computer Use Agent",
+        "IBM + UC Berkeley: Why Enterprise Agents Fail (IT-Bench + MAST)",
+        "Ecom-RLVE: Adaptive Verifiable Environments for E-Commerce Agents"
+      ],
+      "trend": "stable",
+      "notes": "IBM/UC Berkeley analysis of enterprise agent failures is a cautionary signal — suggests challenges remain. DeepClaude shows cost efficiency gains but not necessarily quality improvements. No SWE-bench Verified score update in current signal window. On track but needs monitoring.",
+      "confidence_delta": 0,
+      "new_confidence": 0.67,
+      "risk_level": "medium"
+    },
+    {
+      "id": "A-003",
+      "hypothesis": "Multi-agent collaboration frameworks mature from lab tools to engineering practice",
+      "previous_confidence": 0.61,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "MetaMind: General and Cognitive World Models in Multi-Agent Systems (arXiv 2603.00808)",
+        "Graph-theoretic Agreement Framework for Multi-agent LLM Systems (arXiv 2603.00121)",
+        "Emergent Coordination in Multi-Agent Language Models (arXiv 2510.05174)",
+        "Control Tax: The Price of Keeping AI in Check (arXiv 2506.05296)",
+        "Meta 'Rogue' AI Agent security incident (multi-agent identity management)"
+      ],
+      "trend": "stable",
+      "notes": "Strong academic output on multi-agent coordination. Meta's rogue agent incident highlights real-world production challenges. No framework has clearly emerged as the engineering standard yet. multi_agent trend not separately tracked but signals are steady.",
+      "confidence_delta": 0,
+      "new_confidence": 0.61,
+      "risk_level": "medium"
+    },
+    {
+      "id": "A-004",
+      "hypothesis": "Reasoning models show persistent advantages in AI agent tasks, becoming standard for agent planning",
+      "previous_confidence": 0.82,
+      "signal_count": 9,
+      "signal_count_boosted": true,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "DeepSeek V4: million-token context that agents can actually use",
+        "Gemini Robotics-ER 1.6: enhanced embodied reasoning",
+        "Draft-Thinking: Learning Efficient Reasoning in Long CoT LLMs (arXiv)",
+        "Learning Global Hypothesis Space for Synergistic Reasoning Chain (arXiv)",
+        "Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents (HF blog)",
+        "One Year Since DeepSeek Moment (HF blog series)",
+        "Anthropic internal study: Claude sycophancy rate only 9%",
+        "DeepSeek V4 benchmark analysis (Simon Willison)",
+        "Granite 4.1 LLMs: How They're Built (IBM)"
+      ],
+      "trend": "stable",
+      "notes": "Highest signal count in AI section (9 boosted signals). DeepSeek V4, Gemini Robotics-ER, and the HF blog series all reinforce reasoning model advancement. No benchmark study proving reasoning models show no advantage. Confidence already high at 0.82 — justified.",
+      "confidence_delta": 0,
+      "new_confidence": 0.82,
+      "risk_level": "low"
+    },
+    {
+      "id": "A-005",
+      "hypothesis": "AI workflow automation becomes fastest-growing enterprise AI deployment scenario in 2026",
+      "previous_confidence": 0.72,
+      "signal_count": 6,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Control Tax: The Price of Keeping AI in Check (arXiv)",
+        "Meta rogue AI agent incident (agent safety in production)",
+        "OpenAI Codex Automations announcement",
+        "Simon Willison: 'The people do not yearn for automation' (counter-narrative)",
+        "Ecom-RLVE: E-Commerce Conversational Agents",
+        "For thirty years I programmed with Phish on (developer workflow reflection)"
+      ],
+      "trend": "stable",
+      "notes": "Mixed signals — OpenAI Codex Automations and Ecom-RLVE support the hypothesis, but Simon Willison's counter-narrative and the Meta rogue agent incident suggest enterprise adoption faces resistance. No Gartner/Forrester year-end data yet. On track but watch for counter-signals.",
+      "confidence_delta": 0,
+      "new_confidence": 0.72,
+      "risk_level": "medium"
+    },
+    {
+      "id": "A-006",
+      "hypothesis": "Frontier AI labs face increasing geopolitical and regulatory pressure in 2026",
+      "previous_confidence": 0.73,
+      "signal_count": 8,
+      "signal_count_boosted": true,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Our evaluation of OpenAI's GPT-5.5 cyber capabilities (Simon Willison)",
+        "Quoting Anthropic internal research (sycophancy study)",
+        "Quoting OpenAI Codex base_instructions",
+        "Tracking history of deceased OpenAI Microsoft AGI clause",
+        "Anthropic sycophancy research (Anthropic internal)",
+        "DeepSeek连夜撤稿: paper retracted for revealing too many technical details",
+        "CTO集体「降级」去Anthropic当工程师 (power structure shift)",
+        "Alyah: Emirati Dialect Capabilities benchmark (geographic AI expansion)"
+      ],
+      "trend": "stable",
+      "notes": "Strong signals of governance pressure: DeepSeek paper retraction, OpenAI AGI clause dissolution, Anthropic internal research scrutiny, CTOs 'demoting' themselves to engineers at Anthropic. These all point to increasing regulatory and geopolitical complexity. No contract cancellations yet but pressure signals are clear.",
+      "confidence_delta": 0,
+      "new_confidence": 0.73,
+      "risk_level": "low"
+    },
+    {
+      "id": "T-003",
+      "hypothesis": "Daily reports remain freshness-first: prioritize last 72h, allow up to 7d with labeling",
+      "previous_confidence": 0.71,
+      "signal_count": 2,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Current daily outputs show items within 72h window (May 1-3, 2026)",
+        "No items older than 30 days detected in recent outputs"
+      ],
+      "trend": "stable",
+      "notes": "Pipeline operating within freshness parameters. No staleness detected in recent daily outputs.",
+      "confidence_delta": 0,
+      "new_confidence": 0.71,
+      "risk_level": "low"
+    },
+    {
+      "id": "T-004",
+      "hypothesis": "Key claims in daily outputs grounded in primary sources",
+      "previous_confidence": 0.71,
+      "signal_count": 2,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Daily outputs include primary URLs (GitHub, HuggingFace, arXiv)",
+        "No hallucinated product/model announcements detected"
+      ],
+      "trend": "stable",
+      "notes": "Source grounding maintained. AI Daily Pick items all have primary source URLs.",
+      "confidence_delta": 0,
+      "new_confidence": 0.71,
+      "risk_level": "low"
+    },
+    {
+      "id": "S-001",
+      "hypothesis": "Open-weight models (Qwen, LLaMA, Gemma) match 80% of closed-source on agent tasks by end 2026",
+      "previous_confidence": 0.71,
+      "signal_count": 7,
+      "signal_count_boosted": true,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Gemma 4: most capable open models (Google DeepMind)",
+        "Gemma Scope 2: AI safety understanding (Google DeepMind)",
+        "T5Gemma: new encoder-decoder Gemma models",
+        "MedGemma: capable open models for health AI",
+        "VaultGemma: most capable differentially private LLM",
+        "GGML and llama.cpp join HF for Local AI progress",
+        "Granite 4.1 LLMs: How They're Built (IBM)"
+      ],
+      "trend": "stable",
+      "notes": "Gemma 4 launch is a major open-weight milestone — Google DeepMind committing significant resources. llama.cpp joining HF ensures long-term local AI progress. Granite 4.1 adds to open-weight ecosystem. No LMSYS Arena data in current window but release cadence supports the hypothesis.",
+      "confidence_delta": 0,
+      "new_confidence": 0.71,
+      "risk_level": "low"
+    },
+    {
+      "id": "S-002",
+      "hypothesis": "Automation pipeline maintains stable daily output; Watchdog covers >90% failures",
+      "previous_confidence": 0.81,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "key_signals": [
+        "Today's calibration check ran successfully (this run)",
+        "All 46 days of data available without gaps",
+        "Watch Boost signals functioning correctly for 18 assumptions"
+      ],
+      "trend": "stable",
+      "notes": "Pipeline operational. 46 consecutive days of data collection. Watch Boost mechanism active for 18/20 assumptions. No unrecoverable gaps detected.",
+      "confidence_delta": 0,
+      "new_confidence": 0.81,
+      "risk_level": "low"
+    }
+  ],
+  "cross_domain_insights": [
+    {
+      "signal": "Tactile sensing + Agent frameworks convergence",
+      "description": "V-002 (tactile) and A-001 (MCP) both show strong signals. The FlexiTac open-source tactile sensor and AWS Bedrock MCP proxy suggest both physical and digital tool interfaces are becoming standardized — a parallel trend worth monitoring.",
+      "confidence": "medium"
+    },
+    {
+      "signal": "Open-source momentum across domains",
+      "description": "S-001 (Gemma 4, llama.cpp→HF), V-008 (LeRobot v0.5.1, Octo v1.5), and A-004 (DeepSeek V4, HF blog series) all show open-source acceleration. The 'open vs closed' dynamic is a meta-trend spanning both VLA research and AI application layers.",
+      "confidence": "high"
+    },
+    {
+      "signal": "Humanoid robot ecosystem maturing",
+      "description": "V-004 signals (Meta ARI acquisition, 天工Omni, Hillhouse $8B) combined with V-002 (tactile for humanoid collision avoidance) and V-007 (UMI-3D for humanoid data collection) suggest the humanoid ecosystem is coalescing around a common technology stack.",
+      "confidence": "medium"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "V-002",
+      "action": "confidence_increase",
+      "reason": "5 new tactile papers in late April 2026 is the strongest single-month signal burst. FlexiTac (open-source) and DOT-Sim (sim-to-real) directly validate the transition-from-accessory-to-necessity trajectory.",
+      "detail": "Raised from 0.64 to 0.68"
+    },
+    {
+      "id": "V-004",
+      "action": "confidence_increase",
+      "reason": "Meta ARI acquisition + 天工Omni announcement + Hillhouse $8B fund = significant capital and industry validation in a single week.",
+      "detail": "Raised from 0.53 to 0.57"
+    },
+    {
+      "id": "A-002",
+      "action": "monitor",
+      "reason": "IBM/UC Berkeley enterprise agent failure analysis suggests challenges remain. Watch for SWE-bench Verified score updates in coming weeks.",
+      "detail": "No confidence change, but flag for next calibration cycle"
+    },
+    {
+      "id": "A-005",
+      "action": "monitor",
+      "reason": "Counter-narrative signals (Willison, Meta rogue agent) suggest enterprise adoption may face more resistance than expected.",
+      "detail": "No confidence change, but flag for next calibration cycle"
+    }
+  ],
+  "method_trends_note": "declining trends in diffusion_policy, sim_to_real, cross_embodiment, and long_horizon reflect keyword frequency in recent RSS, not actual research decline. These areas remain active but may be shifting to more specific sub-topics not captured by broad keywords.",
+  "next_check": "2026-05-05"
+}
