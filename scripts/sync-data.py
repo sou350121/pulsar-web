@@ -67,18 +67,24 @@ JSON_FILES = [
     "emerging-terms.json",
 ]
 
-# Markdown file patterns — (prefix, how_many_recent_to_copy)
+# Markdown file patterns — (prefix, how_many_recent_to_copy, min_bytes)
+# min_bytes: skip files smaller than this — defense against pipeline LLM-fail
+#   producing ~50B stubs that pollute RSS feeds + report pages downstream.
+#   Threshold 200B mirrors push-data-to-web.py's MD_PATTERNS guard.
+#   Without this, sync-data.py runs first in the CI SSH chain and overwrites
+#   hand-backfilled larger files with the still-broken upstream stub
+#   (observed 2026-04-30 daily sync clobbering my 6243B restore back to 57B).
 MARKDOWN_PATTERNS = [
-    ("_ai_social_",            30),   # daily AI social intel
-    ("_vla_social_",           30),   # daily VLA social intel
-    ("_biweekly_",             12),   # biweekly reports (covers _biweekly_reflection_ too)
-    ("_ai_biweekly_",          12),   # AI app biweekly reports
-    ("_ai_daily_pick_",        30),   # dated ai daily pick markdown (if exists)
-    ("field-state-",            30),   # field-state mechanical signals
-    ("ai-field-state-",        30),   # AI Agent trend signals
-    ("calibration-check-",     14),   # calibration check JSONs
-    ("_weekly_",               12),   # VLA weekly recon reports
-    ("_ai_weekly_",            12),   # AI weekly recon reports
+    ("_ai_social_",            30,   0),   # daily AI social intel
+    ("_vla_social_",           30,   0),   # daily VLA social intel
+    ("_biweekly_",             12, 200),   # biweekly reports (covers _biweekly_reflection_ too)
+    ("_ai_biweekly_",          12, 200),   # AI app biweekly reports
+    ("_ai_daily_pick_",        30,   0),   # dated ai daily pick markdown (if exists)
+    ("field-state-",            30,   0),  # field-state mechanical signals
+    ("ai-field-state-",        30,   0),   # AI Agent trend signals
+    ("calibration-check-",     14,   0),   # calibration check JSONs
+    ("_weekly_",               12, 200),   # VLA weekly recon reports
+    ("_ai_weekly_",            12, 200),   # AI weekly recon reports
 ]
 
 # How many days back to look for markdown files (avoid loading ancient files)
@@ -217,19 +223,46 @@ def main():
 
     # ── 2. Markdown / dated files ──────────────────────────────────────────
     log("\nMarkdown / dated files:")
-    for prefix, n in MARKDOWN_PATTERNS:
+    skipped_thin: list[tuple[str, int, int]] = []
+    for prefix, n, min_bytes in MARKDOWN_PATTERNS:
         files = select_recent_md(MEMORY_DIR, prefix, n, MD_MAX_AGE_DAYS)
         if not files:
             log(f"  SKIP (none found): {prefix}*", is_verbose=True, verbose=args.verbose)
             continue
         log(f"  {prefix}* — {len(files)} file(s)")
         for src in files:
+            # Defense layer 1 (collection-time guard): refuse to propagate thin
+            # stubs (e.g. _weekly_2026-04-24.md = 57B from a failed LLM run).
+            # Mirrors push-data-to-web.py's MD_PATTERNS min_bytes filter.
+            try:
+                src_size = src.stat().st_size
+            except OSError:
+                src_size = 0
+            if min_bytes > 0 and src_size < min_bytes:
+                skipped_thin.append((src.name, src_size, min_bytes))
+                continue
+            # Defense layer 2 (write-time guard): refuse to shrink an existing
+            # healthy markdown (>=min_bytes) down to a thin source. Catches the
+            # case where dest was hand-backfilled but the upstream src on the
+            # server is still the broken stub.
             dst = DATA_DIR / src.name
+            if (
+                min_bytes > 0
+                and dst.exists()
+                and src_size < min_bytes
+                and dst.stat().st_size >= min_bytes
+            ):
+                skipped_thin.append((src.name, src_size, min_bytes))
+                continue
             ok = copy_file(src, dst, args.dry_run, args.symlink, args.verbose)
             if ok:
                 copied.append(src.name)
             else:
                 errors.append(src.name)
+    if skipped_thin:
+        log(f"\n⚠️  Skipped {len(skipped_thin)} thin markdown stub(s) (likely LLM-fail upstream):")
+        for name, size, threshold in skipped_thin:
+            log(f"     {name}: {size}B (threshold {threshold}B)")
 
     # ── 3. VLA daily rating files from tmp/ ───────────────────────────────
     log("\nVLA daily rating files (from memory/tmp/):")
