@@ -61,6 +61,7 @@ jobs:
                  sudo timeout 90 python3.11 /home/admin/clawd/scripts/fetch-ai-github.py 2>&1 | tail -3 && \
                  sudo timeout 30 python3.11 /home/admin/clawd/scripts/build-graph-data.py 2>&1 | tail -5 && \
                  sudo timeout 30 python3.11 /home/admin/clawd/pulsar-web/scripts/build-atlas-data.py 2>&1 | tail -5 && \
+                 ( DDATE=\$(TZ=Asia/Shanghai date +%Y-%m-%d); [ -f /home/admin/clawd/memory/funnel-diagnostic-\${DDATE}.md ] || sudo timeout 240 python3.11 /home/admin/clawd/scripts/diagnose-funnel.py --llm 2>&1 | tail -5 ) || true; \
                  sudo python3.11 /home/admin/clawd/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
                  sudo python3.11 /home/admin/clawd/scripts/push-data-to-web.py --verbose 2>&1 | tail -10; \
                  sudo timeout 60 python3.11 /home/admin/clawd/scripts/fix-theory-root-files.py --apply 2>&1 | tail -5 || true; \
