@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-05",
+      "items": [
+        {
+          "title": "IBM Granite 4.1 家族开源发布（3B/8B/30B）",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://research.ibm.com/blog/granite-4-1-ai-foundation-models",
+          "why_picked": "Apache 2.0 开源，工具调用和指令跟随能力匹敌 Gemma/Qwen，8B 超越上代 32B MoE",
+          "so_what": "如果你在做端侧或边缘部署：3B/8B 模型在工具调用场景下已可替代更大规模的 MoE 架构。建议用 Granite 4.1 8B 替换当前 32B 级模型做工具路由，token 成本可降 60% 以上。GGUF 量化已由 Unsloth 提供，可直接上 llama.cpp/Ollama。"
+        },
+        {
+          "title": "OpenAI 重构 WebRTC 栈支撑 9 亿用户语音 AI",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://openai.com/index/delivering-low-latency-voice-ai-at-scale",
+          "why_picked": "OpenAI 官方深度技术文，公开 Realtime API 底层架构：split relay + transceiver 设计",
+          "so_what": "如果你在用 Realtime API 构建语音 Agent：理解 WebRTC 的 ICE/DTLS 握手延迟对首字延迟的影响。建议关注 RTCP jitter buffer 调优和 echo cancellation 参数，这对多轮对话体验的影响比模型选择更大。"
+        },
+        {
+          "title": "Anthropic 内部实验：AI Agent 二手交易市场的博弈与「智商收割」",
+          "category": "实验",
+          "source": "GitHub",
+          "url": "https://www.36kr.com/p/3794465919704322",
+          "why_picked": "69 个 Claude 代理在 Slack 群完成 186 笔交易，强模型(Opus)对弱模型(Haiku)实现 10-15% 超额利润",
+          "so_what": "如果你在设计多 Agent 协商系统：这篇实验揭示了模型能力差异会在无人干预时转化为经济不平等。建议在 Agent 框架中加入「能力感知定价」或「公平性护栏」，防止弱模型代理被系统性剥削。"
+        },
+        {
+          "title": "AWS SageMaker 推出 Capacity-Aware Instance Pool",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://aws.amazon.com/blogs/machine-learning/capacity-aware-inference-automatic-instance-fallback-for-sagemaker-ai-endpoints/",
+          "why_picked": "解决 GPU 容量瓶颈的自动 fallback 机制，支持创建/扩缩容全生命周期",
+          "so_what": "如果你在用 SageMaker 部署 LLM 推理：现在可以定义优先级实例池（如 p4d → p5 → g5），端点创建和 autoscale 失败率大幅降低。对生产环境 SLO 保障是重大改进，建议立即迁移现有端点配置。"
+        },
+        {
+          "title": "黄仁勋 vs 阿莫迪：AI 对就业影响的公开辩论",
+          "category": "观点",
+          "source": "GitHub",
+          "url": "https://readhub.cn/topic/8sqsBIFSEwp",
+          "why_picked": "英伟达 CEO 公开反驳 Anthropic CEO「AI 几年内取代 50% 白领」言论，呼吁以事实为依据",
+          "so_what": "如果你在构建 AI 产品并需要向管理层论证 ROI：这场辩论反映了行业对 AI 替代速度的两极判断。建议关注实际部署数据而非预测——当前 Agent 工具在客服/编码等场景的替代率约 15-30%，远低于极端预测。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-04",
       "items": [
         {
@@ -1318,59 +1363,6 @@
           "url": "https://github.com/teamchong/turboquant-wasm",
           "why_picked": "Google 向量量化算法的 WASM 实现，可在浏览器端高效运行量化模型",
           "so_what": "如果你在做端侧 AI 部署：WASM 方案可绕过原生应用限制，直接在浏览器运行量化模型；评估其在 Web 端推理场景的性能/兼容性；适合快速原型验证和跨平台分发场景。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-04",
-      "items": [
-        {
-          "title": "Vulnerability Research Is Cooked",
-          "category": "趋势",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/3/vulnerability-research-is-cooked/",
-          "why_picked": "Thomas Ptacek 分析：前沿模型对漏洞研究领域产生巨大冲击，编码 agent 将在数月内彻底改变安全研究工作方式",
-          "so_what": "如果你在做 AI 安全工具或渗透测试：漏洞挖掘工作流将在 3-6 个月内被 agent 重构；评估自主漏洞扫描 agent 的误报率/覆盖率；安全团队需从「人工挖掘」转向「agent 监督 + 验证」模式，投资 agent 输出审核工具链。"
-        },
-        {
-          "title": "AI 安全报告海啸：从「AI slop」到高质量漏洞洪流",
-          "category": "行业",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/3/greg-kroah-hartman/",
-          "why_picked": "Linux 内核维护者 Greg Kroah-Hartman：一个月前 AI 生成的安全报告质量突然跃升，从搞笑的「AI slop」变成每天数小时才能处理的高质量报告洪流",
-          "so_what": "如果你在用 AI 做代码审计：AI 漏洞检测已进入「可用」阶段，但维护者被报告淹没；构建报告去重/优先级排序机制；评估「AI 发现 + 人工验证」的混合流程，避免被误报拖慢开发节奏。"
-        },
-        {
-          "title": "编码 agent 的认知成本",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/3/cognitive-cost/",
-          "why_picked": "Simon Willison 反思：使用编码 agent 后，从「写代码」变成「审查代码」，认知负荷从创造转向验证——这可能是更累的工作模式",
-          "so_what": "如果你在用 AI 编程助手：agent 不是省力的银弹——审查 AI 代码需要同等甚至更高的专注度；建立「AI 生成 + 人工审查」的标准流程（checklist/测试覆盖）；警惕「信任过度」导致的生产环境 bug。"
-        },
-        {
-          "title": "Axios 供应链攻击复盘：针对性社会工程攻击",
-          "category": "行业",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/3/supply-chain-social-engineering/",
-          "why_picked": "Axios 团队发布完整复盘：恶意依赖注入事件源于针对维护者的精准社会工程攻击，而非技术漏洞",
-          "so_what": "如果你在用 npm/pypi 依赖：供应链攻击从「自动化扫描」转向「人工针对性攻击」；启用依赖锁定 (package-lock.json/poetry.lock)；评估关键依赖的维护者安全实践；CI 中增加依赖变更人工审批环节。"
-        },
-        {
-          "title": "LLM 优化数据库查询执行计划：最高 4.78x 加速",
-          "category": "工具",
-          "source": "Together AI Blog",
-          "url": "https://www.together.ai/blog/using-llms-to-optimize-database-query-execution",
-          "why_picked": "新研究：LLM 可优化数据库查询执行计划，通过修正统计启发式方法遗漏的基数估计错误，实现最高 4.78 倍加速",
-          "so_what": "如果你在做数据密集型 AI 应用：LLM 可作为查询优化器的补充层，尤其适合复杂 join 场景；评估「传统优化器 + LLM 建议」的混合架构；注意 LLM 建议的验证成本——错误执行计划可能比原始更慢。"
-        },
-        {
-          "title": "H.264 流媒体授权费暴涨：从$10 万到$450 万",
-          "category": "行业",
-          "source": "Hacker News",
-          "url": "https://news.ycombinator.com/item?id=47630109",
-          "why_picked": "HN 132 分热议：专利持有方将 H.264 流媒体授权费上限从 10 万美元提高到 450 万美元，影响视频流媒体服务成本结构",
-          "so_what": "如果你在做 AI 视频应用（视频生成/流媒体）：H.264 授权成本可能成为规模化瓶颈；评估 AV1/VP9 等免授权编码替代方案；计算授权费临界点（月活用户数/带宽用量），提前规划编码策略转型。"
         }
       ]
     }
