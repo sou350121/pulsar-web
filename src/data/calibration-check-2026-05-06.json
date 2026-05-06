@@ -1,0 +1,327 @@
+{
+  "date": "2026-05-06",
+  "generated_at": "2026-05-06T11:04:28.206542",
+  "summary": {
+    "total_assumptions": 20,
+    "total_signals_matched": 102,
+    "total_signals_available": 118,
+    "coverage_pct": 86.4,
+    "status_distribution": {
+      "no_signal": 4,
+      "moderate": 5,
+      "very_strong": 3,
+      "strong": 5,
+      "weak": 3
+    },
+    "drift_summary": {
+      "strengthening": 8,
+      "declining": 7,
+      "stable": 5
+    },
+    "avg_confidence": 69.7,
+    "avg_adjusted_confidence": 69.5,
+    "review_count": 7,
+    "elevate_count": 0
+  },
+  "assumptions": [
+    {
+      "assumption_id": "T-003",
+      "hypothesis": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling.",
+      "category": "system",
+      "confidence": 71,
+      "adjusted_confidence": 66,
+      "signal_count": 0,
+      "status": "no_signal",
+      "drift": "declining",
+      "top_signals": [],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "T-004",
+      "hypothesis": "Key claims in daily outputs should be grounded in primary sources (official blog / GitHub release / docs).",
+      "category": "system",
+      "confidence": 71,
+      "adjusted_confidence": 71,
+      "signal_count": 4,
+      "status": "moderate",
+      "drift": "stable",
+      "top_signals": [
+        "[Semantic Index: V-005] [0.27] upstream-signals.json",
+        "[Watch Boost: T-004] Hallucinations Undermine Trust; Metacognition is a Way Forward",
+        "[Watch Boost: T-004] HalluScan: A Systematic Benchmark for Detecting and Mitigating Hallucinations in Instruction-Following LLMs"
+      ],
+      "recommendation": "monitor"
+    },
+    {
+      "assumption_id": "V-001",
+      "hypothesis": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA action head paradigm for top-venue papers through 2026. Autoregressive tokenized-action approaches (like ARP, UniPi) will not surpass it on SIMPLER/LIBERO benchmarks without architectural novelty.",
+      "category": "vla",
+      "confidence": 76,
+      "adjusted_confidence": 82,
+      "signal_count": 21,
+      "status": "very_strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA RSS] Learning to Act Through Contact: A Unified View of Multi-Task Robot Learning",
+        "[VLA RSS] BridgeACT: Bridging Human Demonstrations to Robot Actions via Unified Tool-Target Affordances",
+        "[Watch Boost: V-001] Cascaded Flow Matching for Heterogeneous Tabular Data with Mixed-Type Features"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "V-002",
+      "hypothesis": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation pipelines by end of 2026. Tasks like peg-in-hole, cable routing, deformable object assembly, and grasp force control will require tactile to surpass 80% success rate.",
+      "category": "vla",
+      "confidence": 64,
+      "adjusted_confidence": 67,
+      "signal_count": 9,
+      "status": "strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA RSS] ShapeGrasp: Simultaneous Visuo-Haptic Shape Completion and Grasping for Improved Robot Manipulation",
+        "[VLA RSS] Semantic-Contact Fields for Category-Level Generalizable Tactile Tool Manipulation",
+        "[Watch Boost: V-002] FlexiTac: A Low-Cost, Open-Source, Scalable Tactile Sensing Solution for Robotic Systems"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "V-003",
+      "hypothesis": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA contact-rich manipulation training. Real-robot-only labs will face a data bottleneck that sim-trained methods will outpace within 12 months.",
+      "category": "vla",
+      "confidence": 72,
+      "adjusted_confidence": 72,
+      "signal_count": 8,
+      "status": "moderate",
+      "drift": "stable",
+      "top_signals": [
+        "[VLA Release Tracker] Release: google-deepmind/mujoco @ 3.8.0",
+        "[Watch Boost: V-003] MiniVLA-Nav v1: A Multi-Scene Simulation Dataset for Language-Conditioned Robot Navigation",
+        "[Watch Boost: V-003] Flow with the Force Field: Learning 3D Compliant Flow Matching Policies from Force and Demonstration-Guided Simulation Data"
+      ],
+      "recommendation": "monitor"
+    },
+    {
+      "assumption_id": "V-004",
+      "hypothesis": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA control in structured factory/warehouse environments by end of 2026: >4h continuous autonomous operation on a defined task set without human intervention.",
+      "category": "vla",
+      "confidence": 53,
+      "adjusted_confidence": 53,
+      "signal_count": 7,
+      "status": "moderate",
+      "drift": "stable",
+      "top_signals": [
+        "[VLA RSS] ShapeGrasp: Simultaneous Visuo-Haptic Shape Completion and Grasping for Improved Robot Manipulation",
+        "[Watch Boost: V-004] Genie Sim 3.0 : A High-Fidelity Comprehensive Simulation Platform for Humanoid Robot",
+        "[Watch Boost: V-004] Uncovering Linguistic Fragility in Vision-Language-Action Models via Diversity-Aware Red Teaming"
+      ],
+      "recommendation": "monitor"
+    },
+    {
+      "assumption_id": "V-005",
+      "hypothesis": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm by mid-2026, showing >15% improvement in out-of-distribution success rate over behavior-cloning-only baselines on at least 2 major benchmarks.",
+      "category": "vla",
+      "confidence": 67,
+      "adjusted_confidence": 62,
+      "signal_count": 0,
+      "status": "no_signal",
+      "drift": "declining",
+      "top_signals": [],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "V-006",
+      "hypothesis": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planning components in VLA by end of 2026, placing world-model-first architectures in the top-5 of SIMPLER or equivalent long-horizon benchmark.",
+      "category": "vla",
+      "confidence": 58,
+      "adjusted_confidence": 64,
+      "signal_count": 18,
+      "status": "very_strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA RSS] ShapeGrasp: Simultaneous Visuo-Haptic Shape Completion and Grasping for Improved Robot Manipulation",
+        "[Watch Boost: V-003] Flow with the Force Field: Learning 3D Compliant Flow Matching Policies from Force and Demonstration-Guided Simulation Data",
+        "[Watch Boost: V-003] Sim2Real-AD: A Modular Sim-to-Real Framework for Deploying VLM-Guided Reinforcement Learning in Real-World Autonomous Driving"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "V-007",
+      "hypothesis": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method for contact-rich dexterous manipulation through 2026. Internet-video pretraining will supplement but not replace it.",
+      "category": "vla",
+      "confidence": 75,
+      "adjusted_confidence": 78,
+      "signal_count": 14,
+      "status": "strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA RSS] Phone2Act: A Low-Cost, Hardware-Agnostic Teleoperation System for Scalable VLA Data Collection",
+        "[VLA RSS] BridgeACT: Bridging Human Demonstrations to Robot Actions via Unified Tool-Target Affordances",
+        "[Watch Boost: V-002] Egocentric Tactile and Proximity Sensors as Observation Priors for Humanoid Collision Avoidance"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "V-008",
+      "hypothesis": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-month lag of closed-source frontier (pi.ai, Google RT, NVIDIA), keeping research community accessible to published techniques.",
+      "category": "vla",
+      "confidence": 66,
+      "adjusted_confidence": 69,
+      "signal_count": 9,
+      "status": "strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA Release Tracker] Release: huggingface/lerobot @ v0.5.1",
+        "[VLA Release Tracker] Release: octo-models/octo @ v1.5",
+        "[Watch Boost: V-008] Enhancing Linguistic Generalization of VLA: Fine-Tuning OpenVLA via Synthetic Instruction Augmentation"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "V-009",
+      "hypothesis": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) will not generalize beyond 50% to a significantly different morphology (bimanual, mobile, dexterous hand) without task-specific fine-tuning.",
+      "category": "vla",
+      "confidence": 77,
+      "adjusted_confidence": 77,
+      "signal_count": 6,
+      "status": "moderate",
+      "drift": "stable",
+      "top_signals": [
+        "[Watch Boost: V-007] X-Diffusion: Training Diffusion Policies on Cross-Embodiment Human Demonstrations",
+        "[Watch Boost: V-009] Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems",
+        "[Watch Boost: V-009] Flow-Opt: Scalable Centralized Multi-Robot Trajectory Optimization with Flow Matching and Differentiable Optimization"
+      ],
+      "recommendation": "monitor"
+    },
+    {
+      "assumption_id": "V-010",
+      "hypothesis": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for fine manipulation VLA by mid-2026. Pure 2D RGB-only representations will plateau below 70% on standardized precision tasks (sub-1cm accuracy).",
+      "category": "vla",
+      "confidence": 59,
+      "adjusted_confidence": 54,
+      "signal_count": 1,
+      "status": "weak",
+      "drift": "declining",
+      "top_signals": [
+        "[VLA RSS] A High-Fidelity Digital Twin for Robotic Manipulation Based on 3D Gaussian Splatting"
+      ],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "A-001",
+      "hypothesis": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration, with major IDEs/platforms providing native support by end of 2026.",
+      "category": "ai_agent",
+      "confidence": 77,
+      "adjusted_confidence": 72,
+      "signal_count": 2,
+      "status": "weak",
+      "drift": "declining",
+      "top_signals": [
+        "[AI App RSS] Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents",
+        "[Semantic Index: A-001] [0.29] upstream-signals.json"
+      ],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "A-002",
+      "hypothesis": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming tasks with no human intervention by end of 2026.",
+      "category": "ai_agent",
+      "confidence": 67,
+      "adjusted_confidence": 60,
+      "signal_count": 0,
+      "status": "no_signal",
+      "drift": "declining",
+      "top_signals": [],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "A-003",
+      "hypothesis": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade frameworks (>1k GitHub stars) showing real performance gains over single agents.",
+      "category": "ai_agent",
+      "confidence": 61,
+      "adjusted_confidence": 61,
+      "signal_count": 5,
+      "status": "moderate",
+      "drift": "stable",
+      "top_signals": [
+        "[Semantic Index: V-010] [0.15] upstream-signals.json",
+        "[Watch Boost: A-003] MAD-OPD: Breaking the Ceiling in On-Policy Distillation via Multi-Agent Debate",
+        "[Semantic Index: A-003] [0.41] upstream-signals.json"
+      ],
+      "recommendation": "monitor"
+    },
+    {
+      "assumption_id": "A-004",
+      "hypothesis": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming standard for agent planning and decision-making.",
+      "category": "ai_agent",
+      "confidence": 82,
+      "adjusted_confidence": 88,
+      "signal_count": 20,
+      "status": "very_strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA RSS] Sentinel-VLA: A Metacognitive VLA Model with Active Status Monitoring for Dynamic Reasoning and Error Recovery",
+        "[VLA RSS] Decompose and Recompose: Reasoning New Skills from Existing Abilities for Cross-Task Robotic Manipulation",
+        "[VLA RSS] MolmoAct2: Action Reasoning Models for Real-world Deployment"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "A-005",
+      "hypothesis": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA applications.",
+      "category": "ai_agent",
+      "confidence": 72,
+      "adjusted_confidence": 67,
+      "signal_count": 0,
+      "status": "no_signal",
+      "drift": "declining",
+      "top_signals": [],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "S-001",
+      "hypothesis": "Open-weight models (Qwen, LLaMA, Gemma) will match 80% of closed-source model capabilities on AI agent tasks by end of 2026, making them the engineering default due to cost advantages.",
+      "category": "system",
+      "confidence": 71,
+      "adjusted_confidence": 74,
+      "signal_count": 12,
+      "status": "strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[Watch Boost: V-002] FlexiTac: A Low-Cost, Open-Source, Scalable Tactile Sensing Solution for Robotic Systems",
+        "[Watch Boost: V-008] Enhancing Linguistic Generalization of VLA: Fine-Tuning OpenVLA via Synthetic Instruction Augmentation",
+        "[Semantic Index: V-008] [0.17] _vla_social_2026-03-19.md"
+      ],
+      "recommendation": "maintain"
+    },
+    {
+      "assumption_id": "S-002",
+      "hypothesis": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures without human intervention.",
+      "category": "system",
+      "confidence": 81,
+      "adjusted_confidence": 76,
+      "signal_count": 1,
+      "status": "weak",
+      "drift": "declining",
+      "top_signals": [
+        "[Watch Boost: S-002] Automations"
+      ],
+      "recommendation": "review"
+    },
+    {
+      "assumption_id": "A-006",
+      "hypothesis": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government contracts, defense partnerships, and capital market valuations become primary external signals of AI industry power dynamics, shaping which labs can sustain frontier research.",
+      "category": "ai_agent",
+      "confidence": 73,
+      "adjusted_confidence": 76,
+      "signal_count": 13,
+      "status": "strong",
+      "drift": "strengthening",
+      "top_signals": [
+        "[VLA Release Tracker] Release: google-deepmind/mujoco @ 3.8.0",
+        "[AI App RSS] How to build scalable web apps with OpenAI's Privacy Filter",
+        "[AI App Daily Report] OpenAI 向自助平台开放 ChatGPT 广告"
+      ],
+      "recommendation": "maintain"
+    }
+  ]
+}
