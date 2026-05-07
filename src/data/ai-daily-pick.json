@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-07",
+      "items": [
+        {
+          "title": "GPT-5.5 Instant 发布：ChatGPT 默认模型升级",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://openai.com/index/gpt-5-5-instant/",
+          "why_picked": "OpenAI 正式发布 GPT-5.5 Instant 取代 GPT-5.3 Instant 作为 ChatGPT 默认模型，API 以 chat-latest 提供。医疗/法律/金融幻觉率降 52.5%，AIME 数学得分 65.4→81.2，回复字数减少 30%",
+          "so_what": "如果你在用 chat-latest 调用 OpenAI API，无需改代码即可自动升级到 GPT-5.5 Instant。高幻觉率敏感场景（医疗/金融/法律）可立即受益，但需验证输出风格变化是否影响下游解析。记忆来源（Memory sources）功能为 Agent 个性化提供了可解释性范式。"
+        },
+        {
+          "title": "Anthropic Code w/ Claude 2026：多 Agent 编排 + Dreams 自我改进",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/May/6/code-w-claude-2026/",
+          "why_picked": "Anthropic 发布 Claude Managed Agents 三大功能：多 Agent 编排（Commander/Detector/Navigator 模式）、Outcomes 目标驱动迭代、Dreams（跨会话自检并生成改进文档）。同时 Claude Code 速率限制翻倍，API 年增 17x",
+          "so_what": "如果你在设计多 Agent 系统，Anthropic 的多 Agent 编排提供了开箱即用的模式参考——Commander 分解任务、子 Agent 并行执行、Outcomes 驱动迭代。Dreams 概念（Agent 跨会话自我反思改进）值得在长期运行的 Agent 管线中探索。"
+        },
+        {
+          "title": "Anthropic × SpaceX 达成计算合作协议，接入 Colossus 数据中心",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8suvhWbDjXn",
+          "why_picked": "Anthropic 与 SpaceX 宣布计算合作，接入 SpaceX 的 Colossus 数据中心。同日 Anthropic 高管下周将访韩共商 AI 安全风险方案",
+          "so_what": "如果你在做 AI 基础设施选型，Anthropic 绑定 SpaceX 算力意味着其 API 供给能力将进一步增强，对依赖 Anthropic API 的 Agent 应用是利好信号。同时关注算力瓶颈对模型定价的影响。"
+        },
+        {
+          "title": "Simon Willison：Vibe Coding 与 Agentic Engineering 的边界正在模糊",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/May/6/vibe-coding-and-agentic-engineering/",
+          "why_picked": "Simon Willison 反思自己过去对 vibe coding 和 agentic engineering 的严格区分——随着编码 Agent 越来越可靠，他发现自己不再逐行审查代码，两者边界正在模糊",
+          "so_what": "如果你在用 Claude Code / Cursor 等 Agent 工具做生产级开发，这篇反思值得读：当 Agent 可靠性提升时，传统的 code review 流程需要重新设计。完全拥抱 vibe coding 还是保持 agentic engineering 纪律，取决于你对质量的要求层级。"
+        },
+        {
+          "title": "OpenAI B2B Signals：前沿企业如何规模化 Agent 工作流",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-b2b-signals",
+          "why_picked": "OpenAI 发布 B2B Signals 研究报告，展示前沿企业如何用 Codex 驱动 Agent 工作流、深化 AI 采用并构建竞争壁垒",
+          "so_what": "如果你在推动企业 AI 落地，这份报告提供了前沿企业的采用模式参考——Codex 驱动的 agentic workflow 正从实验走向规模化。关注其中关于 eval 和 scaffolding 的实践。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-06",
       "items": [
         {
@@ -1318,51 +1363,6 @@
           "url": "https://simonwillison.net/2026/Apr/6/cleanup-claude-code-paste/",
           "why_picked": "Simon Willison 的超小众工具：解决从 Claude Code 终端复制 prompt 时产生的多余空白问题；README 驱动开发的典型案例",
           "so_what": "如果你在用 Claude Code CLI：建立「复制→清理→粘贴」的标准流程，避免空白导致的格式错误；参考其极简工具设计哲学——解决单一痛点即可；适合集成到个人 dotfiles 或团队共享脚本库。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-06",
-      "items": [
-        {
-          "title": "2M 周健康保险咨询：ChatGPT 成美国医疗「隐形基础设施」",
-          "category": "趋势",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/5/chengpeng-mou/",
-          "why_picked": "OpenAI 匿名数据显示：ChatGPT 每周约 200 万条健康保险相关消息，60 万条来自「医院沙漠」地区（距最近医院 30 分钟车程），7/10 消息发生在夜间——揭示 AI 在医疗资源匮乏地区的实际填补作用",
-          "so_what": "如果你在做医疗健康类 AI 应用：ChatGPT 已成事实上的初级医疗咨询入口，尤其在夜间和医疗资源匮乏地区；评估与保险机构/医疗机构合作机会；注意合规边界——健康建议需明确免责声明，避免医疗责任风险。"
-        },
-        {
-          "title": "Syntaqlite Playground：SQLite + LLM 的可视化实验场",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/5/syntaqlite/",
-          "why_picked": "Lalit Maganti 的 syntaqlite 项目引发 HN 讨论，Simon Willison 重建可视化 Playground——在浏览器中直接实验 SQLite 与 LLM 结合的查询增强、数据富化等模式",
-          "so_what": "如果你在用 SQLite 做本地 AI 应用：syntaqlite 提供 LLM 原生函数集成（语义搜索/摘要/分类），可直接在 SQL 中调用；参考其架构设计 RAG 管线；适合边缘设备/本地优先应用，避免云端依赖。"
-        },
-        {
-          "title": "scan-for-secrets 0.1：Claude Code 转录本敏感信息扫描工具",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/",
-          "why_picked": "Simon Willison 用 Claude Code 构建：扫描本地 Claude Code 会话转录本，自动检测 API 密钥/凭证等敏感信息泄露风险，解决 AI 编程助手的隐私痛点",
-          "so_what": "如果你在用 Claude Code 或类似工具：建立「会话结束→扫描→清理」的标准流程，避免凭证意外泄露；参考其正则 + 上下文检测机制；企业部署需将此纳入 AI 工具使用规范，定期审计转录本。"
-        },
-        {
-          "title": "research-llm-apis 2026-04-04：LLM 库多供应商抽象层更新",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/5/research-llm-apis/",
-          "why_picked": "Simon Willison 的 LLM Python 库重大更新：统一数百家供应商的 API 抽象层，插件系统支持快速接入新模型，CLI 工具改进多模型对比测试流程",
-          "so_what": "如果你在多模型环境开发：llm 库提供统一的调用接口和配置管理，避免为每个供应商写适配层；参考其插件架构设计自己的模型切换层；适合需要快速评估多个模型效果的场景。"
-        },
-        {
-          "title": "Influcio：AI 营销 Agent 驱动网红营销自动化",
-          "category": "新发布",
-          "source": "Product Hunt",
-          "url": "https://www.producthunt.com/products/influcio-2",
-          "why_picked": "Product Hunt 4 月 4 日新发布：AI Agent 自动执行网红营销活动全流程——从候选人筛选、合同生成到效果追踪，声称实现「结果驱动」的营销自动化",
-          "so_what": "如果你在做垂直领域 Agent：Influcio 展示「高价值工作流 + 端到端自动化」的落地模式；营销场景 ROI 易量化（转化率/获客成本）；评估类似框架在 B2B 销售/客户成功等场景的复制潜力。"
         }
       ]
     }

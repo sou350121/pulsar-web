@@ -1,103 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-04-06",
-      "config_version": 9,
-      "items": [
-        {
-          "title": "Codex pricing to align with API token usage, instead of per-message",
-          "url": "https://help.openai.com/en/articles/20001106-codex-rate-card",
-          "source": "OpenAI Help Center",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "pricing",
-            "codex",
-            "api"
-          ],
-          "direction_note_prefix": "",
-          "why": "OpenAI 调整 Codex 计费模式，从按消息改为按 token 用量，影响团队成本结构"
-        },
-        {
-          "title": "Running Gemma 4 locally with LM Studio's new headless CLI and Claude Code",
-          "url": "https://ai.georgeliu.com/p/running-google-gemma-4-locally-with",
-          "source": "George Liu AI Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "George Liu",
-          "labels": [
-            "local-llm",
-            "gemma",
-            "cli"
-          ],
-          "direction_note_prefix": "",
-          "why": "详解如何在本地用 LM Studio 无头 CLI 运行 Gemma 4，配合 Claude Code 工作流"
-        },
-        {
-          "title": "Nanocode: The best Claude Code that $200 can buy in pure JAX on TPUs",
-          "url": "https://github.com/salmanmohammadi/nanocode/discussions/1",
-          "source": "GitHub",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "salmanmohammadi",
-          "labels": [
-            "training",
-            "jax",
-            "tpu",
-            "agentic"
-          ],
-          "direction_note_prefix": "",
-          "why": "用 JAX+TPU 端到端训练自己的 Claude Code 风格 Agent，1.3B 模型成本约$200"
-        },
-        {
-          "title": "Quoting Chengpeng Mou",
-          "url": "https://simonwillison.net/2026/Apr/5/chengpeng-mou/#atom-everything",
-          "source": "Simon Willison Blog",
-          "category": "垂直应用",
-          "importance": "read-only",
-          "developer": "—",
-          "labels": [
-            "healthcare",
-            "usage-data",
-            "insight"
-          ],
-          "direction_note_prefix": "",
-          "why": "匿名 ChatGPT 数据显示：每周约 200 万条健康保险咨询，60 万条来自「医院荒漠」居民"
-        },
-        {
-          "title": "scan-for-secrets 0.1",
-          "url": "https://simonwillison.net/2026/Apr/5/scan-for-secrets-3/#atom-everything",
-          "source": "Simon Willison Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Simon Willison",
-          "labels": [
-            "security",
-            "claude-code",
-            "tool"
-          ],
-          "direction_note_prefix": "",
-          "why": "新工具自动扫描 Claude Code 会话转录中的 API 密钥等敏感信息，防止意外泄露"
-        },
-        {
-          "title": "Continual learning for AI agents",
-          "url": "https://blog.langchain.com/continual-learning-for-ai-agents/",
-          "source": "LangChain Blog",
-          "category": "Agent 框架",
-          "importance": "read-only",
-          "developer": "LangChain",
-          "labels": [
-            "learning",
-            "architecture",
-            "concept"
-          ],
-          "direction_note_prefix": "",
-          "why": "Harrison Chase 解析 Agent 持续学习三层次：模型权重、harness 代码、用户上下文"
-        }
-      ]
-    },
-    {
       "date": "2026-04-07",
       "config_version": 9,
       "items": [
@@ -3049,6 +2952,102 @@
           ],
           "direction_note_prefix": "",
           "why": "Ads Manager Beta + CPC 竞价，OpenAI 商业化加速"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-07",
+      "config_version": 10,
+      "items": [
+        {
+          "title": "Anthropic Code w/ Claude 2026：多Agent编排 + Claude Code 速率翻倍 + SpaceX Colossus合作",
+          "url": "https://simonwillison.net/2026/May/6/code-w-claude-2026/",
+          "source": "Simon Willison Blog (Anthropic Event)",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "multi-agent",
+            "agent-ui",
+            "orchestration"
+          ],
+          "direction_note_prefix": "",
+          "why": "Claude Managed Agents 新增多Agent编排、Outcomes目标设定、Dreaming自检三大功能；Claude Code 时长限制翻倍"
+        },
+        {
+          "title": "vLLM V0→V1 迁移实录：RL 训练中正确性优先于修正",
+          "url": "https://huggingface.co/blog/ServiceNow-AI/correctness-before-corrections",
+          "source": "HuggingFace Blog (ServiceNow AI)",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "ServiceNow AI",
+          "labels": [
+            "vllm",
+            "rlhf",
+            "inference"
+          ],
+          "direction_note_prefix": "",
+          "why": "ServiceNow 详述 vLLM V1 迁移中修复 logprobs 语义、运行时默认值、inflight 权重更新、fp32 lm_head 四大差异，恢复 RL 训练轨迹"
+        },
+        {
+          "title": "Weaviate：检索质量是 RAG 幻觉的最可靠预测因子",
+          "url": "https://weaviate.io/blog/retrieval-quality-rag-overview",
+          "source": "Weaviate Blog",
+          "category": "RAG 工具链",
+          "importance": "actionable",
+          "developer": "Weaviate",
+          "labels": [
+            "rag",
+            "retrieval",
+            "evaluation"
+          ],
+          "direction_note_prefix": "[RAG]",
+          "why": "多Agent LLM 系统研究表明：检索质量下降时 LLM 不会补偿而是 extrapolate，需专用 eval 基础设施检测"
+        },
+        {
+          "title": "Simon Willison：Vibe coding 与 agentic engineering 正在收敛",
+          "url": "https://simonwillison.net/2026/May/6/vibe-coding-and-agentic-engineering/",
+          "source": "Simon Willison Blog",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "—",
+          "labels": [
+            "vibe-coding",
+            "agentic",
+            "paradigm"
+          ],
+          "direction_note_prefix": "",
+          "why": "25年经验工程师承认：随着 Agent 可靠性提升，不再逐行审查代码，vibe coding 与 agentic engineering 边界模糊"
+        },
+        {
+          "title": "豆包推出付费会员：68-500元/月四档，聚焦复杂生产力场景",
+          "url": "https://www.36kr.com/p/3797229255843078",
+          "source": "36氪",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "字节跳动",
+          "labels": [
+            "monetization",
+            "ai-app",
+            "china"
+          ],
+          "direction_note_prefix": "",
+          "why": "豆包三亿月活正式启动商业化，付费聚焦 PPT/数据分析/影视制作等复杂场景；对比 Kimi/Claude 定价策略"
+        },
+        {
+          "title": "Singular Bank 用 ChatGPT + Codex 构建银行内部助手，每天节省 60-90 分钟",
+          "url": "https://openai.com/index/singular-bank/",
+          "source": "OpenAI 官方博客",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "enterprise",
+            "chatgpt",
+            "codex"
+          ],
+          "direction_note_prefix": "",
+          "why": "马德里私人银行构建 Singularity 助手：实时分析投资组合、会议准备、合规跟进，整合核心银行系统"
         }
       ]
     }
