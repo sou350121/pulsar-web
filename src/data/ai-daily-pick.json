@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-08",
+      "items": [
+        {
+          "title": "GPT-5.5 Instant 正式发布：ChatGPT 默认模型更新",
+          "category": "新发布",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/gpt-5-5-instant/",
+          "why_picked": "OpenAI 将 GPT-5.5 Instant 设为 ChatGPT 默认模型，面向所有用户开放，API 以 chat-latest 提供。幻觉率下降 52.5%，数学/科学能力大幅提升",
+          "so_what": "如果你在做基于 ChatGPT API 的应用，chat-latest 已自动指向 GPT-5.5 Instant，无需改代码即可获得准确性提升。如果你的产品依赖模型输出的稳定性，建议重新测试 prompt——回复风格更简洁，可能影响解析逻辑。记忆来源（Memory sources）功能上线，可审计个性化上下文，对安全合规有要求的场景值得关注。"
+        },
+        {
+          "title": "Amazon Bedrock AgentCore Payments：AI Agent 可直接支付",
+          "category": "新发布",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/agents-that-transact-introducing-amazon-bedrock-agentcore-payments-built-with-coinbase-and-stripe/",
+          "why_picked": "首个面向自主 Agent 的托管支付能力，支持 API/MCP/其他 Agent 的实时微支付，与 Coinbase 和 Stripe 合作",
+          "so_what": "如果你在设计 Agent 需要调用外部付费服务的架构，AgentCore Payments 提供了一站式方案——钱包认证、交易执行、消费治理和可观测性全部内置。这比手动对接每个服务商的计费 API 节省数月工程。关注 x402/ACP 等微支付协议的开发者应评估是否直接采用托管方案。"
+        },
+        {
+          "title": "Mozilla 用 Claude Mythos 修复 Firefox 423 个安全漏洞",
+          "category": "工具",
+          "source": "Mozilla",
+          "url": "https://hacks.mozilla.org/2026/05/behind-the-scenes-hardening-firefox/",
+          "why_picked": "Mozilla 利用 Claude Mythos Preview 定位并修复大量漏洞，4 月单月修了 423 个（此前每月 20-30 个），包括 20 年历史的 XSLT bug",
+          "so_what": "如果你在用 LLM 做安全审计或代码审查，Mozilla 的实践证明了「堆模型 + 过滤噪声」的规模化路线可行——不是靠单个 prompt 找 bug，而是多模型协作 + 自动过滤。对开源项目维护者来说，AI 生成的安全报告质量已从「垃圾」进化到「值得认真对待」。"
+        },
+        {
+          "title": "xAI 将 Colossus 数据中心全部产能售予 Anthropic",
+          "category": "行业",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/May/7/xai-anthropic/",
+          "why_picked": "Anthropic 在 Code w/ Claude 活动上宣布拿下 SpaceX/xAI Colossus 1 全部算力容量；xAI 同时废弃 Grok 4.1 Fast 等模型，两周通知",
+          "so_what": "如果你在用 Grok API 做产品集成，xAI 的模型生命周期管理风险需要评估——两周废弃通知意味着没有迁移窗口。Anthropic 算力布局加速，Claude 后续版本的产能有保障，对依赖 Claude API 的团队是正面信号。"
+        },
+        {
+          "title": "DeepL 裁员 25%，CEO 直言 AI 带来结构性转变",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8swFAWesd4J",
+          "why_picked": "德国翻译独角兽 DeepL 裁减 250 人（占总人数 25%），CEO 归因于 AI 工具替代 + 组织扁平化，估值 20 亿美元仍难逃冲击",
+          "so_what": "如果你在构建 AI 驱动的翻译/本地化产品，DeepL 的困境说明：即使曾是 Google Translate 的最强对手，在 ChatGPT 等通用大模型的多语言能力面前仍需转型。AI 工具替代开发者的趋势正在从边缘行业向核心产品蔓延。"
+        },
+        {
+          "title": "Principles for Agent-Native CLIs",
+          "category": "观点",
+          "source": "HN/Trevin",
+          "url": "https://x.com/trevin/status/2051316002730991795",
+          "why_picked": "HN 50 分讨论，探讨为 AI Agent 而非人类重新设计 CLI 交互原则——Agent 不需要人类友好的提示符和进度条",
+          "so_what": "如果你在设计 Agent 可操作的 CLI 工具或 API 网关，这篇文章提出的「agent-native」思路值得参考：Agent 需要的是结构化输入输出、幂等性保证和机器可解析的错误码，而不是人类友好的交互体验。这影响了你如何设计工具调用接口。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-07",
       "items": [
         {
@@ -1318,51 +1371,6 @@
           "url": "https://rajnandan.com/posts/taste-in-the-age-of-ai-and-llms/",
           "why_picked": "HN 208 分/178 评论讨论 AI 时代人类品味的价值——当内容生成成本趋零，筛选/策展能力成为稀缺资源",
           "so_what": "如果你在做 AI 内容产品：生成过剩时代，品味（筛选标准/审美判断/上下文理解）是差异化核心；投资人工策展层而非纯自动化；参考其框架设计「AI 生成 + 人工精选」的混合工作流。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-07",
-      "items": [
-        {
-          "title": "博通 - 谷歌-Anthropic 达成长期 TPU 供应协议（至 2031 年）",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8s7V8mFCeFz",
-          "why_picked": "博通与谷歌签署 TPU 长期合作协议至 2031 年；Anthropic 自 2027 年起将通过博通获得约 3.5GW 算力支持；显示 Anthropic 正通过硬件绑定确保长期算力供应",
-          "so_what": "如果你在做 AI 基础设施规划：Anthropic 锁定 3.5GW 算力至 2031 年，显示头部玩家正通过长期硬件绑定确保训练/推理资源；评估与云厂商的长期算力合约；关注 TPU 生态 vs GPU 生态的成本差异；算力稀缺性可能成为中小团队的主要瓶颈。"
-        },
-        {
-          "title": "OpenAI 计划 2026 年 Q4 进行 IPO",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8s78HRZsywR",
-          "why_picked": "OpenAI 计划在最早 2026 年第四季度进行 IPO，CEO 和 CFO 在筹集 1220 亿美元后对 IPO「充满信心」；标志 AI 龙头从私营向公开市场转型",
-          "so_what": "如果你在企业 AI 采购：OpenAI 上市后财务披露将更透明，便于评估其长期稳定性；IPO 后可能面临股东压力调整定价策略；关注招股书中的算力成本/营收结构数据，作为行业基准参考；企业合约需考虑 IPO 后条款变更风险。"
-        },
-        {
-          "title": "「Vibe Coding」争议：Bram Cohen 批评纯 AI 编程是「失控的 dogfooding」",
-          "category": "观点",
-          "source": "Hacker News",
-          "url": "https://bramcohen.com/p/the-cult-of-vibe-coding-is-insane",
-          "why_picked": "BitTorrent 创始人 Bram Cohen 发文批评「vibe coding」（完全不查看 AI 生成代码）是神话；HN 444 分热议；指出即使 AI 编程仍需人类构建框架和审查",
-          "so_what": "如果你在用 AI 编程助手：纯「vibe coding」不可持续——仍需理解代码结构、审查重复逻辑、定义 agent/tool 边界；建立「AI 生成 + 人工审查」标准流程；参考其建议：用 AI 清理技术债比写新功能更高效；避免「信任过度」导致的生产环境 bug。"
-        },
-        {
-          "title": "AWS Bedrock + OpenSearch 混合 RAG 方案",
-          "category": "工具",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-intelligent-search-with-amazon-bedrock-and-amazon-opensearch-for-hybrid-rag-solutions/",
-          "why_picked": "AWS 官方教程详解如何用 Bedrock AgentCore + Strands Agents + OpenSearch 实现混合 RAG（语义搜索 + 文本搜索）；生产级参考架构",
-          "so_what": "如果你在用 AWS 构建 RAG 系统：参考其「语义 + 关键词」混合检索架构，提升召回率；Bedrock AgentCore 提供托管会话状态，解决跨请求记忆问题；评估 OpenSearch 向量插件 vs 专用向量数据库的成本差异；适合企业级合规部署场景。"
-        },
-        {
-          "title": "Cleanup Claude Code Paste：清理 Claude Code 终端复制的多余空白",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/6/cleanup-claude-code-paste/",
-          "why_picked": "Simon Willison 的超小众工具：解决从 Claude Code 终端复制 prompt 时产生的多余空白问题；README 驱动开发的典型案例",
-          "so_what": "如果你在用 Claude Code CLI：建立「复制→清理→粘贴」的标准流程，避免空白导致的格式错误；参考其极简工具设计哲学——解决单一痛点即可；适合集成到个人 dotfiles 或团队共享脚本库。"
         }
       ]
     }
