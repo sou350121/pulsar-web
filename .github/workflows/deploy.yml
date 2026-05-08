@@ -36,7 +36,11 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest
+          # Pin to v10 — pnpm 11.x (released ~2026-05) treats
+          # ERR_PNPM_IGNORED_BUILDS as a hard install failure even with
+          # `pnpm.onlyBuiltDependencies` whitelist in package.json,
+          # which broke our CI starting 2026-05-08.
+          version: 10
 
       - name: Sync pipeline data via SSH
         id: ssh_sync
