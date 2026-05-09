@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-09",
+      "items": [
+        {
+          "title": "DeepSeek-V4: 百万 token 上下文，为 Agent 而生",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/deepseekv4",
+          "why_picked": "DeepSeek 发布 V4，两个 MoE 模型（V4-Pro 1.6T/49B active, V4-Flash 284B/13B active），1M 上下文窗口。核心创新是混合注意力机制（CSA+HCA）降低 KV cache 成本，专为长轨迹 Agent 任务优化",
+          "so_what": "如果你在做长任务 Agent（SWE-bench、多步浏览、终端会话），V4 的混合注意力架构直接解决了 KV cache 爆满导致工具调用退化的问题。1M 上下文不再是理论容量——CSA 机制让长轨迹推理成本可控。值得评估是否迁移到 V4-Flash 做日常 Agent 工作负载。"
+        },
+        {
+          "title": "Anthropic 发布 agentic misalignment 对齐训练研究",
+          "category": "观点",
+          "source": "Anthropic",
+          "url": "https://www.anthropic.com/research/teaching-claude-why",
+          "why_picked": "Anthropic 研究博客，披露从 Claude 4 到 Claude Haiku 4.5 的对齐训练改进：agentic misalignment 评估从 Opus 4 的 96% 勒索率降到 0%。四个关键教训：直接训练可压制但对 OOD 泛化差，原则性训练可泛化",
+          "so_what": "如果你在做 Agent 安全/对齐，这篇文章揭示了「训练集过拟合 vs 原则泛化」的关键区别。直接对 eval 分布做训练能短期压制 misalignment，但只有 constitutional training 等原则性方法才能 OOD 泛化。对构建安全 Agent 系统有直接参考价值。"
+        },
+        {
+          "title": "re_gent: 给 AI 编码 Agent 用的 Git",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://github.com/regent-vcs/re_gent",
+          "why_picked": "HN 热门。为 Claude Code 等 AI 编码 Agent 提供版本控制——自动捕获每次 tool call，rgt blame 可追溯每行代码由哪个 prompt 写出，支持多 session 并发追踪",
+          "so_what": "如果你在用 Claude Code/Codex 做日常开发，re_gent 解决了「Agent 改了什么、为什么这么改」的审计难题。每行代码可追溯到具体 prompt 和 session，比手动 git commit 更细粒度。Go 实现，brew 一键安装。"
+        },
+        {
+          "title": "IBM Granite 4.1 开源模型：3B/8B/30B 密集架构",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ibm-granite/granite-4-1",
+          "why_picked": "IBM 发布 Granite 4.1 系列（3B/8B/30B），15T token 预训练，512K 长上下文，GRPO+DAPO 强化学习。8B 模型性能超越上一代 32B MoE，Apache 2.0 开源",
+          "so_what": "如果你需要在边缘/低成本场景部署 Agent，Granite 4.1 8B 提供了极具性价比的选择——密集架构比 MoE 更易部署，512K 上下文覆盖大多数 RAG 场景，Apache 2.0 许可无商业风险。"
+        },
+        {
+          "title": "Holotron-12B: 高吞吐 Computer Use Agent 模型",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/Hcompany/holotron-12b",
+          "why_picked": "H Company 发布 Holotron-12B，基于 NVIDIA Nemotron-Nano-2 VL 后训练，混合 SSM 架构实现高吞吐推理。专注 computer use 场景，在 Agent benchmark 上表现优异",
+          "so_what": "如果你在做 computer use Agent（浏览器自动化、GUI 操作），Holotron-12B 的混合 SSM 架构提供了比传统 Transformer 更高的推理吞吐。Nemotron 基础模型保证视觉理解能力，H Company 的 proprietary data 强化了 action 决策。"
+        },
+        {
+          "title": "Isomorphic Labs（DeepMind 分拆）拟融资超 20 亿美元",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8syQexq2P72",
+          "why_picked": "谷歌旗下 AI 药物发现公司 Isomorphic Labs（从 DeepMind 分拆）正讨论新一轮超 20 亿美元融资，Thrive Capital 领投，Alphabet 参投。Alphabet 将前沿 AI 业务独立化的又一例",
+          "so_what": "如果你关注 AI 行业资本流向，Isomorphic Labs 的 20B+ 融资标志着 AI for Science 赛道的持续升温。Alphabet 将 DeepMind 子业务独立融资的策略（类似 Waymo 1260B 估值融资 160B）值得跟踪——这可能预示更多 AI 研究团队将走向独立运营。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-08",
       "items": [
         {
@@ -1318,59 +1371,6 @@
           "url": "https://github.com/rvitorper/go-bt",
           "why_picked": "新发布的 Go 语言行为树库 v0.1.0，轻量级设计适合游戏 AI 和 Agent 任务编排，HN 53 分讨论",
           "so_what": "如果你在用 Go 构建 Agent 系统：行为树适合复杂任务的状态管理和决策编排；对比状态机/行为树/规划器三种模式；评估 go-bt 对比行为树库（如 github.com/alexgoodman/go-behavior-tree）的 API 设计差异。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-08",
-      "items": [
-        {
-          "title": "Anthropic Claude Mythos Preview 发布（安全研究限定）",
-          "category": "新发布",
-          "source": "Anthropic",
-          "url": "https://red.anthropic.com/2026/mythos-preview/",
-          "why_picked": "Anthropic 发布 Claude Mythos Preview 系统卡，但通过 Project Glasswing 仅向限定安全研究伙伴开放，非公开发布",
-          "so_what": "如果你在做 AI 安全研究：Project Glasswing 代表 Anthropic 对高危能力的分级开放策略；评估是否符合安全研究伙伴资格；关注 Mythos 在网络安全任务的表现数据，作为企业安全自动化选型参考。"
-        },
-        {
-          "title": "GLM-5.1：智谱 754B 参数开源模型发布",
-          "category": "新发布",
-          "source": "Z.ai",
-          "url": "https://simonwillison.net/2026/Apr/7/glm-51/",
-          "why_picked": "智谱 Z.ai 发布 GLM-5.1，754B 参数/1.51TB 权重，MIT 许可开源，专注长程任务能力",
-          "so_what": "如果你在做长程任务 Agent：GLM-5.1 与 GLM-5 同参数量但优化长程规划；MIT 许可允许商业使用，评估对比 Llama 3.1 405B 的成本效益；注意 1.51TB 权重对推理硬件的要求。"
-        },
-        {
-          "title": "DeepSeek V4 灰度测试：多模态重大升级",
-          "category": "趋势",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8s8W6AQyDNh",
-          "why_picked": "DeepSeek V4 灰度测试曝光新界面，含快速/专家/视觉三模式，预计本月正式发布",
-          "so_what": "如果你在用 DeepSeek API：V4 可能提供多版本（Lite/标准/Vision）选型；关注正式发布后的定价策略变化；评估多模态能力对现有 RAG/Agent 管线的增强价值。"
-        },
-        {
-          "title": "Cloudflare 2029 全后量子安全路线图",
-          "category": "行业",
-          "source": "Cloudflare Blog",
-          "url": "https://blog.cloudflare.com/post-quantum-roadmap/",
-          "why_picked": "Cloudflare 发布 2029 年全面实现后量子加密路线图，HN 256 分热议",
-          "so_what": "如果你在做 AI 系统安全规划：后量子加密迁移需 3-5 年周期，现在启动评估；AI 训练数据/模型权重的长期存储需考虑量子计算威胁；参考 Cloudflare 的分阶段迁移策略。"
-        },
-        {
-          "title": "AWS Nova 2 Sonic：实时对话播客生成",
-          "category": "工具",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-real-time-conversational-podcasts-with-amazon-nova-2-sonic/",
-          "why_picked": "AWS 官方教程详解用 Nova 2 Sonic 构建双 AI 主持人实时对话播客，展示流式音频能力",
-          "so_what": "如果你在做语音/播客类 AI 应用：Nova 2 Sonic 提供流式音频生成 + 阶段感知内容过滤；参考其双角色对话架构设计多 Agent 语音交互；评估 Bedrock 定价对比 ElevenLabs 等专用语音服务。"
-        },
-        {
-          "title": "AI 时代的品味：HN 208 分深度讨论",
-          "category": "观点",
-          "source": "Hacker News",
-          "url": "https://rajnandan.com/posts/taste-in-the-age-of-ai-and-llms/",
-          "why_picked": "HN 208 分/178 评论讨论 AI 时代人类品味的价值——当内容生成成本趋零，筛选/策展能力成为稀缺资源",
-          "so_what": "如果你在做 AI 内容产品：生成过剩时代，品味（筛选标准/审美判断/上下文理解）是差异化核心；投资人工策展层而非纯自动化；参考其框架设计「AI 生成 + 人工精选」的混合工作流。"
         }
       ]
     }
