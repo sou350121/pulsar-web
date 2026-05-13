@@ -1,6 +1,43 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-13",
+      "items": [
+        {
+          "title": "Google Gemini Omni 泄露：全模态视频生成模型，黑板推公式全对",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3805677378674185",
+          "why_picked": "谷歌I/O大会(5/19)前泄露，Gemini Omni支持文本/图像/音频/视频全模态输入输出，视频生成质量超越Sora 2，支持实时编辑（去水印/物体替换）",
+          "so_what": "如果你在做视频内容管线或多模态应用，这是需要关注的模型方向。Gemini Omni 的实时编辑能力（对话式去水印、物体替换）可能重塑视频工作流。I/O大会(5/19)预计正式发布，建议提前评估API集成路径。"
+        },
+        {
+          "title": "NVIDIA 全面采用 Codex (GPT-5.5) 作为生产级工程工具",
+          "category": "行业",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/nvidia",
+          "why_picked": "OpenAI官方博客案例，NVIDIA工程师将Codex+GPT-5.5作为复杂工程默认工具，可自主完成端到端ML实验，速度提升10x",
+          "so_what": "如果你在用Codex或评估coding agent，NVIDIA的实战案例提供了关键参考：GPT-5.5在长会话中保持上下文准确性，支持多compaction，适合从MVP到生产系统的完整开发周期。"
+        },
+        {
+          "title": "llm 0.32a2：OpenAI /v1/responses 端点支持，推理token可视化",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://simonwillison.net/2026/May/12/llm/",
+          "why_picked": "Simon Willison的llm CLI工具重大更新，支持OpenAI /v1/responses端点，实现GPT-5类模型的interleaved reasoning（推理与工具调用交错）",
+          "so_what": "如果你在用OpenAI reasoning模型做CLI自动化，这个更新意味着你可以在终端直接看到推理过程（不同颜色显示），方便调试agent决策链。-R/--hide-reasoning标志可关闭显示。"
+        },
+        {
+          "title": "Anthropic 大规模研究：主流LLM价值观规范自相矛盾，模型输出帮用户造假",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3804911543689216",
+          "why_picked": "Anthropic对齐团队测试30万+价值权衡查询，发现Claude/GPT/Gemini/xAI均有不同价值优先模式，规范文档存在数千条矛盾，模型在不同情境下价值判断飘移",
+          "so_what": "如果你在企业部署LLM并依赖其价值观对齐，这项研究是重要警示：模型的'价值观'并非训练阶段锁死，会随上下文飘移。建议在关键场景（医疗/法律/客服）增加后处理校验层，不要完全信任模型的道德判断。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-12",
       "items": [
         {
@@ -1342,35 +1379,6 @@
           "url": "https://www.36kr.com/p/3763537087562249",
           "why_picked": "AISLE 实验复测发现：Mythos 宣称的成千上万个漏洞中多数无法利用，8 个开源小模型（最小 36 亿参数）成功复现 Mythos 标志性漏洞发现，成本低至$0.11/百万 token",
           "so_what": "如果你在做 AI 安全评估：小模型漏洞发现能力意味着攻击门槛大幅降低——不仅头部模型有风险，开源小模型也可能被用于自动化攻击；评估现有系统的多层防御策略（不依赖单一模型检测）；参考其「锯齿形」能力分布理论，避免盲目追求大模型。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-12",
-      "items": [
-        {
-          "title": "Small models also found the vulnerabilities that Mythos found",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://aisle.com/blog/ai-cybersecurity-after-mythos-the-jagged-frontier",
-          "why_picked": "HN 734 分/200 评论：Mythos 漏洞发现的技术后续——小型模型也能独立发现同类漏洞，反映 AI 安全能力的民主化趋势",
-          "so_what": "如果你在做 AI 安全评估：小模型漏洞发现能力意味着攻击门槛降低——不仅头部模型有风险，开源小模型也可能被用于自动化攻击；评估现有系统的多层防御策略（不依赖单一模型检测）；关注「模型能力民主化」带来的安全范式转变。"
-        },
-        {
-          "title": "Claude 新模型引发华尔街恐慌，安全股单日蒸发 2 万亿",
-          "category": "行业",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3761709375521288",
-          "why_picked": "昨日美国财政部 Mythos 会议的市场反应：网络安全股暴跌，反映资本市场对 AI 模型风险的真实定价",
-          "so_what": "如果你在企业 AI 采购：资本市场已将 AI 模型风险纳入系统性风险框架——这可能转化为监管硬要求；评估供应商的安全合规文档是否满足即将出台的监管预期；考虑在采购合同中加入 AI 安全 SLA 条款。"
-        },
-        {
-          "title": "SQLite 3.53.0 发布：累积重大更新",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/11/sqlite/#atom-everything",
-          "why_picked": "Simon Willison 详解 SQLite 3.53.0 重大更新（3.52.0 撤回后的累积版本），ALTER TABLE 现在支持添加/移除 NOT NULL 约束",
-          "so_what": "如果你在用 SQLite 做本地 AI 应用（如 syntaqlite 模式）：3.53.0 的 schema 变更能力简化了本地数据库迁移流程；参考 Simon 的更新分析决定是否升级；适合边缘设备/本地优先 AI 应用，避免云端依赖。"
         }
       ]
     }
