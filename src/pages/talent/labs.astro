@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LabCard from '../../components/LabCard.astro';
+import { loadLabs } from '../../utils/talent';
+
+const base = import.meta.env.BASE_URL;
+const labs = loadLabs({ minSignals: 2 });
+---
+
+<BaseLayout
+  title="實驗室 Labs · Talent Radar"
+  description="实验室活动 — 90 天滚动信号 + 方法聚焦 + 近期论文"
+>
+  <main class="container talent-page">
+    <header class="talent-page-header">
+      <a class="talent-back" href={`${base}/talent/`}>← Talent Radar</a>
+      <h1 class="talent-page-title">
+        <span data-tc>實驗室 / Labs</span>
+        <span data-sc>实验室 / Labs</span>
+      </h1>
+      <p class="talent-page-sub">
+        {labs.length} labs with ≥2 signals in the rolling 90-day window. Ordered by
+        signal count; 14-day sparkline shows daily activity. Source:
+        <code>entity-index.json</code> (type=lab) × <code>institution-registry.json</code>.
+      </p>
+    </header>
+
+    {labs.length === 0 ? (
+      <p class="talent-empty">
+        No labs surfaced yet. Wait for entity-tracker to populate (runs daily at 09:55).
+      </p>
+    ) : (
+      <div class="picks-grid">
+        {labs.map(l => <LabCard record={l} />)}
+      </div>
+    )}
+  </main>
+
+  <style>
+    .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .talent-page-header { margin-bottom: 2rem; }
+    .talent-back {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
+      color: var(--accent-cyan); text-decoration: none;
+    }
+    .talent-back:hover { text-decoration: underline; }
+    .talent-page-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: 2rem; margin: 0.5rem 0; color: var(--text-primary);
+    }
+    .talent-page-sub {
+      color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;
+    }
+    .talent-page-sub code {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.85em;
+      padding: 0.1em 0.35em; background: var(--surface); border-radius: 3px;
+    }
+    .talent-empty {
+      text-align: center; color: var(--text-muted); font-style: italic;
+      padding: 3rem; background: var(--surface);
+      border: 1px dashed var(--border); border-radius: 8px;
+    }
+  </style>
+</BaseLayout>

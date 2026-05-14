@@ -1,0 +1,181 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PersonCard  from '../../components/PersonCard.astro';
+import { loadHRQueue, DEFAULT_HR_GATE } from '../../utils/talent';
+
+const base = import.meta.env.BASE_URL;
+const queue = loadHRQueue();
+---
+
+<BaseLayout
+  title="HR 推薦隊列 HR Queue · Talent Radar"
+  description="Gate-filtered candidate queue — evidence-driven, no auto-hire, no email"
+>
+  <main class="container talent-page">
+    <header class="talent-page-header">
+      <a class="talent-back" href={`${base}/talent/`}>← Talent Radar</a>
+      <h1 class="talent-page-title">
+        <span data-tc>HR 推薦隊列</span>
+        <span data-sc>HR 推荐队列</span>
+        <span class="talent-en">/ HR Queue</span>
+      </h1>
+      <p class="talent-page-sub">
+        Read-only triage surface. <strong>No auto-hire, no auto-reject.</strong>
+        Every entry must satisfy <em>all</em> default gate criteria below.
+        Verify externally before any outreach.
+      </p>
+    </header>
+
+    <!-- ══ Gate criteria, visible ═══════════════════════════════════════ -->
+    <section class="hr-gate-card">
+      <h3 class="hr-gate-title">
+        <span data-tc>當前篩選門檻</span>
+        <span data-sc>当前筛选门槛</span>
+        <span class="hr-gate-en">/ Active Gate Criteria</span>
+      </h3>
+      <ul class="hr-gate-list">
+        <li>
+          <span class="hr-gate-key">Rating floor</span>
+          <span class="hr-gate-val">≥ {DEFAULT_HR_GATE.ratingFloor}</span>
+          <span class="hr-gate-note">— author on at least one breakthrough or practical paper</span>
+        </li>
+        <li>
+          <span class="hr-gate-key">Paper count (90d)</span>
+          <span class="hr-gate-val">≥ {DEFAULT_HR_GATE.minPaperCount90d}</span>
+          <span class="hr-gate-note">— sustained output, not a one-off</span>
+        </li>
+        <li>
+          <span class="hr-gate-key">Affiliation</span>
+          <span class="hr-gate-val">{DEFAULT_HR_GATE.requireAffiliation ? 'required' : 'optional'}</span>
+          <span class="hr-gate-note">— resolvable via institution-registry</span>
+        </li>
+        <li>
+          <span class="hr-gate-key">Contact status</span>
+          <span class="hr-gate-val">≠ not_linked</span>
+          <span class="hr-gate-note">— at least one durable signal beyond paper byline</span>
+        </li>
+        <li class="hr-gate-strong">
+          <span class="hr-gate-key">Email</span>
+          <span class="hr-gate-val">NEVER stored or shown</span>
+          <span class="hr-gate-note">— enforced in code path; verify externally</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ══ Queue ════════════════════════════════════════════════════════ -->
+    {queue.length === 0 ? (
+      <p class="talent-empty">
+        <span data-tc>目前沒有任何候選人通過全部門檻</span>
+        <span data-sc>目前没有任何候选人通过全部门槛</span>
+        <br />
+        <span class="talent-empty-sub">
+          This is normal early in deployment — wait 2–4 weeks for the entity-index to
+          accumulate sufficient signal before expecting candidates.
+        </span>
+      </p>
+    ) : (
+      <>
+        <p class="hr-queue-count">
+          <strong>{queue.length}</strong>
+          <span data-tc> 位候選人通過篩選 / candidates passed the gate</span>
+          <span data-sc> 位候选人通过筛选 / candidates passed the gate</span>
+        </p>
+        <div class="picks-grid">
+          {queue.map(c => <PersonCard record={c} showWhyNow />)}
+        </div>
+      </>
+    )}
+  </main>
+
+  <style>
+    .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .talent-page-header { margin-bottom: 2rem; }
+    .talent-back {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
+      color: var(--accent-cyan); text-decoration: none;
+    }
+    .talent-back:hover { text-decoration: underline; }
+    .talent-page-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: 2rem; margin: 0.5rem 0; color: var(--text-primary);
+    }
+    .talent-en {
+      font-family: 'IBM Plex Mono', monospace; font-size: 1rem;
+      color: var(--text-muted); margin-left: 0.5rem;
+    }
+    .talent-page-sub {
+      color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;
+    }
+    .talent-page-sub strong {
+      color: var(--accent-amber);
+    }
+    .hr-gate-card {
+      margin: 2rem 0;
+      padding: 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-amber);
+      border-radius: 8px;
+    }
+    .hr-gate-title {
+      font-family: Georgia, 'Songti SC', serif; font-size: 1rem;
+      margin: 0 0 0.75rem; color: var(--text-primary);
+    }
+    .hr-gate-en {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: var(--text-muted); margin-left: 0.5rem;
+    }
+    .hr-gate-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; gap: 0.5rem;
+    }
+    .hr-gate-list li {
+      display: grid;
+      grid-template-columns: 180px 140px 1fr;
+      gap: 0.75rem;
+      align-items: baseline;
+      font-size: 0.85rem;
+    }
+    .hr-gate-key {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hr-gate-val {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    .hr-gate-note {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .hr-gate-strong .hr-gate-val { color: var(--accent-amber); }
+    .hr-queue-count {
+      margin: 1.5rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+    }
+    .hr-queue-count strong {
+      font-size: 1.5rem; color: var(--text-primary); margin-right: 0.5rem;
+    }
+    .talent-empty {
+      text-align: center; color: var(--text-muted);
+      padding: 3rem 1rem; background: var(--surface);
+      border: 1px dashed var(--border); border-radius: 8px;
+      font-style: italic;
+    }
+    .talent-empty-sub {
+      display: inline-block; margin-top: 0.5rem; font-size: 0.85rem;
+      font-style: italic; max-width: 480px;
+    }
+    @media (max-width: 768px) {
+      .hr-gate-list li {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+    }
+  </style>
+</BaseLayout>

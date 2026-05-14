@@ -1,0 +1,359 @@
+---
+/**
+ * src/pages/talent/index.astro
+ * Stage 4 hub — Talent Radar overview.
+ *
+ * Design: 4 tier tiles (subdirections / labs / people / HR queue) with
+ * top-3 preview of each. Mirrors /dashboard composition style.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubdirectionCard from '../../components/SubdirectionCard.astro';
+import LabCard          from '../../components/LabCard.astro';
+import PersonCard       from '../../components/PersonCard.astro';
+import {
+  loadSubdirections,
+  loadLabs,
+  loadPeople,
+  loadHRQueue,
+  loadTalentStats,
+} from '../../utils/talent';
+
+const base = import.meta.env.BASE_URL;
+
+const stats = loadTalentStats();
+const topSubs   = loadSubdirections({ domain: 'all' }).slice(0, 3);
+const topLabs   = loadLabs({ minSignals: 3 }).slice(0, 3);
+const topPeople = loadPeople({ minPaperCount90d: 1 }).slice(0, 3);
+const topHR     = loadHRQueue().slice(0, 3);
+---
+
+<BaseLayout
+  title="人才雷達 Talent Radar"
+  description="Stage 4 — 从论文池反推人才：小方向 → 实验室 → 研究员 → HR 队列"
+>
+  <main class="container talent-hub">
+    <!-- ══ Hero ════════════════════════════════════════════════════════ -->
+    <header class="talent-hero">
+      <div class="talent-stage-tag">
+        <span class="talent-stage-dot"></span>
+        STAGE 4 · TALENT RADAR
+      </div>
+      <h1 class="talent-title" data-tc>人才雷達</h1>
+      <h1 class="talent-title" data-sc>人才雷达</h1>
+      <p class="talent-subtitle">
+        <span data-tc>先有論文池, 後有小方向; 先歸納方向, 再反推人才</span>
+        <span data-sc>先有论文池, 后有小方向; 先归纳方向, 再反推人才</span>
+      </p>
+      <p class="talent-tldr">
+        Read-only triage surface built on Pulsar's paper / method / lab indices.
+        <strong>No email is ever stored or shown.</strong>
+        Every recommendation carries paper-level evidence.
+      </p>
+    </header>
+
+    <!-- ══ Metric strip ════════════════════════════════════════════════ -->
+    <div class="talent-metrics">
+      <div class="talent-metric">
+        <span class="talent-metric-num">{stats.subdirectionCount}</span>
+        <span class="talent-metric-label">SUBDIRECTIONS</span>
+        <span class="talent-metric-sub">{stats.acceleratingCount} accelerating</span>
+      </div>
+      <div class="talent-metric">
+        <span class="talent-metric-num">{stats.labCount}</span>
+        <span class="talent-metric-label">LABS</span>
+        <span class="talent-metric-sub">{stats.activeLabCount7d} active 7d</span>
+      </div>
+      <div class="talent-metric">
+        <span class="talent-metric-num">{stats.peopleCount}</span>
+        <span class="talent-metric-label">PEOPLE</span>
+        <span class="talent-metric-sub">first-author + curated</span>
+      </div>
+      <div class="talent-metric talent-metric--accent">
+        <span class="talent-metric-num">{stats.hrQueueCount}</span>
+        <span class="talent-metric-label">HR QUEUE</span>
+        <span class="talent-metric-sub">gate-filtered</span>
+      </div>
+    </div>
+
+    <!-- ══ Section: Subdirections preview ═════════════════════════════ -->
+    <section class="talent-section">
+      <header class="talent-section-header">
+        <h2 class="talent-section-title">
+          <span class="talent-section-num">01</span>
+          <span data-tc>小方向</span><span data-sc>小方向</span>
+          <span class="talent-section-en">/ Subdirections</span>
+        </h2>
+        <a class="talent-more-link" href={`${base}/talent/subdirections/`}>All {stats.subdirectionCount} →</a>
+      </header>
+      <div class="picks-grid">
+        {topSubs.map(s => <SubdirectionCard record={s} />)}
+      </div>
+    </section>
+
+    <!-- ══ Section: Labs preview ═══════════════════════════════════════ -->
+    <section class="talent-section">
+      <header class="talent-section-header">
+        <h2 class="talent-section-title">
+          <span class="talent-section-num">02</span>
+          <span data-tc>實驗室</span><span data-sc>实验室</span>
+          <span class="talent-section-en">/ Labs</span>
+        </h2>
+        <a class="talent-more-link" href={`${base}/talent/labs/`}>All {stats.labCount} →</a>
+      </header>
+      <div class="picks-grid">
+        {topLabs.map(l => <LabCard record={l} />)}
+      </div>
+    </section>
+
+    <!-- ══ Section: People preview ═════════════════════════════════════ -->
+    <section class="talent-section">
+      <header class="talent-section-header">
+        <h2 class="talent-section-title">
+          <span class="talent-section-num">03</span>
+          <span data-tc>研究員</span><span data-sc>研究员</span>
+          <span class="talent-section-en">/ People</span>
+        </h2>
+        <a class="talent-more-link" href={`${base}/talent/people/`}>All {stats.peopleCount} →</a>
+      </header>
+      <div class="picks-grid">
+        {topPeople.map(p => <PersonCard record={p} />)}
+      </div>
+    </section>
+
+    <!-- ══ Section: HR queue preview ═══════════════════════════════════ -->
+    <section class="talent-section">
+      <header class="talent-section-header">
+        <h2 class="talent-section-title">
+          <span class="talent-section-num">04</span>
+          <span data-tc>HR 推薦隊列</span><span data-sc>HR 推荐队列</span>
+          <span class="talent-section-en">/ HR Queue</span>
+        </h2>
+        <a class="talent-more-link" href={`${base}/talent/hr-queue/`}>Full queue →</a>
+      </header>
+      {topHR.length === 0 ? (
+        <p class="talent-empty">
+          <span data-tc>目前沒有任何候選人通過默認門檻 (≥2 篇 🔧+ in 90d + 已知機構)</span>
+          <span data-sc>目前没有任何候选人通过默认门槛 (≥2 篇 🔧+ in 90d + 已知机构)</span>
+        </p>
+      ) : (
+        <div class="picks-grid">
+          {topHR.map(h => <PersonCard record={h} showWhyNow />)}
+        </div>
+      )}
+    </section>
+
+    <!-- ══ Footer note ═════════════════════════════════════════════════ -->
+    <aside class="talent-footnote">
+      <h3 class="talent-footnote-title">
+        <span data-tc>方法論</span><span data-sc>方法论</span>
+      </h3>
+      <ol class="talent-footnote-list">
+        <li>
+          <strong>Subdirections</strong> 来源于 <code>field-state-*.json</code> +
+          <code>ai-field-state-*.json</code> 的方法族趋势 (机械化, 零 LLM)
+        </li>
+        <li>
+          <strong>Labs</strong> 来源于 <code>entity-index.json</code> 的 type=lab
+          实体, 90 日滚动窗口
+        </li>
+        <li>
+          <strong>People</strong> 由 <code>vla-daily-rating-out-*.json</code>
+          的第一作者抽取 + <code>entity-index.json</code> 的 type=researcher 合并,
+          通过 <code>institution-registry.json</code> 关联机构
+        </li>
+        <li>
+          <strong>HR Queue</strong> 在 People 上加门槛: 顶级评分 ≥ 🔧, 90 日 ≥ 2
+          篇, 机构可解析, 联系状态非 not_linked
+        </li>
+        <li>
+          <strong>Email 永不存储或显示</strong> — 仅 <code>contact_status</code>
+          枚举: <em>linked_via_lab</em> / <em>social_mention</em> / <em>not_linked</em>
+        </li>
+      </ol>
+    </aside>
+  </main>
+
+  <style>
+    .talent-hub {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+    .talent-hero {
+      text-align: center;
+      padding: 2rem 0 3rem;
+    }
+    .talent-stage-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .talent-stage-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-amber);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .talent-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin: 0;
+      color: var(--text-primary);
+    }
+    .talent-subtitle {
+      font-family: Georgia, 'Songti SC', serif;
+      font-style: italic;
+      color: var(--text-muted);
+      margin: 0.5rem 0 1rem;
+      font-size: 1rem;
+    }
+    .talent-tldr {
+      max-width: 640px;
+      margin: 0 auto;
+      font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+    .talent-tldr strong {
+      color: var(--accent-amber);
+    }
+    .talent-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 2rem 0 3rem;
+    }
+    .talent-metric {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+    .talent-metric--accent {
+      border-color: var(--accent-amber);
+      background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-amber) 5%, transparent));
+    }
+    .talent-metric-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .talent-metric-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .talent-metric-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .talent-section {
+      margin: 3rem 0;
+    }
+    .talent-section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .talent-section-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text-primary);
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+    .talent-section-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent-amber);
+    }
+    .talent-section-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .talent-more-link {
+      margin-left: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+    .talent-more-link:hover {
+      text-decoration: underline;
+    }
+    .talent-empty {
+      text-align: center;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+    .talent-footnote {
+      margin-top: 4rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .talent-footnote-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: 1rem;
+      margin: 0 0 1rem;
+      color: var(--text-primary);
+    }
+    .talent-footnote-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+    .talent-footnote-list code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8em;
+      padding: 0.1em 0.35em;
+      background: var(--bg);
+      border-radius: 3px;
+    }
+    @media (max-width: 768px) {
+      .talent-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</BaseLayout>

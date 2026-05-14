@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PersonCard  from '../../components/PersonCard.astro';
+import { loadPeople } from '../../utils/talent';
+
+const base = import.meta.env.BASE_URL;
+const people = loadPeople({ minPaperCount90d: 1 });
+
+const linked      = people.filter(p => p.contactStatus === 'linked_via_lab');
+const social      = people.filter(p => p.contactStatus === 'social_mention');
+const bylineOnly  = people.filter(p => p.contactStatus === 'not_linked');
+---
+
+<BaseLayout
+  title="研究員 People · Talent Radar"
+  description="研究员卡片 — 第一作者抽取 × 机构关联 × 社交情报 (无邮箱展示)"
+>
+  <main class="container talent-page">
+    <header class="talent-page-header">
+      <a class="talent-back" href={`${base}/talent/`}>← Talent Radar</a>
+      <h1 class="talent-page-title">
+        <span data-tc>研究員 / People</span>
+        <span data-sc>研究员 / People</span>
+      </h1>
+      <p class="talent-page-sub">
+        {people.length} people surfaced via first-author extraction from rated papers
+        + curated <code>entity-index.json</code> researchers. Affiliations resolved
+        via <code>institution-registry.json</code>.
+      </p>
+      <p class="talent-no-email-banner">
+        <strong>NO-EMAIL</strong> — Pulsar never stores or displays email addresses.
+        Contact status is a heuristic; verify externally before any outreach.
+      </p>
+    </header>
+
+    <!-- Section 1: linked via lab -->
+    <section class="talent-section">
+      <h2 class="talent-section-h2">
+        <span data-tc>機構已確認</span><span data-sc>机构已确认</span>
+        · {linked.length}
+      </h2>
+      <div class="picks-grid">
+        {linked.map(p => <PersonCard record={p} />)}
+      </div>
+    </section>
+
+    <!-- Section 2: social mention -->
+    {social.length > 0 && (
+      <section class="talent-section">
+        <h2 class="talent-section-h2">
+          <span data-tc>社交情報提及</span><span data-sc>社交情报提及</span>
+          · {social.length}
+        </h2>
+        <div class="picks-grid">
+          {social.map(p => <PersonCard record={p} />)}
+        </div>
+      </section>
+    )}
+
+    <!-- Section 3: byline only (collapsed by default via opacity) -->
+    {bylineOnly.length > 0 && (
+      <section class="talent-section">
+        <h2 class="talent-section-h2">
+          <span data-tc>僅論文署名</span><span data-sc>仅论文署名</span>
+          · {bylineOnly.length}
+        </h2>
+        <p class="talent-section-note">
+          These are first-author bylines without a resolvable affiliation or social
+          mention in 90 days. Lowest confidence tier.
+        </p>
+        <div class="picks-grid talent-faded">
+          {bylineOnly.slice(0, 30).map(p => <PersonCard record={p} />)}
+        </div>
+        {bylineOnly.length > 30 && (
+          <p class="talent-truncated">
+            Showing 30 of {bylineOnly.length}. The rest are deliberately hidden —
+            no durable signal beyond the paper byline.
+          </p>
+        )}
+      </section>
+    )}
+  </main>
+
+  <style>
+    .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .talent-page-header { margin-bottom: 2rem; }
+    .talent-back {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
+      color: var(--accent-cyan); text-decoration: none;
+    }
+    .talent-back:hover { text-decoration: underline; }
+    .talent-page-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: 2rem; margin: 0.5rem 0; color: var(--text-primary);
+    }
+    .talent-page-sub {
+      color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;
+    }
+    .talent-page-sub code {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.85em;
+      padding: 0.1em 0.35em; background: var(--surface); border-radius: 3px;
+    }
+    .talent-no-email-banner {
+      margin-top: 1rem; padding: 0.75rem 1rem;
+      background: color-mix(in srgb, var(--accent-amber) 8%, transparent);
+      border-left: 3px solid var(--accent-amber); border-radius: 4px;
+      color: var(--text-primary); font-size: 0.85rem;
+    }
+    .talent-no-email-banner strong {
+      font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em;
+      color: var(--accent-amber); margin-right: 0.5rem;
+    }
+    .talent-section { margin: 2rem 0; }
+    .talent-section-h2 {
+      font-family: Georgia, 'Songti SC', serif; font-size: 1.15rem;
+      margin: 0 0 0.5rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border); color: var(--text-primary);
+    }
+    .talent-section-note {
+      color: var(--text-muted); font-size: 0.8rem; font-style: italic;
+      margin: 0 0 1rem;
+    }
+    .talent-faded { opacity: 0.75; }
+    .talent-truncated {
+      text-align: center; color: var(--text-muted); font-style: italic;
+      margin-top: 1rem; font-size: 0.85rem;
+    }
+  </style>
+</BaseLayout>

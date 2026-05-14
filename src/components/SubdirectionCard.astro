@@ -1,0 +1,96 @@
+---
+/**
+ * SubdirectionCard.astro
+ * Method family card for /talent/subdirections.
+ * Reuses .card class + rating tokens; no new CSS.
+ */
+import type { SubdirectionRecord } from '../utils/talent';
+import RatingBadge from './RatingBadge.astro';
+
+interface Props {
+  record: SubdirectionRecord;
+}
+const { record } = Astro.props;
+
+const domainTag = record.domain === 'vla' ? 'tag-vla' : 'tag-ai';
+const domainLabel = record.domain === 'vla' ? 'VLA' : 'AI App';
+
+// Acceleration display
+const accelPct = Math.round(record.acceleration * 100);
+const accelSign = accelPct > 0 ? '+' : '';
+const accelColor =
+  record.acceleration > 0.15 ? 'var(--accent-amber)' :
+  record.acceleration < -0.15 ? '#C94040' :
+  'var(--text-muted)';
+
+const statusLabel: Record<string, string> = {
+  accelerating:   'Accelerating',
+  declining:      'Declining',
+  stable:         'Stable',
+  low_confidence: 'Low signal',
+};
+---
+
+<article class="card group flex flex-col gap-3">
+  <!-- Header: family name, domain, status -->
+  <div class="flex items-start gap-2 flex-wrap">
+    <span class:list={['tag', domainTag]}>{domainLabel}</span>
+    <span
+      class="text-xs font-ibm-plex-mono uppercase tracking-wider"
+      style={`color: ${accelColor}`}
+      title={`${statusLabel[record.status] ?? record.status} (${accelSign}${accelPct}%)`}
+    >
+      {accelSign}{accelPct}%
+    </span>
+    <span class="ml-auto text-xs font-ibm-plex-mono text-pulsar-muted">
+      {record.velocity7d}/{record.velocityPrior7d} (7d/prior)
+    </span>
+  </div>
+
+  <!-- Family display name -->
+  <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug">
+    {record.displayName}
+    <span class="font-ibm-plex-mono text-xs text-pulsar-muted ml-2">
+      {record.family}
+    </span>
+  </h3>
+
+  <!-- Top labs in this method -->
+  {record.topLabs.length > 0 && (
+    <div class="flex flex-wrap gap-1 mt-1">
+      <span class="text-xs text-pulsar-muted font-ibm-plex-mono uppercase tracking-wide self-center mr-1">
+        Top labs:
+      </span>
+      {record.topLabs.map(lab => (
+        <span class="tag tag-affiliation font-ibm-plex-mono text-xs">{lab}</span>
+      ))}
+    </div>
+  )}
+
+  <!-- Evidence: up to 3 papers -->
+  {record.evidence.length > 0 && (
+    <div class="flex flex-col gap-2 mt-1 pt-2 border-t border-pulsar-border">
+      <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
+        Evidence
+      </span>
+      {record.evidence.map(ev => (
+        <a
+          href={ev.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-start gap-2 text-xs text-pulsar-text hover:text-pulsar-amber transition-colors leading-relaxed"
+        >
+          <RatingBadge rating={ev.rating} size="sm" />
+          <span class="line-clamp-2">{ev.title}</span>
+        </a>
+      ))}
+    </div>
+  )}
+
+  {record.evidence.length === 0 && (
+    <p class="text-xs text-pulsar-muted italic">
+      No evidence papers matched in the last 90 days. This family is tracked
+      mechanically — when the threshold fires, papers will appear here.
+    </p>
+  )}
+</article>

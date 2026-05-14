@@ -1,0 +1,114 @@
+---
+/**
+ * PersonCard.astro
+ * Researcher card for /talent/people and /talent/hr-queue.
+ *
+ * CRITICAL: never render email. Only `contactStatus` enum is allowed.
+ * Even social-mention status surfaces only a status pill — no link.
+ */
+import type { PersonRecord, ContactStatus, HRCandidate } from '../utils/talent';
+import RatingBadge from './RatingBadge.astro';
+
+interface Props {
+  record: PersonRecord | HRCandidate;
+  showWhyNow?: boolean;
+}
+const { record, showWhyNow = false } = Astro.props;
+
+const CONTACT_META: Record<ContactStatus, { label: string; labelSC: string; bg: string; color: string }> = {
+  linked_via_lab: {
+    label:   'Linked via lab',
+    labelSC: '通过机构关联',
+    bg:      'rgba(15, 143, 160, 0.15)',
+    color:   'var(--accent-cyan)',
+  },
+  social_mention: {
+    label:   'Social mention',
+    labelSC: '社交情报提及',
+    bg:      'rgba(212, 145, 10, 0.15)',
+    color:   'var(--accent-amber)',
+  },
+  not_linked: {
+    label:   'Author byline only',
+    labelSC: '仅论文署名',
+    bg:      'rgba(120, 120, 120, 0.15)',
+    color:   'var(--text-muted)',
+  },
+};
+
+const contact = CONTACT_META[record.contactStatus];
+const isHRCandidate = 'whyNow' in record;
+---
+
+<article class="card group flex flex-col gap-3">
+  <!-- Header: name + rating -->
+  <div class="flex items-start gap-2 flex-wrap">
+    <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
+      {record.name}
+    </h3>
+    <RatingBadge rating={record.topRating} size="sm" />
+  </div>
+
+  <!-- Affiliation + paper count -->
+  <div class="flex flex-wrap items-center gap-2 text-xs">
+    {record.affiliation && (
+      <span class="tag tag-affiliation font-ibm-plex-mono">{record.affiliation}</span>
+    )}
+    <span class="font-ibm-plex-mono text-pulsar-muted">
+      {record.paperCount90d} paper{record.paperCount90d === 1 ? '' : 's'} · 90d
+    </span>
+  </div>
+
+  <!-- Contact status pill (no email!) -->
+  <div class="flex flex-wrap items-center gap-2">
+    <span
+      class="inline-flex items-center font-ibm-plex-mono rounded-full border px-2 py-0.5 text-xs"
+      style={`background: ${contact.bg}; color: ${contact.color}; border-color: ${contact.color}`}
+      title="Contact status — Pulsar never stores or displays email addresses"
+    >
+      <span data-tc>{contact.label}</span>
+      <span data-sc>{contact.labelSC}</span>
+    </span>
+    <span class="text-[0.65rem] font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
+      no-email
+    </span>
+  </div>
+
+  <!-- HR queue: why now -->
+  {showWhyNow && isHRCandidate && (
+    <p class="text-xs leading-relaxed font-noto-serif-sc text-pulsar-muted" style="border-left: 2px solid var(--accent-amber); padding-left: 8px;">
+      <span class="font-ibm-plex-mono text-pulsar-amber" style="font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; margin-right: 4px;">WHY NOW</span>
+      {(record as HRCandidate).whyNow}
+    </p>
+  )}
+
+  <!-- Evidence: top 2 papers -->
+  {record.evidence.length > 0 && (
+    <div class="flex flex-col gap-2 mt-1 pt-2 border-t border-pulsar-border">
+      <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
+        Evidence
+      </span>
+      {record.evidence.slice(0, 2).map(ev => (
+        <a
+          href={ev.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-start gap-2 text-xs text-pulsar-text hover:text-pulsar-amber transition-colors leading-relaxed"
+        >
+          <RatingBadge rating={ev.rating} size="sm" />
+          <span class="line-clamp-2 flex-1">
+            {ev.title}
+            <span class="ml-1 text-pulsar-muted font-ibm-plex-mono text-[0.65rem]">
+              {ev.date}
+            </span>
+          </span>
+        </a>
+      ))}
+      {record.evidence.length > 2 && (
+        <span class="text-xs text-pulsar-muted italic">
+          + {record.evidence.length - 2} more
+        </span>
+      )}
+    </div>
+  )}
+</article>
