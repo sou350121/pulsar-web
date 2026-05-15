@@ -294,7 +294,6 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
   const { minSignals = 1 } = opts;
   const { entities } = loadEntityIndex();
   const now = Date.now();
-  const fourteenDays = 14 * 86_400_000;
 
   const labs: LabRecord[] = [];
   for (const ent of Object.values(entities)) {
