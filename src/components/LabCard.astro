@@ -47,14 +47,14 @@ const isStale = daysSince !== null && daysSince > 14;
     </span>
   </div>
 
-  <!-- Sparkline: 14-day -->
-  <div class="flex items-end gap-0.5 h-6" aria-label={`14-day activity sparkline for ${record.name}`}>
+  <!-- Sparkline: 14-day (taller; bars flex evenly so shape is legible) -->
+  <div class="flex items-end gap-[2px] h-10 w-full" aria-label={`14-day activity sparkline for ${record.name}`}>
     {record.velocityBars.map(count => {
       const h = count === 0 ? '8%' : `${Math.max(15, Math.round(count / maxBar * 100))}%`;
       const bg = count === 0 ? 'var(--border)' : 'var(--accent-cyan)';
       return (
         <span
-          style={`width: 6%; height: ${h}; background: ${bg}; border-radius: 1px; flex: 0 0 auto;`}
+          style={`flex: 1 0 0; height: ${h}; background: ${bg}; border-radius: 1px;`}
           title={`${count} signal(s)`}
         />
       );
@@ -65,7 +65,7 @@ const isStale = daysSince !== null && daysSince > 14;
   {record.methodFocus.length > 0 && (
     <div class="flex flex-wrap gap-1">
       <span class="text-xs text-pulsar-muted font-ibm-plex-mono uppercase tracking-wide self-center mr-1">
-        Focus:
+        <span data-tc>研究焦點：</span><span data-sc>研究焦点：</span>
       </span>
       {record.methodFocus.map(m => (
         <span class="tag tag-affiliation font-ibm-plex-mono text-xs">{m}</span>
@@ -77,7 +77,7 @@ const isStale = daysSince !== null && daysSince > 14;
   {record.evidence.length > 0 && (
     <div class="flex flex-col gap-2 mt-1 pt-2 border-t border-pulsar-border">
       <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
-        Recent ⚡/🔧
+        <span data-tc>近期 ⚡/🔧</span><span data-sc>近期 ⚡/🔧</span>
       </span>
       {record.evidence.map(ev => (
         <a

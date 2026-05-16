@@ -51,16 +51,16 @@ const base = import.meta.env.BASE_URL;
     <RatingBadge rating={record.topRating} size="sm" />
   </div>
 
-  <!-- Affiliation + paper count -->
-  <div class="flex flex-wrap items-center gap-2 text-xs">
+  <!-- Affiliation as subtitle (anchor identity); paper count secondary -->
+  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
     {record.affiliation && (
       <a
         href={`${base}/talent/labs/#lab-${slugifyName(record.affiliation)}`}
-        class="tag tag-affiliation font-ibm-plex-mono hover:text-pulsar-amber transition-colors"
+        class="font-ibm-plex-mono text-sm font-semibold text-pulsar-amber hover:underline transition-colors"
       >{record.affiliation}</a>
     )}
-    <span class="font-ibm-plex-mono text-pulsar-muted">
-      {record.paperCount90d} paper{record.paperCount90d === 1 ? '' : 's'} · 90d
+    <span class="font-ibm-plex-mono text-xs text-pulsar-muted">
+      <span data-tc>{record.paperCount90d} 篇 · 90d</span><span data-sc>{record.paperCount90d} 篇 · 90d</span>
     </span>
   </div>
 
@@ -75,7 +75,7 @@ const base = import.meta.env.BASE_URL;
       <span data-sc>{contact.labelSC}</span>
     </span>
     <span class="text-[0.65rem] font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
-      no-email
+      <span data-tc>無電郵</span><span data-sc>无邮箱</span>
     </span>
   </div>
 
@@ -91,7 +91,7 @@ const base = import.meta.env.BASE_URL;
   {record.evidence.length > 0 && (
     <div class="flex flex-col gap-2 mt-1 pt-2 border-t border-pulsar-border">
       <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
-        Evidence
+        <span data-tc>佐證論文</span><span data-sc>佐证论文</span>
       </span>
       {record.evidence.slice(0, 2).map(ev => (
         <a
@@ -111,7 +111,8 @@ const base = import.meta.env.BASE_URL;
       ))}
       {record.evidence.length > 2 && (
         <span class="text-xs text-pulsar-muted italic">
-          + {record.evidence.length - 2} more
+          <span data-tc>+ {record.evidence.length - 2} 篇</span>
+          <span data-sc>+ {record.evidence.length - 2} 篇</span>
         </span>
       )}
     </div>

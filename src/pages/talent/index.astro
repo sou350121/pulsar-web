@@ -46,18 +46,19 @@ const topHR     = loadHRQueue().slice(0, 3);
       </div>
       <h1 class="talent-title" data-tc>人才雷達</h1>
       <h1 class="talent-title" data-sc>人才雷达</h1>
+      <div class="talent-accent-bar" aria-hidden="true"></div>
       <p class="talent-subtitle">
         <span data-tc>先有論文池, 後有小方向; 先歸納方向, 再反推人才</span>
         <span data-sc>先有论文池, 后有小方向; 先归纳方向, 再反推人才</span>
       </p>
       <p class="talent-tldr">
-        Read-only triage surface built on Pulsar's paper / method / lab indices.
-        <strong>No email is ever stored or shown.</strong>
-        Every recommendation carries paper-level evidence.
+        <span data-tc>唯讀分診介面，基於 Pulsar 論文 / 方法 / 實驗室索引。<strong>從不儲存或顯示任何電子郵件。</strong>每項推薦均附論文級佐證。</span>
+        <span data-sc>只读分诊界面，基于 Pulsar 论文 / 方法 / 实验室索引。<strong>从不存储或显示任何邮箱。</strong>每项推荐均附论文级佐证。</span>
       </p>
       {stats.hrQueueCount > 0 && (
         <a class="talent-hero-cta" href="#hr-queue-preview">
-          → {stats.hrQueueCount} HR-vetted candidate{stats.hrQueueCount === 1 ? '' : 's'} ready
+          <span data-tc>→ {stats.hrQueueCount} 位通過 HR 篩選的候選人</span>
+          <span data-sc>→ {stats.hrQueueCount} 位通过 HR 筛选的候选人</span>
         </a>
       )}
     </header>
@@ -68,23 +69,33 @@ const topHR     = loadHRQueue().slice(0, 3);
     <div class="talent-metrics">
       <div class="talent-metric">
         <span class="talent-metric-num">{stats.acceleratingCount}</span>
-        <span class="talent-metric-label">ACCELERATING</span>
-        <span class="talent-metric-sub">of {stats.subdirectionCount} method families</span>
+        <span class="talent-metric-label"><span data-tc>加速中</span><span data-sc>加速中</span></span>
+        <span class="talent-metric-sub">
+          <span data-tc>共 {stats.subdirectionCount} 個方法族</span>
+          <span data-sc>共 {stats.subdirectionCount} 个方法族</span>
+        </span>
       </div>
       <div class="talent-metric">
         <span class="talent-metric-num">{stats.activeLabCount7d}</span>
-        <span class="talent-metric-label">ACTIVE LABS · 7D</span>
-        <span class="talent-metric-sub">of {stats.labCount} tracked (90d)</span>
+        <span class="talent-metric-label"><span data-tc>活躍實驗室 · 7D</span><span data-sc>活跃实验室 · 7D</span></span>
+        <span class="talent-metric-sub">
+          <span data-tc>共 {stats.labCount} 個（90d）</span>
+          <span data-sc>共 {stats.labCount} 个（90d）</span>
+        </span>
       </div>
       <div class="talent-metric">
         <span class="talent-metric-num">{stats.peopleCount}</span>
-        <span class="talent-metric-label">PEOPLE</span>
-        <span class="talent-metric-sub">first-author + curated</span>
+        <span class="talent-metric-label"><span data-tc>研究員</span><span data-sc>研究员</span></span>
+        <span class="talent-metric-sub">
+          <span data-tc>第一作者 + 策展</span><span data-sc>第一作者 + 策展</span>
+        </span>
       </div>
       <div class="talent-metric talent-metric--accent">
         <span class="talent-metric-num">{stats.hrQueueCount}</span>
-        <span class="talent-metric-label">HR QUEUE</span>
-        <span class="talent-metric-sub">gate-filtered</span>
+        <span class="talent-metric-label"><span data-tc>HR 隊列</span><span data-sc>HR 队列</span></span>
+        <span class="talent-metric-sub">
+          <span data-tc>門檻篩選</span><span data-sc>门槛筛选</span>
+        </span>
       </div>
     </div>
 
@@ -96,7 +107,10 @@ const topHR     = loadHRQueue().slice(0, 3);
           <span data-tc>小方向</span><span data-sc>小方向</span>
           <span class="talent-section-en">/ Subdirections</span>
         </h2>
-        <a class="talent-more-link" href={`${base}/talent/subdirections/`}>All {stats.subdirectionCount} →</a>
+        <a class="talent-more-link" href={`${base}/talent/subdirections/`}>
+          <span data-tc>全部 {stats.subdirectionCount} →</span>
+          <span data-sc>全部 {stats.subdirectionCount} →</span>
+        </a>
       </header>
       <div class="picks-grid">
         {topSubs.map(s => <SubdirectionCard record={s} />)}
@@ -111,7 +125,10 @@ const topHR     = loadHRQueue().slice(0, 3);
           <span data-tc>實驗室</span><span data-sc>实验室</span>
           <span class="talent-section-en">/ Labs</span>
         </h2>
-        <a class="talent-more-link" href={`${base}/talent/labs/`}>All {stats.labCount} →</a>
+        <a class="talent-more-link" href={`${base}/talent/labs/`}>
+          <span data-tc>全部 {stats.labCount} →</span>
+          <span data-sc>全部 {stats.labCount} →</span>
+        </a>
       </header>
       <div class="picks-grid">
         {topLabs.map(l => <LabCard record={l} />)}
@@ -126,7 +143,10 @@ const topHR     = loadHRQueue().slice(0, 3);
           <span data-tc>研究員</span><span data-sc>研究员</span>
           <span class="talent-section-en">/ People</span>
         </h2>
-        <a class="talent-more-link" href={`${base}/talent/people/`}>All {stats.peopleCount} →</a>
+        <a class="talent-more-link" href={`${base}/talent/people/`}>
+          <span data-tc>全部 {stats.peopleCount} →</span>
+          <span data-sc>全部 {stats.peopleCount} →</span>
+        </a>
       </header>
       <div class="picks-grid">
         {topPeople.map(p => <PersonCard record={p} />)}
@@ -141,7 +161,9 @@ const topHR     = loadHRQueue().slice(0, 3);
           <span data-tc>HR 推薦隊列</span><span data-sc>HR 推荐队列</span>
           <span class="talent-section-en">/ HR Queue</span>
         </h2>
-        <a class="talent-more-link" href={`${base}/talent/hr-queue/`}>Full queue →</a>
+        <a class="talent-more-link" href={`${base}/talent/hr-queue/`}>
+          <span data-tc>完整隊列 →</span><span data-sc>完整队列 →</span>
+        </a>
       </header>
       {topHR.length === 0 ? (
         <p class="talent-empty">
@@ -186,7 +208,8 @@ const topHR     = loadHRQueue().slice(0, 3);
     </aside>
 
     <p class="talent-data-asof">
-      Data as of <strong>{stats.dataAsOf}</strong> · Pipeline v6
+      <span data-tc>資料截至 <strong>{stats.dataAsOf}</strong> · Pipeline v6</span>
+      <span data-sc>数据截至 <strong>{stats.dataAsOf}</strong> · Pipeline v6</span>
     </p>
   </main>
 
@@ -249,6 +272,13 @@ const topHR     = loadHRQueue().slice(0, 3);
     }
     .talent-tldr strong {
       color: var(--accent-amber);
+    }
+    .talent-accent-bar {
+      width: 3rem;
+      height: 2px;
+      background: var(--accent-amber);
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 1px;
     }
     .talent-hero-cta {
       display: inline-block;

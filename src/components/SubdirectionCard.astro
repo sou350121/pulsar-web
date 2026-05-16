@@ -33,35 +33,36 @@ const statusLabel: Record<string, string> = {
 };
 ---
 
-<article id={`fam-${record.family}`} class="card group flex flex-col gap-3">
-  <!-- Header: family name, domain, status -->
-  <div class="flex items-start gap-2 flex-wrap">
-    <span class:list={['tag', domainTag]}>{domainLabel}</span>
-    <span
-      class="text-xs font-ibm-plex-mono uppercase tracking-wider"
-      style={`color: ${accelColor}`}
-      title={`${statusLabel[record.status] ?? record.status} (${accelSign}${accelPct}%)`}
-    >
-      {accelSign}{accelPct}%
-    </span>
-    <span class="ml-auto text-xs font-ibm-plex-mono text-pulsar-muted">
-      {record.velocity7d}/{record.velocityPrior7d} (7d/prior)
-    </span>
+<article id={`fam-${record.family}`} class="card group flex gap-4">
+  <!-- Left gutter: big accel % anchors the eye across many cards -->
+  <div
+    class="flex-shrink-0 w-16 text-right font-ibm-plex-mono font-bold text-2xl leading-none pt-1"
+    style={`color: ${accelColor}`}
+    title={`${statusLabel[record.status] ?? record.status}`}
+  >
+    {accelSign}{accelPct}%
+    <div class="text-[0.6rem] font-normal uppercase tracking-wider mt-1 text-pulsar-muted">
+      {record.velocity7d}/{record.velocityPrior7d}
+    </div>
   </div>
 
-  <!-- Family display name -->
-  <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug">
-    {record.displayName}
-    <span class="font-ibm-plex-mono text-xs text-pulsar-muted ml-2">
-      {record.family}
-    </span>
-  </h3>
+  <!-- Right column: domain, name, top labs, evidence -->
+  <div class="flex flex-col gap-3 flex-1 min-w-0">
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class:list={['tag', domainTag]}>{domainLabel}</span>
+      <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
+        {record.displayName}
+        <span class="font-ibm-plex-mono text-xs text-pulsar-muted ml-1">
+          {record.family}
+        </span>
+      </h3>
+    </div>
 
   <!-- Top labs in this method -->
   {record.topLabs.length > 0 && (
     <div class="flex flex-wrap gap-1 mt-1">
       <span class="text-xs text-pulsar-muted font-ibm-plex-mono uppercase tracking-wide self-center mr-1">
-        Top labs:
+        <span data-tc>頂尖實驗室：</span><span data-sc>顶尖实验室：</span>
       </span>
       {record.topLabs.map(lab => (
         <a
@@ -76,7 +77,7 @@ const statusLabel: Record<string, string> = {
   {record.evidence.length > 0 && (
     <div class="flex flex-col gap-2 mt-1 pt-2 border-t border-pulsar-border">
       <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
-        Evidence
+        <span data-tc>佐證論文</span><span data-sc>佐证论文</span>
       </span>
       {record.evidence.map(ev => (
         <a
@@ -98,4 +99,5 @@ const statusLabel: Record<string, string> = {
       mechanically — when the threshold fires, papers will appear here.
     </p>
   )}
+  </div>
 </article>
