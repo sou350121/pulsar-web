@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node --experimental-strip-types scripts/verify-feeds.ts",
+    "build": "astro build && node --experimental-strip-types scripts/verify-feeds.ts && node --experimental-strip-types scripts/smoke-talent.ts",
     "preview": "astro preview",
     "sync-data": "python3.11 scripts/sync-data.py",
-    "verify-feeds": "node --experimental-strip-types scripts/verify-feeds.ts"
+    "verify-feeds": "node --experimental-strip-types scripts/verify-feeds.ts",
+    "smoke-talent": "node --experimental-strip-types scripts/smoke-talent.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.0",
