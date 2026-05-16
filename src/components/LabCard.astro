@@ -14,9 +14,17 @@ const { record } = Astro.props;
 
 const maxBar = Math.max(1, ...record.velocityBars);
 const recent7Color = record.recentSignalCount7d > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)';
+// Quiet state: no signal in last 7 days. Compute days-since-last as a
+// visual cue (records older than 14d are "stale").
+const isQuiet = record.recentSignalCount7d === 0;
+const lastTs = Date.parse(record.lastSeen + 'T00:00:00Z');
+const daysSince = Number.isNaN(lastTs)
+  ? null
+  : Math.max(0, Math.floor((Date.now() - lastTs) / 86_400_000));
+const isStale = daysSince !== null && daysSince > 14;
 ---
 
-<article class="card group flex flex-col gap-3">
+<article class={`card group flex flex-col gap-3 ${isQuiet ? 'opacity-75' : ''}`}>
   <!-- Header: lab name + top rating -->
   <div class="flex items-start gap-2 flex-wrap">
     <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
@@ -33,8 +41,8 @@ const recent7Color = record.recentSignalCount7d > 0 ? 'var(--accent-cyan)' : 'va
     <span style={`color: ${recent7Color}`}>
       7d <span class="font-semibold">{record.recentSignalCount7d}</span>
     </span>
-    <span class="text-pulsar-muted ml-auto">
-      Last: {record.lastSeen}
+    <span class="text-pulsar-muted ml-auto" title={daysSince !== null ? `${daysSince} days ago` : ''}>
+      Last: {record.lastSeen}{isStale ? ` (${daysSince}d)` : ''}
     </span>
   </div>
 

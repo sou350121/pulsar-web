@@ -602,6 +602,7 @@ export interface TalentStats {
   activeLabCount7d:  number;
   peopleCount:       number;
   hrQueueCount:      number;
+  dataAsOf:          string;   // YYYY-MM-DD of latest field-state file
 }
 
 export function loadTalentStats(): TalentStats {
@@ -609,6 +610,10 @@ export function loadTalentStats(): TalentStats {
   const labs   = loadLabs();
   const people = loadPeople();
   const hr     = loadHRQueue();
+  // Latest VLA field-state filename — proxy for pipeline freshness.
+  // Format: field-state-YYYY-MM-DD.json → slice the date portion.
+  const latestFs = listLocal('field-state-')[0] ?? '';
+  const m = latestFs.match(/(\d{4}-\d{2}-\d{2})/);
   return {
     subdirectionCount: subs.length,
     acceleratingCount: subs.filter(s => s.acceleration > 0.15).length,
@@ -616,5 +621,6 @@ export function loadTalentStats(): TalentStats {
     activeLabCount7d:  labs.filter(l => l.recentSignalCount7d > 0).length,
     peopleCount:       people.length,
     hrQueueCount:      hr.length,
+    dataAsOf:          m?.[1] ?? '—',
   };
 }

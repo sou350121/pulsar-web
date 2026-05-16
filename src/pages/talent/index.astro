@@ -23,7 +23,13 @@ const base = import.meta.env.BASE_URL;
 const stats = loadTalentStats();
 const topSubs   = loadSubdirections({ domain: 'all' }).slice(0, 3);
 const topLabs   = loadLabs({ minSignals: 3 }).slice(0, 3);
-const topPeople = loadPeople({ minPaperCount90d: 1 }).slice(0, 3);
+// Preview only contactable people — byline-only entries belong on /people/.
+// Fall back to the unfiltered head if the contactable pool is empty.
+const contactablePeople = loadPeople({ minPaperCount90d: 1 })
+  .filter(p => p.contactStatus !== 'not_linked');
+const topPeople = (contactablePeople.length > 0
+  ? contactablePeople
+  : loadPeople({ minPaperCount90d: 1 })).slice(0, 3);
 const topHR     = loadHRQueue().slice(0, 3);
 ---
 
@@ -49,19 +55,26 @@ const topHR     = loadHRQueue().slice(0, 3);
         <strong>No email is ever stored or shown.</strong>
         Every recommendation carries paper-level evidence.
       </p>
+      {stats.hrQueueCount > 0 && (
+        <a class="talent-hero-cta" href="#hr-queue-preview">
+          → {stats.hrQueueCount} HR-vetted candidate{stats.hrQueueCount === 1 ? '' : 's'} ready
+        </a>
+      )}
     </header>
 
-    <!-- ══ Metric strip ════════════════════════════════════════════════ -->
+    <!-- ══ Metric strip ════════════════════════════════════════════════
+         Each card leads with the *meaningful* number, not the cumulative
+         total. e.g. "3 active labs (of 72)" beats "72 labs (3 active)". -->
     <div class="talent-metrics">
       <div class="talent-metric">
-        <span class="talent-metric-num">{stats.subdirectionCount}</span>
-        <span class="talent-metric-label">SUBDIRECTIONS</span>
-        <span class="talent-metric-sub">{stats.acceleratingCount} accelerating</span>
+        <span class="talent-metric-num">{stats.acceleratingCount}</span>
+        <span class="talent-metric-label">ACCELERATING</span>
+        <span class="talent-metric-sub">of {stats.subdirectionCount} method families</span>
       </div>
       <div class="talent-metric">
-        <span class="talent-metric-num">{stats.labCount}</span>
-        <span class="talent-metric-label">LABS</span>
-        <span class="talent-metric-sub">{stats.activeLabCount7d} active 7d</span>
+        <span class="talent-metric-num">{stats.activeLabCount7d}</span>
+        <span class="talent-metric-label">ACTIVE LABS · 7D</span>
+        <span class="talent-metric-sub">of {stats.labCount} tracked (90d)</span>
       </div>
       <div class="talent-metric">
         <span class="talent-metric-num">{stats.peopleCount}</span>
@@ -121,7 +134,7 @@ const topHR     = loadHRQueue().slice(0, 3);
     </section>
 
     <!-- ══ Section: HR queue preview ═══════════════════════════════════ -->
-    <section class="talent-section">
+    <section class="talent-section" id="hr-queue-preview">
       <header class="talent-section-header">
         <h2 class="talent-section-title">
           <span class="talent-section-num">04</span>
@@ -171,6 +184,10 @@ const topHR     = loadHRQueue().slice(0, 3);
         </li>
       </ol>
     </aside>
+
+    <p class="talent-data-asof">
+      Data as of <strong>{stats.dataAsOf}</strong> · Pipeline v6
+    </p>
   </main>
 
   <style>
@@ -232,6 +249,32 @@ const topHR     = loadHRQueue().slice(0, 3);
     }
     .talent-tldr strong {
       color: var(--accent-amber);
+    }
+    .talent-hero-cta {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .talent-hero-cta:hover {
+      background: color-mix(in srgb, var(--accent-amber) 12%, transparent);
+    }
+    .talent-data-asof {
+      margin-top: 2rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .talent-data-asof strong {
+      color: var(--text-primary);
     }
     .talent-metrics {
       display: grid;
