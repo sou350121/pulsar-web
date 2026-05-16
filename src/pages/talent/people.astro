@@ -31,6 +31,14 @@ const bylineOnly  = people.filter(p => p.contactStatus === 'not_linked');
         <strong>NO-EMAIL</strong> — Pulsar never stores or displays email addresses.
         Contact status is a heuristic; verify externally before any outreach.
       </p>
+      <input
+        id="people-search"
+        type="search"
+        placeholder="Search by name, affiliation, paper title…"
+        class="talent-search"
+        aria-label="Search people"
+      />
+      <p class="talent-search-count" id="people-search-count" aria-live="polite"></p>
     </header>
 
     <!-- Section 1: linked via lab -->
@@ -83,6 +91,31 @@ const bylineOnly  = people.filter(p => p.contactStatus === 'not_linked');
     )}
   </main>
 
+  <script is:inline>
+    // Live filter across all 3 sections. Hides section header if its grid
+    // empties under the current query.
+    (() => {
+      const input = document.getElementById('people-search');
+      const counter = document.getElementById('people-search-count');
+      if (!input) return;
+      input.addEventListener('input', () => {
+        const q = input.value.toLowerCase().trim();
+        let shown = 0;
+        document.querySelectorAll('article.card').forEach((card) => {
+          const text = (card.textContent || '').toLowerCase();
+          const hit = q === '' || text.includes(q);
+          card.style.display = hit ? '' : 'none';
+          if (hit) shown++;
+        });
+        document.querySelectorAll('.talent-section').forEach((sec) => {
+          const visible = sec.querySelectorAll('article.card:not([style*="display: none"])');
+          sec.style.display = visible.length === 0 && q !== '' ? 'none' : '';
+        });
+        if (counter) counter.textContent = q === '' ? '' : `${shown} match${shown === 1 ? '' : 'es'}`;
+      });
+    })();
+  </script>
+
   <style>
     .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
     .talent-page-header { margin-bottom: 2rem; }
@@ -111,6 +144,22 @@ const bylineOnly  = people.filter(p => p.contactStatus === 'not_linked');
     .talent-no-email-banner strong {
       font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em;
       color: var(--accent-amber); margin-right: 0.5rem;
+    }
+    .talent-search {
+      width: 100%; max-width: 480px;
+      padding: 0.6rem 0.9rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;
+      background: var(--surface); color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .talent-search:focus {
+      outline: none; border-color: var(--accent-cyan);
+    }
+    .talent-search-count {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: var(--text-muted); margin: 0.25rem 0 0;
+      min-height: 1em;
     }
     .talent-section { margin: 2rem 0; }
     .talent-section-h2 {

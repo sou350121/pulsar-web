@@ -5,6 +5,9 @@ import { loadLabs } from '../../utils/talent';
 
 const base = import.meta.env.BASE_URL;
 const labs = loadLabs({ minSignals: 2 });
+// A lab can appear in both sections if it has signals in both domains.
+const vlaLabs = labs.filter(l => l.domains.includes('vla'));
+const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
 ---
 
 <BaseLayout
@@ -30,11 +33,66 @@ const labs = loadLabs({ minSignals: 2 });
         No labs surfaced yet. Wait for entity-tracker to populate (runs daily at 09:55).
       </p>
     ) : (
-      <div class="picks-grid">
-        {labs.map(l => <LabCard record={l} />)}
-      </div>
+      <>
+        <input
+          id="lab-search"
+          type="search"
+          placeholder="Search labs, methods, recent papers…"
+          class="talent-search"
+          aria-label="Search labs"
+        />
+        <p class="talent-search-count" id="lab-search-count" aria-live="polite"></p>
+
+        <section class="talent-section">
+          <h2 class="talent-section-h2">VLA · {vlaLabs.length}</h2>
+          {vlaLabs.length === 0 ? (
+            <p class="talent-empty">No VLA labs in the 90-day window.</p>
+          ) : (
+            <div class="picks-grid">
+              {vlaLabs.map(l => <LabCard record={l} />)}
+            </div>
+          )}
+        </section>
+
+        <section class="talent-section">
+          <h2 class="talent-section-h2">AI App · {aiLabs.length}</h2>
+          {aiLabs.length === 0 ? (
+            <p class="talent-empty">No AI App labs in the 90-day window.</p>
+          ) : (
+            <div class="picks-grid">
+              {aiLabs.map(l => <LabCard record={l} />)}
+            </div>
+          )}
+        </section>
+      </>
     )}
   </main>
+
+  <script is:inline>
+    // Live filter: hide cards whose text doesn't match the query. Also hides
+    // section headers when their grid empties out, so the user isn't stuck
+    // staring at a "VLA · 14" title above an empty box.
+    (() => {
+      const input = document.getElementById('lab-search');
+      const counter = document.getElementById('lab-search-count');
+      if (!input) return;
+      input.addEventListener('input', () => {
+        const q = input.value.toLowerCase().trim();
+        let shown = 0;
+        document.querySelectorAll('article.card').forEach((card) => {
+          const text = (card.textContent || '').toLowerCase();
+          const hit = q === '' || text.includes(q);
+          card.style.display = hit ? '' : 'none';
+          if (hit) shown++;
+        });
+        document.querySelectorAll('.talent-section').forEach((sec) => {
+          const visible = sec.querySelectorAll('article.card:not([style*="display: none"])');
+          sec.style.display = visible.length === 0 && q !== '' ? 'none' : '';
+        });
+        if (counter) counter.textContent = q === '' ? '' : `${shown} match${shown === 1 ? '' : 'es'}`;
+      });
+    })();
+  </script>
 
   <style>
     .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
@@ -59,6 +117,28 @@ const labs = loadLabs({ minSignals: 2 });
       text-align: center; color: var(--text-muted); font-style: italic;
       padding: 3rem; background: var(--surface);
       border: 1px dashed var(--border); border-radius: 8px;
+    }
+    .talent-search {
+      width: 100%; max-width: 480px;
+      padding: 0.6rem 0.9rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;
+      background: var(--surface); color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    .talent-search:focus {
+      outline: none; border-color: var(--accent-cyan);
+    }
+    .talent-search-count {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: var(--text-muted); margin: 0 0 1.5rem;
+      min-height: 1em;
+    }
+    .talent-section { margin: 2rem 0; }
+    .talent-section-h2 {
+      font-family: Georgia, 'Songti SC', serif; font-size: 1.25rem;
+      margin: 0 0 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border); color: var(--text-primary);
     }
   </style>
 </BaseLayout>

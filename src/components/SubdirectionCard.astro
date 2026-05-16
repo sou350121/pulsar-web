@@ -5,12 +5,14 @@
  * Reuses .card class + rating tokens; no new CSS.
  */
 import type { SubdirectionRecord } from '../utils/talent';
+import { slugifyName } from '../utils/talent.ts';
 import RatingBadge from './RatingBadge.astro';
 
 interface Props {
   record: SubdirectionRecord;
 }
 const { record } = Astro.props;
+const base = import.meta.env.BASE_URL;
 
 const domainTag = record.domain === 'vla' ? 'tag-vla' : 'tag-ai';
 const domainLabel = record.domain === 'vla' ? 'VLA' : 'AI App';
@@ -31,7 +33,7 @@ const statusLabel: Record<string, string> = {
 };
 ---
 
-<article class="card group flex flex-col gap-3">
+<article id={`fam-${record.family}`} class="card group flex flex-col gap-3">
   <!-- Header: family name, domain, status -->
   <div class="flex items-start gap-2 flex-wrap">
     <span class:list={['tag', domainTag]}>{domainLabel}</span>
@@ -62,7 +64,10 @@ const statusLabel: Record<string, string> = {
         Top labs:
       </span>
       {record.topLabs.map(lab => (
-        <span class="tag tag-affiliation font-ibm-plex-mono text-xs">{lab}</span>
+        <a
+          href={`${base}/talent/labs/#lab-${slugifyName(lab)}`}
+          class="tag tag-affiliation font-ibm-plex-mono text-xs hover:text-pulsar-amber transition-colors"
+        >{lab}</a>
       ))}
     </div>
   )}

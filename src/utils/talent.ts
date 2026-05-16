@@ -92,6 +92,15 @@ export interface LabRecord {
   topRating:       string;     // best rating in 90d (⚡ > 🔧 > 📖)
   lastSeen:        string;     // YYYY-MM-DD
   evidence:        Evidence[]; // top recent papers
+  domains:         Array<'vla' | 'ai_app'>;  // domains observed in signals
+}
+
+// URL-anchor / id-safe slug. Keeps unicode letters (CJK works in fragments),
+// strips punctuation/whitespace. "清华" → "清华"; "UT Austin" → "ut-austin".
+export function slugifyName(s: string): string {
+  return s.toLowerCase().trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\p{L}\p{N}\-]/gu, '');
 }
 
 export type ContactStatus =
@@ -357,6 +366,10 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
         domain: s.domain,
       }));
 
+    const domains = Array.from(
+      new Set(ent.signals.map(s => s.domain).filter(d => d === 'vla' || d === 'ai_app')),
+    ) as Array<'vla' | 'ai_app'>;
+
     labs.push({
       name:            ent.name,
       signalCount90d:  ent.signals.length,
@@ -366,6 +379,7 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
       topRating,
       lastSeen:        ent.signals[0]?.date ?? '',
       evidence,
+      domains,
     });
   }
 

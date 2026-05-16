@@ -7,6 +7,7 @@
  * Even social-mention status surfaces only a status pill — no link.
  */
 import type { PersonRecord, ContactStatus, HRCandidate } from '../utils/talent';
+import { slugifyName } from '../utils/talent.ts';
 import RatingBadge from './RatingBadge.astro';
 
 interface Props {
@@ -38,9 +39,10 @@ const CONTACT_META: Record<ContactStatus, { label: string; labelSC: string; bg: 
 
 const contact = CONTACT_META[record.contactStatus];
 const isHRCandidate = 'whyNow' in record;
+const base = import.meta.env.BASE_URL;
 ---
 
-<article class="card group flex flex-col gap-3">
+<article id={`person-${slugifyName(record.name)}`} class="card group flex flex-col gap-3">
   <!-- Header: name + rating -->
   <div class="flex items-start gap-2 flex-wrap">
     <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
@@ -52,7 +54,10 @@ const isHRCandidate = 'whyNow' in record;
   <!-- Affiliation + paper count -->
   <div class="flex flex-wrap items-center gap-2 text-xs">
     {record.affiliation && (
-      <span class="tag tag-affiliation font-ibm-plex-mono">{record.affiliation}</span>
+      <a
+        href={`${base}/talent/labs/#lab-${slugifyName(record.affiliation)}`}
+        class="tag tag-affiliation font-ibm-plex-mono hover:text-pulsar-amber transition-colors"
+      >{record.affiliation}</a>
     )}
     <span class="font-ibm-plex-mono text-pulsar-muted">
       {record.paperCount90d} paper{record.paperCount90d === 1 ? '' : 's'} · 90d
