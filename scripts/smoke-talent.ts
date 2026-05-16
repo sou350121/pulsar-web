@@ -30,4 +30,12 @@ const hr = loadHRQueue();
 console.log(`hr_queue: ${hr.length}, top3:`,
   hr.slice(0, 3).map(h => `${h.name} — ${h.whyNow}`));
 
+// No-email contract: hard runtime assert (defense in depth alongside
+// the `email?: never` field on PersonRecord).
+for (const p of [...people, ...hr]) {
+  if ('email' in p && (p as { email?: unknown }).email != null) {
+    throw new Error(`email leaked into PersonRecord for ${p.name}`);
+  }
+}
+
 console.log('\nOK: smoke test passed.');

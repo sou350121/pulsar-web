@@ -23,6 +23,7 @@ import {
   loadVLADailyPicks,
   loadAIDailyPicks,
   loadSocialIntel,
+  type Entity,
 } from './data.ts';
 
 // ---------------------------------------------------------------------------
@@ -106,6 +107,9 @@ export interface PersonRecord {
   topRating:      string;
   contactStatus:  ContactStatus;
   evidence:       Evidence[];   // up to 5 most recent papers
+  // Hard contract: email is NEVER stored. `never` makes any future
+  // assignment a compile error, beyond comment-level documentation.
+  readonly email?: never;
 }
 
 export interface HRCandidate extends PersonRecord {
@@ -133,7 +137,12 @@ function normalizeName(raw: string): string {
   s = s.replace(/\bet\s*al\.?$/i, '').replace(/\(.*?\)/g, '').trim();
   // Collapse whitespace, lowercase, drop middle initials like "J."
   s = s.toLowerCase().replace(/\s+/g, ' ');
-  s = s.split(' ').filter(tok => !/^[a-z]\.?$/.test(tok) || s.split(' ').length <= 2).join(' ');
+  // Drop initials only if doing so leaves ≥2 real-name tokens; otherwise
+  // keep them so "J. Smith" / "K. Smith" stay distinct (was: pre-filter
+  // length check, which collapsed "J. K. Smith" → "smith").
+  const tokens = s.split(' ');
+  const nonInitials = tokens.filter(tok => !/^[a-z]\.?$/.test(tok));
+  s = nonInitials.length >= 2 ? nonInitials.join(' ') : tokens.join(' ');
   return s;
 }
 
@@ -219,6 +228,8 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
   // 90-day paper pool for evidence sampling (per domain)
   const vlaPool = loadVLADailyPicks(90);
   const aiPool  = loadAIDailyPicks(90);
+  // Hoist once; topLabsForMethod was re-reading 552KB JSON per trend.
+  const { entities } = loadEntityIndex();
 
   for (const src of sources) {
     if (domain !== 'all' && domain !== src.key) continue;
@@ -247,7 +258,7 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
         }
       }
 
-      const topLabs = topLabsForMethod(t.family);
+      const topLabs = topLabsForMethod(t.family, entities);
 
       results.push({
         family:          t.family,
@@ -269,8 +280,7 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
   );
 }
 
-function topLabsForMethod(family: string): string[] {
-  const { entities } = loadEntityIndex();
+function topLabsForMethod(family: string, entities: Record<string, Entity>): string[] {
   const methodTokens = family.split('_').filter(s => s.length >= 3);
   // For each lab, score by how many of its signals' titles match the method.
   const scored: Array<{ lab: string; score: number }> = [];
@@ -495,22 +505,24 @@ export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonReco
       if (entry.ratings.includes(r)) { topRating = r; break; }
     }
 
-    // Sort evidence newest first, dedup by url
+    // Sort evidence newest first, dedup by url. Keep the pre-slice
+    // count so paperCount90d reflects the TRUE deduped paper count
+    // rather than the display-only cap of 5.
     const seen = new Set<string>();
-    const ev = entry.evidence
+    const deduped = entry.evidence
       .filter(e => {
         if (seen.has(e.url)) return false;
         seen.add(e.url);
         return true;
       })
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 5);
+      .sort((a, b) => b.date.localeCompare(a.date));
+    const ev = deduped.slice(0, 5);
 
     records.push({
       name:            entry.canonical,
       normalizedKey:   norm,
       affiliation,
-      paperCount90d:   ev.length,
+      paperCount90d:   deduped.length,
       topRating,
       contactStatus,
       evidence:        ev,

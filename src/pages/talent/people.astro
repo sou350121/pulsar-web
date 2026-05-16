@@ -34,15 +34,17 @@ const bylineOnly  = people.filter(p => p.contactStatus === 'not_linked');
     </header>
 
     <!-- Section 1: linked via lab -->
-    <section class="talent-section">
-      <h2 class="talent-section-h2">
-        <span data-tc>機構已確認</span><span data-sc>机构已确认</span>
-        · {linked.length}
-      </h2>
-      <div class="picks-grid">
-        {linked.map(p => <PersonCard record={p} />)}
-      </div>
-    </section>
+    {linked.length > 0 && (
+      <section class="talent-section">
+        <h2 class="talent-section-h2">
+          <span data-tc>機構已確認</span><span data-sc>机构已确认</span>
+          · {linked.length}
+        </h2>
+        <div class="picks-grid">
+          {linked.map(p => <PersonCard record={p} />)}
+        </div>
+      </section>
+    )}
 
     <!-- Section 2: social mention -->
     {social.length > 0 && (

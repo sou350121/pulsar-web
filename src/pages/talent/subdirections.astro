@@ -27,16 +27,24 @@ const aiSubs  = loadSubdirections({ domain: 'ai' });
 
     <section class="talent-section">
       <h2 class="talent-section-h2">VLA · {vlaSubs.length}</h2>
-      <div class="picks-grid">
-        {vlaSubs.map(s => <SubdirectionCard record={s} />)}
-      </div>
+      {vlaSubs.length === 0 ? (
+        <p class="talent-empty">No VLA subdirections yet — waiting for field-state-*.json.</p>
+      ) : (
+        <div class="picks-grid">
+          {vlaSubs.map(s => <SubdirectionCard record={s} />)}
+        </div>
+      )}
     </section>
 
     <section class="talent-section">
       <h2 class="talent-section-h2">AI App · {aiSubs.length}</h2>
-      <div class="picks-grid">
-        {aiSubs.map(s => <SubdirectionCard record={s} />)}
-      </div>
+      {aiSubs.length === 0 ? (
+        <p class="talent-empty">No AI subdirections yet — waiting for ai-field-state-*.json.</p>
+      ) : (
+        <div class="picks-grid">
+          {aiSubs.map(s => <SubdirectionCard record={s} />)}
+        </div>
+      )}
     </section>
   </main>
 
@@ -64,6 +72,11 @@ const aiSubs  = loadSubdirections({ domain: 'ai' });
       font-family: Georgia, 'Songti SC', serif; font-size: 1.25rem;
       margin: 0 0 1rem; padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--border); color: var(--text-primary);
+    }
+    .talent-empty {
+      text-align: center; color: var(--text-muted); font-style: italic;
+      padding: 2rem; background: var(--surface);
+      border: 1px dashed var(--border); border-radius: 8px;
     }
   </style>
 </BaseLayout>
