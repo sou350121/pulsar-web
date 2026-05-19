@@ -1,0 +1,354 @@
+{
+  "date": "2026-05-19",
+  "generated_at": "2026-05-19 11:01:33",
+  "summary": {
+    "date": "2026-05-19",
+    "total_assumptions": 20,
+    "supporting": 8,
+    "challenging": 0,
+    "weak_evidence": 8,
+    "avg_confidence_change": 0.0,
+    "method_trends": "3d_representation: declining, cross_embodiment: stable, dexterous_hand: stable, diffusion_policy: stable, flow_matching: stable, human_robot: stable, instruction_tuning: stable, language_grounding: stable, long_horizon: stable, mobile_manipulation: declining, multi_task: stable, rl_finetuning: stable, sim_to_real: declining, tactile: stable, world_model: stable",
+    "data_days": 46,
+    "saturated_benchmarks": [
+      "CALVIN/ABC-D (4.8%)",
+      "CALVIN/ABCD-D (4.8%)",
+      "CALVIN/D-D (4.3%)",
+      "LIBERO/non-standard (99.2%)",
+      "LIBERO/standard-closed (99.8%)",
+      "LIBERO/standard-opensource (99.3%)"
+    ],
+    "total_signals": 199,
+    "source_stats": {
+      "vla_rss": 40,
+      "vla_hotspots": 43,
+      "vla_social": 2,
+      "vla_sota": 0,
+      "vla_release": 10,
+      "ai_rss": 40,
+      "ai_daily": 7,
+      "ai_social": 0,
+      "ai_pick": 6
+    }
+  },
+  "assumptions": [
+    {
+      "id": "T-003",
+      "domain": "system",
+      "hypothesis_brief": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling.",
+      "original_confidence": 0.71,
+      "adjusted_confidence": 0.66,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 0,
+      "counter_evidence_hits": 0,
+      "matching_signals": 0,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "status": "active"
+    },
+    {
+      "id": "T-004",
+      "domain": "system",
+      "hypothesis_brief": "Key claims in daily outputs should be grounded in primary sources (official blog / GitHub release / docs).",
+      "original_confidence": 0.71,
+      "adjusted_confidence": 0.66,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 1,
+      "counter_evidence_hits": 0,
+      "matching_signals": 1,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "status": "active"
+    },
+    {
+      "id": "V-001",
+      "domain": "vla",
+      "hypothesis_brief": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA action head paradigm for top-ve...",
+      "original_confidence": 0.76,
+      "adjusted_confidence": 0.76,
+      "signal_strength": "neutral",
+      "keyword_hits": 2,
+      "counter_evidence_hits": 0,
+      "matching_signals": 16,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-002",
+      "domain": "vla",
+      "hypothesis_brief": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation pipelines by end of 2026. Tasks...",
+      "original_confidence": 0.64,
+      "adjusted_confidence": 0.68,
+      "signal_strength": "leaning_support",
+      "keyword_hits": 4,
+      "counter_evidence_hits": 0,
+      "matching_signals": 6,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-003",
+      "domain": "vla",
+      "hypothesis_brief": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA contact-rich manipulation traini...",
+      "original_confidence": 0.72,
+      "adjusted_confidence": 0.76,
+      "signal_strength": "leaning_support",
+      "keyword_hits": 3,
+      "counter_evidence_hits": 0,
+      "matching_signals": 10,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-004",
+      "domain": "vla",
+      "hypothesis_brief": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA control in structured factory/ware...",
+      "original_confidence": 0.53,
+      "adjusted_confidence": 0.61,
+      "signal_strength": "supporting",
+      "keyword_hits": 5,
+      "counter_evidence_hits": 0,
+      "matching_signals": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-005",
+      "domain": "vla",
+      "hypothesis_brief": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm by mid-2026, showing >15% impr...",
+      "original_confidence": 0.67,
+      "adjusted_confidence": 0.62,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 0,
+      "counter_evidence_hits": 0,
+      "matching_signals": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-006",
+      "domain": "vla",
+      "hypothesis_brief": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planning components in VLA by end of...",
+      "original_confidence": 0.58,
+      "adjusted_confidence": 0.58,
+      "signal_strength": "neutral",
+      "keyword_hits": 2,
+      "counter_evidence_hits": 0,
+      "matching_signals": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-007",
+      "domain": "vla",
+      "hypothesis_brief": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method for contact-rich dexterous manip...",
+      "original_confidence": 0.75,
+      "adjusted_confidence": 0.79,
+      "signal_strength": "leaning_support",
+      "keyword_hits": 3,
+      "counter_evidence_hits": 0,
+      "matching_signals": 9,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-008",
+      "domain": "vla",
+      "hypothesis_brief": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-month lag of closed-source fronti...",
+      "original_confidence": 0.66,
+      "adjusted_confidence": 0.7,
+      "signal_strength": "leaning_support",
+      "keyword_hits": 3,
+      "counter_evidence_hits": 0,
+      "matching_signals": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-009",
+      "domain": "vla",
+      "hypothesis_brief": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) will not generalize beyond 50% ...",
+      "original_confidence": 0.77,
+      "adjusted_confidence": 0.77,
+      "signal_strength": "neutral",
+      "keyword_hits": 2,
+      "counter_evidence_hits": 0,
+      "matching_signals": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "V-010",
+      "domain": "vla",
+      "hypothesis_brief": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for fine manipulation VLA by mid-...",
+      "original_confidence": 0.59,
+      "adjusted_confidence": 0.54,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 0,
+      "counter_evidence_hits": 0,
+      "matching_signals": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "A-001",
+      "domain": "ai_agent",
+      "hypothesis_brief": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration, with major IDEs/platforms providing native support by end...",
+      "original_confidence": 0.77,
+      "adjusted_confidence": 0.81,
+      "signal_strength": "leaning_support",
+      "keyword_hits": 3,
+      "counter_evidence_hits": 0,
+      "matching_signals": 5,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "status": "active"
+    },
+    {
+      "id": "A-002",
+      "domain": "ai_agent",
+      "hypothesis_brief": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming tasks with no human interventio...",
+      "original_confidence": 0.67,
+      "adjusted_confidence": 0.62,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 0,
+      "counter_evidence_hits": 0,
+      "matching_signals": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "A-003",
+      "domain": "ai_agent",
+      "hypothesis_brief": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade frameworks (>1k GitHub stars) showing r...",
+      "original_confidence": 0.61,
+      "adjusted_confidence": 0.56,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 1,
+      "counter_evidence_hits": 0,
+      "matching_signals": 4,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "A-004",
+      "domain": "ai_agent",
+      "hypothesis_brief": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming standard for agent planning and dec...",
+      "original_confidence": 0.82,
+      "adjusted_confidence": 0.86,
+      "signal_strength": "leaning_support",
+      "keyword_hits": 3,
+      "counter_evidence_hits": 0,
+      "matching_signals": 12,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "A-005",
+      "domain": "ai_agent",
+      "hypothesis_brief": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA applications.",
+      "original_confidence": 0.72,
+      "adjusted_confidence": 0.67,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 0,
+      "counter_evidence_hits": 0,
+      "matching_signals": 0,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "status": "active"
+    },
+    {
+      "id": "S-001",
+      "domain": "system",
+      "hypothesis_brief": "Open-weight models (Qwen, LLaMA, Gemma) will match 80% of closed-source model capabilities on AI agent tasks by end of 2026, making them the engineeri...",
+      "original_confidence": 0.71,
+      "adjusted_confidence": 0.71,
+      "signal_strength": "neutral",
+      "keyword_hits": 2,
+      "counter_evidence_hits": 0,
+      "matching_signals": 5,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "status": "active"
+    },
+    {
+      "id": "S-002",
+      "domain": "system",
+      "hypothesis_brief": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures without human intervention.",
+      "original_confidence": 0.81,
+      "adjusted_confidence": 0.76,
+      "signal_strength": "weak_evidence",
+      "keyword_hits": 0,
+      "counter_evidence_hits": 0,
+      "matching_signals": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "A-006",
+      "domain": "ai_agent",
+      "hypothesis_brief": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government contracts, defense partnerships,...",
+      "original_confidence": 0.73,
+      "adjusted_confidence": 0.81,
+      "signal_strength": "supporting",
+      "keyword_hits": 9,
+      "counter_evidence_hits": 0,
+      "matching_signals": 17,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "status": "active"
+    }
+  ]
+}
