@@ -1,6 +1,68 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-20",
+      "items": [
+        {
+          "title": "Google 发布 Gemini 3.5 Flash：智能体基准超越 GPT-5.5，价格涨3x",
+          "category": "新发布",
+          "source": "Google I/O",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
+          "why_picked": "Google I/O 重磅发布，3.5 Flash 直接 GA（跳过 preview），免费向全球用户开放；智能体基准超越 GPT-5.5；同时推出 Interactions API（beta）对标 OpenAI Responses",
+          "so_what": "如果你在用 Gemini API 做 Agent 管线：3.5 Flash 性能更强但价格涨了3x（$1.5/$9 per M tokens），需要重新评估成本收益比。Interactions API 提供服务端历史管理，可以简化你的多轮对话状态维护逻辑。建议先在非核心链路做 A/B 测试，对比 3 Flash Preview 的推理质量和延迟。"
+        },
+        {
+          "title": "Google Search 25年来最大改版：AI 模式 + 代理助手全面嵌入",
+          "category": "新发布",
+          "source": "Google I/O",
+          "url": "https://readhub.cn/topic/8tGdh1Cswlr",
+          "why_picked": "基于 Gemini 3.5 Flash，AI 模式和 AI 概览嵌入搜索框，引入新一代智能代理 Gemini Spark 可执行任务和完成购买，搜索框25年来最大升级",
+          "so_what": "如果你在做搜索相关的 Agent 或 RAG 产品：Google 正在从「搜索即检索」转向「搜索即执行」，Gemini Spark 能自主完成任务和购物。这意味着传统搜索引擎的流量分发模式可能被 Agent 直接拦截，你的 SEO/搜索策略需要重新设计。"
+        },
+        {
+          "title": "OpenAI 采用 Google SynthID 水印，推进 C2PA 内容溯源标准",
+          "category": "趋势",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/advancing-content-provenance/",
+          "why_picked": "OpenAI 与 Google 跨厂商合作，将 SynthID 水印嵌入 DALL·E/Sora 生成的图像，同时成为 C2PA 合规生成产品，推动内容认证跨平台标准化",
+          "so_what": "如果你在做 AI 生成内容管线或合规系统：C2PA + SynthID 正在成为行业事实标准，你的内容平台需要支持读取和验证 Content Credentials。OpenAI 的加入意味着主流厂商已形成溯源联盟，尽早集成 C2PA 验证可以避免未来合规风险。"
+        },
+        {
+          "title": "Google 推出科研版 Gemini for Science：追踪论文、写实验代码",
+          "category": "新发布",
+          "source": "Google I/O",
+          "url": "https://readhub.cn/topic/8tGgctsy8VS",
+          "why_picked": "Google I/O 发布 Gemini for Science，能追踪最新论文、将研究目标转化为代码、生成新假设，已有多个药物发现项目处于临床前阶段",
+          "so_what": "如果你在做科研辅助 Agent 或文献管线：Gemini for Science 展示了 AI 在科研领域的垂直化方向——从「读论文」到「写代码」到「生成假设」的全链路。可以关注其论文追踪和代码生成能力是否能集成到你的研究 workflow 中。"
+        },
+        {
+          "title": "DeepSeek 回应 .ao 字符触发模型异常：特殊字符引发幻觉",
+          "category": "工具",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/952452.htm",
+          "why_picked": "DeepSeek 官方确认 .ao 等特殊字符会触发模型幻觉，返回不可预期内容，不涉及安全问题或隐私泄露，将通过针对性训练修复",
+          "so_what": "如果你在用 DeepSeek 或类似模型构建 Agent：特殊字符注入可能引发模型幻觉/异常输出，这是 prompt injection 的变种。建议在 Agent 的输入预处理层加入特殊字符过滤或转义，并在输出端做异常检测。这是一个通用的 prompt 安全加固点。"
+        },
+        {
+          "title": "AWS：Kiro CLI 通过 MCP 集成 Bedrock AgentCore Memory 实现跨会话记忆",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/extending-conversational-memory-in-kiro-cli-using-amazon-bedrock-agentcore-memory/",
+          "why_picked": "AWS 演示通过自定义 MCP server 将 Bedrock AgentCore Memory 接入 Kiro CLI，实现跨会话的对话历史持久化、语义搜索和记忆管理",
+          "so_what": "如果你在建 Agent 对话系统：跨会话记忆是 Agent 实用化的核心瓶颈。AWS 的方案展示了 MCP + 托管记忆服务的标准架构——两阶段检索（工作记忆+长期记忆）、会话追踪、语义搜索。可以作为你设计 Agent 记忆层的参考模板。"
+        }
+      ],
+      "meta": {
+        "sources_used": [
+          "ai-app-rss",
+          "readhub",
+          "simonwillison.net",
+          "aws"
+        ],
+        "web_search_fallback": "credit_limit"
+      }
+    },
+    {
       "date": "2026-05-19",
       "items": [
         {
@@ -1321,35 +1383,6 @@
           "url": "https://simonwillison.net/guides/agentic-engineering-patterns/adding-a-new-content-type/#atom-everything",
           "why_picked": "Simon 分享 agentic engineering pattern：用一条精心设计的提示单次完成复杂功能开发",
           "so_what": "如果你在用 AI 辅助开发：参考其「单 shot 完成复杂任务」的提示设计模式；关键在清晰的任务边界和输出格式约束；评估将类似模式应用到自家代码库的可行性，建立「提示→验证→合并」的自动化流程。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-19",
-      "items": [
-        {
-          "title": "DeepSeek 启动首轮外部融资，估值超 100 亿美元",
-          "category": "行业",
-          "source": "IT 之家",
-          "url": "https://m.ithome.com/html/940804.htm",
-          "why_picked": "长期以「不融资」著称的 DeepSeek 正式开启首轮外部融资，计划募资不少于 3 亿美元，估值不低于 100 亿美元，标志中国 AI 行业进入商业化深水区",
-          "so_what": "如果你在做 AI 模型选型或投资评估：DeepSeek 融资转向反映国产大模型从技术狂热进入商业化阶段；100 亿美元估值对比 OpenAI 8520 亿显示中美 AI 估值差距；评估 DeepSeek V4（4 月下旬发布）对比 Qwen/GLM 的性价比，开源模型商业化成趋势。"
-        },
-        {
-          "title": "OpenAI IPO 前夜连失大将：Sora 之父、首席产品官离职",
-          "category": "行业",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3771701475394308",
-          "why_picked": "OpenAI 在 8500 亿美元估值 IPO 前夜遭遇人事地震，Sora 核心负责人 Bill Peebles、首席产品官 Kevin Weil 相继离职，Prism 项目并入 Codex，反映公司从「多线试验」转向「主线收拢」",
-          "so_what": "如果你在用 OpenAI 企业服务：IPO 前产品线收缩可能影响非核心功能（如 Sora 独立应用已关停）；Prism 并入 Codex 意味着科研工具将整合进编程助手；评估多模型冗余策略降低单平台依赖风险；关注 IPO 后定价和服务策略变化。"
-        },
-        {
-          "title": "Anthropic 推出 Claude Design，Figma 股价应声下跌 6.8%",
-          "category": "新发布",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3771756155077127",
-          "why_picked": "Anthropic 发布 Claude Design，支持对话生成设计稿、可交互原型、PPT 等视觉作品，内置品牌设计系统，一键导出至 Canva/代码，Pro 及以上订阅用户可用",
-          "so_what": "如果你在做设计相关 AI 应用：Claude Design 标志 AI 从「对话」扩展至「视觉创作」，直接竞争 Figma/Canva；参考其「品牌系统内置 + 多模态输入 + 精细控制」设计范式；评估将设计 - 开发工作流整合进 Claude Code 的 ROI，可能颠覆传统设计 - 开发协作模式。"
         }
       ]
     }
