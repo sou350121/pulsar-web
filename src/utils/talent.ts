@@ -632,6 +632,142 @@ export const DEFAULT_HR_GATE: HRGateCriteria = {
   requireAffiliation: true,
 };
 
+// ---------------------------------------------------------------------------
+// Method-tag derivation
+//
+// Use the same family-token approach as loadSubdirections to assign each
+// candidate the top method families their evidence papers fall into. Keeps
+// HR informed about what to interview them on without inventing labels.
+// ---------------------------------------------------------------------------
+
+export function topMethodsForEvidence(ev: Evidence[], maxTags: number = 2): string[] {
+  if (!ev || ev.length === 0) return [];
+  const hits: Record<string, number> = {};
+  for (const e of ev) {
+    const title = (e.title ?? '').toLowerCase();
+    for (const family of Object.keys(METHOD_FAMILY_LABELS)) {
+      const tokens = family.split('_').filter(s => s.length >= 3);
+      if (tokens.length > 0 && tokens.every(tok => title.includes(tok))) {
+        hits[family] = (hits[family] ?? 0) + 1;
+        break;
+      }
+    }
+  }
+  return Object.entries(hits)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, maxTags)
+    .map(([f]) => familyDisplay(f));
+}
+
+// ---------------------------------------------------------------------------
+// HR Scout funnel
+//
+// Real scouting needs more than the 4 gate-passers. We surface a funnel:
+//   HOT   — full gate passers (interview-ready)
+//   WARM  — close-to-gate; missing exactly one criterion (rising star,
+//           prolific-but-unaffiliated, etc.). Each carries `gateMissed`.
+//   WATCH — ⚡-rated outliers without durable signal (curiosity tier)
+// Each candidate is enriched with `topMethods` derived from their papers.
+// ---------------------------------------------------------------------------
+
+export interface ScoutEntry extends HRCandidate {
+  topMethods: string[];
+  gateMissed?: string;  // why this person isn't in HOT (warm/watch only)
+}
+
+export interface HRScout {
+  hot:   ScoutEntry[];
+  warm:  ScoutEntry[];
+  watch: ScoutEntry[];
+  totals: { hot: number; warm: number; watch: number; pool: number };
+}
+
+export function loadHRScout(): HRScout {
+  const allPeople = loadPeople({ minPaperCount90d: 1 });
+
+  const enrich = (p: PersonRecord, opts: { whyNow: string; gateHits: string[]; gateMissed?: string }): ScoutEntry => ({
+    ...p,
+    whyNow:     opts.whyNow,
+    gateHits:   opts.gateHits,
+    topMethods: topMethodsForEvidence(p.evidence, 2),
+    gateMissed: opts.gateMissed,
+  });
+
+  const hot:   ScoutEntry[] = [];
+  const warm:  ScoutEntry[] = [];
+  const watch: ScoutEntry[] = [];
+
+  for (const p of allPeople) {
+    const isRated = p.topRating === '⚡' || p.topRating === '🔧';
+    if (!isRated) continue;
+
+    const hasAff   = !!p.affiliation;
+    const hasMulti = p.paperCount90d >= 2;
+    const hasDurable = p.contactStatus !== 'not_linked';
+
+    // HOT: full gate (≥🔧 + ≥2 papers + affiliation + durable contact)
+    if (isRated && hasMulti && hasAff && hasDurable) {
+      hot.push(enrich(p, {
+        whyNow: p.topRating === '⚡'
+          ? `Author on ⚡-rated paper in last 90 days`
+          : `Author on ${p.paperCount90d} 🔧+ papers in last 90 days`,
+        gateHits: [
+          `Top rating ${p.topRating}`,
+          `${p.paperCount90d} papers · 90d`,
+          `Affiliated: ${p.affiliation}`,
+          `Contact: ${p.contactStatus}`,
+        ],
+      }));
+      continue;
+    }
+
+    // WARM-A: rising star — ⚡ × 1 paper + affiliation (missing volume)
+    if (p.topRating === '⚡' && p.paperCount90d === 1 && hasAff) {
+      warm.push(enrich(p, {
+        whyNow:     `⚡ debut at ${p.affiliation} — single paper, watch for follow-ups`,
+        gateHits:   [`⚡ rating`, `1 paper`, `Affiliated: ${p.affiliation}`],
+        gateMissed: 'paper count < 2',
+      }));
+      continue;
+    }
+
+    // WARM-B: prolific without verified org (≥🔧 × ≥2 papers, no affiliation)
+    if (isRated && hasMulti && !hasAff) {
+      warm.push(enrich(p, {
+        whyNow:     `${p.paperCount90d} ${p.topRating}+ papers in 90d — affiliation unresolved`,
+        gateHits:   [`Top rating ${p.topRating}`, `${p.paperCount90d} papers · 90d`],
+        gateMissed: hasDurable ? 'affiliation unknown' : 'affiliation + durable signal unknown',
+      }));
+      continue;
+    }
+
+    // WATCH: ⚡ outlier with no other gate signal
+    if (p.topRating === '⚡' && (!hasAff || !hasDurable)) {
+      watch.push(enrich(p, {
+        whyNow:     `⚡-rated, ${p.paperCount90d} paper${p.paperCount90d > 1 ? 's' : ''}, no verified org`,
+        gateHits:   [`⚡ rating`, `${p.paperCount90d} paper(s)`],
+        gateMissed: 'no affiliation or durable contact',
+      }));
+      continue;
+    }
+  }
+
+  // Ranking inside each tier: rating, then paper count, then name
+  const rOrder = (r: string) => r === '⚡' ? 0 : r === '🔧' ? 1 : 2;
+  const cmp = (a: ScoutEntry, b: ScoutEntry) =>
+    rOrder(a.topRating) - rOrder(b.topRating) ||
+    b.paperCount90d - a.paperCount90d ||
+    a.name.localeCompare(b.name);
+  hot.sort(cmp);
+  warm.sort(cmp);
+  watch.sort(cmp);
+
+  return {
+    hot, warm, watch,
+    totals: { hot: hot.length, warm: warm.length, watch: watch.length, pool: hot.length + warm.length + watch.length },
+  };
+}
+
 export function loadHRQueue(opts: Partial<HRGateCriteria> = {}): HRCandidate[] {
   const gate: HRGateCriteria = { ...DEFAULT_HR_GATE, ...opts };
   const allPeople = loadPeople({ minPaperCount90d: 1 });

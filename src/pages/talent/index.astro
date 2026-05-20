@@ -19,9 +19,10 @@ import {
   loadSubdirections,
   loadLabs,
   loadPeople,
-  loadHRQueue,
+  loadHRScout,
   loadTalentStats,
   slugifyName,
+  topMethodsForEvidence,
 } from '../../utils/talent';
 
 const base = import.meta.env.BASE_URL;
@@ -30,7 +31,8 @@ const stats     = loadTalentStats();
 const allSubs   = loadSubdirections({ domain: 'all' });
 const allLabs   = loadLabs({ minSignals: 3 });
 const allPeople = loadPeople({ minPaperCount90d: 1 });
-const allHR     = loadHRQueue();
+const scout     = loadHRScout();
+const allHR     = scout.hot;   // back-compat for downstream brief card
 
 // ── Trustworthy subset for ranking ─────────────────────────────────────────
 // A family with prior_volume = 0 produces a clamped acceleration value
@@ -53,9 +55,20 @@ const velocityBoard = [...rankedSubs]
   .slice(0, 8);
 const velocityMaxAbs = Math.max(0.01, ...velocityBoard.map(s => Math.abs(s.acceleration)));
 
-// ── HR shortlist ───────────────────────────────────────────────────────────
-const featuredHR = allHR[0];
-const restHR     = allHR.slice(1, 4);
+// ── HR scout funnel ────────────────────────────────────────────────────────
+//   HOT   — full gate passers
+//   WARM  — missing one criterion (rising star / prolific-no-aff / social)
+//   WATCH — ⚡ outliers without durable signal
+const featuredHR = scout.hot[0];
+const restHot    = scout.hot.slice(1);
+const warmShown  = scout.warm.slice(0, 8);
+const warmRest   = Math.max(0, scout.warm.length - warmShown.length);
+const watchShown = scout.watch.slice(0, 12);
+
+// Featured candidate gets enriched method tags for the hero card
+const featuredMethods = featuredHR
+  ? topMethodsForEvidence(featuredHR.evidence, 3)
+  : [];
 
 // ── Labs showcase: 6 with non-zero recent OR top by 90d signals ─────────────
 const labsShowcase = allLabs.slice(0, 6);
@@ -224,7 +237,13 @@ function fmtAccel(a: number): string {
       </div>
     </section>
 
-    <!-- ══ Section 01 · HR SHORTLIST ══════════════════════════════════════ -->
+    <!-- ══ Section 01 · HR SCOUT FUNNEL ═══════════════════════════════════
+         A real shortlist is a funnel, not a one-tier gate. We expose:
+           HOT   = gate passers (interview-ready)
+           WARM  = close-to-gate (need follow-up or affiliation lookup)
+           WATCH = ⚡ flashes (one-paper outliers, curiosity tier)
+         Each entry carries top method tags so HR knows what to interview on.
+    ══════════════════════════════════════════════════════════════════════ -->
     <section class="tv2-section" id="hr-shortlist">
       <header class="tv2-section-header">
         <div class="tv2-section-titlewrap">
@@ -233,46 +252,66 @@ function fmtAccel(a: number): string {
             <span data-tc>HR 候選人短名單</span>
             <span data-sc>HR 候选人短名单</span>
           </h2>
-          <span class="tv2-section-en">/ Shortlist</span>
+          <span class="tv2-section-en">/ HR Scout · {scout.totals.pool}</span>
         </div>
         <a class="tv2-more" href={`${base}/talent/hr-queue/`}>
-          <span data-tc>完整隊列 ({stats.hrQueueCount}) →</span>
-          <span data-sc>完整队列 ({stats.hrQueueCount}) →</span>
+          <span data-tc>完整隊列 →</span>
+          <span data-sc>完整队列 →</span>
         </a>
       </header>
 
-      {allHR.length === 0 ? (
+      <p class="tv2-section-lede">
+        <span data-tc>從 {stats.peopleCount} 名研究員中漏出 <strong>{scout.totals.pool}</strong> 位進入候選池 ·
+          <span class="tv2-tier-tag tv2-tier-tag--hot">HOT {scout.totals.hot}</span> 通過完整門檻 ·
+          <span class="tv2-tier-tag tv2-tier-tag--warm">WARM {scout.totals.warm}</span> 缺一道門檻 ·
+          <span class="tv2-tier-tag tv2-tier-tag--watch">WATCH {scout.totals.watch}</span> ⚡ 異常爆點</span>
+        <span data-sc>从 {stats.peopleCount} 名研究员中漏出 <strong>{scout.totals.pool}</strong> 位进入候选池 ·
+          <span class="tv2-tier-tag tv2-tier-tag--hot">HOT {scout.totals.hot}</span> 通过完整门槛 ·
+          <span class="tv2-tier-tag tv2-tier-tag--warm">WARM {scout.totals.warm}</span> 缺一道门槛 ·
+          <span class="tv2-tier-tag tv2-tier-tag--watch">WATCH {scout.totals.watch}</span> ⚡ 异常爆点</span>
+      </p>
+
+      {scout.totals.pool === 0 ? (
         <div class="tv2-empty">
           <p class="tv2-empty-title">
-            <span data-tc>本週無候選人通過門檻</span>
-            <span data-sc>本周无候选人通过门槛</span>
+            <span data-tc>本週無候選人</span>
+            <span data-sc>本周无候选人</span>
           </p>
           <p class="tv2-empty-sub">
-            <span data-tc>門檻：≥ 2 篇 🔧+ 論文（90d）· 機構可解析 · 聯繫狀態非 not_linked</span>
-            <span data-sc>门槛：≥ 2 篇 🔧+ 论文（90d）· 机构可解析 · 联系状态非 not_linked</span>
+            <span data-tc>掃描了 {stats.peopleCount} 位研究員，無人達到候選池閾值。等待下一輪 entity-tracker。</span>
+            <span data-sc>扫描了 {stats.peopleCount} 位研究员，无人达到候选池阈值。等待下一轮 entity-tracker。</span>
           </p>
         </div>
       ) : (
-        <div class="tv2-hr-stack">
+        <div class="tv2-scout">
+          {/* ── Featured top candidate ──────────────────────────────── */}
           {featuredHR && (
             <article class="tv2-hr-featured">
               <div class="tv2-hr-featured-stripe" aria-hidden="true"></div>
               <div class="tv2-hr-featured-body">
                 <div class="tv2-hr-featured-head">
                   <span class="tv2-hr-featured-kicker">
-                    <span data-tc>首推</span><span data-sc>首推</span>
-                    · TOP CANDIDATE
+                    <span data-tc>首推 · </span><span data-sc>首推 · </span>HOT #1
                   </span>
                   <div class="tv2-hr-featured-title">
                     <h3>{featuredHR.name}</h3>
                     <RatingBadge rating={featuredHR.topRating} size="sm" />
                   </div>
-                  {featuredHR.affiliation && (
-                    <a class="tv2-hr-featured-affil"
-                       href={`${base}/talent/labs/#lab-${slugifyName(featuredHR.affiliation)}`}>
-                      {featuredHR.affiliation}
-                    </a>
-                  )}
+                  <div class="tv2-hr-featured-meta">
+                    {featuredHR.affiliation && (
+                      <a class="tv2-hr-featured-affil"
+                         href={`${base}/talent/labs/#lab-${slugifyName(featuredHR.affiliation)}`}>
+                        {featuredHR.affiliation}
+                      </a>
+                    )}
+                    {featuredMethods.length > 0 && (
+                      <span class="tv2-method-tags">
+                        {featuredMethods.map(m => (
+                          <span class="tv2-method-tag">{m}</span>
+                        ))}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <p class="tv2-hr-featured-why">
@@ -288,7 +327,7 @@ function fmtAccel(a: number): string {
                     </span>
                   </div>
                   <div class="tv2-hr-stat">
-                    <span class="tv2-hr-stat-num">{featuredHR.gateHits.length}</span>
+                    <span class="tv2-hr-stat-num">{featuredHR.gateHits.length}/4</span>
                     <span class="tv2-hr-stat-lbl">
                       <span data-tc>門檻命中</span><span data-sc>门槛命中</span>
                     </span>
@@ -319,10 +358,124 @@ function fmtAccel(a: number): string {
             </article>
           )}
 
-          {restHR.length > 0 && (
-            <div class="tv2-hr-rest">
-              {restHR.map(h => <PersonCard record={h} showWhyNow />)}
+          {/* ── HOT table (remaining gate-passers, compact rows) ────── */}
+          {restHot.length > 0 && (
+            <div class="tv2-tier tv2-tier--hot">
+              <div class="tv2-tier-head">
+                <span class="tv2-tier-dot" data-tier="hot" aria-hidden="true"></span>
+                <span class="tv2-tier-label">
+                  <span data-tc>HOT · 通過完整門檻</span>
+                  <span data-sc>HOT · 通过完整门槛</span>
+                </span>
+                <span class="tv2-tier-count">{scout.totals.hot}</span>
+              </div>
+              <table class="tv2-scout-table">
+                <tbody>
+                  {restHot.map((c, i) => (
+                    <tr>
+                      <td class="tv2-scout-rank">#{i + 2}</td>
+                      <td class="tv2-scout-rating"><RatingBadge rating={c.topRating} size="sm" /></td>
+                      <td class="tv2-scout-name">{c.name}</td>
+                      <td class="tv2-scout-aff">
+                        {c.affiliation && (
+                          <a href={`${base}/talent/labs/#lab-${slugifyName(c.affiliation)}`}>
+                            {c.affiliation}
+                          </a>
+                        )}
+                      </td>
+                      <td class="tv2-scout-methods">
+                        {c.topMethods.map(m => <span class="tv2-method-tag">{m}</span>)}
+                      </td>
+                      <td class="tv2-scout-papers">{c.paperCount90d}<span class="tv2-scout-unit"> · 90d</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          )}
+
+          {/* ── WARM grid (close-to-gate, 8 cards with gate-missed line) ─ */}
+          {warmShown.length > 0 && (
+            <div class="tv2-tier tv2-tier--warm">
+              <div class="tv2-tier-head">
+                <span class="tv2-tier-dot" data-tier="warm" aria-hidden="true"></span>
+                <span class="tv2-tier-label">
+                  <span data-tc>WARM · 缺一道門檻</span>
+                  <span data-sc>WARM · 缺一道门槛</span>
+                </span>
+                <span class="tv2-tier-count">{scout.totals.warm}</span>
+                {warmRest > 0 && (
+                  <a class="tv2-tier-more" href={`${base}/talent/hr-queue/`}>+{warmRest} →</a>
+                )}
+              </div>
+              <p class="tv2-tier-lede">
+                <span data-tc>補上隸屬機構或下一篇高評論文後即進入 HOT。</span>
+                <span data-sc>补上隶属机构或下一篇高评论文后即进入 HOT。</span>
+              </p>
+              <div class="tv2-warm-grid">
+                {warmShown.map(c => (
+                  <article class="tv2-warm-card">
+                    <div class="tv2-warm-head">
+                      <RatingBadge rating={c.topRating} size="sm" />
+                      <span class="tv2-warm-name">{c.name}</span>
+                      <span class="tv2-warm-papers">{c.paperCount90d}<span class="tv2-warm-unit"> 篇</span></span>
+                    </div>
+                    <div class="tv2-warm-affil">
+                      {c.affiliation ? (
+                        <a href={`${base}/talent/labs/#lab-${slugifyName(c.affiliation)}`}>{c.affiliation}</a>
+                      ) : (
+                        <span class="tv2-warm-noaff">org: unknown</span>
+                      )}
+                    </div>
+                    {c.topMethods.length > 0 && (
+                      <div class="tv2-method-tags tv2-method-tags--warm">
+                        {c.topMethods.map(m => <span class="tv2-method-tag">{m}</span>)}
+                      </div>
+                    )}
+                    {c.gateMissed && (
+                      <p class="tv2-warm-missed">
+                        <span class="tv2-warm-missed-tag">MISSING</span>
+                        {c.gateMissed}
+                      </p>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── WATCH list (⚡ flashes, collapsible) ─────────────────── */}
+          {watchShown.length > 0 && (
+            <details class="tv2-tier tv2-tier--watch">
+              <summary class="tv2-tier-head tv2-tier-head--clickable">
+                <span class="tv2-tier-dot" data-tier="watch" aria-hidden="true"></span>
+                <span class="tv2-tier-label">
+                  <span data-tc>WATCH · ⚡ 異常爆點 · 單篇高評</span>
+                  <span data-sc>WATCH · ⚡ 异常爆点 · 单篇高评</span>
+                </span>
+                <span class="tv2-tier-count">{scout.totals.watch}</span>
+                <span class="tv2-tier-cue">click to expand →</span>
+              </summary>
+              <p class="tv2-tier-lede">
+                <span data-tc>單篇 ⚡ 評級的作者，無已知機構。可能是新生力量，也可能是匿名/化名。</span>
+                <span data-sc>单篇 ⚡ 评级的作者，无已知机构。可能是新生力量，也可能是匿名/化名。</span>
+              </p>
+              <table class="tv2-scout-table">
+                <tbody>
+                  {watchShown.map((c, i) => (
+                    <tr>
+                      <td class="tv2-scout-rank">#{i + 1}</td>
+                      <td class="tv2-scout-rating"><RatingBadge rating={c.topRating} size="sm" /></td>
+                      <td class="tv2-scout-name">{c.name}</td>
+                      <td class="tv2-scout-methods">
+                        {c.topMethods.map(m => <span class="tv2-method-tag">{m}</span>)}
+                      </td>
+                      <td class="tv2-scout-papers">{c.paperCount90d}<span class="tv2-scout-unit"> · 90d</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
           )}
         </div>
       )}
@@ -1007,6 +1160,225 @@ function fmtAccel(a: number): string {
     }
     .tv2-foot strong { color: var(--text-primary); }
 
+    /* ── HR SCOUT FUNNEL ─────────────────────────────────────────────── */
+    .tv2-scout { display: flex; flex-direction: column; gap: 1.5rem; }
+    .tv2-hr-featured-meta {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Tier headers — share visual language across HOT / WARM / WATCH */
+    .tv2-tier {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .tv2-tier-head {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .tv2-tier-head--clickable {
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+    .tv2-tier-head--clickable::-webkit-details-marker { display: none; }
+    .tv2-tier-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--text-primary);
+      flex: 1; min-width: 0;
+    }
+    .tv2-tier-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--text-primary);
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .tv2-tier--hot   .tv2-tier-count { color: var(--accent-amber); border-color: var(--accent-amber); }
+    .tv2-tier--warm  .tv2-tier-count { color: var(--accent-cyan);  border-color: var(--accent-cyan); }
+    .tv2-tier--watch .tv2-tier-count { color: var(--text-secondary); }
+    .tv2-tier-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tv2-tier-dot[data-tier="hot"]   { background: var(--accent-amber); box-shadow: 0 0 0 3px var(--accent-amber-bg); }
+    .tv2-tier-dot[data-tier="warm"]  { background: var(--accent-cyan);  box-shadow: 0 0 0 3px var(--accent-cyan-bg); }
+    .tv2-tier-dot[data-tier="watch"] { background: var(--text-tertiary); }
+    .tv2-tier-more {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .tv2-tier-more:hover { text-decoration: underline; }
+    .tv2-tier-cue {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem; font-weight: 400;
+      color: var(--accent-cyan);
+      letter-spacing: 0.05em;
+    }
+    details[open] .tv2-tier-cue::before { content: '↓ '; }
+    details[open] .tv2-tier-cue { color: var(--text-tertiary); }
+    .tv2-tier-lede {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin: 0;
+      padding: 0.75rem 1rem 0;
+    }
+
+    /* Inline tier tags inside the section lede */
+    .tv2-tier-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      margin-right: 0.15rem;
+    }
+    .tv2-tier-tag--hot   { background: var(--accent-amber-bg); color: var(--accent-amber); }
+    .tv2-tier-tag--warm  { background: var(--accent-cyan-bg);  color: var(--accent-cyan); }
+    .tv2-tier-tag--watch { background: var(--surface-2);       color: var(--text-secondary); border: 1px solid var(--border); }
+
+    /* Method tag chips — used on featured card + tables + warm cards */
+    .tv2-method-tags {
+      display: inline-flex; flex-wrap: wrap; gap: 0.3rem;
+    }
+    .tv2-method-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+      border: 1px solid color-mix(in srgb, var(--accent-cyan) 30%, transparent);
+      white-space: nowrap;
+    }
+
+    /* HOT compact scout table */
+    .tv2-scout-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .tv2-scout-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+    .tv2-scout-table tr:last-child td { border-bottom: none; }
+    .tv2-scout-table tr:hover td { background: var(--surface-2); }
+    .tv2-scout-rank {
+      width: 38px;
+      color: var(--text-tertiary);
+      font-weight: 700;
+    }
+    .tv2-scout-rating { width: 36px; }
+    .tv2-scout-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .tv2-scout-aff a {
+      color: var(--accent-amber);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .tv2-scout-aff a:hover { text-decoration: underline; }
+    .tv2-scout-methods { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .tv2-scout-papers {
+      text-align: right;
+      color: var(--text-primary);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tv2-scout-unit {
+      color: var(--text-tertiary); font-weight: 400; font-size: 0.7rem;
+    }
+
+    /* WARM grid */
+    .tv2-warm-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      padding: 0.75rem 1rem 1rem;
+    }
+    .tv2-warm-card {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 8px;
+      background: var(--surface-2);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    .tv2-warm-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
+    }
+    .tv2-warm-head {
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .tv2-warm-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.02rem; font-weight: 600;
+      color: var(--text-primary);
+      flex: 1; min-width: 0;
+    }
+    .tv2-warm-papers {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--text-primary);
+    }
+    .tv2-warm-unit {
+      font-weight: 400; color: var(--text-tertiary); font-size: 0.7rem;
+    }
+    .tv2-warm-affil {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .tv2-warm-affil a {
+      color: var(--accent-amber);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .tv2-warm-affil a:hover { text-decoration: underline; }
+    .tv2-warm-noaff {
+      color: var(--text-tertiary);
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+    .tv2-method-tags--warm { margin-top: 0.1rem; }
+    .tv2-warm-missed {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin: 0;
+      padding-top: 0.3rem;
+      border-top: 1px dashed var(--border);
+    }
+    .tv2-warm-missed-tag {
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--accent-cyan);
+      margin-right: 0.4rem;
+    }
+
     /* ── EMERGING (zero-prior families) ──────────────────────────────── */
     .tv2-emerging {
       margin-top: 0.75rem;
@@ -1076,6 +1448,12 @@ function fmtAccel(a: number): string {
       .tv2-vel-track { grid-column: 1 / -1; }
       .tv2-vel-vol   { display: none; }
       .tv2-emerging-list { grid-template-columns: 1fr; }
+      .tv2-warm-grid     { grid-template-columns: 1fr; }
+      .tv2-scout-aff     { display: none; }
+      .tv2-scout-name    { font-size: 0.88rem; }
+    }
+    @media (max-width: 600px) {
+      .tv2-scout-methods { display: none; }
     }
     @media (max-width: 600px) {
       .tv2-hr-featured-body { padding: 1rem 1.15rem; }
