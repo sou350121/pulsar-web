@@ -87,7 +87,8 @@ const hue      = avatarHue(record.name);
     </span>
   </div>
 
-  <!-- Contact status pill (no email!) -->
+  <!-- Contact status pill. NO-EMAIL is enforced at the data layer and stated
+       on the page banner — repeating it per row was noisy. -->
   <div class="flex flex-wrap items-center gap-2">
     <span
       class="inline-flex items-center font-ibm-plex-mono rounded-full border px-2 py-0.5 text-xs"
@@ -96,9 +97,6 @@ const hue      = avatarHue(record.name);
     >
       <span data-tc>{contact.label}</span>
       <span data-sc>{contact.labelSC}</span>
-    </span>
-    <span class="text-[0.65rem] font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
-      <span data-tc>無電郵</span><span data-sc>无邮箱</span>
     </span>
   </div>
 

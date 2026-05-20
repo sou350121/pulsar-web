@@ -197,6 +197,63 @@ function latestFieldState(prefix: 'field-state-' | 'ai-field-state-'): FieldStat
   return readJsonLocal<FieldStateFile>(files[0]);
 }
 
+// ---------------------------------------------------------------------------
+// Data-quality filters
+//
+// The byline extractor that builds the people index can be tricked by paper
+// summaries that lack a real byline — the regex grabs the leading sentence
+// fragment and treats it as the first author's name. Likewise, the entity-
+// index has occasional researcher surnames mis-labelled as labs. These two
+// filters keep that noise out of the UI.
+// ---------------------------------------------------------------------------
+
+const NAME_BAD_TOKEN = /\b(models?|tasks?|approach|method|policy|policies|emerged|using|trained|propose|present|introduce|prompt|reasoning|manipulation|require|combining|advanced|enable|robots?|observations?|instructions?|directly|alternatively|whereas|however|consequently|moreover|furthermore|typically|increasingly|repeatedly|mirroring|despite|finetun|sampling)\b/i;
+const NAME_BAD_PHRASE = /\b(such as|fine[- ]tun)\b/i;
+
+export function isPlausibleName(raw: string): boolean {
+  if (!raw) return false;
+  const s = raw.trim();
+  if (s.length < 2 || s.length > 50) return false;
+  if (NAME_BAD_TOKEN.test(s) || NAME_BAD_PHRASE.test(s)) return false;
+  const tokens = s.split(/\s+/);
+  if (tokens.length > 5) return false;
+  // Punctuation followed by a lowercase letter → sentence fragment
+  if (/[.,;:]\s*[a-z]/.test(s)) return false;
+  // Looks like a clause: leading 'the/a/an/this/that'
+  if (/^(the|a|an|this|that|these|those|our|we|in|on|with|by|for)\s/i.test(s)) return false;
+  return true;
+}
+
+// Whitelist of single-token labs the entity-index should be allowed to
+// surface. Anything single-token not on this list and not all-caps / CJK
+// gets dropped, because that's how surnames ("Ryoo") leak through.
+const KNOWN_SINGLE_TOKEN_LABS = new Set<string>([
+  'NVIDIA', 'CMU', 'MIT', 'Stanford', 'Berkeley', 'DeepMind', 'Meta',
+  'Microsoft', 'Princeton', 'ETH', 'KAIST', 'USC', 'IIT', 'Imperial',
+  'Freiburg', 'Tongji', 'HKUST', 'UCSD', 'UCLA', 'UCSB', 'UCB',
+  'OpenAI', 'Anthropic', 'Google', 'Apple', 'Amazon',
+  'Tencent', 'Bytedance', 'ByteDance', 'Alibaba', 'Baidu', 'Huawei',
+  'EPFL', 'Inria', 'RIKEN', 'Oxford', 'Cambridge', 'Yale', 'Harvard',
+  'Columbia', 'Cornell', 'Caltech', 'Toronto', 'Waterloo', 'McGill',
+  'Tsinghua', 'PKU', 'SJTU', 'Fudan', 'NTU', 'NUS',
+]);
+
+export function isPlausibleLab(name: string, signalCount: number): boolean {
+  if (!name) return false;
+  const s = name.trim();
+  if (s.length < 2 || s.length > 80) return false;
+  // Multi-token (institution-shaped) → keep
+  if (/\s/.test(s)) return true;
+  // Whitelisted single token → keep
+  if (KNOWN_SINGLE_TOKEN_LABS.has(s)) return true;
+  // All-caps acronym (EPFL, RIKEN, KAIST…) → keep if any signal
+  if (/^[A-Z]{2,}$/.test(s) && signalCount >= 1) return true;
+  // CJK single token (清華 / 北大 / 上交 / …) → keep
+  if (/^[一-鿿]+$/.test(s)) return true;
+  // Mixed-case single token (likely a surname) → drop
+  return false;
+}
+
 const METHOD_FAMILY_LABELS: Record<string, string> = {
   flow_matching:        'Flow Matching',
   diffusion_policy:     'Diffusion Policy',
@@ -318,6 +375,8 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
   for (const ent of Object.values(entities)) {
     if (ent.type !== 'lab') continue;
     if (ent.signals.length < minSignals) continue;
+    // Drop entries that look like researcher surnames mis-labelled as labs
+    if (!isPlausibleLab(ent.name, ent.signals.length)) continue;
 
     const ratedSignals = ent.signals.filter(s => s.rating === '⚡' || s.rating === '🔧' || s.rating === '📖');
     if (ratedSignals.length === 0) continue;
@@ -453,6 +512,10 @@ export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonReco
       const bylineMatch = (item.summary || '').match(/^([^·]+?)\s+(et al\.?\s+)?·/);
       const author = bylineMatch?.[1]?.trim() || '';
       if (!author) continue;
+      // Reject paper-abstract fragments masquerading as bylines. About 30%
+      // of byline regex matches are noise; this drops them before they
+      // populate the people index.
+      if (!isPlausibleName(author)) continue;
       const norm = normalizeName(author);
       if (!norm || norm.length < 3) continue;
 
@@ -478,6 +541,7 @@ export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonReco
   const { entities } = loadEntityIndex();
   for (const ent of Object.values(entities)) {
     if (ent.type !== 'researcher') continue;
+    if (!isPlausibleName(ent.name)) continue;
     const norm = normalizeName(ent.name);
     if (!norm) continue;
     const entry = peopleMap.get(norm) ?? {

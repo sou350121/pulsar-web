@@ -8,13 +8,21 @@ const vlaSubs = loadSubdirections({ domain: 'vla' });
 const aiSubs  = loadSubdirections({ domain: 'ai' });
 const all     = [...vlaSubs, ...aiSubs];
 
+// Velocity board excludes insufficient_data (prior=0) rows — those produce
+// clamped 999% values that overwhelm the legitimate signal.
 const board = [...all]
+  .filter(s => s.status !== 'insufficient_data')
   .sort((a, b) => Math.abs(b.acceleration) - Math.abs(a.acceleration))
   .slice(0, 8);
 const maxAbs = Math.max(0.01, ...board.map(s => Math.abs(s.acceleration)));
+const emerging = all
+  .filter(s => s.status === 'insufficient_data' && s.velocity7d > 0)
+  .sort((a, b) => b.velocity7d - a.velocity7d);
 
 function fmtAccel(a: number): string {
   const pct = Math.round(a * 100);
+  if (pct >= 500)  return '+500%↑';
+  if (pct <= -500) return '−500%↓';
   return `${pct > 0 ? '+' : ''}${pct}%`;
 }
 ---
@@ -63,6 +71,28 @@ function fmtAccel(a: number): string {
           );
         })}
       </ol>
+
+      {emerging.length > 0 && (
+        <div class="tv2-emerging">
+          <span class="tv2-emerging-label">
+            <span data-tc>新冒頭</span><span data-sc>新冒头</span>
+            <span class="tv2-emerging-en">· EMERGING · prior volume = 0</span>
+          </span>
+          <ul class="tv2-emerging-list">
+            {emerging.map(s => (
+              <li>
+                <a href={`#fam-${s.family}`}>
+                  <span class={`tv2-vel-domain ${s.domain === 'vla' ? 'tag-vla' : 'tag-ai'}`}>
+                    {s.domain === 'vla' ? 'VLA' : 'AI'}
+                  </span>
+                  <span class="tv2-emerging-name">{s.displayName}</span>
+                  <span class="tv2-emerging-count">{s.velocity7d}<span class="tv2-emerging-unit"> 篇 · 7d</span></span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
 
     <section class="tv2-section">
@@ -175,6 +205,52 @@ function fmtAccel(a: number): string {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.68rem; color: var(--text-tertiary); text-align: right;
     }
+    .tv2-emerging {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface-2);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+    .tv2-emerging-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      display: block; margin-bottom: 0.5rem;
+    }
+    .tv2-emerging-en {
+      color: var(--text-tertiary); font-weight: 400; margin-left: 0.35rem;
+    }
+    .tv2-emerging-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem 1rem;
+    }
+    .tv2-emerging-list li a {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.35rem 0.5rem;
+      text-decoration: none;
+      border-radius: 4px;
+      color: var(--text-primary);
+      transition: background 0.12s;
+    }
+    .tv2-emerging-list li a:hover { background: var(--surface); }
+    .tv2-emerging-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.9rem; flex: 1;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .tv2-emerging-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    .tv2-emerging-unit {
+      font-weight: 400; color: var(--text-tertiary); font-size: 0.7rem;
+    }
     @media (max-width: 900px) {
       .tv2-vel-link {
         grid-template-columns: 24px 44px 1fr 56px;
@@ -182,6 +258,7 @@ function fmtAccel(a: number): string {
       }
       .tv2-vel-track { grid-column: 1 / -1; }
       .tv2-vel-vol   { display: none; }
+      .tv2-emerging-list { grid-template-columns: 1fr; }
     }
   </style>
 </BaseLayout>

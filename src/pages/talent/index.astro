@@ -32,13 +32,23 @@ const allLabs   = loadLabs({ minSignals: 3 });
 const allPeople = loadPeople({ minPaperCount90d: 1 });
 const allHR     = loadHRQueue();
 
-// ── Weekly Brief: 3 lead facts ─────────────────────────────────────────────
-const topMover = allSubs.find(s => s.status === 'accelerating') ?? allSubs[0];
-const topLab   = allLabs[0];
-const topHR    = allHR[0];
+// ── Trustworthy subset for ranking ─────────────────────────────────────────
+// A family with prior_volume = 0 produces a clamped acceleration value
+// (often +999%) that is mathematically meaningless. Separate those from the
+// signal-bearing population and surface them under a distinct "Emerging"
+// label instead of letting them dominate the velocity board.
+const rankedSubs   = allSubs.filter(s => s.status !== 'insufficient_data');
+const emergingSubs = allSubs
+  .filter(s => s.status === 'insufficient_data' && s.velocity7d > 0)
+  .sort((a, b) => b.velocity7d - a.velocity7d);
 
-// ── Velocity board: top 8 by abs acceleration (mix accelerating + declining) ─
-const velocityBoard = [...allSubs]
+// ── Weekly Brief: 3 lead facts ─────────────────────────────────────────────
+const topMover  = rankedSubs.find(s => s.acceleration > 0) ?? rankedSubs[0];
+const topLab    = allLabs[0];
+const topEmerge = emergingSubs[0];   // new card 3: "emerging on the radar"
+
+// ── Velocity board: top 8 by abs acceleration, excluding insufficient_data ─
+const velocityBoard = [...rankedSubs]
   .sort((a, b) => Math.abs(b.acceleration) - Math.abs(a.acceleration))
   .slice(0, 8);
 const velocityMaxAbs = Math.max(0.01, ...velocityBoard.map(s => Math.abs(s.acceleration)));
@@ -71,7 +81,12 @@ const freshnessTone =
 
 // ── Format helpers ─────────────────────────────────────────────────────────
 function fmtAccel(a: number): string {
+  // Cap displayed magnitude at 500% — anything beyond that is a small-
+  // baseline artefact, not signal. Caller is responsible for excluding
+  // insufficient_data rows before formatting.
   const pct = Math.round(a * 100);
+  if (pct >= 500)  return '+500%↑';
+  if (pct <= -500) return '−500%↓';
   return `${pct > 0 ? '+' : ''}${pct}%`;
 }
 ---
@@ -167,8 +182,28 @@ function fmtAccel(a: number): string {
           </a>
         )}
 
-        <!-- 3. Top HR candidate -->
-        {topHR && (
+        <!-- 3. Emerging family (or, if none, fall back to top HR pick) -->
+        {topEmerge ? (
+          <a class="tv2-brief-card tv2-brief-card--accent" href={`${base}/talent/subdirections/#fam-${topEmerge.family}`}>
+            <span class="tv2-brief-kicker">
+              <span data-tc>新冒頭的方向</span>
+              <span data-sc>新冒头的方向</span>
+            </span>
+            <div class="tv2-brief-main">
+              <span class="tv2-brief-head">{topEmerge.displayName}</span>
+              <span class="tv2-brief-emerge-badge">NEW</span>
+            </div>
+            <div class="tv2-brief-sub">
+              <span class="tv2-brief-domain">
+                {topEmerge.domain === 'vla' ? 'VLA' : 'AI App'}
+              </span>
+              <span class="tv2-brief-meta">
+                <span data-tc>本週首見 · {topEmerge.velocity7d} 篇</span>
+                <span data-sc>本周首见 · {topEmerge.velocity7d} 篇</span>
+              </span>
+            </div>
+          </a>
+        ) : topHR && (
           <a class="tv2-brief-card tv2-brief-card--accent" href="#hr-shortlist">
             <span class="tv2-brief-kicker">
               <span data-tc>首推候選人</span>
@@ -339,6 +374,30 @@ function fmtAccel(a: number): string {
           );
         })}
       </ol>
+
+      {/* Emerging families (zero prior volume — surfaced separately so they
+          don't inflate the main board with clamped 999% values) */}
+      {emergingSubs.length > 0 && (
+        <div class="tv2-emerging">
+          <span class="tv2-emerging-label">
+            <span data-tc>新冒頭</span><span data-sc>新冒头</span>
+            <span class="tv2-emerging-en">· EMERGING · prior volume = 0</span>
+          </span>
+          <ul class="tv2-emerging-list">
+            {emergingSubs.slice(0, 4).map(s => (
+              <li>
+                <a href={`${base}/talent/subdirections/#fam-${s.family}`}>
+                  <span class={`tv2-vel-domain ${s.domain === 'vla' ? 'tag-vla' : 'tag-ai'}`}>
+                    {s.domain === 'vla' ? 'VLA' : 'AI'}
+                  </span>
+                  <span class="tv2-emerging-name">{s.displayName}</span>
+                  <span class="tv2-emerging-count">{s.velocity7d}<span class="tv2-emerging-unit"> 篇 · 7d</span></span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
 
     <!-- ══ Section 03 · ACTIVE LABS ════════════════════════════════════════ -->
@@ -347,10 +406,10 @@ function fmtAccel(a: number): string {
         <div class="tv2-section-titlewrap">
           <span class="tv2-section-num">03</span>
           <h2 class="tv2-section-h2">
-            <span data-tc>活躍實驗室</span>
-            <span data-sc>活跃实验室</span>
+            <span data-tc>產能最高的實驗室</span>
+            <span data-sc>产能最高的实验室</span>
           </h2>
-          <span class="tv2-section-en">/ Active Labs</span>
+          <span class="tv2-section-en">/ Top Labs · 90d</span>
         </div>
         <a class="tv2-more" href={`${base}/talent/labs/`}>
           <span data-tc>全部 {stats.labCount} →</span>
@@ -948,6 +1007,64 @@ function fmtAccel(a: number): string {
     }
     .tv2-foot strong { color: var(--text-primary); }
 
+    /* ── EMERGING (zero-prior families) ──────────────────────────────── */
+    .tv2-emerging {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface-2);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+    .tv2-emerging-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      display: block; margin-bottom: 0.5rem;
+    }
+    .tv2-emerging-en {
+      color: var(--text-tertiary); font-weight: 400; margin-left: 0.35rem;
+    }
+    .tv2-emerging-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem 1rem;
+    }
+    .tv2-emerging-list li a {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.35rem 0.5rem;
+      text-decoration: none;
+      border-radius: 4px;
+      color: var(--text-primary);
+      transition: background 0.12s;
+    }
+    .tv2-emerging-list li a:hover { background: var(--surface); }
+    .tv2-emerging-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.9rem; flex: 1;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .tv2-emerging-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    .tv2-emerging-unit {
+      font-weight: 400; color: var(--text-tertiary); font-size: 0.7rem;
+    }
+    .tv2-brief-emerge-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.16em;
+      padding: 0.18rem 0.45rem;
+      border-radius: 4px;
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+    }
+
     /* ── RESPONSIVE ──────────────────────────────────────────────────── */
     @media (max-width: 900px) {
       .tv2-brief-grid { grid-template-columns: 1fr; }
@@ -958,6 +1075,7 @@ function fmtAccel(a: number): string {
       }
       .tv2-vel-track { grid-column: 1 / -1; }
       .tv2-vel-vol   { display: none; }
+      .tv2-emerging-list { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
       .tv2-hr-featured-body { padding: 1rem 1.15rem; }
