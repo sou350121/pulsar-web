@@ -1,34 +1,77 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout       from '../../layouts/BaseLayout.astro';
+import TalentPageHero   from '../../components/TalentPageHero.astro';
 import SubdirectionCard from '../../components/SubdirectionCard.astro';
 import { loadSubdirections } from '../../utils/talent';
 
-const base = import.meta.env.BASE_URL;
 const vlaSubs = loadSubdirections({ domain: 'vla' });
 const aiSubs  = loadSubdirections({ domain: 'ai' });
+const all     = [...vlaSubs, ...aiSubs];
+
+const board = [...all]
+  .sort((a, b) => Math.abs(b.acceleration) - Math.abs(a.acceleration))
+  .slice(0, 8);
+const maxAbs = Math.max(0.01, ...board.map(s => Math.abs(s.acceleration)));
+
+function fmtAccel(a: number): string {
+  const pct = Math.round(a * 100);
+  return `${pct > 0 ? '+' : ''}${pct}%`;
+}
 ---
 
 <BaseLayout
   title="小方向 Subdirections · Talent Radar"
   description="方法族趋势 — 哪些技术方向在加速, 哪些在衰减"
 >
-  <main class="container talent-page">
-    <header class="talent-page-header">
-      <a class="talent-back" href={`${base}/talent/`}>← Talent Radar</a>
-      <h1 class="talent-page-title">
-        <span data-tc>小方向 / Subdirections</span>
-        <span data-sc>小方向 / Subdirections</span>
-      </h1>
-      <p class="talent-page-sub">
-        <span data-tc>方法族趨勢來源於 <code>field-state-*.json</code>（機械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)。</span>
-        <span data-sc>方法族趋势来源于 <code>field-state-*.json</code>（机械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)。</span>
-      </p>
-    </header>
+  <main class="container talent-v2-page">
+    <TalentPageHero
+      sectionNum="02"
+      titleTC="小方向"
+      titleSC="小方向"
+      titleEN="Subdirections"
+      ledeTC="方法族趨勢來源於 <code>field-state-*.json</code>（機械化，零 LLM）。<strong>加速度</strong> = (近 7d − 前 7d) / max(前值, 1)。"
+      ledeSC="方法族趋势来源于 <code>field-state-*.json</code>（机械化，零 LLM）。<strong>加速度</strong> = (近 7d − 前 7d) / max(前值, 1)。"
+    />
 
-    <section class="talent-section">
-      <h2 class="talent-section-h2">VLA · {vlaSubs.length}</h2>
+    <section class="tv2-section">
+      <h2 class="tv2-section-h2">
+        <span data-tc>速度榜 · 前 8 名</span>
+        <span data-sc>速度榜 · 前 8 名</span>
+        <span class="tv2-section-en">/ Velocity Top 8</span>
+      </h2>
+      <ol class="tv2-velocity-board">
+        {board.map((s, i) => {
+          const pct = Math.abs(s.acceleration) / maxAbs * 100;
+          const isUp = s.acceleration >= 0;
+          return (
+            <li class="tv2-vel-row" style={`--vel-pct: ${pct.toFixed(1)}%`}>
+              <a href={`#fam-${s.family}`} class="tv2-vel-link">
+                <span class="tv2-vel-rank">{String(i + 1).padStart(2, '0')}</span>
+                <span class={`tv2-vel-domain ${s.domain === 'vla' ? 'tag-vla' : 'tag-ai'}`}>
+                  {s.domain === 'vla' ? 'VLA' : 'AI'}
+                </span>
+                <span class="tv2-vel-name">{s.displayName}</span>
+                <span class="tv2-vel-track">
+                  <span class={`tv2-vel-bar ${isUp ? 'tv2-vel-bar--up' : 'tv2-vel-bar--down'}`}></span>
+                </span>
+                <span class={`tv2-vel-pct ${isUp ? 'tv2-vel-pct--up' : 'tv2-vel-pct--down'}`}>
+                  {fmtAccel(s.acceleration)}
+                </span>
+                <span class="tv2-vel-vol">{s.velocity7d}/{s.velocityPrior7d}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <section class="tv2-section">
+      <h2 class="tv2-section-h2">
+        <span class="tv2-domain-pill tag-vla">VLA</span>
+        · {vlaSubs.length}
+      </h2>
       {vlaSubs.length === 0 ? (
-        <p class="talent-empty">No VLA subdirections yet — waiting for field-state-*.json.</p>
+        <p class="tv2-empty">No VLA subdirections yet — waiting for field-state-*.json.</p>
       ) : (
         <div class="picks-grid">
           {vlaSubs.map(s => <SubdirectionCard record={s} />)}
@@ -36,10 +79,13 @@ const aiSubs  = loadSubdirections({ domain: 'ai' });
       )}
     </section>
 
-    <section class="talent-section">
-      <h2 class="talent-section-h2">AI App · {aiSubs.length}</h2>
+    <section class="tv2-section">
+      <h2 class="tv2-section-h2">
+        <span class="tv2-domain-pill tag-ai">AI App</span>
+        · {aiSubs.length}
+      </h2>
       {aiSubs.length === 0 ? (
-        <p class="talent-empty">No AI subdirections yet — waiting for ai-field-state-*.json.</p>
+        <p class="tv2-empty">No AI subdirections yet — waiting for ai-field-state-*.json.</p>
       ) : (
         <div class="picks-grid">
           {aiSubs.map(s => <SubdirectionCard record={s} />)}
@@ -49,34 +95,93 @@ const aiSubs  = loadSubdirections({ domain: 'ai' });
   </main>
 
   <style>
-    .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-    .talent-page-header { margin-bottom: 2rem; }
-    .talent-back {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
-      color: var(--accent-cyan); text-decoration: none;
-    }
-    .talent-back:hover { text-decoration: underline; }
-    .talent-page-title {
-      font-family: Georgia, 'Songti SC', serif;
-      font-size: 2rem; margin: 0.5rem 0; color: var(--text-primary);
-    }
-    .talent-page-sub {
-      color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;
-    }
-    .talent-page-sub code {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.85em;
-      padding: 0.1em 0.35em; background: var(--surface); border-radius: 3px;
-    }
-    .talent-section { margin: 2rem 0; }
-    .talent-section-h2 {
-      font-family: Georgia, 'Songti SC', serif; font-size: 1.25rem;
+    .talent-v2-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .tv2-section { margin: 2.25rem 0; }
+    .tv2-section-h2 {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.25rem; font-weight: 600;
       margin: 0 0 1rem; padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border); color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      display: flex; align-items: baseline; gap: 0.65rem;
     }
-    .talent-empty {
-      text-align: center; color: var(--text-muted); font-style: italic;
+    .tv2-section-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem; color: var(--text-tertiary);
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .tv2-domain-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 0.22rem 0.5rem;
+      border-radius: 4px;
+    }
+    .tv2-empty {
+      text-align: center; color: var(--text-tertiary); font-style: italic;
       padding: 2rem; background: var(--surface);
       border: 1px dashed var(--border); border-radius: 8px;
+    }
+    .tv2-velocity-board {
+      list-style: none; padding: 0.5rem 0; margin: 0;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); overflow: hidden;
+    }
+    .tv2-vel-row + .tv2-vel-row { border-top: 1px solid var(--border-subtle); }
+    .tv2-vel-link {
+      display: grid;
+      grid-template-columns: 28px 50px 1fr 2fr 64px 56px;
+      gap: 0.75rem; align-items: center;
+      padding: 0.65rem 1rem;
+      text-decoration: none; color: var(--text-primary);
+      transition: background 0.12s;
+    }
+    .tv2-vel-link:hover { background: var(--surface-2); }
+    .tv2-vel-rank {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--text-tertiary); letter-spacing: 0.04em;
+    }
+    .tv2-vel-domain {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.12em; text-align: center;
+      padding: 0.18rem 0.4rem; border-radius: 4px;
+    }
+    .tv2-vel-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.95rem; font-weight: 500;
+      color: var(--text-primary);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .tv2-vel-track {
+      position: relative; height: 8px;
+      background: var(--surface-2); border-radius: 4px; overflow: hidden;
+    }
+    .tv2-vel-bar {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: var(--vel-pct); border-radius: 4px;
+      transition: width 0.4s ease-out;
+    }
+    .tv2-vel-bar--up   { background: linear-gradient(90deg, var(--accent-amber), color-mix(in srgb, var(--accent-amber) 65%, var(--accent-cyan))); }
+    .tv2-vel-bar--down { background: linear-gradient(90deg, var(--rating-x), color-mix(in srgb, var(--rating-x) 60%, transparent)); opacity: 0.85; }
+    .tv2-vel-pct {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem; font-weight: 700; text-align: right;
+    }
+    .tv2-vel-pct--up   { color: var(--accent-amber); }
+    .tv2-vel-pct--down { color: var(--rating-x); }
+    .tv2-vel-vol {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem; color: var(--text-tertiary); text-align: right;
+    }
+    @media (max-width: 900px) {
+      .tv2-vel-link {
+        grid-template-columns: 24px 44px 1fr 56px;
+        gap: 0.5rem;
+      }
+      .tv2-vel-track { grid-column: 1 / -1; }
+      .tv2-vel-vol   { display: none; }
     }
   </style>
 </BaseLayout>

@@ -1,0 +1,126 @@
+---
+/**
+ * TalentPageHero.astro
+ * Shared header for talent sub-pages. Matches the landing hero treatment
+ * (stage tag + serif title + gradient accent + lede) at a smaller scale.
+ */
+interface Props {
+  sectionNum:  string;       // '01' .. '04'
+  titleTC:     string;
+  titleSC:     string;
+  titleEN:     string;
+  ledeTC:      string;       // may contain HTML (rendered via set:html)
+  ledeSC:      string;
+}
+const { sectionNum, titleTC, titleSC, titleEN, ledeTC, ledeSC } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<header class="tv2-subhero">
+  <a class="tv2-subhero-back" href={`${base}/talent/`}>
+    ← <span data-tc>人才雷達</span><span data-sc>人才雷达</span> · Talent Radar
+  </a>
+
+  <div class="tv2-subhero-meta">
+    <span class="tv2-subhero-tag">
+      <span class="tv2-subhero-tag-dot" aria-hidden="true"></span>
+      STAGE 04 · {sectionNum}
+    </span>
+  </div>
+
+  <div class="tv2-subhero-titlerow">
+    <h1 class="tv2-subhero-title">
+      <span data-tc>{titleTC}</span>
+      <span data-sc>{titleSC}</span>
+    </h1>
+    <p class="tv2-subhero-titleen">{titleEN}</p>
+  </div>
+
+  <p class="tv2-subhero-lede" data-tc set:html={ledeTC}></p>
+  <p class="tv2-subhero-lede" data-sc set:html={ledeSC}></p>
+</header>
+
+<style>
+  .tv2-subhero {
+    position: relative;
+    padding: 1.5rem 0 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tv2-subhero::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: linear-gradient(90deg, var(--accent-amber), var(--accent-cyan) 70%, transparent);
+  }
+  .tv2-subhero-back {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent-cyan);
+    text-decoration: none;
+    margin-bottom: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  .tv2-subhero-back:hover { text-decoration: underline; }
+  .tv2-subhero-meta {
+    margin-bottom: 0.6rem;
+  }
+  .tv2-subhero-tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--accent-amber);
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--accent-amber);
+    border-radius: 999px;
+    background: var(--accent-amber-bg);
+  }
+  .tv2-subhero-tag-dot {
+    width: 5px; height: 5px;
+    background: var(--accent-amber); border-radius: 50%;
+    animation: tv2-subhero-pulse 2s ease-in-out infinite;
+  }
+  @keyframes tv2-subhero-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+  .tv2-subhero-titlerow {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.85rem;
+    margin: 0.25rem 0 0.65rem;
+  }
+  .tv2-subhero-title {
+    font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.05;
+    margin: 0;
+    color: var(--text-primary);
+  }
+  .tv2-subhero-titleen {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+  .tv2-subhero-lede {
+    font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 760px;
+  }
+  .tv2-subhero-lede :global(code) {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+    padding: 0.1em 0.35em;
+    background: var(--surface-2);
+    border-radius: 3px;
+  }
+  .tv2-subhero-lede :global(strong) { color: var(--text-primary); font-weight: 600; }
+  .tv2-subhero-lede :global(em)     { color: var(--accent-amber); font-style: normal; }
+</style>

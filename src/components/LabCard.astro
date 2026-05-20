@@ -47,14 +47,21 @@ const isStale = daysSince !== null && daysSince > 14;
     </span>
   </div>
 
-  <!-- Sparkline: 14-day (taller; bars flex evenly so shape is legible) -->
-  <div class="flex items-end gap-[2px] h-10 w-full" aria-label={`14-day activity sparkline for ${record.name}`}>
-    {record.velocityBars.map(count => {
-      const h = count === 0 ? '8%' : `${Math.max(15, Math.round(count / maxBar * 100))}%`;
-      const bg = count === 0 ? 'var(--border)' : 'var(--accent-cyan)';
+  <!-- Sparkline: 14-day (taller bars, baseline tick, last bar highlighted) -->
+  <div class="lab-spark" aria-label={`14-day activity sparkline for ${record.name}`}>
+    <span class="lab-spark-baseline" aria-hidden="true"></span>
+    {record.velocityBars.map((count, i) => {
+      const isLast = i === record.velocityBars.length - 1;
+      const h = count === 0 ? 6 : Math.max(18, Math.round(count / maxBar * 100));
+      const bg = count === 0
+        ? 'var(--border)'
+        : isLast
+          ? 'var(--accent-amber)'
+          : 'var(--accent-cyan)';
       return (
         <span
-          style={`flex: 1 0 0; height: ${h}; background: ${bg}; border-radius: 1px;`}
+          class="lab-spark-bar"
+          style={`height: ${h}%; background: ${bg};`}
           title={`${count} signal(s)`}
         />
       );
@@ -98,3 +105,34 @@ const isStale = daysSince !== null && daysSince > 14;
     </div>
   )}
 </article>
+
+<style>
+  /* 14-day activity sparkline. Baseline + last-bar accent makes it read like
+     a stock chart instead of an undifferentiated bar wall. */
+  .lab-spark {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 44px;
+    width: 100%;
+    padding-top: 2px;
+  }
+  .lab-spark-baseline {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 1px;
+    background: var(--border);
+    opacity: 0.7;
+  }
+  .lab-spark-bar {
+    flex: 1 0 0;
+    border-radius: 2px 2px 0 0;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .lab-spark-bar:hover {
+    transform: scaleY(1.05);
+    transform-origin: bottom;
+    opacity: 0.85;
+  }
+</style>

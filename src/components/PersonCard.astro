@@ -40,11 +40,34 @@ const CONTACT_META: Record<ContactStatus, { label: string; labelSC: string; bg: 
 const contact = CONTACT_META[record.contactStatus];
 const isHRCandidate = 'whyNow' in record;
 const base = import.meta.env.BASE_URL;
+
+// Initials avatar — stable hue per name, no PII stored.
+// CJK leading → single glyph for legibility; Latin → first/last initials.
+function avatarInitials(raw: string): string {
+  const s = (raw ?? '').trim();
+  if (!s) return '?';
+  if (/^[一-鿿]/.test(s)) return s.slice(0, 1);
+  const parts = s.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return parts[0].slice(0, 2).toUpperCase();
+}
+function avatarHue(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
+  return Math.abs(h) % 360;
+}
+const initials = avatarInitials(record.name);
+const hue      = avatarHue(record.name);
 ---
 
-<article id={`person-${slugifyName(record.name)}`} class="card group flex flex-col gap-3">
-  <!-- Header: name + rating -->
-  <div class="flex items-start gap-2 flex-wrap">
+<article id={`person-${slugifyName(record.name)}`} class="card group flex flex-col gap-3 person-card">
+  <!-- Header: avatar + name + rating -->
+  <div class="flex items-center gap-3">
+    <span
+      class="person-avatar"
+      style={`--av-hue: ${hue};`}
+      aria-hidden="true"
+    >{initials}</span>
     <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
       {record.name}
     </h3>
@@ -118,3 +141,35 @@ const base = import.meta.env.BASE_URL;
     </div>
   )}
 </article>
+
+<style>
+  /* Initials avatar — stable per name, no PII stored. The HSL fallback uses
+     light values for legibility on the cream background; dark mode picks
+     deeper saturations via the .dark scope. */
+  .person-avatar {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border: 1.5px solid hsl(var(--av-hue), 55%, 55%);
+    background: hsl(var(--av-hue), 65%, 92%);
+    color: hsl(var(--av-hue), 60%, 28%);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  :global(html.dark) .person-avatar {
+    background: hsl(var(--av-hue), 50%, 18%);
+    border-color: hsl(var(--av-hue), 55%, 50%);
+    color: hsl(var(--av-hue), 75%, 80%);
+  }
+  .person-card:hover .person-avatar {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px color-mix(in srgb, hsl(var(--av-hue), 60%, 50%) 18%, transparent);
+  }
+</style>

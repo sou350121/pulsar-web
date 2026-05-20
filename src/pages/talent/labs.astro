@@ -1,11 +1,10 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import LabCard from '../../components/LabCard.astro';
-import { loadLabs } from '../../utils/talent';
+import BaseLayout     from '../../layouts/BaseLayout.astro';
+import TalentPageHero from '../../components/TalentPageHero.astro';
+import LabCard        from '../../components/LabCard.astro';
+import { loadLabs }   from '../../utils/talent';
 
-const base = import.meta.env.BASE_URL;
-const labs = loadLabs({ minSignals: 2 });
-// A lab can appear in both sections if it has signals in both domains.
+const labs    = loadLabs({ minSignals: 2 });
 const vlaLabs = labs.filter(l => l.domains.includes('vla'));
 const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
 ---
@@ -14,38 +13,40 @@ const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
   title="實驗室 Labs · Talent Radar"
   description="实验室活动 — 90 天滚动信号 + 方法聚焦 + 近期论文"
 >
-  <main class="container talent-page">
-    <header class="talent-page-header">
-      <a class="talent-back" href={`${base}/talent/`}>← Talent Radar</a>
-      <h1 class="talent-page-title">
-        <span data-tc>實驗室 / Labs</span>
-        <span data-sc>实验室 / Labs</span>
-      </h1>
-      <p class="talent-page-sub">
-        <span data-tc>{labs.length} 個實驗室在 90 天滾動窗口中有 ≥2 條信號，按信號數排序；14 日走勢圖顯示每日活躍度。</span>
-        <span data-sc>{labs.length} 个实验室在 90 天滚动窗口中有 ≥2 条信号，按信号数排序；14 日走势图显示每日活跃度。</span>
-      </p>
-    </header>
+  <main class="container talent-v2-page">
+    <TalentPageHero
+      sectionNum="03"
+      titleTC="實驗室"
+      titleSC="实验室"
+      titleEN="Labs"
+      ledeTC={`<strong>${labs.length} 個實驗室</strong> 在 90 天滾動窗口中有 ≥2 條信號，按信號數排序；<em>14 日走勢圖</em>顯示每日活躍度。`}
+      ledeSC={`<strong>${labs.length} 个实验室</strong> 在 90 天滚动窗口中有 ≥2 条信号，按信号数排序；<em>14 日走势图</em>显示每日活跃度。`}
+    />
 
     {labs.length === 0 ? (
-      <p class="talent-empty">
+      <p class="tv2-empty">
         No labs surfaced yet. Wait for entity-tracker to populate (runs daily at 09:55).
       </p>
     ) : (
       <>
-        <input
-          id="lab-search"
-          type="search"
-          placeholder="Search labs, methods, recent papers…"
-          class="talent-search"
-          aria-label="Search labs"
-        />
-        <p class="talent-search-count" id="lab-search-count" aria-live="polite"></p>
+        <div class="tv2-toolbar">
+          <input
+            id="lab-search"
+            type="search"
+            placeholder="Search labs, methods, recent papers…"
+            class="tv2-search"
+            aria-label="Search labs"
+          />
+          <p class="tv2-search-count" id="lab-search-count" aria-live="polite"></p>
+        </div>
 
-        <section class="talent-section">
-          <h2 class="talent-section-h2">VLA · {vlaLabs.length}</h2>
+        <section class="tv2-section">
+          <h2 class="tv2-section-h2">
+            <span class="tv2-domain-pill tag-vla">VLA</span>
+            · {vlaLabs.length}
+          </h2>
           {vlaLabs.length === 0 ? (
-            <p class="talent-empty">No VLA labs in the 90-day window.</p>
+            <p class="tv2-empty">No VLA labs in the 90-day window.</p>
           ) : (
             <div class="picks-grid">
               {vlaLabs.map(l => <LabCard record={l} />)}
@@ -53,10 +54,13 @@ const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
           )}
         </section>
 
-        <section class="talent-section">
-          <h2 class="talent-section-h2">AI App · {aiLabs.length}</h2>
+        <section class="tv2-section">
+          <h2 class="tv2-section-h2">
+            <span class="tv2-domain-pill tag-ai">AI App</span>
+            · {aiLabs.length}
+          </h2>
           {aiLabs.length === 0 ? (
-            <p class="talent-empty">No AI App labs in the 90-day window.</p>
+            <p class="tv2-empty">No AI App labs in the 90-day window.</p>
           ) : (
             <div class="picks-grid">
               {aiLabs.map(l => <LabCard record={l} />)}
@@ -68,9 +72,6 @@ const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
   </main>
 
   <script is:inline>
-    // Live filter: hide cards whose text doesn't match the query. Also hides
-    // section headers when their grid empties out, so the user isn't stuck
-    // staring at a "VLA · 14" title above an empty box.
     (() => {
       const input = document.getElementById('lab-search');
       const counter = document.getElementById('lab-search-count');
@@ -84,7 +85,7 @@ const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
           card.style.display = hit ? '' : 'none';
           if (hit) shown++;
         });
-        document.querySelectorAll('.talent-section').forEach((sec) => {
+        document.querySelectorAll('.tv2-section').forEach((sec) => {
           const visible = sec.querySelectorAll('article.card:not([style*="display: none"])');
           sec.style.display = visible.length === 0 && q !== '' ? 'none' : '';
         });
@@ -94,50 +95,44 @@ const aiLabs  = labs.filter(l => l.domains.includes('ai_app'));
   </script>
 
   <style>
-    .talent-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-    .talent-page-header { margin-bottom: 2rem; }
-    .talent-back {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
-      color: var(--accent-cyan); text-decoration: none;
+    .talent-v2-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .tv2-section { margin: 2.25rem 0; }
+    .tv2-section-h2 {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.25rem; font-weight: 600;
+      margin: 0 0 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      display: flex; align-items: baseline; gap: 0.65rem;
     }
-    .talent-back:hover { text-decoration: underline; }
-    .talent-page-title {
-      font-family: Georgia, 'Songti SC', serif;
-      font-size: 2rem; margin: 0.5rem 0; color: var(--text-primary);
+    .tv2-domain-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 0.22rem 0.5rem;
+      border-radius: 4px;
     }
-    .talent-page-sub {
-      color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;
-    }
-    .talent-page-sub code {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.85em;
-      padding: 0.1em 0.35em; background: var(--surface); border-radius: 3px;
-    }
-    .talent-empty {
-      text-align: center; color: var(--text-muted); font-style: italic;
-      padding: 3rem; background: var(--surface);
+    .tv2-empty {
+      text-align: center; color: var(--text-tertiary); font-style: italic;
+      padding: 2.5rem; background: var(--surface);
       border: 1px dashed var(--border); border-radius: 8px;
     }
-    .talent-search {
+    .tv2-toolbar { margin: 0 0 1.5rem; }
+    .tv2-search {
       width: 100%; max-width: 480px;
-      padding: 0.6rem 0.9rem;
+      padding: 0.65rem 0.95rem;
       font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;
       background: var(--surface); color: var(--text-primary);
       border: 1px solid var(--border); border-radius: 8px;
-      margin-bottom: 0.5rem;
     }
-    .talent-search:focus {
+    .tv2-search:focus {
       outline: none; border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px var(--accent-cyan-bg);
     }
-    .talent-search-count {
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
-      color: var(--text-muted); margin: 0 0 1.5rem;
+    .tv2-search-count {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      color: var(--text-tertiary); margin: 0.3rem 0 0;
       min-height: 1em;
-    }
-    .talent-section { margin: 2rem 0; }
-    .talent-section-h2 {
-      font-family: Georgia, 'Songti SC', serif; font-size: 1.25rem;
-      margin: 0 0 1rem; padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border); color: var(--text-primary);
     }
   </style>
 </BaseLayout>

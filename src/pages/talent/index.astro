@@ -1,432 +1,968 @@
 ---
 /**
  * src/pages/talent/index.astro
- * Stage 4 hub — Talent Radar overview.
+ * Stage 4 — Talent Radar landing (v2 revamp).
  *
- * Design: 4 tier tiles (subdirections / labs / people / HR queue) with
- * top-3 preview of each. Mirrors /dashboard composition style.
+ * IA inversion from v1:
+ *   v1: Subdirections → Labs → People → HR Queue (browse-first)
+ *   v2: Weekly Brief → HR Shortlist → Velocity Board → Labs → Watchlist
+ *       (signal-first, narrative-led, HR-actionable up top)
+ *
+ * No new utils — everything computed from the existing loaders.
  */
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import SubdirectionCard from '../../components/SubdirectionCard.astro';
-import LabCard          from '../../components/LabCard.astro';
-import PersonCard       from '../../components/PersonCard.astro';
+import BaseLayout        from '../../layouts/BaseLayout.astro';
+import SubdirectionCard  from '../../components/SubdirectionCard.astro';
+import LabCard           from '../../components/LabCard.astro';
+import PersonCard        from '../../components/PersonCard.astro';
+import RatingBadge       from '../../components/RatingBadge.astro';
 import {
   loadSubdirections,
   loadLabs,
   loadPeople,
   loadHRQueue,
   loadTalentStats,
+  slugifyName,
 } from '../../utils/talent';
 
 const base = import.meta.env.BASE_URL;
 
-const stats = loadTalentStats();
-const topSubs   = loadSubdirections({ domain: 'all' }).slice(0, 3);
-const topLabs   = loadLabs({ minSignals: 3 }).slice(0, 3);
-// Preview only contactable people — byline-only entries belong on /people/.
-// Fall back to the unfiltered head if the contactable pool is empty.
-const contactablePeople = loadPeople({ minPaperCount90d: 1 })
-  .filter(p => p.contactStatus !== 'not_linked');
-const topPeople = (contactablePeople.length > 0
-  ? contactablePeople
-  : loadPeople({ minPaperCount90d: 1 })).slice(0, 3);
-const topHR     = loadHRQueue().slice(0, 3);
+const stats     = loadTalentStats();
+const allSubs   = loadSubdirections({ domain: 'all' });
+const allLabs   = loadLabs({ minSignals: 3 });
+const allPeople = loadPeople({ minPaperCount90d: 1 });
+const allHR     = loadHRQueue();
+
+// ── Weekly Brief: 3 lead facts ─────────────────────────────────────────────
+const topMover = allSubs.find(s => s.status === 'accelerating') ?? allSubs[0];
+const topLab   = allLabs[0];
+const topHR    = allHR[0];
+
+// ── Velocity board: top 8 by abs acceleration (mix accelerating + declining) ─
+const velocityBoard = [...allSubs]
+  .sort((a, b) => Math.abs(b.acceleration) - Math.abs(a.acceleration))
+  .slice(0, 8);
+const velocityMaxAbs = Math.max(0.01, ...velocityBoard.map(s => Math.abs(s.acceleration)));
+
+// ── HR shortlist ───────────────────────────────────────────────────────────
+const featuredHR = allHR[0];
+const restHR     = allHR.slice(1, 4);
+
+// ── Labs showcase: 6 with non-zero recent OR top by 90d signals ─────────────
+const labsShowcase = allLabs.slice(0, 6);
+
+// ── Researcher watchlist: prefer ⚡ + linked, then top by paperCount ─────────
+const watchlistRaw = allPeople.filter(p =>
+  p.topRating === '⚡' && p.contactStatus !== 'not_linked');
+const watchlist = (watchlistRaw.length >= 6
+  ? watchlistRaw
+  : [...watchlistRaw, ...allPeople.filter(p => !watchlistRaw.includes(p) && p.contactStatus !== 'not_linked')]
+).slice(0, 6);
+
+// ── Freshness ──────────────────────────────────────────────────────────────
+const dataDate = Date.parse(stats.dataAsOf + 'T00:00:00Z');
+const daysOld = Number.isNaN(dataDate)
+  ? null
+  : Math.max(0, Math.floor((Date.now() - dataDate) / 86_400_000));
+const freshnessTone =
+  daysOld === null ? 'muted' :
+  daysOld <= 1     ? 'fresh' :
+  daysOld <= 3     ? 'ok'    :
+  'stale';
+
+// ── Format helpers ─────────────────────────────────────────────────────────
+function fmtAccel(a: number): string {
+  const pct = Math.round(a * 100);
+  return `${pct > 0 ? '+' : ''}${pct}%`;
+}
 ---
 
 <BaseLayout
   title="人才雷達 Talent Radar"
-  description="Stage 4 — 从论文池反推人才：小方向 → 实验室 → 研究员 → HR 队列"
+  description="Stage 4 — 信號優先的人才雷達：本週簡報 → HR 候選人 → 方法族速度 → 活躍實驗室 → 觀察名單。從不儲存或顯示電子郵件。"
 >
-  <main class="container talent-hub">
-    <!-- ══ Hero ════════════════════════════════════════════════════════ -->
-    <header class="talent-hero">
-      <div class="talent-stage-tag">
-        <span class="talent-stage-dot"></span>
-        STAGE 4 · TALENT RADAR
+  <main class="talent-v2">
+    <!-- ══ Hero ════════════════════════════════════════════════════════════ -->
+    <header class="tv2-hero">
+      <div class="tv2-hero-meta">
+        <span class="tv2-stage">
+          <span class="tv2-stage-dot" aria-hidden="true"></span>
+          STAGE 04 · TALENT RADAR
+        </span>
+        <span class={`tv2-fresh tv2-fresh--${freshnessTone}`} title={`Data snapshot ${stats.dataAsOf}`}>
+          <span class="tv2-fresh-dot" aria-hidden="true"></span>
+          <span data-tc>資料 {stats.dataAsOf}</span>
+          <span data-sc>数据 {stats.dataAsOf}</span>
+          {daysOld !== null && <span class="tv2-fresh-age">· {daysOld === 0 ? 'today' : `${daysOld}d ago`}</span>}
+        </span>
       </div>
-      <h1 class="talent-title" data-tc>人才雷達</h1>
-      <h1 class="talent-title" data-sc>人才雷达</h1>
-      <div class="talent-accent-bar" aria-hidden="true"></div>
-      <p class="talent-subtitle">
-        <span data-tc>先有論文池, 後有小方向; 先歸納方向, 再反推人才</span>
-        <span data-sc>先有论文池, 后有小方向; 先归纳方向, 再反推人才</span>
+
+      <div class="tv2-title-row">
+        <h1 class="tv2-title">
+          <span data-tc>人才雷達</span>
+          <span data-sc>人才雷达</span>
+        </h1>
+        <p class="tv2-title-en">Talent Radar</p>
+      </div>
+
+      <p class="tv2-lede">
+        <span data-tc>從論文池反推 — <strong>誰該聘</strong> · <strong>哪些方向在加速</strong> · <strong>哪些組織在攻頂</strong>。</span>
+        <span data-sc>从论文池反推 — <strong>谁该聘</strong> · <strong>哪些方向在加速</strong> · <strong>哪些组织在攻顶</strong>。</span>
       </p>
-      <p class="talent-tldr">
-        <span data-tc>唯讀分診介面，基於 Pulsar 論文 / 方法 / 實驗室索引。<strong>從不儲存或顯示任何電子郵件。</strong>每項推薦均附論文級佐證。</span>
-        <span data-sc>只读分诊界面，基于 Pulsar 论文 / 方法 / 实验室索引。<strong>从不存储或显示任何邮箱。</strong>每项推荐均附论文级佐证。</span>
+
+      <p class="tv2-promise">
+        <span class="tv2-promise-icon" aria-hidden="true">⏚</span>
+        <span data-tc>每項推薦皆附論文級佐證。系統 <strong>從不儲存或顯示電子郵件</strong>。</span>
+        <span data-sc>每项推荐皆附论文级佐证。系统 <strong>从不存储或显示邮箱</strong>。</span>
       </p>
-      {stats.hrQueueCount > 0 && (
-        <a class="talent-hero-cta" href="#hr-queue-preview">
-          <span data-tc>→ {stats.hrQueueCount} 位通過 HR 篩選的候選人</span>
-          <span data-sc>→ {stats.hrQueueCount} 位通过 HR 筛选的候选人</span>
-        </a>
-      )}
     </header>
 
-    <!-- ══ Metric strip ════════════════════════════════════════════════
-         Each card leads with the *meaningful* number, not the cumulative
-         total. e.g. "3 active labs (of 72)" beats "72 labs (3 active)". -->
-    <div class="talent-metrics">
-      <div class="talent-metric">
-        <span class="talent-metric-num">{stats.acceleratingCount}</span>
-        <span class="talent-metric-label"><span data-tc>加速中</span><span data-sc>加速中</span></span>
-        <span class="talent-metric-sub">
-          <span data-tc>共 {stats.subdirectionCount} 個方法族</span>
-          <span data-sc>共 {stats.subdirectionCount} 个方法族</span>
-        </span>
-      </div>
-      <div class="talent-metric">
-        <span class="talent-metric-num">{stats.activeLabCount7d}</span>
-        <span class="talent-metric-label"><span data-tc>活躍實驗室 · 7D</span><span data-sc>活跃实验室 · 7D</span></span>
-        <span class="talent-metric-sub">
-          <span data-tc>共 {stats.labCount} 個（90d）</span>
-          <span data-sc>共 {stats.labCount} 个（90d）</span>
-        </span>
-      </div>
-      <div class="talent-metric">
-        <span class="talent-metric-num">{stats.peopleCount}</span>
-        <span class="talent-metric-label"><span data-tc>研究員</span><span data-sc>研究员</span></span>
-        <span class="talent-metric-sub">
-          <span data-tc>第一作者 + 策展</span><span data-sc>第一作者 + 策展</span>
-        </span>
-      </div>
-      <div class="talent-metric talent-metric--accent">
-        <span class="talent-metric-num">{stats.hrQueueCount}</span>
-        <span class="talent-metric-label"><span data-tc>HR 隊列</span><span data-sc>HR 队列</span></span>
-        <span class="talent-metric-sub">
-          <span data-tc>門檻篩選</span><span data-sc>门槛筛选</span>
-        </span>
-      </div>
-    </div>
+    <!-- ══ Weekly Brief — 3 narrative cards ═══════════════════════════════ -->
+    <section class="tv2-brief" aria-label="Weekly brief">
+      <h2 class="tv2-brief-label">
+        <span data-tc>本週簡報</span>
+        <span data-sc>本周简报</span>
+        <span class="tv2-brief-en">/ This Week</span>
+      </h2>
 
-    <!-- ══ Section: Subdirections preview ═════════════════════════════ -->
-    <section class="talent-section">
-      <header class="talent-section-header">
-        <h2 class="talent-section-title">
-          <span class="talent-section-num">01</span>
-          <span data-tc>小方向</span><span data-sc>小方向</span>
-          <span class="talent-section-en">/ Subdirections</span>
-        </h2>
-        <a class="talent-more-link" href={`${base}/talent/subdirections/`}>
+      <div class="tv2-brief-grid">
+        <!-- 1. Top accelerating method -->
+        {topMover && (
+          <a class="tv2-brief-card" href={`${base}/talent/subdirections/#fam-${topMover.family}`}>
+            <span class="tv2-brief-kicker">
+              <span data-tc>加速最快的方向</span>
+              <span data-sc>加速最快的方向</span>
+            </span>
+            <div class="tv2-brief-main">
+              <span class="tv2-brief-head">{topMover.displayName}</span>
+              <span class="tv2-brief-delta" data-pos={topMover.acceleration >= 0}>
+                {fmtAccel(topMover.acceleration)}
+              </span>
+            </div>
+            <div class="tv2-brief-sub">
+              <span class="tv2-brief-domain">
+                {topMover.domain === 'vla' ? 'VLA' : 'AI App'}
+              </span>
+              <span class="tv2-brief-meta">7d {topMover.velocity7d} · prior {topMover.velocityPrior7d}</span>
+            </div>
+          </a>
+        )}
+
+        <!-- 2. Top active lab -->
+        {topLab && (
+          <a class="tv2-brief-card" href={`${base}/talent/labs/#lab-${slugifyName(topLab.name)}`}>
+            <span class="tv2-brief-kicker">
+              <span data-tc>產能最高的實驗室</span>
+              <span data-sc>产能最高的实验室</span>
+            </span>
+            <div class="tv2-brief-main">
+              <span class="tv2-brief-head">{topLab.name}</span>
+              <RatingBadge rating={topLab.topRating} size="sm" />
+            </div>
+            <div class="tv2-brief-sub">
+              <span class="tv2-brief-meta">
+                <span data-tc>{topLab.signalCount90d} 篇 · 90d · {topLab.methodFocus.slice(0, 2).join(' · ')}</span>
+                <span data-sc>{topLab.signalCount90d} 篇 · 90d · {topLab.methodFocus.slice(0, 2).join(' · ')}</span>
+              </span>
+            </div>
+          </a>
+        )}
+
+        <!-- 3. Top HR candidate -->
+        {topHR && (
+          <a class="tv2-brief-card tv2-brief-card--accent" href="#hr-shortlist">
+            <span class="tv2-brief-kicker">
+              <span data-tc>首推候選人</span>
+              <span data-sc>首推候选人</span>
+            </span>
+            <div class="tv2-brief-main">
+              <span class="tv2-brief-head">{topHR.name}</span>
+              <RatingBadge rating={topHR.topRating} size="sm" />
+            </div>
+            <div class="tv2-brief-sub">
+              {topHR.affiliation && (
+                <span class="tv2-brief-meta tv2-brief-affil">{topHR.affiliation}</span>
+              )}
+              <span class="tv2-brief-meta">· {topHR.paperCount90d} 篇 · 90d</span>
+            </div>
+          </a>
+        )}
+      </div>
+    </section>
+
+    <!-- ══ Section 01 · HR SHORTLIST ══════════════════════════════════════ -->
+    <section class="tv2-section" id="hr-shortlist">
+      <header class="tv2-section-header">
+        <div class="tv2-section-titlewrap">
+          <span class="tv2-section-num">01</span>
+          <h2 class="tv2-section-h2">
+            <span data-tc>HR 候選人短名單</span>
+            <span data-sc>HR 候选人短名单</span>
+          </h2>
+          <span class="tv2-section-en">/ Shortlist</span>
+        </div>
+        <a class="tv2-more" href={`${base}/talent/hr-queue/`}>
+          <span data-tc>完整隊列 ({stats.hrQueueCount}) →</span>
+          <span data-sc>完整队列 ({stats.hrQueueCount}) →</span>
+        </a>
+      </header>
+
+      {allHR.length === 0 ? (
+        <div class="tv2-empty">
+          <p class="tv2-empty-title">
+            <span data-tc>本週無候選人通過門檻</span>
+            <span data-sc>本周无候选人通过门槛</span>
+          </p>
+          <p class="tv2-empty-sub">
+            <span data-tc>門檻：≥ 2 篇 🔧+ 論文（90d）· 機構可解析 · 聯繫狀態非 not_linked</span>
+            <span data-sc>门槛：≥ 2 篇 🔧+ 论文（90d）· 机构可解析 · 联系状态非 not_linked</span>
+          </p>
+        </div>
+      ) : (
+        <div class="tv2-hr-stack">
+          {featuredHR && (
+            <article class="tv2-hr-featured">
+              <div class="tv2-hr-featured-stripe" aria-hidden="true"></div>
+              <div class="tv2-hr-featured-body">
+                <div class="tv2-hr-featured-head">
+                  <span class="tv2-hr-featured-kicker">
+                    <span data-tc>首推</span><span data-sc>首推</span>
+                    · TOP CANDIDATE
+                  </span>
+                  <div class="tv2-hr-featured-title">
+                    <h3>{featuredHR.name}</h3>
+                    <RatingBadge rating={featuredHR.topRating} size="sm" />
+                  </div>
+                  {featuredHR.affiliation && (
+                    <a class="tv2-hr-featured-affil"
+                       href={`${base}/talent/labs/#lab-${slugifyName(featuredHR.affiliation)}`}>
+                      {featuredHR.affiliation}
+                    </a>
+                  )}
+                </div>
+
+                <p class="tv2-hr-featured-why">
+                  <span class="tv2-hr-why-tag">WHY NOW</span>
+                  {featuredHR.whyNow}
+                </p>
+
+                <div class="tv2-hr-featured-stats">
+                  <div class="tv2-hr-stat">
+                    <span class="tv2-hr-stat-num">{featuredHR.paperCount90d}</span>
+                    <span class="tv2-hr-stat-lbl">
+                      <span data-tc>篇 · 90d</span><span data-sc>篇 · 90d</span>
+                    </span>
+                  </div>
+                  <div class="tv2-hr-stat">
+                    <span class="tv2-hr-stat-num">{featuredHR.gateHits.length}</span>
+                    <span class="tv2-hr-stat-lbl">
+                      <span data-tc>門檻命中</span><span data-sc>门槛命中</span>
+                    </span>
+                  </div>
+                  <div class="tv2-hr-stat">
+                    <span class="tv2-hr-stat-pill" data-status={featuredHR.contactStatus}>
+                      {featuredHR.contactStatus === 'linked_via_lab' ? '機構已關聯' :
+                       featuredHR.contactStatus === 'social_mention' ? '社交提及' : '僅署名'}
+                    </span>
+                    <span class="tv2-hr-stat-lbl">NO-EMAIL</span>
+                  </div>
+                </div>
+
+                {featuredHR.evidence.length > 0 && (
+                  <ul class="tv2-hr-featured-papers">
+                    {featuredHR.evidence.slice(0, 3).map(ev => (
+                      <li>
+                        <a href={ev.url} target="_blank" rel="noopener noreferrer">
+                          <RatingBadge rating={ev.rating} size="sm" />
+                          <span class="tv2-paper-title">{ev.title}</span>
+                          <span class="tv2-paper-date">{ev.date}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </article>
+          )}
+
+          {restHR.length > 0 && (
+            <div class="tv2-hr-rest">
+              {restHR.map(h => <PersonCard record={h} showWhyNow />)}
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+
+    <!-- ══ Section 02 · VELOCITY BOARD ═════════════════════════════════════ -->
+    <section class="tv2-section">
+      <header class="tv2-section-header">
+        <div class="tv2-section-titlewrap">
+          <span class="tv2-section-num">02</span>
+          <h2 class="tv2-section-h2">
+            <span data-tc>方法族速度榜</span>
+            <span data-sc>方法族速度榜</span>
+          </h2>
+          <span class="tv2-section-en">/ Velocity Board</span>
+        </div>
+        <a class="tv2-more" href={`${base}/talent/subdirections/`}>
           <span data-tc>全部 {stats.subdirectionCount} →</span>
           <span data-sc>全部 {stats.subdirectionCount} →</span>
         </a>
       </header>
-      <div class="picks-grid">
-        {topSubs.map(s => <SubdirectionCard record={s} />)}
-      </div>
+
+      <p class="tv2-section-lede">
+        <span data-tc>每行為一個方法族。<em>長條長度</em> = |加速度| 相對最大值；<em>顏色</em> = 加速（琥珀）/ 衰退（紅）。資料來自 <code>field-state-*.json</code>（機械化，零 LLM）。</span>
+        <span data-sc>每行为一个方法族。<em>条形长度</em> = |加速度| 相对最大值；<em>颜色</em> = 加速（琥珀）/ 衰退（红）。数据来自 <code>field-state-*.json</code>（机械化，零 LLM）。</span>
+      </p>
+
+      <ol class="tv2-velocity-board">
+        {velocityBoard.map((s, i) => {
+          const pct = Math.abs(s.acceleration) / velocityMaxAbs * 100;
+          const isUp = s.acceleration >= 0;
+          return (
+            <li class="tv2-vel-row" style={`--vel-pct: ${pct.toFixed(1)}%`}>
+              <a href={`${base}/talent/subdirections/#fam-${s.family}`} class="tv2-vel-link">
+                <span class="tv2-vel-rank">{String(i + 1).padStart(2, '0')}</span>
+                <span class={`tv2-vel-domain ${s.domain === 'vla' ? 'tag-vla' : 'tag-ai'}`}>
+                  {s.domain === 'vla' ? 'VLA' : 'AI'}
+                </span>
+                <span class="tv2-vel-name">{s.displayName}</span>
+                <span class="tv2-vel-track">
+                  <span class={`tv2-vel-bar ${isUp ? 'tv2-vel-bar--up' : 'tv2-vel-bar--down'}`}></span>
+                </span>
+                <span class={`tv2-vel-pct ${isUp ? 'tv2-vel-pct--up' : 'tv2-vel-pct--down'}`}>
+                  {fmtAccel(s.acceleration)}
+                </span>
+                <span class="tv2-vel-vol">{s.velocity7d}/{s.velocityPrior7d}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
     </section>
 
-    <!-- ══ Section: Labs preview ═══════════════════════════════════════ -->
-    <section class="talent-section">
-      <header class="talent-section-header">
-        <h2 class="talent-section-title">
-          <span class="talent-section-num">02</span>
-          <span data-tc>實驗室</span><span data-sc>实验室</span>
-          <span class="talent-section-en">/ Labs</span>
-        </h2>
-        <a class="talent-more-link" href={`${base}/talent/labs/`}>
+    <!-- ══ Section 03 · ACTIVE LABS ════════════════════════════════════════ -->
+    <section class="tv2-section">
+      <header class="tv2-section-header">
+        <div class="tv2-section-titlewrap">
+          <span class="tv2-section-num">03</span>
+          <h2 class="tv2-section-h2">
+            <span data-tc>活躍實驗室</span>
+            <span data-sc>活跃实验室</span>
+          </h2>
+          <span class="tv2-section-en">/ Active Labs</span>
+        </div>
+        <a class="tv2-more" href={`${base}/talent/labs/`}>
           <span data-tc>全部 {stats.labCount} →</span>
           <span data-sc>全部 {stats.labCount} →</span>
         </a>
       </header>
       <div class="picks-grid">
-        {topLabs.map(l => <LabCard record={l} />)}
+        {labsShowcase.map(l => <LabCard record={l} />)}
       </div>
     </section>
 
-    <!-- ══ Section: People preview ═════════════════════════════════════ -->
-    <section class="talent-section">
-      <header class="talent-section-header">
-        <h2 class="talent-section-title">
-          <span class="talent-section-num">03</span>
-          <span data-tc>研究員</span><span data-sc>研究员</span>
-          <span class="talent-section-en">/ People</span>
-        </h2>
-        <a class="talent-more-link" href={`${base}/talent/people/`}>
+    <!-- ══ Section 04 · WATCHLIST ══════════════════════════════════════════ -->
+    <section class="tv2-section">
+      <header class="tv2-section-header">
+        <div class="tv2-section-titlewrap">
+          <span class="tv2-section-num">04</span>
+          <h2 class="tv2-section-h2">
+            <span data-tc>研究員觀察名單</span>
+            <span data-sc>研究员观察名单</span>
+          </h2>
+          <span class="tv2-section-en">/ Watchlist</span>
+        </div>
+        <a class="tv2-more" href={`${base}/talent/people/`}>
           <span data-tc>全部 {stats.peopleCount} →</span>
           <span data-sc>全部 {stats.peopleCount} →</span>
         </a>
       </header>
+      <p class="tv2-section-lede">
+        <span data-tc>優先列出 <strong>⚡-評級</strong> 且機構已關聯或有社交提及的研究員。</span>
+        <span data-sc>优先列出 <strong>⚡-评级</strong> 且机构已关联或有社交提及的研究员。</span>
+      </p>
       <div class="picks-grid">
-        {topPeople.map(p => <PersonCard record={p} />)}
+        {watchlist.map(p => <PersonCard record={p} />)}
       </div>
     </section>
 
-    <!-- ══ Section: HR queue preview ═══════════════════════════════════ -->
-    <section class="talent-section" id="hr-queue-preview">
-      <header class="talent-section-header">
-        <h2 class="talent-section-title">
-          <span class="talent-section-num">04</span>
-          <span data-tc>HR 推薦隊列</span><span data-sc>HR 推荐队列</span>
-          <span class="talent-section-en">/ HR Queue</span>
-        </h2>
-        <a class="talent-more-link" href={`${base}/talent/hr-queue/`}>
-          <span data-tc>完整隊列 →</span><span data-sc>完整队列 →</span>
-        </a>
-      </header>
-      {topHR.length === 0 ? (
-        <p class="talent-empty">
-          <span data-tc>目前沒有任何候選人通過默認門檻 (≥2 篇 🔧+ in 90d + 已知機構)</span>
-          <span data-sc>目前没有任何候选人通过默认门槛 (≥2 篇 🔧+ in 90d + 已知机构)</span>
-        </p>
-      ) : (
-        <div class="picks-grid">
-          {topHR.map(h => <PersonCard record={h} showWhyNow />)}
-        </div>
-      )}
-    </section>
-
-    <!-- ══ Footer note ═════════════════════════════════════════════════ -->
-    <aside class="talent-footnote">
-      <h3 class="talent-footnote-title">
-        <span data-tc>方法論</span><span data-sc>方法论</span>
-      </h3>
-      <ol class="talent-footnote-list">
-        <li>
-          <strong>Subdirections</strong> 来源于 <code>field-state-*.json</code> +
-          <code>ai-field-state-*.json</code> 的方法族趋势 (机械化, 零 LLM)
-        </li>
-        <li>
-          <strong>Labs</strong> 来源于 <code>entity-index.json</code> 的 type=lab
-          实体, 90 日滚动窗口
-        </li>
-        <li>
-          <strong>People</strong> 由 <code>vla-daily-rating-out-*.json</code>
-          的第一作者抽取 + <code>entity-index.json</code> 的 type=researcher 合并,
-          通过 <code>institution-registry.json</code> 关联机构
-        </li>
-        <li>
-          <strong>HR Queue</strong> 在 People 上加门槛: 顶级评分 ≥ 🔧, 90 日 ≥ 2
-          篇, 机构可解析, 联系状态非 not_linked
-        </li>
-        <li>
-          <strong>Email 永不存储或显示</strong> — 仅 <code>contact_status</code>
-          枚举: <em>linked_via_lab</em> / <em>social_mention</em> / <em>not_linked</em>
-        </li>
+    <!-- ══ Methodology — collapsed by default ══════════════════════════════ -->
+    <details class="tv2-method">
+      <summary>
+        <span class="tv2-method-summary-label">
+          <span data-tc>方法論 · How this works</span>
+          <span data-sc>方法论 · How this works</span>
+        </span>
+        <span class="tv2-method-summary-cue" aria-hidden="true">+</span>
+      </summary>
+      <ol class="tv2-method-list">
+        <li><strong>Subdirections</strong> — 方法族趨勢來自 <code>field-state-*.json</code> + <code>ai-field-state-*.json</code>（機械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)。</li>
+        <li><strong>Labs</strong> — 來自 <code>entity-index.json</code> 的 <code>type=lab</code> 實體，90 日滾動窗口。</li>
+        <li><strong>People</strong> — <code>vla-daily-rating-out-*.json</code> 第一作者抽取 + <code>entity-index.json</code> <code>type=researcher</code> 合併，機構經 <code>institution-registry.json</code> 解析。</li>
+        <li><strong>HR Queue</strong> — People 上加門檻：頂評 ≥ 🔧、90 日 ≥ 2 篇、機構可解析、聯繫狀態非 <em>not_linked</em>。</li>
+        <li><strong>Email 永不儲存或顯示</strong> — 僅 <code>contact_status</code> 枚舉：<em>linked_via_lab</em> / <em>social_mention</em> / <em>not_linked</em>。任何觸達前請自行核實。</li>
       </ol>
-    </aside>
+    </details>
 
-    <p class="talent-data-asof">
-      <span data-tc>資料截至 <strong>{stats.dataAsOf}</strong> · Pipeline v6</span>
-      <span data-sc>数据截至 <strong>{stats.dataAsOf}</strong> · Pipeline v6</span>
+    <p class="tv2-foot">
+      Pipeline v6 · <span data-tc>資料截至</span><span data-sc>数据截至</span> <strong>{stats.dataAsOf}</strong>
+      · {stats.subdirectionCount} subdirections · {stats.labCount} labs · {stats.peopleCount} people · {stats.hrQueueCount} HR
     </p>
   </main>
 
   <style>
-    .talent-hub {
+    /* ══════════════════════════════════════════════════════════════════════
+       Talent Radar v2 — design rules
+       - lead with story, not metrics
+       - HR (most actionable) up top
+       - velocity board > 4 identical card grids
+       - rely on the global fin-terminal palette (amber/cyan + serif title)
+       ══════════════════════════════════════════════════════════════════ */
+
+    .talent-v2 {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1rem 4rem;
+      padding: 2rem 1rem 5rem;
+      color: var(--text-primary);
     }
-    .talent-hero {
-      text-align: center;
-      padding: 2rem 0 3rem;
+
+    /* ── HERO ────────────────────────────────────────────────────────── */
+    .tv2-hero {
+      position: relative;
+      padding: 2.25rem 0 1.75rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.75rem;
     }
-    .talent-stage-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      color: var(--accent-amber);
-      border: 1px solid var(--accent-amber);
-      padding: 0.25rem 0.75rem;
-      border-radius: 999px;
+    .tv2-hero::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+      background: linear-gradient(90deg, var(--accent-amber), var(--accent-cyan) 70%, transparent);
+    }
+    .tv2-hero-meta {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;
       margin-bottom: 1rem;
     }
-    .talent-stage-dot {
-      width: 6px;
-      height: 6px;
+    .tv2-stage {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--accent-amber);
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--accent-amber);
+      border-radius: 999px;
+      background: var(--accent-amber-bg);
+    }
+    .tv2-stage-dot {
+      width: 5px; height: 5px;
       background: var(--accent-amber);
       border-radius: 50%;
-      animation: pulse-dot 2s ease-in-out infinite;
+      animation: tv2-pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse-dot {
+    @keyframes tv2-pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50%      { opacity: 0.3; }
     }
-    .talent-title {
-      font-family: Georgia, 'Songti SC', serif;
-      font-size: clamp(2rem, 5vw, 3rem);
+    .tv2-fresh {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.08em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+    }
+    .tv2-fresh-dot {
+      width: 5px; height: 5px;
+      background: var(--text-tertiary); border-radius: 50%;
+    }
+    .tv2-fresh-age { color: var(--text-tertiary); }
+    .tv2-fresh--fresh .tv2-fresh-dot  { background: var(--rating-book); }
+    .tv2-fresh--ok    .tv2-fresh-dot  { background: var(--accent-cyan); }
+    .tv2-fresh--stale .tv2-fresh-dot  { background: var(--accent-amber); }
+    .tv2-fresh--stale { color: var(--accent-amber); border-color: var(--accent-amber); }
+
+    .tv2-title-row {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem;
+      margin: 0.5rem 0 0.75rem;
+    }
+    .tv2-title {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: clamp(2.25rem, 5.5vw, 3.5rem);
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
+      line-height: 1;
       margin: 0;
       color: var(--text-primary);
     }
-    .talent-subtitle {
-      font-family: Georgia, 'Songti SC', serif;
-      font-style: italic;
-      color: var(--text-muted);
-      margin: 0.5rem 0 1rem;
-      font-size: 1rem;
-    }
-    .talent-tldr {
-      max-width: 640px;
-      margin: 0 auto;
-      font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-      color: var(--text-muted);
-      line-height: 1.6;
-      font-size: 0.9rem;
-    }
-    .talent-tldr strong {
-      color: var(--accent-amber);
-    }
-    .talent-accent-bar {
-      width: 3rem;
-      height: 2px;
-      background: var(--accent-amber);
-      margin: 0.75rem auto 1.25rem;
-      border-radius: 1px;
-    }
-    .talent-hero-cta {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
+    .tv2-title-en {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+    .tv2-lede {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin: 0 0 0.5rem;
+      max-width: 760px;
+    }
+    .tv2-lede strong { color: var(--text-primary); font-weight: 600; }
+    .tv2-promise {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      margin: 0;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .tv2-promise-icon {
+      color: var(--accent-amber); font-weight: 700;
+    }
+    .tv2-promise strong {
       color: var(--accent-amber);
-      border: 1px solid var(--accent-amber);
-      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    /* ── WEEKLY BRIEF ────────────────────────────────────────────────── */
+    .tv2-brief { margin: 1.5rem 0 2.75rem; }
+    .tv2-brief-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin: 0 0 0.75rem;
+    }
+    .tv2-brief-en { color: var(--text-tertiary); font-weight: 400; margin-left: 0.5rem; }
+    .tv2-brief-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .tv2-brief-card {
+      display: flex; flex-direction: column; gap: 0.5rem;
+      padding: 1.1rem 1.15rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text-primary);
       text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .tv2-brief-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--border);
       transition: background 0.15s;
     }
-    .talent-hero-cta:hover {
-      background: color-mix(in srgb, var(--accent-amber) 12%, transparent);
+    .tv2-brief-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--accent-cyan);
     }
-    .talent-data-asof {
-      margin-top: 2rem;
-      text-align: center;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-    .talent-data-asof strong {
-      color: var(--text-primary);
-    }
-    .talent-metrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin: 2rem 0 3rem;
-    }
-    .talent-metric {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface);
-    }
-    .talent-metric--accent {
-      border-color: var(--accent-amber);
-      background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-amber) 5%, transparent));
-    }
-    .talent-metric-num {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .talent-metric-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-    .talent-metric-sub {
+    .tv2-brief-card:hover::before { background: var(--accent-cyan); }
+    .tv2-brief-card--accent { border-color: var(--accent-amber); }
+    .tv2-brief-card--accent::before { background: var(--accent-amber); }
+    .tv2-brief-card--accent:hover { border-color: var(--accent-amber); }
+    .tv2-brief-card--accent:hover::before { background: var(--accent-amber); }
+
+    .tv2-brief-kicker {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.6rem;
-      color: var(--text-muted);
-      opacity: 0.7;
-      margin-top: 0.25rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
     }
-    .talent-section {
-      margin: 3rem 0;
+    .tv2-brief-main {
+      display: flex; align-items: baseline; gap: 0.75rem;
+      flex-wrap: wrap;
     }
-    .talent-section-header {
-      display: flex;
-      align-items: baseline;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
+    .tv2-brief-head {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      flex: 1; min-width: 0;
+    }
+    .tv2-brief-delta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--rating-x);
+    }
+    .tv2-brief-delta[data-pos="true"] { color: var(--accent-amber); }
+    .tv2-brief-sub {
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .tv2-brief-domain {
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent-cyan);
+    }
+    .tv2-brief-affil { color: var(--accent-amber); }
+    .tv2-brief-meta  { color: var(--text-tertiary); }
+
+    /* ── SECTION HEADER ─────────────────────────────────────────────── */
+    .tv2-section { margin: 3rem 0; }
+    .tv2-section-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      padding-bottom: 0.55rem; margin-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
     }
-    .talent-section-title {
-      font-family: Georgia, 'Songti SC', serif;
-      font-size: 1.25rem;
+    .tv2-section-titlewrap {
+      display: flex; align-items: baseline; gap: 0.65rem;
+    }
+    .tv2-section-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--accent-amber);
+    }
+    .tv2-section-h2 {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.4rem;
       font-weight: 600;
       margin: 0;
       color: var(--text-primary);
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
     }
-    .talent-section-num {
+    .tv2-section-en {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--accent-amber);
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
-    .talent-section-en {
+    .tv2-more {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-    .talent-more-link {
-      margin-left: auto;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.8rem;
       color: var(--accent-cyan);
       text-decoration: none;
+      letter-spacing: 0.04em;
     }
-    .talent-more-link:hover {
-      text-decoration: underline;
-    }
-    .talent-empty {
-      text-align: center;
-      color: var(--text-muted);
-      font-style: italic;
-      padding: 2rem;
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: 8px;
-    }
-    .talent-footnote {
-      margin-top: 4rem;
-      padding: 1.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-    .talent-footnote-title {
-      font-family: Georgia, 'Songti SC', serif;
-      font-size: 1rem;
-      margin: 0 0 1rem;
-      color: var(--text-primary);
-    }
-    .talent-footnote-list {
-      margin: 0;
-      padding-left: 1.25rem;
+    .tv2-more:hover { text-decoration: underline; }
+    .tv2-section-lede {
       font-size: 0.85rem;
-      line-height: 1.7;
-      color: var(--text-muted);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 0 1.25rem;
+      max-width: 820px;
     }
-    .talent-footnote-list code {
+    .tv2-section-lede em { font-style: normal; color: var(--accent-amber); }
+    .tv2-section-lede code {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.8em;
+      font-size: 0.85em;
       padding: 0.1em 0.35em;
-      background: var(--bg);
+      background: var(--surface-2);
       border-radius: 3px;
     }
-    @media (max-width: 768px) {
-      .talent-metrics {
-        grid-template-columns: repeat(2, 1fr);
+
+    /* ── HR SHORTLIST ────────────────────────────────────────────────── */
+    .tv2-hr-stack { display: flex; flex-direction: column; gap: 1.25rem; }
+    .tv2-hr-featured {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--accent-amber);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      display: flex;
+    }
+    .tv2-hr-featured-stripe {
+      width: 6px;
+      background: linear-gradient(180deg, var(--accent-amber), var(--accent-cyan));
+      flex-shrink: 0;
+    }
+    .tv2-hr-featured-body {
+      flex: 1;
+      padding: 1.5rem 1.75rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .tv2-hr-featured-head { display: flex; flex-direction: column; gap: 0.4rem; }
+    .tv2-hr-featured-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--accent-amber);
+    }
+    .tv2-hr-featured-title {
+      display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    }
+    .tv2-hr-featured-title h3 {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.75rem; font-weight: 600;
+      margin: 0; line-height: 1.1;
+      color: var(--text-primary);
+    }
+    .tv2-hr-featured-affil {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--accent-amber);
+      text-decoration: none;
+      align-self: flex-start;
+    }
+    .tv2-hr-featured-affil:hover { text-decoration: underline; }
+    .tv2-hr-featured-why {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.95rem; line-height: 1.6;
+      color: var(--text-secondary);
+      margin: 0;
+      padding: 0.65rem 0.9rem;
+      background: var(--accent-amber-bg);
+      border-left: 3px solid var(--accent-amber);
+      border-radius: 4px;
+    }
+    .tv2-hr-why-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--accent-amber);
+      margin-right: 0.5rem;
+    }
+    .tv2-hr-featured-stats {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      padding: 0.75rem 0;
+      border-top: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);
+    }
+    .tv2-hr-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+    .tv2-hr-stat-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .tv2-hr-stat-lbl {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+    }
+    .tv2-hr-stat-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+      display: inline-block;
+      width: fit-content;
+    }
+    .tv2-hr-stat-pill[data-status="social_mention"] {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+      background: var(--accent-amber-bg);
+    }
+    .tv2-hr-featured-papers {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 0.55rem;
+    }
+    .tv2-hr-featured-papers li a {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      padding: 0.4rem 0.5rem;
+      border-radius: 4px;
+      transition: background 0.12s;
+    }
+    .tv2-hr-featured-papers li a:hover {
+      background: var(--surface-2);
+      color: var(--accent-amber);
+    }
+    .tv2-paper-title { flex: 1; }
+    .tv2-paper-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .tv2-hr-rest {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    /* ── VELOCITY BOARD ──────────────────────────────────────────────── */
+    .tv2-velocity-board {
+      list-style: none;
+      padding: 0.5rem 0;
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .tv2-vel-row + .tv2-vel-row { border-top: 1px solid var(--border-subtle); }
+    .tv2-vel-link {
+      display: grid;
+      grid-template-columns: 28px 50px 1fr 2fr 64px 56px;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.65rem 1rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.12s;
+    }
+    .tv2-vel-link:hover { background: var(--surface-2); }
+    .tv2-vel-rank {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--text-tertiary);
+      letter-spacing: 0.04em;
+    }
+    .tv2-vel-domain {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: center;
+      padding: 0.18rem 0.4rem;
+      border-radius: 4px;
+    }
+    .tv2-vel-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .tv2-vel-track {
+      position: relative;
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .tv2-vel-bar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: var(--vel-pct);
+      border-radius: 4px;
+      transition: width 0.4s ease-out;
+    }
+    .tv2-vel-bar--up   { background: linear-gradient(90deg, var(--accent-amber), color-mix(in srgb, var(--accent-amber) 65%, var(--accent-cyan))); }
+    .tv2-vel-bar--down { background: linear-gradient(90deg, var(--rating-x), color-mix(in srgb, var(--rating-x) 60%, transparent)); opacity: 0.85; }
+    .tv2-vel-pct {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem; font-weight: 700;
+      text-align: right;
+    }
+    .tv2-vel-pct--up   { color: var(--accent-amber); }
+    .tv2-vel-pct--down { color: var(--rating-x); }
+    .tv2-vel-vol {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      text-align: right;
+    }
+
+    /* ── METHODOLOGY <details> ───────────────────────────────────────── */
+    .tv2-method {
+      margin: 3rem 0 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      padding: 0;
+    }
+    .tv2-method summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-primary);
+    }
+    .tv2-method summary::-webkit-details-marker { display: none; }
+    .tv2-method-summary-cue {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--accent-cyan);
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+    .tv2-method[open] .tv2-method-summary-cue { transform: rotate(45deg); }
+    .tv2-method-list {
+      padding: 0 1.5rem 1.25rem 2.75rem;
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    .tv2-method-list li + li { margin-top: 0.5rem; }
+    .tv2-method-list code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85em;
+      padding: 0.1em 0.35em;
+      background: var(--surface-2);
+      border-radius: 3px;
+    }
+    .tv2-method-list strong { color: var(--text-primary); }
+
+    /* ── EMPTY STATE ─────────────────────────────────────────────────── */
+    .tv2-empty {
+      padding: 2.25rem 1.5rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      text-align: center;
+    }
+    .tv2-empty-title {
+      font-family: Georgia, 'Songti SC', serif;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      margin: 0 0 0.4rem;
+    }
+    .tv2-empty-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+
+    /* ── FOOT ────────────────────────────────────────────────────────── */
+    .tv2-foot {
+      margin: 2rem 0 0;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+    }
+    .tv2-foot strong { color: var(--text-primary); }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .tv2-brief-grid { grid-template-columns: 1fr; }
+      .tv2-hr-rest    { grid-template-columns: 1fr; }
+      .tv2-vel-link {
+        grid-template-columns: 24px 44px 1fr 56px;
+        gap: 0.5rem;
       }
+      .tv2-vel-track { grid-column: 1 / -1; }
+      .tv2-vel-vol   { display: none; }
+    }
+    @media (max-width: 600px) {
+      .tv2-hr-featured-body { padding: 1rem 1.15rem; }
+      .tv2-hr-featured-title h3 { font-size: 1.4rem; }
+      .tv2-hr-featured-stats { gap: 1.25rem; }
     }
   </style>
 </BaseLayout>
