@@ -255,6 +255,7 @@ export function isPlausibleLab(name: string, signalCount: number): boolean {
 }
 
 const METHOD_FAMILY_LABELS: Record<string, string> = {
+  // Original 16 (kept verbatim for back-compat with field-state trends + UI tags)
   flow_matching:        'Flow Matching',
   diffusion_policy:     'Diffusion Policy',
   world_model:          'World Models',
@@ -271,11 +272,241 @@ const METHOD_FAMILY_LABELS: Record<string, string> = {
   frontier_model:       'Frontier Models',
   vertical_agent:       'Vertical Agents',
   '3d_representation':  '3D Representation',
+  // Extended VLA-paradigm families — surfaced only via keyword matching;
+  // not driven by field-state. These bring researcher coverage from
+  // ~22% to ~80% by giving the most common VLA work an actual bucket.
+  vla_core:                  'VLA Core',
+  manipulation:              'Manipulation',
+  imitation_learning:        'Imitation Learning',
+  robot_rl:                  'Robot RL',
+  dexterous_manipulation:    'Dexterous Manipulation',
+  tactile_sensing:           'Tactile / Sensing',
+  efficient_inference:       'Efficient Inference',
+  sim_to_real:               'Sim-to-Real',
+  navigation:                'Navigation',
+  data_generation:           'Data / Demonstrations',
+};
+
+// Per-family keyword vocabulary. Match = ANY phrase appears in the
+// lowercased title. Order is irrelevant — ranking is by total hits.
+//
+// Design notes:
+//   - Prefer multi-word phrases over single tokens to avoid false positives.
+//   - "model"/"models" alone is too broad → never used as a bare keyword.
+//   - For each family, the FIRST phrase is the canonical form; later
+//     phrases capture common synonyms / abbreviations observed in titles.
+//   - Some VLA-paradigm families (vla_core, manipulation, …) are wider on
+//     purpose — they're meant to be the catch-all primary for researchers
+//     whose work doesn't cleanly fit a method-specific bucket. Specific
+//     buckets (flow_matching, diffusion_policy, …) beat them on ranking
+//     when a paper genuinely mentions the technique.
+const METHOD_FAMILY_KEYWORDS: Record<string, string[]> = {
+  flow_matching: [
+    'flow matching', 'flow-matching', 'rectified flow', 'rectflow',
+    'mean flow', 'mean-flow', 'consistency flow', 'flow-based',
+    'flow policy', 'flow vla', 'discrete flow',
+  ],
+  diffusion_policy: [
+    'diffusion policy', 'diffusion policies', 'diffusion-policy',
+    'diffusion-based policy', 'score-based policy', 'denoising policy',
+    'diffusion model for', 'diffusion vla', 'diffusion-based vla',
+    'diffusion transformer', 'dp3', 'diffusion-based action',
+    'noise vector', 'generative policy', 'generative policies',
+  ],
+  world_model: [
+    'world model', 'world-model', 'world action model', 'world-action model',
+    'video prediction', 'next-frame prediction', 'dreamer',
+    'video foundation model', 'physical world model', 'world foundation model',
+    'video planner', 'world knowledge', 'video dynamics',
+  ],
+  agentic_coding: [
+    'coding agent', 'code agent', 'agentic coding', 'coding harness',
+    'claude code', 'codex', 'code generation', 'software engineer agent',
+    'coding sandbox', 'autocode',
+  ],
+  mcp_protocol: [
+    'mcp ', ' mcp', 'model context protocol', 'context protocol',
+  ],
+  multi_agent: [
+    'multi-agent', 'multi agent', 'multiagent', 'agent collaboration',
+    'agent orchestration', 'multi-robot', 'multi robot',
+  ],
+  context_engineering: [
+    'context engineering', 'long context', 'long-context', 'context window',
+    'context compression', 'kv cache', 'kv-cache', 'context memory',
+    'memory policy', 'gated memory', 'experience replay', 'success memory',
+    'hierarchical memory', 'long-horizon memory', 'continual learning',
+  ],
+  agent_safety: [
+    'agent safety', 'safety in vision', 'adversarial', 'red team',
+    'red-team', 'backdoor', 'jailbreak', 'attack framework',
+    'safe contact', 'safety-aware', 'safety filter', 'safety agent',
+    'iso-compliant',
+  ],
+  agent_eval: [
+    'benchmark', 'evaluation framework', 'evaluating', 'leaderboard',
+    'eval suite', 'roboeval', 'roboplayground', 'robofac',
+    'failure analysis', 'failure taxonomy', 'metacognitive',
+  ],
+  agent_infra: [
+    'cache', 'inference framework', 'serving', 'edge-cloud',
+    'edge cloud', 'deployment', 'asynchronous inference', 'parallelism',
+    'cross-session memory', 'agentcore', 'runtime', 'orchestration',
+    'middle-layer', 'infrastructure for', 'edge robotics',
+    'agentic framework', 'agent framework',
+  ],
+  open_source: [
+    'open-source', 'open source', 'apache 2.0', 'open infrastructure',
+    'open dataset', 'open foundation',
+  ],
+  voice_multimodal: [
+    'voice', 'speech', 'audio', 'tts ', 'asr ', 'full-duplex',
+    'omni-modal', 'omnimodal', 'omni modality', 'speech-to-speech',
+  ],
+  reasoning_planning: [
+    'reasoning', 'chain of thought', 'chain-of-thought', 'task planning',
+    'tree search', 'monte carlo tree', 'planning failures', 'subgoal',
+    'plan rewind', 'long-horizon planning', 'plan-and-execute',
+    'react agent', 'thinking traces', 'neuro-symbolic', 'see, plan',
+    'anticipation', 'progress-aware',
+  ],
+  frontier_model: [
+    'gpt-5', 'gpt-6', 'gpt 5', 'claude opus', 'claude sonnet',
+    'gemini ', 'deepseek', 'llama ', 'mistral', 'qwen',
+    'frontier model', 'foundation model', 'general-purpose model',
+  ],
+  vertical_agent: [
+    'medical', 'clinical', 'legal agent', 'finance agent', 'biomedical',
+    'healthcare', 'surgical', 'aerial manipulation', 'industrial robot',
+  ],
+  '3d_representation': [
+    '3d gaussian', 'gaussian splatting', 'neural radiance', 'nerf',
+    'point cloud', 'occupancy network', 'voxel', '3d scene',
+    '3d perception', '3d representation', '3d-aware', '3d scene flow',
+    'spatial understanding', 'spatially-aware', 'geometry grounding',
+  ],
+
+  // --- Extended VLA-paradigm families ---
+  vla_core: [
+    'vision-language-action', 'vision language action', 'vla model',
+    'vla models', ' vla ', ' vla:', ' vla,', ' vlas', '-vla:', '-vla ',
+    '-vlas', 'vla policy', 'vla-', 'vla:', 'vlas:',
+    'visuomotor policy', 'visuomotor policies',
+    'language-conditioned policy', 'instruction policy',
+    'language gap', 'language grounding', 'linguistic grounding',
+    'goal-conditioned', 'robot policy', 'robot policies', 'generative robot',
+    'generalist robot', 'language model for robot', 'embodied agent',
+    'embodied agents', 'embodied intelligence',
+  ],
+  manipulation: [
+    'manipulation', 'manipulator', 'manipulate', 'grasping', 'grasp',
+    'pick-and-place', 'pick and place', 'robot control', 'robotic control',
+    'object manipulation', 'deformable object', 'contact-rich',
+    'contact rich', 'bimanual', 'whole-body manipulation',
+    'long-horizon manipulation', 'visuotactile', 'mobile manipulation',
+    'assembly', 'robotic tasks', 'robot tasks',
+  ],
+  imitation_learning: [
+    'imitation learning', 'behavior cloning', 'behavioral cloning',
+    'demonstration', 'teleoperation', 'demo data', 'umi',
+    'one-shot demonstration', 'imitation from', 'cross-embodiment',
+    'cross embodiment', 'skill transfer',
+  ],
+  robot_rl: [
+    'reinforcement learning', 'online rl', 'offline rl', 'online robot rl',
+    'rl token', 'reward model', 'reward generation', 'on-robot rl',
+    'q-functions', 'q-values', 'policy optimization', 'fine-tuning vla',
+    'rlhf', 'distillation',
+  ],
+  dexterous_manipulation: [
+    'dexterous', 'dexgrasp', 'fingertip', 'dexterous grasp',
+    'dexterous manipulation', 'hand manipulation', 'humanoid',
+    'multi-finger', 'in-hand',
+  ],
+  tactile_sensing: [
+    'tactile', 'touch', 'haptic', 'visuo-tactile', 'visuotactile',
+    'force feedback', 'contact sensing', 'tactile simulation',
+    'tactile feedback', 'impedance',
+  ],
+  efficient_inference: [
+    'efficient', 'efficiency', 'real-time', 'realtime', 'real time',
+    'acceleration', 'fast-', 'fast ', 'low-latency', 'quantization',
+    'pruning', 'speculative decoding', 'speedup', 'one-step', 'one step',
+    'token pruning', 'sparse sampling', 'distillation',
+  ],
+  sim_to_real: [
+    'sim-to-real', 'sim to real', 'sim2real', 'real-to-sim',
+    'real to sim', 'simulation framework', 'simulator',
+    'simulation distillation', 'real-world deployment', 'sim-real',
+    'photorealistic simulator', 'simulation for',
+  ],
+  navigation: [
+    'navigation', 'vision-language navigation', 'visual navigation',
+    'traversability', 'embodied navigation', 'autonomous driving',
+    'vln', 'mapping', 'wayfinding',
+  ],
+  data_generation: [
+    'data generation', 'data engine', 'dataset', 'data collection',
+    'demonstrations', 'data augmentation', 'pretraining',
+    'large-scale dataset', 'scalable data', 'data downsampling',
+    'data selection',
+  ],
 };
 
 function familyDisplay(family: string): string {
   return METHOD_FAMILY_LABELS[family] ?? family
     .split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+// Catch-all families. These have wide vocabularies and exist mainly so the
+// constellation has a bucket for researchers whose papers don't mention a
+// specific technique. When ranking a single title, any specific family
+// with ≥1 hit beats a catch-all family — even if the catch-all matched
+// more keywords. This is what keeps "Diffusion Policy for Manipulation"
+// in the Diffusion Policy bucket instead of getting absorbed by Manipulation.
+const CATCH_ALL_FAMILIES = new Set([
+  'vla_core',
+  'manipulation',
+  'data_generation',
+  'efficient_inference',  // 'efficient' / 'real-time' qualify a lot of work
+  'agent_infra',
+]);
+
+// Rank families by total keyword hits across a set of titles.
+// Returns descending-sorted [family, hitCount] pairs; empty if no family
+// matched any title. Unlike the prior token-AND tokenizer, this is an
+// OR across an explicit per-family phrase list — much higher coverage
+// while avoiding the "model" / "world" false positives that the old
+// `family.split('_')` approach produced.
+//
+// Per-title rule: assign at most one family. Among matching families,
+// specific (non-catch-all) families always win over catch-alls; within
+// each tier, the family with the most keyword hits wins. Ties broken
+// by the order families are declared in METHOD_FAMILY_KEYWORDS.
+export function rankMethodFamilies(titles: string[]): Array<[string, number]> {
+  const hits: Record<string, number> = {};
+  for (const t of titles) {
+    if (!t) continue;
+    // Pad with spaces so word-boundary keywords like ' mcp ' or ' vla '
+    // match at the start/end of the title without a custom regex.
+    const title = ` ${t.toLowerCase()} `;
+
+    let specificBest: { family: string; hits: number } | null = null;
+    let catchAllBest: { family: string; hits: number } | null = null;
+    for (const [family, kws] of Object.entries(METHOD_FAMILY_KEYWORDS)) {
+      let n = 0;
+      for (const kw of kws) if (title.includes(kw)) n++;
+      if (n === 0) continue;
+      if (CATCH_ALL_FAMILIES.has(family)) {
+        if (!catchAllBest || n > catchAllBest.hits) catchAllBest = { family, hits: n };
+      } else {
+        if (!specificBest || n > specificBest.hits) specificBest = { family, hits: n };
+      }
+    }
+    const picked = specificBest ?? catchAllBest;
+    if (picked) hits[picked.family] = (hits[picked.family] ?? 0) + 1;
+  }
+  return Object.entries(hits).sort((a, b) => b[1] - a[1]);
 }
 
 // ---------------------------------------------------------------------------
@@ -304,13 +535,20 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
     const pool = src.key === 'vla' ? vlaPool : aiPool;
 
     for (const t of trends) {
-      // Find papers whose title contains a token derivable from the family key
+      // Find sample papers for this family. Prefer the per-family keyword
+      // vocabulary (matches any phrase); fall back to the legacy token-AND
+      // rule so unknown field-state families still produce evidence.
+      const kws = METHOD_FAMILY_KEYWORDS[t.family];
       const tokens = t.family.split('_').filter(s => s.length >= 3);
+      const titleMatches = (title: string): boolean => {
+        if (kws && kws.length > 0) return kws.some(k => title.includes(k));
+        return tokens.length > 0 && tokens.every(tok => title.includes(tok));
+      };
       const evidence: Evidence[] = [];
       outer: for (const day of pool) {
         for (const item of day.items) {
-          const title = (item.title || '').toLowerCase();
-          if (tokens.every(tok => title.includes(tok))) {
+          const title = ` ${(item.title || '').toLowerCase()} `;
+          if (titleMatches(title)) {
             evidence.push({
               title:        item.title,
               url:          item.url,
@@ -399,20 +637,10 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
       if (ent.signals.some(s => s.rating === r)) { topRating = r; break; }
     }
 
-    // Method focus: scan signals' titles, count by method family keyword
-    const methodHits: Record<string, number> = {};
-    for (const sig of ent.signals.slice(0, 30)) {
-      const title = (sig.title || '').toLowerCase();
-      for (const [family] of Object.entries(METHOD_FAMILY_LABELS)) {
-        const tokens = family.split('_').filter(s => s.length >= 3);
-        if (tokens.every(tok => title.includes(tok))) {
-          methodHits[family] = (methodHits[family] ?? 0) + 1;
-          break;
-        }
-      }
-    }
-    const methodFocus = Object.entries(methodHits)
-      .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([f]) => familyDisplay(f));
+    // Method focus: scan signals' titles, rank by per-family keyword vocabulary.
+    const methodFocus = rankMethodFamilies(
+      ent.signals.slice(0, 30).map(s => s.title || ''),
+    ).slice(0, 3).map(([f]) => familyDisplay(f));
 
     const evidence: Evidence[] = ent.signals
       .filter(s => s.rating === '⚡' || s.rating === '🔧')
@@ -642,19 +870,7 @@ export const DEFAULT_HR_GATE: HRGateCriteria = {
 
 export function topMethodsForEvidence(ev: Evidence[], maxTags: number = 2): string[] {
   if (!ev || ev.length === 0) return [];
-  const hits: Record<string, number> = {};
-  for (const e of ev) {
-    const title = (e.title ?? '').toLowerCase();
-    for (const family of Object.keys(METHOD_FAMILY_LABELS)) {
-      const tokens = family.split('_').filter(s => s.length >= 3);
-      if (tokens.length > 0 && tokens.every(tok => title.includes(tok))) {
-        hits[family] = (hits[family] ?? 0) + 1;
-        break;
-      }
-    }
-  }
-  return Object.entries(hits)
-    .sort((a, b) => b[1] - a[1])
+  return rankMethodFamilies(ev.map(e => e.title ?? ''))
     .slice(0, maxTags)
     .map(([f]) => familyDisplay(f));
 }
@@ -876,21 +1092,13 @@ export function loadResearcherConstellation(): ResearcherConstellation {
   let unmatched = 0;
 
   for (const p of rated) {
-    const hits: Record<string, number> = {};
     let vla = 0, ai = 0;
     for (const e of p.evidence) {
-      const title = (e.title ?? '').toLowerCase();
       if (e.domain === 'vla') vla++;
       else if (e.domain === 'ai') ai++;
-      for (const family of Object.keys(METHOD_FAMILY_LABELS)) {
-        const toks = family.split('_').filter(s => s.length >= 3);
-        if (toks.length > 0 && toks.every(t => title.includes(t))) {
-          hits[family] = (hits[family] ?? 0) + 1;
-          break;
-        }
-      }
     }
-    const ranked: Ranked = Object.entries(hits).sort((a, b) => b[1] - a[1]);
+    // Per-family keyword match across this person's paper titles.
+    const ranked: Ranked = rankMethodFamilies(p.evidence.map(e => e.title ?? ''));
     if (ranked.length === 0) { unmatched++; continue; }
     const majorityDomain: 'vla' | 'ai' = vla >= ai ? 'vla' : 'ai';
     matched.push({ p, ranked, majorityDomain });
@@ -902,13 +1110,13 @@ export function loadResearcherConstellation(): ResearcherConstellation {
     }
   }
 
-  // Keep families with ≥ 2 researchers; cap at 8 to avoid overcrowding.
-  // The remainder of matched researchers (mapped only to dropped families)
-  // are accounted as "unmatched" so callers can report total coverage.
+  // Keep families with ≥ 2 researchers; cap at 10 to fit comfortably on
+  // the rim. The remainder of matched researchers (mapped only to dropped
+  // families) get accounted as "unmatched" so callers can report coverage.
   const topFamilyKeys = [...familyHits.entries()]
     .filter(([, v]) => v.count >= 2)
     .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 8)
+    .slice(0, 10)
     .map(([f]) => f);
 
   // Even angular distribution; start at -π/2 (12 o'clock) and walk clockwise.
