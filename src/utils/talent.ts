@@ -1034,6 +1034,197 @@ export function loadResearcherConstellation(): ResearcherConstellation {
 }
 
 // ---------------------------------------------------------------------------
+// Lab Network — concrete relational view at the LAB level.
+//
+// Each top-N lab is a labelled bubble. Edges run between labs that share any
+// method-family focus. Edge weight = number of shared methods. The chart
+// answers questions a flat list can't:
+//   - Which labs compete for the same talent? (edges)
+//   - Which methods connect the most labs? ('hub' method — biggest cluster)
+//   - Which labs are isolated? (no edges — protected, distinctive talent)
+//
+// We deliberately do NOT try to embed researcher dots inside the lab bubbles:
+// of the 261 rated researchers in the pipeline, only ~10 carry an affiliation
+// that joins to a lab record. Showing 0–2 dots per lab would be misleading.
+// Researchers live in the grid below; this chart is about labs.
+// ---------------------------------------------------------------------------
+
+export interface LabNetworkNode {
+  name:              string;
+  slug:              string;
+  domain:            'vla' | 'ai' | 'mixed';
+  signalCount90d:    number;
+  recentSignal7d:    number;
+  methodFocus:       string[];   // display names; up to 3
+  topMethodDisplay:  string;
+  cx:                number;
+  cy:                number;
+  radius:            number;
+  labelX:            number;     // pushed outside bubble for legibility
+  labelY:            number;
+  labelAnchor:       'start' | 'middle' | 'end';
+}
+
+export interface LabNetworkEdge {
+  fromIdx:        number;
+  toIdx:          number;
+  sharedMethods:  string[];      // display names
+  weight:         number;        // count
+  // pre-computed bezier control point for curve rendering
+  ctrlX:          number;
+  ctrlY:          number;
+}
+
+export interface LabNetwork {
+  width:    number;
+  height:   number;
+  centerX:  number;
+  centerY:  number;
+  ringRadius: number;
+  nodes:    LabNetworkNode[];
+  edges:    LabNetworkEdge[];
+  // method → number of edges spanned (which method connects the most labs)
+  methodHubs: Array<{ method: string; spans: number; labCount: number }>;
+  totals: {
+    labs:          number;
+    edges:         number;
+    connectedLabs: number;   // labs with ≥1 edge
+    isolatedLabs:  number;   // labs with 0 edges
+  };
+}
+
+export function loadLabNetwork(opts: { maxLabs?: number } = {}): LabNetwork {
+  const W = 980;
+  const H = 640;
+  const cx = W / 2;
+  const cy = H / 2 + 6;
+  const maxLabs = opts.maxLabs ?? 14;
+  const ringR = 232;
+
+  const labs = loadLabs({ minSignals: 2 }).slice(0, maxLabs);
+
+  // Domain assignment from LabRecord.domains
+  const labWithMeta = labs.map(l => {
+    const hasVLA = (l.domains ?? []).includes('vla');
+    const hasAI  = (l.domains ?? []).includes('ai_app');
+    const domain: 'vla' | 'ai' | 'mixed' =
+      hasVLA && hasAI ? 'mixed' :
+      hasAI           ? 'ai'    :
+                        'vla';
+    return { lab: l, domain };
+  });
+
+  // Cluster labs angularly: same dominant method → adjacent angles.
+  // Labs without methodFocus go to the end (their angular cluster doesn't matter).
+  const dominantOf = (l: LabRecord) => l.methodFocus[0] ?? '~unknown~';
+  const methodOrder: string[] = [];
+  for (const { lab } of labWithMeta) {
+    const m = dominantOf(lab);
+    if (!methodOrder.includes(m)) methodOrder.push(m);
+  }
+  labWithMeta.sort((a, b) => {
+    const ai = methodOrder.indexOf(dominantOf(a.lab));
+    const bi = methodOrder.indexOf(dominantOf(b.lab));
+    return ai - bi || b.lab.signalCount90d - a.lab.signalCount90d;
+  });
+
+  const N = labWithMeta.length;
+  const nodes: LabNetworkNode[] = labWithMeta.map((x, i) => {
+    // Start at -π/2 (top), walk clockwise
+    const angle = -Math.PI / 2 + (i / N) * Math.PI * 2;
+    // Bubble radius from signal count (sqrt to dampen the spread)
+    const r = 24 + Math.sqrt(x.lab.signalCount90d) * 5;
+    const bx = cx + Math.cos(angle) * ringR;
+    const by = cy + Math.sin(angle) * ringR;
+    // Label position pushed further out from the bubble center.
+    // Use angular position to decide text-anchor so labels don't overlap bubbles.
+    const labelDist = r + 22;
+    const lx = cx + Math.cos(angle) * (ringR + labelDist - r);
+    const ly = cy + Math.sin(angle) * (ringR + labelDist - r) + 4;
+    const cosA = Math.cos(angle);
+    const anchor: 'start' | 'middle' | 'end' =
+      cosA > 0.35 ? 'start' :
+      cosA < -0.35 ? 'end' :
+      'middle';
+    return {
+      name:             x.lab.name,
+      slug:             slugifyName(x.lab.name),
+      domain:           x.domain,
+      signalCount90d:   x.lab.signalCount90d,
+      recentSignal7d:   x.lab.recentSignalCount7d,
+      methodFocus:      x.lab.methodFocus,
+      topMethodDisplay: x.lab.methodFocus[0] ?? '—',
+      cx:               bx,
+      cy:               by,
+      radius:           r,
+      labelX:           lx,
+      labelY:           ly,
+      labelAnchor:      anchor,
+    };
+  });
+
+  // Edges: every pair of labs sharing ≥1 method (display-name match)
+  const edges: LabNetworkEdge[] = [];
+  const methodSpans = new Map<string, Set<number>>();   // method → labs it touches in edges
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i].methodFocus;
+      const b = nodes[j].methodFocus;
+      const shared = a.filter(m => b.includes(m));
+      if (shared.length === 0) continue;
+      // Bezier control point pulled toward center, biased by edge midpoint
+      const mx = (nodes[i].cx + nodes[j].cx) / 2;
+      const my = (nodes[i].cy + nodes[j].cy) / 2;
+      const ctrlX = mx + (cx - mx) * 0.55;
+      const ctrlY = my + (cy - my) * 0.55;
+      edges.push({
+        fromIdx: i,
+        toIdx:   j,
+        sharedMethods: shared,
+        weight:        shared.length,
+        ctrlX,
+        ctrlY,
+      });
+      for (const m of shared) {
+        if (!methodSpans.has(m)) methodSpans.set(m, new Set());
+        methodSpans.get(m)!.add(i);
+        methodSpans.get(m)!.add(j);
+      }
+    }
+  }
+
+  const connected = new Set<number>();
+  for (const e of edges) {
+    connected.add(e.fromIdx);
+    connected.add(e.toIdx);
+  }
+
+  const methodHubs = [...methodSpans.entries()]
+    .map(([method, labSet]) => {
+      const spans = edges.filter(e => e.sharedMethods.includes(method)).length;
+      return { method, spans, labCount: labSet.size };
+    })
+    .sort((a, b) => b.spans - a.spans || b.labCount - a.labCount);
+
+  return {
+    width: W,
+    height: H,
+    centerX: cx,
+    centerY: cy,
+    ringRadius: ringR,
+    nodes,
+    edges,
+    methodHubs,
+    totals: {
+      labs:          nodes.length,
+      edges:         edges.length,
+      connectedLabs: connected.size,
+      isolatedLabs:  nodes.length - connected.size,
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Watchlist — full rated population for Section 04 grid.
 // Returns ALL rated researchers (⚡ or 🔧 + ≥1 paper) sorted by rating then
 // recency. This is the dense list that lives below the constellation; we no

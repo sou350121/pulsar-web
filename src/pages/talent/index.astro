@@ -22,6 +22,7 @@ import {
   loadHRScout,
   loadTalentStats,
   loadResearcherConstellation,
+  loadLabNetwork,
   loadWatchlist,
   slugifyName,
   topMethodsForEvidence,
@@ -75,10 +76,14 @@ const featuredMethods = featuredHR
 // ── Labs showcase: 6 with non-zero recent OR top by 90d signals ─────────────
 const labsShowcase = allLabs.slice(0, 6);
 
-// ── Researcher constellation + full watchlist ───────────────────────────────
-// The constellation is the *relational view* — rated researchers anchored to
-// the method families they publish in. The watchlist grid below shows the
-// full rated pool (≥🔧, ≥1 paper) so readers can drill down from the chart.
+// ── Lab Network + researcher constellation + full watchlist ────────────────
+// Section 04 now stacks two relational charts:
+//   1. Lab Cluster Network — the LAB-level structural view. Reveals which
+//      labs share method focus (= compete for the same hires) and which
+//      method is the connective tissue across the field.
+//   2. Researcher × Method constellation — the BIPARTITE view (existing).
+// Then the dense grid of all rated researchers.
+const labNet        = loadLabNetwork();
 const constellation = loadResearcherConstellation();
 const watchlist     = loadWatchlist();
 
@@ -623,9 +628,147 @@ function fmtAccel(a: number): string {
         </a>
       </header>
       <p class="tv2-section-lede">
-        <span data-tc>把 <strong>{constellation.totals.researchers}</strong> 位被評級的研究員按方法族錨定。靠近哪個方法 = 他主要寫什麼。圓心方向 = 同時在兩個方法上發過論文的「橋樑型」<strong>{constellation.totals.bridges}</strong> 位。</span>
-        <span data-sc>把 <strong>{constellation.totals.researchers}</strong> 位被评级的研究员按方法族锚定。靠近哪个方法 = 他主要写什么。圆心方向 = 同时在两个方法上发过论文的「桥梁型」<strong>{constellation.totals.bridges}</strong> 位。</span>
+        <span data-tc>兩張圖揭示三層關係 — <strong>實驗室之間</strong>共享哪些方法（誰在搶同一批人）、<strong>研究員之間</strong>各自寫什麼方向、誰是<strong>橋樑型</strong>跨方向作者。</span>
+        <span data-sc>两张图揭示三层关系 — <strong>实验室之间</strong>共享哪些方法（谁在抢同一批人）、<strong>研究员之间</strong>各自写什么方向、谁是<strong>桥梁型</strong>跨方向作者。</span>
       </p>
+
+      {/* ── 4a · Lab Cluster Network — the LAB-level relational view ──── */}
+      <figure class="tv2-labnet">
+        <figcaption class="tv2-labnet-title">
+          <span class="tv2-labnet-title-num">A</span>
+          <span class="tv2-labnet-title-name">
+            <span data-tc>實驗室聚類圖 · 共享方法的實驗室會被一條線連起來</span>
+            <span data-sc>实验室聚类图 · 共享方法的实验室会被一条线连起来</span>
+          </span>
+          <span class="tv2-labnet-title-en">
+            · Lab × Lab method-overlap network
+          </span>
+        </figcaption>
+        <svg
+          class="tv2-labnet-svg"
+          viewBox={`0 0 ${labNet.width} ${labNet.height}`}
+          role="img"
+          aria-label="Lab cluster network — method-overlap edges between labs"
+        >
+          {/* Outer faint ring as visual anchor */}
+          <circle
+            cx={labNet.centerX} cy={labNet.centerY}
+            r={labNet.ringRadius}
+            fill="none"
+            stroke="var(--border)"
+            stroke-dasharray="2 5"
+            stroke-width="1"
+            opacity="0.45"
+          />
+
+          {/* Edges drawn first so node bubbles sit on top */}
+          {labNet.edges.map(e => {
+            const a = labNet.nodes[e.fromIdx];
+            const b = labNet.nodes[e.toIdx];
+            // weight 1 = thin / weight 3 = thick
+            const sw = 0.9 + e.weight * 1.1;
+            const op = 0.18 + e.weight * 0.14;
+            const tip = `${a.name} ↔ ${b.name}: ${e.sharedMethods.join(' · ')}`;
+            return (
+              <g>
+                <title>{tip}</title>
+                <path
+                  d={`M ${a.cx} ${a.cy} Q ${e.ctrlX} ${e.ctrlY} ${b.cx} ${b.cy}`}
+                  fill="none"
+                  stroke="var(--accent-cyan)"
+                  stroke-width={sw}
+                  opacity={op}
+                  stroke-linecap="round"
+                />
+              </g>
+            );
+          })}
+
+          {/* Lab bubbles */}
+          {labNet.nodes.map(n => {
+            const stroke = n.domain === 'ai' ? 'var(--accent-cyan)'
+                         : n.domain === 'mixed' ? 'var(--accent-amber)'
+                         : 'var(--accent-amber)';
+            const fill = n.domain === 'ai' ? 'rgba(15,143,160,0.10)'
+                       : 'rgba(212,145,10,0.10)';
+            const tip = `${n.name} · ${n.signalCount90d} signals · ${n.methodFocus.join(', ') || 'no methods'}`;
+            return (
+              <g class="tv2-labnet-node">
+                <title>{tip}</title>
+                <a href={`${base}/talent/labs/#lab-${n.slug}`}>
+                  <circle
+                    cx={n.cx} cy={n.cy} r={n.radius}
+                    fill={fill}
+                    stroke={stroke}
+                    stroke-width="2"
+                    class="tv2-labnet-bubble"
+                  />
+                  <text
+                    x={n.cx} y={n.cy - 3}
+                    text-anchor="middle"
+                    class="tv2-labnet-bubble-name"
+                  >{n.name}</text>
+                  <text
+                    x={n.cx} y={n.cy + 13}
+                    text-anchor="middle"
+                    class="tv2-labnet-bubble-count"
+                  >{n.signalCount90d} · 90d</text>
+                </a>
+                {/* method chips outside the bubble, on the outward radial */}
+                <text
+                  x={n.labelX} y={n.labelY}
+                  text-anchor={n.labelAnchor}
+                  class="tv2-labnet-bubble-method"
+                >{n.methodFocus.slice(0, 2).join(' · ') || '—'}</text>
+              </g>
+            );
+          })}
+        </svg>
+        <div class="tv2-labnet-foot">
+          <div class="tv2-labnet-stats">
+            <span><strong>{labNet.totals.labs}</strong> <span data-tc>實驗室</span><span data-sc>实验室</span></span>
+            <span class="tv2-labnet-stats-sep">·</span>
+            <span><strong>{labNet.totals.edges}</strong> <span data-tc>連線</span><span data-sc>连线</span></span>
+            <span class="tv2-labnet-stats-sep">·</span>
+            <span><strong>{labNet.totals.connectedLabs}</strong> <span data-tc>有連線</span><span data-sc>有连线</span></span>
+            <span class="tv2-labnet-stats-sep">·</span>
+            <span><strong class="tv2-labnet-isolated">{labNet.totals.isolatedLabs}</strong> <span data-tc>孤立（獨佔方向）</span><span data-sc>孤立（独占方向）</span></span>
+          </div>
+          {labNet.methodHubs.length > 0 && (
+            <div class="tv2-labnet-hubs">
+              <span class="tv2-labnet-hubs-label">
+                <span data-tc>連接最多實驗室的方法（人才戰場）</span>
+                <span data-sc>连接最多实验室的方法（人才战场）</span>
+                <span class="tv2-labnet-hubs-en">· hub methods</span>
+              </span>
+              <ul class="tv2-labnet-hubs-list">
+                {labNet.methodHubs.slice(0, 4).map(h => (
+                  <li>
+                    <span class="tv2-labnet-hub-name">{h.method}</span>
+                    <span class="tv2-labnet-hub-meta">
+                      <strong>{h.labCount}</strong> labs
+                      <span class="tv2-labnet-hub-sep">·</span>
+                      <strong>{h.spans}</strong> edges
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </figure>
+
+      <figcaption class="tv2-const-title">
+        <span class="tv2-const-title-num">B</span>
+        <span class="tv2-const-title-name">
+          <span data-tc>研究員 × 方法族 圖譜</span>
+          <span data-sc>研究员 × 方法族 图谱</span>
+        </span>
+        <span class="tv2-const-title-en">
+          · {constellation.totals.researchers} researchers anchored to method families
+          · {constellation.totals.bridges} polymath{constellation.totals.bridges === 1 ? '' : 's'}
+        </span>
+      </figcaption>
 
       {/* ── 4a · Constellation SVG ─────────────────────────────────────── */}
       <figure class="tv2-const">
@@ -1676,6 +1819,207 @@ function fmtAccel(a: number): string {
       .tv2-hr-featured-body { padding: 1rem 1.15rem; }
       .tv2-hr-featured-title h3 { font-size: 1.4rem; }
       .tv2-hr-featured-stats { gap: 1.25rem; }
+    }
+
+    /* ─── Section 04 · Lab Cluster Network (chart A) ─────────────────── */
+    .tv2-labnet {
+      margin: 1rem 0 1.5rem;
+      padding: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-amber);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .tv2-labnet-title {
+      display: flex;
+      align-items: baseline;
+      gap: 0.65rem;
+      padding: 0.7rem 1rem 0.55rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--accent-amber) 8%, transparent),
+        transparent 65%);
+    }
+    .tv2-labnet-title-num {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .tv2-labnet-title-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tv2-labnet-title-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+    }
+    .tv2-labnet-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      background:
+        radial-gradient(ellipse at center, color-mix(in srgb, var(--accent-amber) 4%, transparent) 0%, transparent 70%),
+        var(--surface);
+    }
+    .tv2-labnet-bubble {
+      transition: stroke-width 0.15s, filter 0.15s;
+    }
+    .tv2-labnet-node:hover .tv2-labnet-bubble {
+      stroke-width: 3;
+      filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent-cyan) 60%, transparent));
+    }
+    .tv2-labnet-bubble-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--text-primary);
+    }
+    .tv2-labnet-bubble-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      fill: var(--text-tertiary);
+    }
+    .tv2-labnet-bubble-method {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      fill: var(--accent-cyan);
+      letter-spacing: 0.02em;
+    }
+    .tv2-labnet-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.5rem;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 0.7rem 1rem 0.85rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--surface-2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+    }
+    .tv2-labnet-stats {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--text-secondary);
+    }
+    .tv2-labnet-stats strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .tv2-labnet-stats-sep {
+      color: var(--text-tertiary);
+      opacity: 0.5;
+    }
+    .tv2-labnet-isolated {
+      color: var(--accent-amber);
+    }
+    .tv2-labnet-hubs {
+      flex: 1;
+      min-width: 280px;
+    }
+    .tv2-labnet-hubs-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 0.35rem;
+    }
+    .tv2-labnet-hubs-en {
+      color: var(--text-tertiary);
+      font-weight: 400;
+      margin-left: 0.3rem;
+    }
+    .tv2-labnet-hubs-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.25rem 0.85rem;
+    }
+    .tv2-labnet-hubs-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.4rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      background: var(--surface);
+      border-left: 2px solid var(--accent-cyan);
+    }
+    .tv2-labnet-hub-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tv2-labnet-hub-meta {
+      color: var(--text-secondary);
+      font-size: 0.66rem;
+      white-space: nowrap;
+    }
+    .tv2-labnet-hub-meta strong {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .tv2-labnet-hub-sep {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+      padding: 0 0.2rem;
+    }
+
+    /* Title row for chart B (existing constellation) */
+    .tv2-const-title {
+      display: flex;
+      align-items: baseline;
+      gap: 0.65rem;
+      margin: 0 0 0.45rem;
+    }
+    .tv2-const-title-num {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .tv2-const-title-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tv2-const-title-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+    }
+    @media (max-width: 700px) {
+      .tv2-labnet-bubble-name   { font-size: 11px; }
+      .tv2-labnet-bubble-count  { font-size: 9px; }
+      .tv2-labnet-bubble-method { font-size: 9px; }
+      .tv2-labnet-hubs-list     { grid-template-columns: 1fr; }
     }
 
     /* ─── Section 04 · Researcher Constellation ─────────────────────── */
