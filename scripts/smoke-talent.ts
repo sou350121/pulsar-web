@@ -7,7 +7,7 @@ import {
   loadSubdirections,
   loadLabs,
   loadPeople,
-  loadHRQueue,
+  loadHRScout,
   loadTalentStats,
 } from '../src/utils/talent.ts';
 
@@ -26,14 +26,15 @@ const people = loadPeople({ minPaperCount90d: 1 });
 console.log(`people: ${people.length}, top3:`,
   people.slice(0, 3).map(p => `${p.name} [${p.topRating}] @ ${p.affiliation ?? '?'} (${p.contactStatus})`));
 
-const hr = loadHRQueue();
-console.log(`hr_queue: ${hr.length}, top3:`,
-  hr.slice(0, 3).map(h => `${h.name} — ${h.whyNow}`));
+const scout = loadHRScout();
+console.log(`hr_scout pool=${scout.totals.pool} (hot=${scout.totals.hot} warm=${scout.totals.warm} watch=${scout.totals.watch}), top3 HOT:`,
+  scout.hot.slice(0, 3).map(h => `${h.name} — ${h.whyNow}`));
 
 // No-email contract: hard runtime assert (defense in depth alongside
 // the `email?: never` field on PersonRecord). Cast to opaque record so
 // the probe doesn't imply `email` is a real field on the type.
-for (const p of [...people, ...hr]) {
+const allCandidates = [...scout.hot, ...scout.warm, ...scout.watch];
+for (const p of [...people, ...allCandidates]) {
   const rec = p as unknown as Record<string, unknown>;
   if ('email' in rec && rec.email != null) {
     throw new Error(`email leaked into PersonRecord for ${p.name}`);

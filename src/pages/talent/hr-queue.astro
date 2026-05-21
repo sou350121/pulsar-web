@@ -7,7 +7,7 @@ import {
   loadHRScout,
   loadTalentStats,
   slugifyName,
-  DEFAULT_HR_GATE,
+  HOT_GATE_DISPLAY,
 } from '../../utils/talent';
 
 const base  = import.meta.env.BASE_URL;
@@ -76,17 +76,17 @@ const scout = loadHRScout();
       <ul class="tv2-gate-list">
         <li>
           <span class="tv2-gate-key">Rating floor</span>
-          <span class="tv2-gate-val">≥ {DEFAULT_HR_GATE.ratingFloor}</span>
+          <span class="tv2-gate-val">≥ {HOT_GATE_DISPLAY.ratingFloor}</span>
           <span class="tv2-gate-note">author on at least one breakthrough or practical paper</span>
         </li>
         <li>
           <span class="tv2-gate-key">Paper count · 90d</span>
-          <span class="tv2-gate-val">≥ {DEFAULT_HR_GATE.minPaperCount90d}</span>
+          <span class="tv2-gate-val">≥ {HOT_GATE_DISPLAY.minPaperCount90d}</span>
           <span class="tv2-gate-note">sustained output, not a one-off</span>
         </li>
         <li>
           <span class="tv2-gate-key">Affiliation</span>
-          <span class="tv2-gate-val">{DEFAULT_HR_GATE.requireAffiliation ? 'required' : 'optional'}</span>
+          <span class="tv2-gate-val">{HOT_GATE_DISPLAY.requireAffiliation ? 'required' : 'optional'}</span>
           <span class="tv2-gate-note">resolvable via institution-registry</span>
         </li>
         <li>

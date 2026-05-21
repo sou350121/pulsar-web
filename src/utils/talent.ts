@@ -844,18 +844,11 @@ export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonReco
   });
 }
 
-// ---------------------------------------------------------------------------
-// loadHRQueue
-// ---------------------------------------------------------------------------
-
-export interface HRGateCriteria {
-  ratingFloor:        '⚡' | '🔧';
-  minPaperCount90d:   number;
-  requireAffiliation: boolean;
-}
-
-export const DEFAULT_HR_GATE: HRGateCriteria = {
-  ratingFloor:        '🔧',
+// HOT-tier gate criteria, exposed as a display constant so the HR queue page
+// can render the rule values without re-deriving them. Match the predicate
+// inside loadHRScout — if you change the gate there, change it here too.
+export const HOT_GATE_DISPLAY = {
+  ratingFloor:        '🔧' as const,
   minPaperCount90d:   2,
   requireAffiliation: true,
 };
@@ -982,43 +975,6 @@ export function loadHRScout(): HRScout {
     hot, warm, watch,
     totals: { hot: hot.length, warm: warm.length, watch: watch.length, pool: hot.length + warm.length + watch.length },
   };
-}
-
-export function loadHRQueue(opts: Partial<HRGateCriteria> = {}): HRCandidate[] {
-  const gate: HRGateCriteria = { ...DEFAULT_HR_GATE, ...opts };
-  const allPeople = loadPeople({ minPaperCount90d: 1 });
-
-  const candidates: HRCandidate[] = [];
-  for (const p of allPeople) {
-    const gateHits: string[] = [];
-
-    // Gate 1: rating floor
-    const ratingOK = gate.ratingFloor === '🔧'
-      ? p.topRating === '⚡' || p.topRating === '🔧'
-      : p.topRating === '⚡';
-    if (!ratingOK) continue;
-    gateHits.push(`Top rating ≥ ${gate.ratingFloor}`);
-
-    // Gate 2: paper count
-    if (p.paperCount90d < gate.minPaperCount90d) continue;
-    gateHits.push(`${p.paperCount90d} papers in 90 days`);
-
-    // Gate 3: affiliation requirement
-    if (gate.requireAffiliation && !p.affiliation) continue;
-    if (p.affiliation) gateHits.push(`Affiliated: ${p.affiliation}`);
-
-    // Gate 4: durable signal (contact_status != not_linked)
-    if (p.contactStatus === 'not_linked') continue;
-    gateHits.push(`Contact: ${p.contactStatus}`);
-
-    const whyNow = p.topRating === '⚡'
-      ? `Author on ⚡-rated paper in last 90 days`
-      : `Author on ${p.paperCount90d} 🔧+ papers in last 90 days`;
-
-    candidates.push({ ...p, whyNow, gateHits });
-  }
-
-  return candidates;
 }
 
 // ---------------------------------------------------------------------------
@@ -1459,7 +1415,10 @@ export interface TalentStats {
   labCount:          number;
   activeLabCount7d:  number;
   peopleCount:       number;
-  hrQueueCount:      number;
+  // Size of the 3-tier HR scout pool (HOT + WARM + WATCH).
+  // Replaces the older single-gate hrQueueCount which under-reported by
+  // counting only HOT candidates and disagreed visibly with Section 01.
+  hrPoolCount:       number;
   dataAsOf:          string;   // YYYY-MM-DD of latest field-state file
 }
 
@@ -1467,7 +1426,7 @@ export function loadTalentStats(): TalentStats {
   const subs   = loadSubdirections({ domain: 'all' });
   const labs   = loadLabs();
   const people = loadPeople();
-  const hr     = loadHRQueue();
+  const scout  = loadHRScout();
   // Latest VLA field-state filename — proxy for pipeline freshness.
   // Format: field-state-YYYY-MM-DD.json → slice the date portion.
   const latestFs = listLocal('field-state-')[0] ?? '';
@@ -1478,7 +1437,7 @@ export function loadTalentStats(): TalentStats {
     labCount:          labs.length,
     activeLabCount7d:  labs.filter(l => l.recentSignalCount7d > 0).length,
     peopleCount:       people.length,
-    hrQueueCount:      hr.length,
+    hrPoolCount:       scout.totals.pool,
     dataAsOf:          m?.[1] ?? '—',
   };
 }

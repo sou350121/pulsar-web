@@ -35,7 +35,6 @@ const allSubs   = loadSubdirections({ domain: 'all' });
 const allLabs   = loadLabs({ minSignals: 3 });
 const allPeople = loadPeople({ minPaperCount90d: 1 });
 const scout     = loadHRScout();
-const allHR     = scout.hot;   // back-compat for downstream brief card
 
 // ── Trustworthy subset for ranking ─────────────────────────────────────────
 // A family with prior_volume = 0 produces a clamped acceleration value
@@ -226,7 +225,8 @@ function fmtAccel(a: number): string {
           </a>
         )}
 
-        <!-- 3. Emerging family (or, if none, fall back to top HR pick) -->
+        {/* 3. Emerging family, OR fall back to the top HR scout pick when
+              no insufficient_data family is on the board this week. */}
         {topEmerge ? (
           <a class="tv2-brief-card tv2-brief-card--accent" href={`${base}/talent/subdirections/#fam-${topEmerge.family}`}>
             <span class="tv2-brief-kicker">
@@ -247,21 +247,21 @@ function fmtAccel(a: number): string {
               </span>
             </div>
           </a>
-        ) : topHR && (
+        ) : featuredHR && (
           <a class="tv2-brief-card tv2-brief-card--accent" href="#hr-shortlist">
             <span class="tv2-brief-kicker">
               <span data-tc>首推候選人</span>
               <span data-sc>首推候选人</span>
             </span>
             <div class="tv2-brief-main">
-              <span class="tv2-brief-head">{topHR.name}</span>
-              <RatingBadge rating={topHR.topRating} size="sm" />
+              <span class="tv2-brief-head">{featuredHR.name}</span>
+              <RatingBadge rating={featuredHR.topRating} size="sm" />
             </div>
             <div class="tv2-brief-sub">
-              {topHR.affiliation && (
-                <span class="tv2-brief-meta tv2-brief-affil">{topHR.affiliation}</span>
+              {featuredHR.affiliation && (
+                <span class="tv2-brief-meta tv2-brief-affil">{featuredHR.affiliation}</span>
               )}
-              <span class="tv2-brief-meta">· {topHR.paperCount90d} 篇 · 90d</span>
+              <span class="tv2-brief-meta">· {featuredHR.paperCount90d} 篇 · 90d</span>
             </div>
           </a>
         )}
@@ -606,11 +606,12 @@ function fmtAccel(a: number): string {
     </section>
 
     <!-- ══ Section 04 · WATCHLIST ══════════════════════════════════════════
-         Two-part design:
-           4a · Researcher × Method constellation (relational chart — shows
-                clustering, sparse methods, bridge polymaths)
-           4b · Dense grid of every rated researcher (the full pool)
-         The chart answers "who's near whom"; the grid answers "who exactly".
+         Four sub-blocks, ordered macro → micro:
+           4a · Lab Cluster Network  — which labs share methods (compete)
+           4b · Researcher × Method  — which methods crowd which talent
+           4c · Polymath callout      — cross-method researchers (action list)
+           4d · Full rated grid       — every ⚡/🔧 person we tracked
+         Read top-down: from the field structure (A) down to specific names (D).
     ──────────────────────────────────────────────────────────────────────── -->
     <section class="tv2-section">
       <header class="tv2-section-header">
@@ -770,7 +771,7 @@ function fmtAccel(a: number): string {
         </span>
       </figcaption>
 
-      {/* ── 4a · Constellation SVG ─────────────────────────────────────── */}
+      {/* ── 4b · Researcher × Method Constellation SVG ─────────────────── */}
       <figure class="tv2-const">
         <svg
           class="tv2-const-svg"
@@ -911,7 +912,7 @@ function fmtAccel(a: number): string {
         ))}
       </div>
 
-      {/* ── 4a-2 · Bridge researchers callout (the actionable polymath list) */}
+      {/* ── 4c · Bridge researchers callout (the actionable polymath list) */}
       {bridgePeople.length > 0 && (
         <div class="tv2-bridges">
           <div class="tv2-bridges-header">
@@ -948,7 +949,7 @@ function fmtAccel(a: number): string {
         </div>
       )}
 
-      {/* ── 4b · Full rated grid ──────────────────────────────────────── */}
+      {/* ── 4d · Full rated grid ──────────────────────────────────────── */}
       <h3 id="watchlist-grid" class="tv2-const-gridtitle">
         <span data-tc>全部已評級研究員</span>
         <span data-sc>全部已评级研究员</span>
@@ -959,7 +960,10 @@ function fmtAccel(a: number): string {
       </div>
     </section>
 
-    <!-- ══ Methodology — collapsed by default ══════════════════════════════ -->
+    <!-- ══ Methodology — collapsed by default ══════════════════════════════
+         Kept current with the page. When you change a loader or chart in
+         Section 01-04, update the matching bullet here too.
+    ──────────────────────────────────────────────────────────────────────── -->
     <details class="tv2-method">
       <summary>
         <span class="tv2-method-summary-label">
@@ -969,17 +973,19 @@ function fmtAccel(a: number): string {
         <span class="tv2-method-summary-cue" aria-hidden="true">+</span>
       </summary>
       <ol class="tv2-method-list">
-        <li><strong>Subdirections</strong> — 方法族趨勢來自 <code>field-state-*.json</code> + <code>ai-field-state-*.json</code>（機械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)。</li>
-        <li><strong>Labs</strong> — 來自 <code>entity-index.json</code> 的 <code>type=lab</code> 實體，90 日滾動窗口。</li>
-        <li><strong>People</strong> — <code>vla-daily-rating-out-*.json</code> 第一作者抽取 + <code>entity-index.json</code> <code>type=researcher</code> 合併，機構經 <code>institution-registry.json</code> 解析。</li>
-        <li><strong>HR Queue</strong> — People 上加門檻：頂評 ≥ 🔧、90 日 ≥ 2 篇、機構可解析、聯繫狀態非 <em>not_linked</em>。</li>
-        <li><strong>Email 永不儲存或顯示</strong> — 僅 <code>contact_status</code> 枚舉：<em>linked_via_lab</em> / <em>social_mention</em> / <em>not_linked</em>。任何觸達前請自行核實。</li>
+        <li><strong>Section 01 · HR 候選人 (Scout)</strong> — 三層漏斗：<em>HOT</em> 通過完整門檻（頂評 ≥ 🔧、90 日 ≥ 2 篇、機構可解析、聯繫狀態非 <em>not_linked</em>）；<em>WARM</em> 缺一道門檻（新星型、產量未達、機構未確認）；<em>WATCH</em> 為單篇 ⚡ 異常爆點。每位候選人附 <em>方法標籤</em>（同 §4b 詞表）。</li>
+        <li><strong>Section 02 · 速度榜 (Subdirections)</strong> — 方法族趨勢來自 <code>field-state-*.json</code> + <code>ai-field-state-*.json</code>（機械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)；顯示時 ±500% 為上限以避開小樣本噪音。<em>新冒頭</em>欄目單獨展示 <em>insufficient_data</em>（前期樣本 = 0）的方向。</li>
+        <li><strong>Section 03 · 實驗室</strong> — 來自 <code>entity-index.json</code> 的 <code>type=lab</code> 實體，90 日滾動窗口；卡片含 14 日活躍走勢條。</li>
+        <li><strong>§4a · 實驗室聚類圖 (Lab Network)</strong> — 取信號數前 14 名實驗室，按主要方法錨向排列；兩個實驗室共享 ≥1 方法族 → 一條弧線，線寬隨共享數加粗。<em>連接最多實驗室的方法</em>（hub methods）= 當前人才戰場。</li>
+        <li><strong>§4b · 研究員 × 方法族圖譜 (Constellation)</strong> — <em>關鍵字詞表</em>比對：每個方法族維護一個短語清單（如 <em>flow_matching</em> 涵蓋「rectified flow」「flow policy」「mean flow」等同義詞）；任一短語出現於論文標題即計分；特定型方法族（Diffusion Policy 等）排序時優先於 catch-all 族（VLA Core / Manipulation）。<em>橋樑型</em>研究員（同時匹配兩個方法族）置於圓心方向。</li>
+        <li><strong>§4d · 全部已評級研究員</strong> — <code>vla-daily-rating-out-*.json</code> 第一作者抽取 + <code>entity-index.json</code> <code>type=researcher</code> 合併（機構經 <code>institution-registry.json</code> 解析）；保留 ⚡ 與 🔧 評級全集，按評級 → 篇數 → 姓名排序。<em>arXiv 僅曝光首位作者</em>，故無法重建合作者網絡 — §4a/§4b 已是現有資料下最強的關係視角。</li>
+        <li><strong>Email 永不儲存或顯示</strong> — 僅 <code>contact_status</code> 枚舉：<em>linked_via_lab</em> / <em>social_mention</em> / <em>not_linked</em>。型別層以 <code>email?: never</code> 強制；觸達前請自行核實。</li>
       </ol>
     </details>
 
     <p class="tv2-foot">
       Pipeline v6 · <span data-tc>資料截至</span><span data-sc>数据截至</span> <strong>{stats.dataAsOf}</strong>
-      · {stats.subdirectionCount} subdirections · {stats.labCount} labs · {stats.peopleCount} people · {stats.hrQueueCount} HR
+      · {stats.subdirectionCount} subdirections · {stats.labCount} labs · {stats.peopleCount} people · {stats.hrPoolCount} HR scouts
     </p>
   </main>
 
