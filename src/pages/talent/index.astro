@@ -21,6 +21,8 @@ import {
   loadPeople,
   loadHRScout,
   loadTalentStats,
+  loadResearcherConstellation,
+  loadWatchlist,
   slugifyName,
   topMethodsForEvidence,
 } from '../../utils/talent';
@@ -73,13 +75,37 @@ const featuredMethods = featuredHR
 // ── Labs showcase: 6 with non-zero recent OR top by 90d signals ─────────────
 const labsShowcase = allLabs.slice(0, 6);
 
-// ── Researcher watchlist: prefer ⚡ + linked, then top by paperCount ─────────
-const watchlistRaw = allPeople.filter(p =>
-  p.topRating === '⚡' && p.contactStatus !== 'not_linked');
-const watchlist = (watchlistRaw.length >= 6
-  ? watchlistRaw
-  : [...watchlistRaw, ...allPeople.filter(p => !watchlistRaw.includes(p) && p.contactStatus !== 'not_linked')]
-).slice(0, 6);
+// ── Researcher constellation + full watchlist ───────────────────────────────
+// The constellation is the *relational view* — rated researchers anchored to
+// the method families they publish in. The watchlist grid below shows the
+// full rated pool (≥🔧, ≥1 paper) so readers can drill down from the chart.
+const constellation = loadResearcherConstellation();
+const watchlist     = loadWatchlist();
+
+// Lookup table so the SVG can show affiliation in the tooltip
+const methodIndex = new Map(constellation.methods.map(m => [m.family, m]));
+
+// Method-family stats for the legend cards below the chart
+const methodLegend = constellation.methods.map(m => {
+  const people = constellation.people.filter(pp => pp.primaryFamily === m.family);
+  const sparkRatings = people.map(pp => pp.topRating);
+  return {
+    family:       m.family,
+    displayName:  m.displayName,
+    domain:       m.domain,
+    total:        m.count,
+    rated:        people.length,
+    flashes:      sparkRatings.filter(r => r === '⚡').length,
+    polish:       sparkRatings.filter(r => r === '🔧').length,
+  };
+});
+
+// Bridge researchers list — the most actionable signal from the chart
+const bridgePeople = constellation.people
+  .filter(pp => pp.secondaryFamily !== null)
+  .sort((a, b) =>
+    (a.topRating === '⚡' ? 0 : 1) - (b.topRating === '⚡' ? 0 : 1) ||
+    b.paperCount90d - a.paperCount90d);
 
 // ── Freshness ──────────────────────────────────────────────────────────────
 const dataDate = Date.parse(stats.dataAsOf + 'T00:00:00Z');
@@ -574,7 +600,13 @@ function fmtAccel(a: number): string {
       </div>
     </section>
 
-    <!-- ══ Section 04 · WATCHLIST ══════════════════════════════════════════ -->
+    <!-- ══ Section 04 · WATCHLIST ══════════════════════════════════════════
+         Two-part design:
+           4a · Researcher × Method constellation (relational chart — shows
+                clustering, sparse methods, bridge polymaths)
+           4b · Dense grid of every rated researcher (the full pool)
+         The chart answers "who's near whom"; the grid answers "who exactly".
+    ──────────────────────────────────────────────────────────────────────── -->
     <section class="tv2-section">
       <header class="tv2-section-header">
         <div class="tv2-section-titlewrap">
@@ -583,7 +615,7 @@ function fmtAccel(a: number): string {
             <span data-tc>研究員觀察名單</span>
             <span data-sc>研究员观察名单</span>
           </h2>
-          <span class="tv2-section-en">/ Watchlist</span>
+          <span class="tv2-section-en">/ Watchlist · {watchlist.length}</span>
         </div>
         <a class="tv2-more" href={`${base}/talent/people/`}>
           <span data-tc>全部 {stats.peopleCount} →</span>
@@ -591,9 +623,194 @@ function fmtAccel(a: number): string {
         </a>
       </header>
       <p class="tv2-section-lede">
-        <span data-tc>優先列出 <strong>⚡-評級</strong> 且機構已關聯或有社交提及的研究員。</span>
-        <span data-sc>优先列出 <strong>⚡-评级</strong> 且机构已关联或有社交提及的研究员。</span>
+        <span data-tc>把 <strong>{constellation.totals.researchers}</strong> 位被評級的研究員按方法族錨定。靠近哪個方法 = 他主要寫什麼。圓心方向 = 同時在兩個方法上發過論文的「橋樑型」<strong>{constellation.totals.bridges}</strong> 位。</span>
+        <span data-sc>把 <strong>{constellation.totals.researchers}</strong> 位被评级的研究员按方法族锚定。靠近哪个方法 = 他主要写什么。圆心方向 = 同时在两个方法上发过论文的「桥梁型」<strong>{constellation.totals.bridges}</strong> 位。</span>
       </p>
+
+      {/* ── 4a · Constellation SVG ─────────────────────────────────────── */}
+      <figure class="tv2-const">
+        <svg
+          class="tv2-const-svg"
+          viewBox={`0 0 ${constellation.width} ${constellation.height}`}
+          role="img"
+          aria-label="Researcher × method-family constellation"
+        >
+          {/* faint anchor ring */}
+          <circle
+            cx={constellation.centerX} cy={constellation.centerY}
+            r={constellation.methodRadius}
+            fill="none"
+            stroke="var(--border)"
+            stroke-dasharray="2 4"
+            stroke-width="1"
+            opacity="0.55"
+          />
+          {/* center bullseye reminding readers the middle = polymath zone */}
+          <circle
+            cx={constellation.centerX} cy={constellation.centerY}
+            r="58"
+            fill="none"
+            stroke="var(--accent-cyan)"
+            stroke-dasharray="3 5"
+            stroke-width="1"
+            opacity="0.35"
+          />
+          <text
+            x={constellation.centerX}
+            y={constellation.centerY - 64}
+            class="tv2-const-bridgehint"
+            text-anchor="middle"
+          >POLYMATH ZONE</text>
+
+          {/* radial spokes from center to each method anchor */}
+          {constellation.methods.map(m => (
+            <line
+              x1={constellation.centerX} y1={constellation.centerY}
+              x2={m.cx} y2={m.cy}
+              stroke="var(--border)" stroke-width="1" opacity="0.4"
+            />
+          ))}
+
+          {/* method anchor nodes */}
+          {constellation.methods.map(m => (
+            <g class="tv2-const-method">
+              <circle
+                cx={m.cx} cy={m.cy}
+                r={Math.min(28, 12 + m.count * 1.8)}
+                fill={m.domain === 'vla' ? 'var(--accent-amber-bg, rgba(212,145,10,0.18))' : 'rgba(15,143,160,0.18)'}
+                stroke={m.domain === 'vla' ? 'var(--accent-amber)' : 'var(--accent-cyan)'}
+                stroke-width="1.5"
+              />
+              <text
+                x={m.cx} y={m.cy + 4}
+                text-anchor="middle"
+                class="tv2-const-method-count"
+              >{m.count}</text>
+              <text
+                x={m.labelX} y={m.labelY}
+                text-anchor="middle"
+                class="tv2-const-method-label"
+              >{m.displayName}</text>
+            </g>
+          ))}
+
+          {/* researcher dots */}
+          {constellation.people.map(pp => {
+            const method = methodIndex.get(pp.primaryFamily);
+            const isFlash = pp.topRating === '⚡';
+            const isBridge = pp.secondaryFamily !== null;
+            const fill = isFlash
+              ? 'var(--accent-amber, #d4910a)'
+              : 'var(--accent-cyan, #0f8fa0)';
+            const aff = pp.affiliation ?? 'unaffiliated';
+            const second = pp.secondaryFamily
+              ? ` · bridges ${methodIndex.get(pp.secondaryFamily)?.displayName ?? pp.secondaryFamily}`
+              : '';
+            return (
+              <a href={`${base}/talent/people/#person-${pp.slug}`} class="tv2-const-dot-link">
+                {/* thin line from researcher to its primary method */}
+                {method && (
+                  <line
+                    x1={pp.x} y1={pp.y}
+                    x2={method.cx} y2={method.cy}
+                    stroke={fill}
+                    stroke-width="0.5"
+                    opacity={isBridge ? 0.5 : 0.22}
+                    stroke-dasharray={isBridge ? '3 3' : ''}
+                  />
+                )}
+                <circle
+                  cx={pp.x} cy={pp.y}
+                  r={isFlash ? 5 : 4}
+                  fill={fill}
+                  stroke="var(--surface)"
+                  stroke-width={isBridge ? 1.5 : 1}
+                  class={`tv2-const-dot ${isBridge ? 'tv2-const-dot--bridge' : ''}`}
+                />
+                <title>{pp.topRating} {pp.name} · {aff}{second}</title>
+              </a>
+            );
+          })}
+        </svg>
+
+        <figcaption class="tv2-const-caption">
+          <span class="tv2-const-legend">
+            <span class="tv2-const-leg-dot" style="background:var(--accent-amber)"></span>
+            <span data-tc>⚡ 評級</span><span data-sc>⚡ 评级</span>
+            <span class="tv2-const-leg-dot" style="background:var(--accent-cyan); margin-left:1.2rem"></span>
+            <span data-tc>🔧 評級</span><span data-sc>🔧 评级</span>
+            <span class="tv2-const-leg-dot tv2-const-leg-bridge" style="margin-left:1.2rem"></span>
+            <span data-tc>橋樑（雙方法）</span><span data-sc>桥梁（双方法）</span>
+          </span>
+          <span class="tv2-const-coverage">
+            {constellation.totals.familiesShown} <span data-tc>方法族</span><span data-sc>方法族</span>
+            · {constellation.totals.researchers} <span data-tc>已上圖</span><span data-sc>已上图</span>
+            · {constellation.totals.unmatched} <span data-tc>無法歸類</span><span data-sc>无法归类</span>
+          </span>
+        </figcaption>
+      </figure>
+
+      {/* ── Method legend cards — clickable to filter the grid below ─── */}
+      <div class="tv2-const-methodbar">
+        {methodLegend.map(m => (
+          <a
+            href={`#watchlist-grid`}
+            class={`tv2-const-methodchip tv2-const-methodchip--${m.domain}`}
+            data-family={m.family}
+          >
+            <span class="tv2-const-methodchip-name">{m.displayName}</span>
+            <span class="tv2-const-methodchip-stats">
+              <span class="tv2-const-methodchip-count">{m.rated}</span>
+              {m.flashes > 0 && <span class="tv2-const-methodchip-flash">⚡{m.flashes}</span>}
+              {m.polish  > 0 && <span class="tv2-const-methodchip-polish">🔧{m.polish}</span>}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      {/* ── 4a-2 · Bridge researchers callout (the actionable polymath list) */}
+      {bridgePeople.length > 0 && (
+        <div class="tv2-bridges">
+          <div class="tv2-bridges-header">
+            <span class="tv2-bridges-label">
+              <span data-tc>橋樑型研究員</span>
+              <span data-sc>桥梁型研究员</span>
+              <span class="tv2-bridges-en">· POLYMATHS · cross-method authors</span>
+            </span>
+            <span class="tv2-bridges-hint">
+              <span data-tc>同時在兩個方法族上發過論文 — 通常最值得首先約訪</span>
+              <span data-sc>同时在两个方法族上发过论文 — 通常最值得首先约访</span>
+            </span>
+          </div>
+          <ul class="tv2-bridges-list">
+            {bridgePeople.slice(0, 12).map(pp => {
+              const primary = methodIndex.get(pp.primaryFamily)?.displayName ?? pp.primaryFamily;
+              const second  = pp.secondaryFamily ? (methodIndex.get(pp.secondaryFamily)?.displayName ?? pp.secondaryFamily) : '';
+              return (
+                <li>
+                  <a href={`${base}/talent/people/#person-${pp.slug}`}>
+                    <span class={`tv2-bridges-rating tv2-bridges-rating--${pp.topRating === '⚡' ? 'flash' : 'polish'}`}>{pp.topRating}</span>
+                    <span class="tv2-bridges-name">{pp.name}</span>
+                    <span class="tv2-bridges-aff">{pp.affiliation ?? '—'}</span>
+                    <span class="tv2-bridges-arc">
+                      <span class="tv2-bridges-arc-a">{primary}</span>
+                      <span class="tv2-bridges-arc-link">↔</span>
+                      <span class="tv2-bridges-arc-b">{second}</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {/* ── 4b · Full rated grid ──────────────────────────────────────── */}
+      <h3 id="watchlist-grid" class="tv2-const-gridtitle">
+        <span data-tc>全部已評級研究員</span>
+        <span data-sc>全部已评级研究员</span>
+        <span class="tv2-const-gridtitle-en">· {watchlist.length} researchers · ⚡ {watchlist.filter(p => p.topRating === '⚡').length} · 🔧 {watchlist.filter(p => p.topRating === '🔧').length}</span>
+      </h3>
       <div class="picks-grid">
         {watchlist.map(p => <PersonCard record={p} />)}
       </div>
@@ -1459,6 +1676,265 @@ function fmtAccel(a: number): string {
       .tv2-hr-featured-body { padding: 1rem 1.15rem; }
       .tv2-hr-featured-title h3 { font-size: 1.4rem; }
       .tv2-hr-featured-stats { gap: 1.25rem; }
+    }
+
+    /* ─── Section 04 · Researcher Constellation ─────────────────────── */
+    .tv2-const {
+      margin: 1rem 0 1.25rem;
+      padding: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .tv2-const-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      background:
+        radial-gradient(ellipse at center, color-mix(in srgb, var(--accent-cyan) 4%, transparent) 0%, transparent 65%),
+        var(--surface);
+    }
+    .tv2-const-bridgehint {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      fill: var(--accent-cyan);
+      opacity: 0.6;
+    }
+    .tv2-const-method-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      fill: var(--text-primary);
+    }
+    .tv2-const-method-label {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--text-primary);
+    }
+    .tv2-const-dot {
+      transition: r 0.15s ease, stroke-width 0.15s ease;
+      cursor: pointer;
+    }
+    .tv2-const-dot-link:hover .tv2-const-dot {
+      r: 7;
+      stroke-width: 2;
+    }
+    .tv2-const-dot--bridge {
+      filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent-cyan) 60%, transparent));
+    }
+    .tv2-const-caption {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--surface-2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+    .tv2-const-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .tv2-const-leg-dot {
+      display: inline-block;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+    }
+    .tv2-const-leg-bridge {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 6px color-mix(in srgb, var(--accent-cyan) 80%, transparent);
+    }
+    .tv2-const-coverage {
+      color: var(--text-tertiary);
+      letter-spacing: 0.04em;
+    }
+
+    .tv2-const-methodbar {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.5rem;
+      margin: 0 0 1.25rem;
+    }
+    .tv2-const-methodchip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.55rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--text-tertiary);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .tv2-const-methodchip:hover {
+      background: var(--surface-2);
+    }
+    .tv2-const-methodchip--vla { border-left-color: var(--accent-amber); }
+    .tv2-const-methodchip--ai  { border-left-color: var(--accent-cyan); }
+    .tv2-const-methodchip-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tv2-const-methodchip-stats {
+      display: inline-flex;
+      gap: 0.45rem;
+      align-items: baseline;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .tv2-const-methodchip-count {
+      color: var(--text-tertiary);
+      font-weight: 700;
+    }
+    .tv2-const-methodchip-flash  { color: var(--accent-amber); font-weight: 700; }
+    .tv2-const-methodchip-polish { color: var(--accent-cyan);  font-weight: 700; }
+
+    .tv2-bridges {
+      margin: 0 0 1.5rem;
+      padding: 0.85rem 1rem 1rem;
+      background: color-mix(in srgb, var(--accent-cyan) 5%, var(--surface));
+      border: 1px solid color-mix(in srgb, var(--accent-cyan) 30%, var(--border));
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 8px;
+    }
+    .tv2-bridges-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.65rem 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .tv2-bridges-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+    }
+    .tv2-bridges-en {
+      color: var(--text-tertiary);
+      font-weight: 400;
+      margin-left: 0.3rem;
+    }
+    .tv2-bridges-hint {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    .tv2-bridges-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem 1rem;
+    }
+    .tv2-bridges-list li a {
+      display: grid;
+      grid-template-columns: 22px 1fr 1.2fr;
+      gap: 0.55rem;
+      align-items: center;
+      padding: 0.45rem 0.55rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      border-radius: 4px;
+      border-bottom: 1px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .tv2-bridges-list li a:hover {
+      background: var(--surface);
+      border-bottom-color: var(--accent-cyan);
+    }
+    .tv2-bridges-rating {
+      font-size: 0.95rem;
+      text-align: center;
+      line-height: 1;
+    }
+    .tv2-bridges-rating--flash  { filter: drop-shadow(0 0 2px var(--accent-amber)); }
+    .tv2-bridges-rating--polish { opacity: 0.85; }
+    .tv2-bridges-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 0.92rem;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tv2-bridges-aff {
+      grid-column: 2 / -1;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem;
+      color: var(--accent-amber);
+      letter-spacing: 0.04em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      grid-row: 2;
+    }
+    .tv2-bridges-arc {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem;
+      color: var(--text-secondary);
+      grid-row: 1;
+      grid-column: 3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tv2-bridges-arc-link {
+      color: var(--accent-cyan);
+      font-weight: 700;
+      padding: 0 0.15rem;
+    }
+
+    .tv2-const-gridtitle {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.85rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .tv2-const-gridtitle-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 700px) {
+      .tv2-const-method-label  { font-size: 11px; }
+      .tv2-const-method-count  { font-size: 10px; }
+      .tv2-const-bridgehint    { display: none; }
+      .tv2-bridges-list        { grid-template-columns: 1fr; }
+      .tv2-bridges-list li a   { grid-template-columns: 22px 1fr; }
+      .tv2-bridges-arc         { grid-column: 1 / -1; grid-row: 2; }
+      .tv2-bridges-aff         { grid-row: 3; }
     }
   </style>
 </BaseLayout>

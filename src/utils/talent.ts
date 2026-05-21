@@ -806,6 +806,251 @@ export function loadHRQueue(opts: Partial<HRGateCriteria> = {}): HRCandidate[] {
 }
 
 // ---------------------------------------------------------------------------
+// Researcher Constellation
+//
+// A bipartite layout: rated researchers (⚡/🔧) anchored around the method
+// families they publish in. Reveals three things a flat list can't:
+//   1. method concentration — which families have crowded talent pools
+//   2. bridge researchers   — people working across two methods (placed inward)
+//   3. starved methods       — families with few/no rated authors
+//
+// arXiv truncates author lists to "First et al." so we never see co-authors;
+// a real person↔person network is impossible from this corpus. The
+// person↔method bipartite is the strongest relational view we can offer.
+// ---------------------------------------------------------------------------
+
+export interface ConstellationMethod {
+  family:      string;
+  displayName: string;
+  domain:      'vla' | 'ai';
+  angle:       number;   // radians
+  count:       number;
+  cx:          number;
+  cy:          number;
+  // label position pushed slightly outward from the anchor
+  labelX:      number;
+  labelY:      number;
+}
+
+export interface ConstellationPerson {
+  name:           string;
+  slug:           string;
+  affiliation:    string | null;
+  topRating:      string;
+  contactStatus:  ContactStatus;
+  paperCount90d:  number;
+  primaryFamily:  string;
+  secondaryFamily: string | null;
+  x:              number;
+  y:              number;
+}
+
+export interface ResearcherConstellation {
+  width:   number;
+  height:  number;
+  centerX: number;
+  centerY: number;
+  methodRadius: number;
+  methods: ConstellationMethod[];
+  people:  ConstellationPerson[];
+  totals:  { researchers: number; familiesShown: number; bridges: number; unmatched: number };
+}
+
+export function loadResearcherConstellation(): ResearcherConstellation {
+  const W = 900, H = 580;
+  const cx = W / 2;
+  const cy = H / 2 + 4;
+  const methodR = 188;
+  const personRBase = 240;
+
+  // Rated researchers (we want signal, not noise)
+  const rated = loadPeople({ minPaperCount90d: 1 })
+    .filter(p => p.topRating === '⚡' || p.topRating === '🔧');
+
+  // For each rated researcher, derive method-family hits from evidence titles.
+  // Use the same token-match rule as topMethodsForEvidence so the constellation
+  // is consistent with the method tags shown on cards.
+  type Ranked = Array<[string, number]>;
+  const matched: Array<{ p: PersonRecord; ranked: Ranked; majorityDomain: 'vla' | 'ai' }> = [];
+  const familyHits = new Map<string, { count: number; vla: number; ai: number }>();
+  let unmatched = 0;
+
+  for (const p of rated) {
+    const hits: Record<string, number> = {};
+    let vla = 0, ai = 0;
+    for (const e of p.evidence) {
+      const title = (e.title ?? '').toLowerCase();
+      if (e.domain === 'vla') vla++;
+      else if (e.domain === 'ai') ai++;
+      for (const family of Object.keys(METHOD_FAMILY_LABELS)) {
+        const toks = family.split('_').filter(s => s.length >= 3);
+        if (toks.length > 0 && toks.every(t => title.includes(t))) {
+          hits[family] = (hits[family] ?? 0) + 1;
+          break;
+        }
+      }
+    }
+    const ranked: Ranked = Object.entries(hits).sort((a, b) => b[1] - a[1]);
+    if (ranked.length === 0) { unmatched++; continue; }
+    const majorityDomain: 'vla' | 'ai' = vla >= ai ? 'vla' : 'ai';
+    matched.push({ p, ranked, majorityDomain });
+    for (const [f] of ranked) {
+      if (!familyHits.has(f)) familyHits.set(f, { count: 0, vla: 0, ai: 0 });
+      const fh = familyHits.get(f)!;
+      fh.count++;
+      if (majorityDomain === 'vla') fh.vla++; else fh.ai++;
+    }
+  }
+
+  // Keep families with ≥ 2 researchers; cap at 8 to avoid overcrowding.
+  // The remainder of matched researchers (mapped only to dropped families)
+  // are accounted as "unmatched" so callers can report total coverage.
+  const topFamilyKeys = [...familyHits.entries()]
+    .filter(([, v]) => v.count >= 2)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 8)
+    .map(([f]) => f);
+
+  // Even angular distribution; start at -π/2 (12 o'clock) and walk clockwise.
+  const familyAngle: Record<string, number> = {};
+  const N = topFamilyKeys.length || 1;
+  topFamilyKeys.forEach((f, i) => {
+    familyAngle[f] = -Math.PI / 2 + (i / N) * Math.PI * 2;
+  });
+
+  const methods: ConstellationMethod[] = topFamilyKeys.map(f => {
+    const a = familyAngle[f];
+    const v = familyHits.get(f)!;
+    return {
+      family:      f,
+      displayName: familyDisplay(f),
+      domain:      v.vla >= v.ai ? 'vla' : 'ai',
+      angle:       a,
+      count:       v.count,
+      cx:          cx + Math.cos(a) * methodR,
+      cy:          cy + Math.sin(a) * methodR,
+      labelX:      cx + Math.cos(a) * (methodR + 42),
+      labelY:      cy + Math.sin(a) * (methodR + 42),
+    };
+  });
+
+  // Bucket matched researchers by their primary KEPT family.
+  // A researcher whose top family was dropped gets demoted to their secondary
+  // (if it's kept); otherwise they fall out of the constellation.
+  type Bucket = { p: PersonRecord; secondary: string | null };
+  const peoplePerFamily = new Map<string, Bucket[]>();
+  for (const { p, ranked } of matched) {
+    const kept = ranked.filter(([f]) => familyAngle[f] !== undefined);
+    if (kept.length === 0) { unmatched++; continue; }
+    const primary   = kept[0][0];
+    const secondary = kept[1]?.[0] ?? null;
+    if (!peoplePerFamily.has(primary)) peoplePerFamily.set(primary, []);
+    peoplePerFamily.get(primary)!.push({ p, secondary });
+  }
+
+  // Layout: per family, sort by rating (⚡ first), then by paperCount desc.
+  // Non-bridges fan out evenly within a ±halfSpread arc centered on the
+  // family anchor. Bridges (have valid secondary) get pulled inward and
+  // angled 35% of the way toward their secondary — they sit visually between
+  // two anchors so the eye reads them as polymaths.
+  const halfSpread = Math.min(0.38, (Math.PI / Math.max(N, 2)) * 0.78);
+  const peopleArr: ConstellationPerson[] = [];
+  let bridges = 0;
+
+  const rOrder = (r: string) => (r === '⚡' ? 0 : r === '🔧' ? 1 : 2);
+
+  for (const family of topFamilyKeys) {
+    const group = peoplePerFamily.get(family) ?? [];
+    group.sort((a, b) =>
+      rOrder(a.p.topRating) - rOrder(b.p.topRating) ||
+      b.p.paperCount90d - a.p.paperCount90d ||
+      a.p.name.localeCompare(b.p.name));
+
+    const nonBridges = group.filter(g => !g.secondary);
+    const bridgeSet  = group.filter(g => g.secondary);
+    const familyAng  = familyAngle[family];
+
+    // Place non-bridges along the outer arc
+    const n = nonBridges.length;
+    nonBridges.forEach((entry, i) => {
+      // Map index 0..n-1 to t in [-1, +1] (symmetric fan)
+      const t = n === 1 ? 0 : (i / (n - 1) - 0.5) * 2;
+      const a = familyAng + t * halfSpread;
+      // Stagger radius slightly so dots in adjacent slots don't collide
+      const r = personRBase + (i % 3) * 14;
+      peopleArr.push({
+        name:           entry.p.name,
+        slug:           slugifyName(entry.p.name),
+        affiliation:    entry.p.affiliation,
+        topRating:      entry.p.topRating,
+        contactStatus:  entry.p.contactStatus,
+        paperCount90d:  entry.p.paperCount90d,
+        primaryFamily:  family,
+        secondaryFamily: null,
+        x: cx + Math.cos(a) * r,
+        y: cy + Math.sin(a) * r,
+      });
+    });
+
+    // Place bridges inward, between primary and secondary anchor angles
+    bridgeSet.forEach(entry => {
+      const sa = familyAngle[entry.secondary!];
+      let delta = sa - familyAng;
+      if (delta > Math.PI)  delta -= Math.PI * 2;
+      if (delta < -Math.PI) delta += Math.PI * 2;
+      const a = familyAng + delta * 0.35;
+      const r = personRBase - 70; // inward — visually distinct from rim
+      bridges++;
+      peopleArr.push({
+        name:           entry.p.name,
+        slug:           slugifyName(entry.p.name),
+        affiliation:    entry.p.affiliation,
+        topRating:      entry.p.topRating,
+        contactStatus:  entry.p.contactStatus,
+        paperCount90d:  entry.p.paperCount90d,
+        primaryFamily:  family,
+        secondaryFamily: entry.secondary,
+        x: cx + Math.cos(a) * r,
+        y: cy + Math.sin(a) * r,
+      });
+    });
+  }
+
+  return {
+    width:        W,
+    height:       H,
+    centerX:      cx,
+    centerY:      cy,
+    methodRadius: methodR,
+    methods,
+    people:       peopleArr,
+    totals: {
+      researchers:   peopleArr.length,
+      familiesShown: methods.length,
+      bridges,
+      unmatched,
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Watchlist — full rated population for Section 04 grid.
+// Returns ALL rated researchers (⚡ or 🔧 + ≥1 paper) sorted by rating then
+// recency. This is the dense list that lives below the constellation; we no
+// longer cap at 6 — readers should see the whole talent pool.
+// ---------------------------------------------------------------------------
+
+export function loadWatchlist(): PersonRecord[] {
+  const ppl = loadPeople({ minPaperCount90d: 1 })
+    .filter(p => p.topRating === '⚡' || p.topRating === '🔧');
+  const rOrder = (r: string) => (r === '⚡' ? 0 : r === '🔧' ? 1 : 2);
+  return ppl.sort((a, b) =>
+    rOrder(a.topRating) - rOrder(b.topRating) ||
+    b.paperCount90d - a.paperCount90d ||
+    a.name.localeCompare(b.name));
+}
+
+// ---------------------------------------------------------------------------
 // Talent stats — small overview for /talent hub
 // ---------------------------------------------------------------------------
 
