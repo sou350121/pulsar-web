@@ -1,0 +1,1571 @@
+{
+  "date": "2026-05-22",
+  "generated_at": "2026-05-22T11:02:31",
+  "total_signals": 0,
+  "vla_signals": 0,
+  "ai_signals": 0,
+  "assumptions_count": 20,
+  "status_summary": {
+    "untested": 2,
+    "stable": 2,
+    "watch": 15,
+    "confirmed": 1
+  },
+  "assumptions": [
+    {
+      "id": "T-003",
+      "domain": "system",
+      "hypothesis": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling.",
+      "status": "untested",
+      "confidence": 0.71,
+      "confidence_delta": 0.0,
+      "new_confidence": 0.71,
+      "signal_count": 0,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "T-004",
+      "domain": "system",
+      "hypothesis": "Key claims in daily outputs should be grounded in primary sources (official blog / GitHub release / docs).",
+      "status": "stable",
+      "confidence": 0.71,
+      "confidence_delta": 0.0,
+      "new_confidence": 0.71,
+      "signal_count": 3,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "HalluWorld: A Controlled Benchmark for Hallucination via Reference World Models",
+            "url": "https://arxiv.org/abs/2605.19341",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "hallucination"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: T-004",
+            "title": "Do No Harm? Hallucination and Actor-Level Abuse in Web-Deployed Medical Large Language Models",
+            "url": "https://arxiv.org/abs/2605.20591",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "hallucination"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: T-004",
+            "title": "ACL-Verbatim: hallucination-free question answering for research",
+            "url": "https://arxiv.org/abs/2605.21102",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "hallucination"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-001",
+      "domain": "vla",
+      "hypothesis": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA action head paradigm for top-venue papers through 2026. Autoregressive tokenized-...",
+      "status": "watch",
+      "confidence": 0.76,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.73,
+      "signal_count": 12,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Mobile UMI: Cross-View Diffusion Policy with Decoupled Kinematics for Mobile Manipulation",
+            "url": "https://arxiv.org/abs/2605.20894",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "diffusion policy"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "FocalPolicy: Frequency-Optimized Chunking and Locally Anchored Flow Matching for Coherent Visuomotor Policy",
+            "url": "https://arxiv.org/abs/2605.15944",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "flow matching"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Daily Hotspots",
+            "title": "Epistemic Uncertainty Quantification for Pre-trained VLMs via Riemannian Flow Matching",
+            "url": "https://arxiv.org/abs/2601.21662",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "flow matching"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-002",
+      "domain": "vla",
+      "hypothesis": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation pipelines by end of 2026. Tasks like peg-in-hole, cable routing, deformable objec...",
+      "status": "watch",
+      "confidence": 0.64,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.61,
+      "signal_count": 10,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "method_decline:moderate (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "VBT-MPC: Vision-Based Tactile MPC for Contour Following",
+            "url": "https://arxiv.org/abs/2605.20392",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "tactile"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Bioinspired ionic thermoreceptors with anisotropic architecture for thermotactile perception in robots",
+            "url": "https://www.science.org/doi/abs/10.1126/sciadv.aed5473?af=R",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "tactile"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Spacetime Optimal-Transport Attention for Visuo-Haptic Imitation Learning of Contact-Rich Manipulation",
+            "url": "https://arxiv.org/abs/2605.20433",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "haptic"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-003",
+      "domain": "vla",
+      "hypothesis": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA contact-rich manipulation training. Real-robot-only labs will face a data bottlene...",
+      "status": "watch",
+      "confidence": 0.72,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.69,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA Daily Hotspots",
+            "title": "Mind the Sim-to-Real Gap & Think Like a Scientist",
+            "url": "https://arxiv.org/abs/2605.21458",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "sim-to-real"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Release Tracker",
+            "title": "Release: google-deepmind/mujoco @ 3.8.1",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "mujoco"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-003",
+            "title": "Domain-Adaptive Communication-Rate Optimization for Sim-to-Real Humanoid-Robot Wireless XR Teleoperation",
+            "url": "https://arxiv.org/abs/2605.19293",
+            "summary": "arXiv:2605.19293v1 Announce Type: cross Abstract: Wireless extended reality (XR) teleoperation provides embodied interaction capability for collecting humanoid robot demonstrations, but the large-scal"
+          },
+          "matched_keywords": [
+            "sim-to-real"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-004",
+      "domain": "vla",
+      "hypothesis": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA control in structured factory/warehouse environments by end of 2026: >4h continuous ...",
+      "status": "watch",
+      "confidence": 0.53,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.5,
+      "signal_count": 8,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Lost in Fog: Sensor Perturbations Expose Reasoning Fragility in Driving VLAs",
+            "url": "https://arxiv.org/abs/2605.21446",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "agility"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Social Intel",
+            "title": "特斯拉 (Tesla) / Elon Musk",
+            "url": "http://k.sina.com.cn/article_5953189932_162d6782c06704b51a.html",
+            "summary": "5月21日正式宣布关闭弗里蒙特工厂经典车型（Model S/X Signature Edition）产线，将制造资源与产能全面转向人形机器人赛道，VP陶琳与Elon Musk共同出席宣布。"
+          },
+          "matched_keywords": [
+            "人形机器人"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-003",
+            "title": "Domain-Adaptive Communication-Rate Optimization for Sim-to-Real Humanoid-Robot Wireless XR Teleoperation",
+            "url": "https://arxiv.org/abs/2605.19293",
+            "summary": "arXiv:2605.19293v1 Announce Type: cross Abstract: Wireless extended reality (XR) teleoperation provides embodied interaction capability for collecting humanoid robot demonstrations, but the large-scal"
+          },
+          "matched_keywords": [
+            "humanoid robot"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-005",
+      "domain": "vla",
+      "hypothesis": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm by mid-2026, showing >15% improvement in out-of-distribution success rate over b...",
+      "status": "watch",
+      "confidence": 0.67,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.64,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "V-006",
+      "domain": "vla",
+      "hypothesis": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planning components in VLA by end of 2026, placing world-model-first architectures in ...",
+      "status": "watch",
+      "confidence": 0.58,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.55,
+      "signal_count": 4,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA Social Intel",
+            "title": "智平方AI²机器人 (Zhipingfang)",
+            "url": "",
+            "summary": "5月20日发布《VLA过时吗？2026回应》技术澄清，正式将VLA范式升级为融合世界模型与类脑智能的开放框架，反驳行业关于VLA过时的论调。"
+          },
+          "matched_keywords": [
+            "世界模型"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-006",
+            "title": "Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model",
+            "url": "https://arxiv.org/abs/2604.23532",
+            "summary": "arXiv:2604.23532v1 Announce Type: cross Abstract: Short-term human pose prediction plays a crucial role in interactive systems, assistive robots, and emotion-aware human-computer interaction[1-3]. Whi"
+          },
+          "matched_keywords": [
+            "predictive world model"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-006",
+            "title": "Strengthening Generative Robot Policies through Predictive World Modeling",
+            "url": "https://arxiv.org/abs/2502.00622",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "predictive world model"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-007",
+      "domain": "vla",
+      "hypothesis": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method for contact-rich dexterous manipulation through 2026. Internet-video pretraining w...",
+      "status": "watch",
+      "confidence": 0.75,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.72,
+      "signal_count": 10,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Mobile UMI: Cross-View Diffusion Policy with Decoupled Kinematics for Mobile Manipulation",
+            "url": "https://arxiv.org/abs/2605.20894",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "umi"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "COBALT: Crowdsourcing Robot Learning via Cloud-Based Teleoperation with Smartphones",
+            "url": "https://arxiv.org/abs/2605.19138",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "teleoperation"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-002",
+            "title": "Soft tactile chip with in-situ sensing for haptic rendering and reverse feedback enhanced gross to fine teleoperation",
+            "url": "https://www.nature.com/articles/s41467-026-73000-8",
+            "summary": "Nature Communications, Published online: 11 May 2026; doi:10.1038/s41467-026-73000-8 Soft tactile chips embed in-situ sensing in pneumatic actuators, improving teleoperation via adaptive haptic feedba"
+          },
+          "matched_keywords": [
+            "teleoperation"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-008",
+      "domain": "vla",
+      "hypothesis": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-month lag of closed-source frontier (pi.ai, Google RT, NVIDIA), keeping research co...",
+      "status": "watch",
+      "confidence": 0.66,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.63,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA Release Tracker",
+            "title": "Release: huggingface/lerobot @ v0.5.1",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "lerobot"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Release Tracker",
+            "title": "Release: octo-models/octo @ v1.5",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "octo"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-008",
+            "title": "Octopus Protocol: One-Shot Hardware Discovery and Control for AI Agents via Infrastructure-as-Prompts",
+            "url": "https://arxiv.org/abs/2605.09055",
+            "summary": "arXiv:2605.09055v1 Announce Type: new Abstract: Recent agentic-robotics systems, from Code-asPolicies to modern vision-language-action (VLA) foundation models, presuppose that drivers, SDKs, or ROS-st"
+          },
+          "matched_keywords": [
+            "octo"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-009",
+      "domain": "vla",
+      "hypothesis": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) will not generalize beyond 50% to a significantly different morphology (bimanual,...",
+      "status": "watch",
+      "confidence": 0.77,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.74,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: V-009",
+            "title": "RIO: Flexible Real-Time Robot I/O for Cross-Embodiment Robot Learning",
+            "url": "https://arxiv.org/abs/2605.11564",
+            "summary": "arXiv:2605.11564v1 Announce Type: new Abstract: Despite recent efforts to collect multi-task, multi-embodiment datasets, to design recipes for training Vision-Language-Action models (VLAs), and to sho"
+          },
+          "matched_keywords": [
+            "cross-embodiment"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-009",
+            "title": "Bridging the Embodiment Gap: Disentangled Cross-Embodiment Video Editing",
+            "url": "https://arxiv.org/abs/2605.03637",
+            "summary": "arXiv:2605.03637v1 Announce Type: new Abstract: Learning robotic manipulation from human videos is a promising solution to the data bottleneck in robotics, but the distribution shift between humans an"
+          },
+          "matched_keywords": [
+            "cross-embodiment"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-009",
+            "title": "Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems",
+            "url": "https://arxiv.org/abs/2604.21138",
+            "summary": "arXiv:2604.21138v1 Announce Type: new Abstract: Multi-robot control in cluttered environments is a challenging problem that involves complex physical constraints, including robot-robot collisions, rob"
+          },
+          "matched_keywords": [
+            "multi-robot"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-010",
+      "domain": "vla",
+      "hypothesis": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for fine manipulation VLA by mid-2026. Pure 2D RGB-only representations will platea...",
+      "status": "watch",
+      "confidence": 0.59,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.56,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "A-001",
+      "domain": "ai_agent",
+      "hypothesis": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration, with major IDEs/platforms providing native support by end of 2026.",
+      "status": "confirmed",
+      "confidence": 0.77,
+      "confidence_delta": 0.05,
+      "new_confidence": 0.82,
+      "signal_count": 5,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents",
+            "url": "https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "tool use"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App Daily Report",
+            "title": "Weaviate MCP Server：为 Claude Code/Cursor 提供混合代码搜索",
+            "category": "RAG 工具链",
+            "url": "https://weaviate.io/blog/coding-assistant-weaviate-mcp",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "mcp"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI Daily Pick",
+            "title": "AWS Bedrock AgentCore + MCP 集成 Quick Suite",
+            "priority": "",
+            "url": "https://aws.amazon.com/blogs/machine-learning/integrating-aws-api-mcp-server-with-amazon-quick-suite-using-amazon-bedrock-agentcore-runtime/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "mcp"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "A-002",
+      "domain": "ai_agent",
+      "hypothesis": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming tasks with no human intervention by end of 2026.",
+      "status": "watch",
+      "confidence": 0.67,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.64,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "A-003",
+      "domain": "ai_agent",
+      "hypothesis": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade frameworks (>1k GitHub stars) showing real performance gains over single agents.",
+      "status": "watch",
+      "confidence": 0.61,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.58,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: A-003",
+            "title": "Co-Scientist: A multi-agent AI partner to accelerate research",
+            "url": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "multi-agent"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: A-003",
+            "title": "Scalable voice agent design with Amazon Nova Sonic: multi-agent, tools, and session segmentation",
+            "url": "https://aws.amazon.com/blogs/machine-learning/scalable-voice-agent-design-with-amazon-nova-sonic-multi-agent-tools-and-session-segmentation/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "multi-agent"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: A-003",
+            "title": "Multi-agent Collaboration with State Management",
+            "url": "https://arxiv.org/abs/2605.20563",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "multi-agent",
+            "agent collaboration"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "A-004",
+      "domain": "ai_agent",
+      "hypothesis": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming standard for agent planning and decision-making.",
+      "status": "watch",
+      "confidence": 0.82,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.79,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "DeepSeek-V4: a million-token context that agents can actually use",
+            "url": "https://huggingface.co/blog/deepseekv4",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "deepseek"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents",
+            "url": "https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "reasoning"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: A-004",
+            "title": "The Future of the Global Open-Source AI Ecosystem: From DeepSeek to AI+",
+            "url": "https://huggingface.co/blog/huggingface/one-year-since-the-deepseek-moment-blog-3",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "deepseek"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "A-005",
+      "domain": "ai_agent",
+      "hypothesis": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA applications.",
+      "status": "untested",
+      "confidence": 0.72,
+      "confidence_delta": 0.0,
+      "new_confidence": 0.72,
+      "signal_count": 0,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "S-001",
+      "domain": "system",
+      "hypothesis": "Open-weight models (Qwen, LLaMA, Gemma) will match 80% of closed-source model capabilities on AI agent tasks by end of 2026, making them the engineering default due to cost advantages.",
+      "status": "stable",
+      "confidence": 0.71,
+      "confidence_delta": 0.0,
+      "new_confidence": 0.71,
+      "signal_count": 4,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: S-001",
+            "title": "GGML and llama.cpp join HF to ensure the long-term progress of Local AI",
+            "url": "https://huggingface.co/blog/ggml-joins-hf",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "llama"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: S-001",
+            "title": "Gemma 4: Byte for byte, the most capable open models",
+            "url": "https://deepmind.google/blog/gemma-4-byte-for-byte-the-most-capable-open-models/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "gemma"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: S-001",
+            "title": "Gemma Scope 2: helping the AI safety community deepen understanding of complex language model behavior",
+            "url": "https://deepmind.google/blog/gemma-scope-2-helping-the-ai-safety-community-deepen-understanding-of-complex-language-model-behavior/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "gemma"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "S-002",
+      "domain": "system",
+      "hypothesis": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures without human intervention.",
+      "status": "watch",
+      "confidence": 0.81,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.78,
+      "signal_count": 1,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: S-002",
+            "title": "Build AI-powered dashboard automation agents with NLP on Amazon Bedrock AgentCore",
+            "url": "https://aws.amazon.com/blogs/machine-learning/build-ai-powered-dashboard-automation-agents-with-nlp-on-amazon-bedrock-agentcore/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "automation"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "A-006",
+      "domain": "ai_agent",
+      "hypothesis": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government contracts, defense partnerships, and capital market valuations become primary exte...",
+      "status": "watch",
+      "confidence": 0.73,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.7,
+      "signal_count": 18,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "Google Antigravity 2.0",
+            "url": "https://www.producthunt.com/products/google-antigravity",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "google"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "How to build scalable web apps with OpenAI's Privacy Filter",
+            "url": "https://huggingface.co/blog/openai-privacy-filter-web-apps",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "openai"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App Daily Report",
+            "title": "Anthropic 与 xAI 达成 400 亿美元算力租赁协议",
+            "category": "基础设施",
+            "url": "https://readhub.cn/topic/8tImykZzXQb",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "anthropic"
+          ],
+          "type": "support"
+        }
+      ]
+    }
+  ],
+  "mechanical_alerts": [],
+  "watchlist": [
+    {
+      "id": "V-001",
+      "domain": "vla",
+      "hypothesis": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA action head paradigm for top-venue papers through 2026. Autoregressive tokenized-...",
+      "status": "watch",
+      "confidence": 0.76,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.73,
+      "signal_count": 12,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Mobile UMI: Cross-View Diffusion Policy with Decoupled Kinematics for Mobile Manipulation",
+            "url": "https://arxiv.org/abs/2605.20894",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "diffusion policy"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "FocalPolicy: Frequency-Optimized Chunking and Locally Anchored Flow Matching for Coherent Visuomotor Policy",
+            "url": "https://arxiv.org/abs/2605.15944",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "flow matching"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Daily Hotspots",
+            "title": "Epistemic Uncertainty Quantification for Pre-trained VLMs via Riemannian Flow Matching",
+            "url": "https://arxiv.org/abs/2601.21662",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "flow matching"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-002",
+      "domain": "vla",
+      "hypothesis": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation pipelines by end of 2026. Tasks like peg-in-hole, cable routing, deformable objec...",
+      "status": "watch",
+      "confidence": 0.64,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.61,
+      "signal_count": 10,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "method_decline:moderate (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "VBT-MPC: Vision-Based Tactile MPC for Contour Following",
+            "url": "https://arxiv.org/abs/2605.20392",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "tactile"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Bioinspired ionic thermoreceptors with anisotropic architecture for thermotactile perception in robots",
+            "url": "https://www.science.org/doi/abs/10.1126/sciadv.aed5473?af=R",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "tactile"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Spacetime Optimal-Transport Attention for Visuo-Haptic Imitation Learning of Contact-Rich Manipulation",
+            "url": "https://arxiv.org/abs/2605.20433",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "haptic"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-003",
+      "domain": "vla",
+      "hypothesis": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA contact-rich manipulation training. Real-robot-only labs will face a data bottlene...",
+      "status": "watch",
+      "confidence": 0.72,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.69,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA Daily Hotspots",
+            "title": "Mind the Sim-to-Real Gap & Think Like a Scientist",
+            "url": "https://arxiv.org/abs/2605.21458",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "sim-to-real"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Release Tracker",
+            "title": "Release: google-deepmind/mujoco @ 3.8.1",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "mujoco"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-003",
+            "title": "Domain-Adaptive Communication-Rate Optimization for Sim-to-Real Humanoid-Robot Wireless XR Teleoperation",
+            "url": "https://arxiv.org/abs/2605.19293",
+            "summary": "arXiv:2605.19293v1 Announce Type: cross Abstract: Wireless extended reality (XR) teleoperation provides embodied interaction capability for collecting humanoid robot demonstrations, but the large-scal"
+          },
+          "matched_keywords": [
+            "sim-to-real"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-004",
+      "domain": "vla",
+      "hypothesis": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA control in structured factory/warehouse environments by end of 2026: >4h continuous ...",
+      "status": "watch",
+      "confidence": 0.53,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.5,
+      "signal_count": 8,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Lost in Fog: Sensor Perturbations Expose Reasoning Fragility in Driving VLAs",
+            "url": "https://arxiv.org/abs/2605.21446",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "agility"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Social Intel",
+            "title": "特斯拉 (Tesla) / Elon Musk",
+            "url": "http://k.sina.com.cn/article_5953189932_162d6782c06704b51a.html",
+            "summary": "5月21日正式宣布关闭弗里蒙特工厂经典车型（Model S/X Signature Edition）产线，将制造资源与产能全面转向人形机器人赛道，VP陶琳与Elon Musk共同出席宣布。"
+          },
+          "matched_keywords": [
+            "人形机器人"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-003",
+            "title": "Domain-Adaptive Communication-Rate Optimization for Sim-to-Real Humanoid-Robot Wireless XR Teleoperation",
+            "url": "https://arxiv.org/abs/2605.19293",
+            "summary": "arXiv:2605.19293v1 Announce Type: cross Abstract: Wireless extended reality (XR) teleoperation provides embodied interaction capability for collecting humanoid robot demonstrations, but the large-scal"
+          },
+          "matched_keywords": [
+            "humanoid robot"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-005",
+      "domain": "vla",
+      "hypothesis": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm by mid-2026, showing >15% improvement in out-of-distribution success rate over b...",
+      "status": "watch",
+      "confidence": 0.67,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.64,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "V-006",
+      "domain": "vla",
+      "hypothesis": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planning components in VLA by end of 2026, placing world-model-first architectures in ...",
+      "status": "watch",
+      "confidence": 0.58,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.55,
+      "signal_count": 4,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA Social Intel",
+            "title": "智平方AI²机器人 (Zhipingfang)",
+            "url": "",
+            "summary": "5月20日发布《VLA过时吗？2026回应》技术澄清，正式将VLA范式升级为融合世界模型与类脑智能的开放框架，反驳行业关于VLA过时的论调。"
+          },
+          "matched_keywords": [
+            "世界模型"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-006",
+            "title": "Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model",
+            "url": "https://arxiv.org/abs/2604.23532",
+            "summary": "arXiv:2604.23532v1 Announce Type: cross Abstract: Short-term human pose prediction plays a crucial role in interactive systems, assistive robots, and emotion-aware human-computer interaction[1-3]. Whi"
+          },
+          "matched_keywords": [
+            "predictive world model"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-006",
+            "title": "Strengthening Generative Robot Policies through Predictive World Modeling",
+            "url": "https://arxiv.org/abs/2502.00622",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "predictive world model"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-007",
+      "domain": "vla",
+      "hypothesis": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method for contact-rich dexterous manipulation through 2026. Internet-video pretraining w...",
+      "status": "watch",
+      "confidence": 0.75,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.72,
+      "signal_count": 10,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "Mobile UMI: Cross-View Diffusion Policy with Decoupled Kinematics for Mobile Manipulation",
+            "url": "https://arxiv.org/abs/2605.20894",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "umi"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA RSS",
+            "title": "COBALT: Crowdsourcing Robot Learning via Cloud-Based Teleoperation with Smartphones",
+            "url": "https://arxiv.org/abs/2605.19138",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "teleoperation"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-002",
+            "title": "Soft tactile chip with in-situ sensing for haptic rendering and reverse feedback enhanced gross to fine teleoperation",
+            "url": "https://www.nature.com/articles/s41467-026-73000-8",
+            "summary": "Nature Communications, Published online: 11 May 2026; doi:10.1038/s41467-026-73000-8 Soft tactile chips embed in-situ sensing in pneumatic actuators, improving teleoperation via adaptive haptic feedba"
+          },
+          "matched_keywords": [
+            "teleoperation"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-008",
+      "domain": "vla",
+      "hypothesis": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-month lag of closed-source frontier (pi.ai, Google RT, NVIDIA), keeping research co...",
+      "status": "watch",
+      "confidence": 0.66,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.63,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "VLA Release Tracker",
+            "title": "Release: huggingface/lerobot @ v0.5.1",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "lerobot"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "VLA Release Tracker",
+            "title": "Release: octo-models/octo @ v1.5",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "octo"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-008",
+            "title": "Octopus Protocol: One-Shot Hardware Discovery and Control for AI Agents via Infrastructure-as-Prompts",
+            "url": "https://arxiv.org/abs/2605.09055",
+            "summary": "arXiv:2605.09055v1 Announce Type: new Abstract: Recent agentic-robotics systems, from Code-asPolicies to modern vision-language-action (VLA) foundation models, presuppose that drivers, SDKs, or ROS-st"
+          },
+          "matched_keywords": [
+            "octo"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-009",
+      "domain": "vla",
+      "hypothesis": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) will not generalize beyond 50% to a significantly different morphology (bimanual,...",
+      "status": "watch",
+      "confidence": 0.77,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.74,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: V-009",
+            "title": "RIO: Flexible Real-Time Robot I/O for Cross-Embodiment Robot Learning",
+            "url": "https://arxiv.org/abs/2605.11564",
+            "summary": "arXiv:2605.11564v1 Announce Type: new Abstract: Despite recent efforts to collect multi-task, multi-embodiment datasets, to design recipes for training Vision-Language-Action models (VLAs), and to sho"
+          },
+          "matched_keywords": [
+            "cross-embodiment"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-009",
+            "title": "Bridging the Embodiment Gap: Disentangled Cross-Embodiment Video Editing",
+            "url": "https://arxiv.org/abs/2605.03637",
+            "summary": "arXiv:2605.03637v1 Announce Type: new Abstract: Learning robotic manipulation from human videos is a promising solution to the data bottleneck in robotics, but the distribution shift between humans an"
+          },
+          "matched_keywords": [
+            "cross-embodiment"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: V-009",
+            "title": "Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems",
+            "url": "https://arxiv.org/abs/2604.21138",
+            "summary": "arXiv:2604.21138v1 Announce Type: new Abstract: Multi-robot control in cluttered environments is a challenging problem that involves complex physical constraints, including robot-robot collisions, rob"
+          },
+          "matched_keywords": [
+            "multi-robot"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "V-010",
+      "domain": "vla",
+      "hypothesis": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for fine manipulation VLA by mid-2026. Pure 2D RGB-only representations will platea...",
+      "status": "watch",
+      "confidence": 0.59,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.56,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "A-002",
+      "domain": "ai_agent",
+      "hypothesis": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming tasks with no human intervention by end of 2026.",
+      "status": "watch",
+      "confidence": 0.67,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.64,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "A-003",
+      "domain": "ai_agent",
+      "hypothesis": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade frameworks (>1k GitHub stars) showing real performance gains over single agents.",
+      "status": "watch",
+      "confidence": 0.61,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.58,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: A-003",
+            "title": "Co-Scientist: A multi-agent AI partner to accelerate research",
+            "url": "https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "multi-agent"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: A-003",
+            "title": "Scalable voice agent design with Amazon Nova Sonic: multi-agent, tools, and session segmentation",
+            "url": "https://aws.amazon.com/blogs/machine-learning/scalable-voice-agent-design-with-amazon-nova-sonic-multi-agent-tools-and-session-segmentation/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "multi-agent"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: A-003",
+            "title": "Multi-agent Collaboration with State Management",
+            "url": "https://arxiv.org/abs/2605.20563",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "multi-agent",
+            "agent collaboration"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "A-004",
+      "domain": "ai_agent",
+      "hypothesis": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming standard for agent planning and decision-making.",
+      "status": "watch",
+      "confidence": 0.82,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.79,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "DeepSeek-V4: a million-token context that agents can actually use",
+            "url": "https://huggingface.co/blog/deepseekv4",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "deepseek"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents",
+            "url": "https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "reasoning"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "Watch Boost: A-004",
+            "title": "The Future of the Global Open-Source AI Ecosystem: From DeepSeek to AI+",
+            "url": "https://huggingface.co/blog/huggingface/one-year-since-the-deepseek-moment-blog-3",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "deepseek"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "S-002",
+      "domain": "system",
+      "hypothesis": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures without human intervention.",
+      "status": "watch",
+      "confidence": 0.81,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.78,
+      "signal_count": 1,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "Watch Boost: S-002",
+            "title": "Build AI-powered dashboard automation agents with NLP on Amazon Bedrock AgentCore",
+            "url": "https://aws.amazon.com/blogs/machine-learning/build-ai-powered-dashboard-automation-agents-with-nlp-on-amazon-bedrock-agentcore/",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "automation"
+          ],
+          "type": "support"
+        }
+      ]
+    },
+    {
+      "id": "A-006",
+      "domain": "ai_agent",
+      "hypothesis": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government contracts, defense partnerships, and capital market valuations become primary exte...",
+      "status": "watch",
+      "confidence": 0.73,
+      "confidence_delta": -0.03,
+      "new_confidence": 0.7,
+      "signal_count": 18,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "invalidation_conditions_count": 3,
+      "matched_keywords_sample": [
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "Google Antigravity 2.0",
+            "url": "https://www.producthunt.com/products/google-antigravity",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "google"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App RSS",
+            "title": "How to build scalable web apps with OpenAI's Privacy Filter",
+            "url": "https://huggingface.co/blog/openai-privacy-filter-web-apps",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "openai"
+          ],
+          "type": "support"
+        },
+        {
+          "signal": {
+            "source": "AI App Daily Report",
+            "title": "Anthropic 与 xAI 达成 400 亿美元算力租赁协议",
+            "category": "基础设施",
+            "url": "https://readhub.cn/topic/8tImykZzXQb",
+            "summary": ""
+          },
+          "matched_keywords": [
+            "anthropic"
+          ],
+          "type": "support"
+        }
+      ]
+    }
+  ],
+  "challenged": [],
+  "untested": [
+    {
+      "id": "T-003",
+      "domain": "system",
+      "hypothesis": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling.",
+      "status": "untested",
+      "confidence": 0.71,
+      "confidence_delta": 0.0,
+      "new_confidence": 0.71,
+      "signal_count": 0,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    },
+    {
+      "id": "A-005",
+      "domain": "ai_agent",
+      "hypothesis": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA applications.",
+      "status": "untested",
+      "confidence": 0.72,
+      "confidence_delta": 0.0,
+      "new_confidence": 0.72,
+      "signal_count": 0,
+      "mechanical_score": null,
+      "mechanical_reasons": [],
+      "invalidation_conditions_count": 2,
+      "matched_keywords_sample": []
+    }
+  ]
+}
