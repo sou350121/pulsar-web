@@ -74,6 +74,9 @@ function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
 // DashScope text-embedding-v3 call. Batched to 25 inputs per request (their
 // documented cap). Retries with exponential backoff on transient errors.
 // ---------------------------------------------------------------------------
+// FatalError = config / auth / quota — retry won't help, fail fast.
+class FatalError extends Error {}
+
 async function embedBatch(texts: string[]): Promise<number[][]> {
   const body = {
     model: MODEL,
@@ -92,14 +95,17 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
       });
       if (!res.ok) {
         const txt = await res.text();
+        // 429 (rate limit) + 5xx (server) are transient → retry
         if (res.status === 429 || res.status >= 500) throw new Error(`transient ${res.status}: ${txt.slice(0, 200)}`);
-        throw new Error(`DashScope ${res.status}: ${txt.slice(0, 300)}`);
+        // 4xx config / auth / bad-input — retrying is just burning time
+        throw new FatalError(`DashScope ${res.status}: ${txt.slice(0, 300)}`);
       }
       const json = await res.json() as { output?: { embeddings?: Array<{ embedding: number[] }> } };
       const embs = json.output?.embeddings?.map(e => e.embedding) ?? [];
       if (embs.length !== texts.length) throw new Error(`got ${embs.length} embeddings for ${texts.length} inputs`);
       return embs;
     } catch (err) {
+      if (err instanceof FatalError) throw err;     // no retry on 4xx
       if (attempt === 2) throw err;
       const wait = 5_000 * (attempt + 1);
       console.warn(`embedBatch retry ${attempt + 1} in ${wait}ms: ${(err as Error).message}`);
@@ -111,7 +117,10 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
 
 async function embedAll(texts: string[], label: string): Promise<number[][]> {
   const out: number[][] = [];
-  const BATCH = 25;
+  // DashScope text-embedding-v3 caps batch input at 10 (observed 2026-05-24).
+  // Their docs are silent on this; the error is `batch size is invalid, it
+  // should not be larger than 10`. Don't raise this without re-testing.
+  const BATCH = 10;
   for (let i = 0; i < texts.length; i += BATCH) {
     const slice = texts.slice(i, i + BATCH);
     console.log(`  ${label} batch ${Math.floor(i / BATCH) + 1}/${Math.ceil(texts.length / BATCH)} (${slice.length})`);
