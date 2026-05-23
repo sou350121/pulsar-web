@@ -30,6 +30,7 @@ import {
   loadStructuralChips,
   loadPoolSanity,
   topMethodsForEvidence,
+  chipLabelV2,
 } from '../../utils/talent';
 
 const base       = import.meta.env.BASE_URL;
@@ -122,8 +123,17 @@ type ChipForRender = {
   results:  Array<{ pi: number; score: number }>;
   kind:     'semantic' | 'structural';
 };
+// PR 3: chip labels are baked into talent-embeddings.json keyed by V1 slug.
+// When V2 is active, alias-resolve so chip text reflects the new taxonomy
+// (e.g. `family:vla_core` → "Vla Generalist"). The embedding vectors and
+// `results` arrays stay V1-keyed — that's PR 4/5's re-bake.
 const semanticChips: ChipForRender[] = (matchData?.queries ?? []).map(q => ({
-  id: q.id, label: q.label, labelSC: q.labelSC, text: q.text, results: q.results, kind: 'semantic',
+  id:      q.id,
+  label:   chipLabelV2(q.id, q.label),
+  labelSC: chipLabelV2(q.id, q.labelSC),
+  text:    q.text,
+  results: q.results,
+  kind:    'semantic',
 }));
 const ruleChips: ChipForRender[] = structuralChips.map(q => ({
   id: q.id, label: q.label, labelSC: q.labelSC, text: q.text, results: q.results, kind: 'structural',

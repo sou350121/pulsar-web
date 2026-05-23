@@ -42,6 +42,10 @@ export interface OntologyNode {
   match_precedence: number;
   effective_date:   string;
   examples:         string[];
+  // Optional human label. JSON may carry a string OR null; null/missing falls
+  // through to the leaf-slug derivation in displayLabel(). Surfaced via
+  // BY_KEY.get(slug).display_name in talent.ts displayLabel().
+  display_name?:    string | null;
 }
 
 export interface OntologyEdge {

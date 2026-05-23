@@ -26,6 +26,66 @@ import {
   type Entity,
 } from './data.ts';
 
+import {
+  rankMethodFamiliesV2,
+  getOntology,
+  ALIAS_V1_TO_V2,
+  isCrossParent,
+} from './ontology.ts';
+
+// PR 3 — Ontology v2 readers.
+//
+// Set USE_ONTOLOGY_V1=1 in the build env to roll back to V1 reader paths
+// without reverting the commit. Each reader below has a V1 fallback branch
+// that mirrors the pre-PR-3 behaviour byte-for-byte. Rollback = redeploy
+// with the env var set; takes ~3 minutes via GH Actions trigger.
+//
+// V2 is the new default. PR 4 will switch the upstream Python pipeline
+// (compute-field-state.py, _vla_method_families.py) to emit V2 slugs
+// natively. Until then, loadSubdirections alias-resolves V1 slugs from
+// field-state-*.json at read time via ALIAS_V1_TO_V2.
+const ONTOLOGY_V2_ACTIVE = process.env.USE_ONTOLOGY_V1 !== '1';
+
+// Unified label resolver. In V2 mode, look the slug up in the ontology and
+// prefer its display_name; otherwise derive from the leaf segment of the
+// slug (e.g. "vla.action.diffusion_policy" → "Diffusion Policy"). In V1
+// mode, defer to the legacy familyDisplay(). Defined as a closure-bound
+// helper because it must reach METHOD_FAMILY_LABELS / familyDisplay below.
+export function displayLabel(family: string): string {
+  if (ONTOLOGY_V2_ACTIVE) {
+    const node = getOntology().byKey.get(family);
+    if (node?.display_name) return node.display_name;
+    // Leaf-of-slug fallback. Handles both V2 slugs ("vla.action.flow_matching"
+    // → "Flow Matching") and bare V1 slugs that got passed through unchanged
+    // (e.g. an alias target of `null` like open_source → "Open Source").
+    const leaf = family.split('.').at(-1) ?? family;
+    return leaf.split('_')
+      .map(w => w.length === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+  return familyDisplay(family);
+}
+
+// PR 3: helper for the match page chip rendering. Chip IDs are baked into
+// talent-embeddings.json as `family:<v1_slug>` (e.g. `family:vla_core`).
+// When V2 is active, resolve the V1 slug through ALIAS_V1_TO_V2 and emit
+// the V2 display label so users see "Vla Generalist" / "Manipulation"
+// rather than the legacy V1 hand-curated labels. Falls back to the raw
+// pre-baked label string when alias resolution finds nothing (e.g. for
+// `null`-aliased families like open_source — chip stays as-is, and the
+// chip's `results` still work because they reference person indices).
+//
+// The chip embedding vectors themselves stay V1-keyed until PR 4/5 re-bake.
+export function chipLabelV2(chipId: string, fallbackLabel: string): string {
+  if (!ONTOLOGY_V2_ACTIVE) return fallbackLabel;
+  if (!chipId.startsWith('family:')) return fallbackLabel;
+  const v1 = chipId.slice('family:'.length);
+  if (!(v1 in ALIAS_V1_TO_V2)) return fallbackLabel;
+  const v2 = ALIAS_V1_TO_V2[v1];
+  if (v2 === null) return fallbackLabel;
+  return displayLabel(v2);
+}
+
 // ---------------------------------------------------------------------------
 // Local DATA_DIR resolution (mirrors data.ts) for reading field-state and
 // emerging-terms which don't yet have first-class loaders in data.ts.
@@ -541,10 +601,34 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
     const pool = src.key === 'vla' ? vlaPool : aiPool;
 
     for (const t of trends) {
-      // Find sample papers for this family. Prefer the per-family keyword
-      // vocabulary (matches any phrase); fall back to the legacy token-AND
-      // rule so unknown field-state families still produce evidence.
-      const kws = METHOD_FAMILY_KEYWORDS[t.family];
+      // PR 3: alias-resolve V1 slugs from field-state files when V2 is active.
+      // The upstream Python pipeline (compute-field-state.py) still writes V1
+      // slugs — that's PR 4's job. open_source aliases to null = retired;
+      // skip those trends entirely so the UI doesn't surface a dead family.
+      let v2Family: string | null = t.family;
+      if (ONTOLOGY_V2_ACTIVE) {
+        if (t.family in ALIAS_V1_TO_V2) {
+          v2Family = ALIAS_V1_TO_V2[t.family];
+        }
+        if (v2Family === null) continue;  // retired family
+      }
+
+      // Find sample papers for this family. In V1 mode, use the per-family
+      // keyword vocabulary (matches any phrase) with a token-AND fallback.
+      // In V2 mode, pull keywords from the V2 ontology node (if known) and
+      // fall back to the legacy V1 keyword set keyed by the ORIGINAL V1
+      // family — V1 keywords are more permissive and field-state aliases
+      // are sometimes lossy (e.g. data_generation → synthetic_data_generation
+      // would lose the broader 'dataset'/'pretraining' matches).
+      let kws: string[] | undefined;
+      if (ONTOLOGY_V2_ACTIVE && v2Family) {
+        const node = getOntology().byKey.get(v2Family);
+        kws = node?.keywords && node.keywords.length > 0
+          ? node.keywords
+          : METHOD_FAMILY_KEYWORDS[t.family];
+      } else {
+        kws = METHOD_FAMILY_KEYWORDS[t.family];
+      }
       const tokens = t.family.split('_').filter(s => s.length >= 3);
       const titleMatches = (title: string): boolean => {
         if (kws && kws.length > 0) return kws.some(k => title.includes(k));
@@ -568,11 +652,18 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
         }
       }
 
+      // topLabsForMethod still tokenizes by V1 slug (it scans entity-index
+      // titles with a token-AND rule). Pass the V1 slug regardless of mode
+      // so the lab attribution remains stable — switching this to V2 token
+      // sets would change lab rankings; that's out of PR 3 scope.
       const topLabs = topLabsForMethod(t.family, entities);
 
+      // Emitted family key: V2 leaf when active, V1 slug otherwise. The
+      // displayName always reflects ONTOLOGY_V2_ACTIVE through displayLabel().
+      const emittedFamily = ONTOLOGY_V2_ACTIVE ? (v2Family as string) : t.family;
       results.push({
-        family:          t.family,
-        displayName:     familyDisplay(t.family),
+        family:          emittedFamily,
+        displayName:     displayLabel(emittedFamily),
         velocity7d:      t.count_7d ?? 0,
         velocityPrior7d: t.count_prior_7d ?? 0,
         acceleration:    t.acceleration ?? 0,
@@ -644,9 +735,11 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
     }
 
     // Method focus: scan signals' titles, rank by per-family keyword vocabulary.
-    const methodFocus = rankMethodFamilies(
-      ent.signals.slice(0, 30).map(s => s.title || ''),
-    ).slice(0, 3).map(([f]) => familyDisplay(f));
+    const focusTitles = ent.signals.slice(0, 30).map(s => s.title || '');
+    const focusRanked = ONTOLOGY_V2_ACTIVE
+      ? rankMethodFamiliesV2(focusTitles)
+      : rankMethodFamilies(focusTitles);
+    const methodFocus = focusRanked.slice(0, 3).map(([f]) => displayLabel(f));
 
     const evidence: Evidence[] = ent.signals
       .filter(s => s.rating === '⚡' || s.rating === '🔧')
@@ -887,9 +980,11 @@ export const HOT_GATE_DISPLAY = {
 
 export function topMethodsForEvidence(ev: Evidence[], maxTags: number = 2): string[] {
   if (!ev || ev.length === 0) return [];
-  return rankMethodFamilies(ev.map(e => e.title ?? ''))
-    .slice(0, maxTags)
-    .map(([f]) => familyDisplay(f));
+  const titles = ev.map(e => e.title ?? '');
+  const ranked = ONTOLOGY_V2_ACTIVE
+    ? rankMethodFamiliesV2(titles)
+    : rankMethodFamilies(titles);
+  return ranked.slice(0, maxTags).map(([f]) => displayLabel(f));
 }
 
 // ---------------------------------------------------------------------------
@@ -1082,7 +1177,10 @@ export function loadResearcherConstellation(): ResearcherConstellation {
       else if (e.domain === 'ai') ai++;
     }
     // Per-family keyword match across this person's paper titles.
-    const ranked: Ranked = rankMethodFamilies(p.evidence.map(e => e.title ?? ''));
+    const titles = p.evidence.map(e => e.title ?? '');
+    const ranked: Ranked = ONTOLOGY_V2_ACTIVE
+      ? rankMethodFamiliesV2(titles)
+      : rankMethodFamilies(titles);
     if (ranked.length === 0) { unmatched++; continue; }
     const majorityDomain: 'vla' | 'ai' = vla >= ai ? 'vla' : 'ai';
     matched.push({ p, ranked, majorityDomain });
@@ -1115,7 +1213,7 @@ export function loadResearcherConstellation(): ResearcherConstellation {
     const v = familyHits.get(f)!;
     return {
       family:      f,
-      displayName: familyDisplay(f),
+      displayName: displayLabel(f),
       domain:      v.vla >= v.ai ? 'vla' : 'ai',
       angle:       a,
       count:       v.count,
@@ -1135,7 +1233,16 @@ export function loadResearcherConstellation(): ResearcherConstellation {
     const kept = ranked.filter(([f]) => familyAngle[f] !== undefined);
     if (kept.length === 0) { unmatched++; continue; }
     const primary   = kept[0][0];
-    const secondary = kept[1]?.[0] ?? null;
+    const rawSecondary = kept[1]?.[0] ?? null;
+    // PR 3: bridges are CROSS-PARENT families only. Two leaves under the same
+    // V2 parent (e.g. vla.action.diffusion_policy + vla.action.flow_matching)
+    // are siblings, not a bridge — they belong to one cluster. V1 mode keeps
+    // the old "any secondary counts" rule for byte-for-byte fallback parity.
+    const secondary = rawSecondary
+      ? (ONTOLOGY_V2_ACTIVE
+          ? (isCrossParent(primary, rawSecondary) ? rawSecondary : null)
+          : rawSecondary)
+      : null;
     if (!peoplePerFamily.has(primary)) peoplePerFamily.set(primary, []);
     peoplePerFamily.get(primary)!.push({ p, secondary });
   }
@@ -1592,7 +1699,10 @@ export function loadStructuralChips(orderedPool: PersonRecord[]): StructuralChip
   // ── polymath: distinct method-family count (≥ 2 to qualify) ─────────
   const polymath: Array<{ pi: number; families: number; papers: number }> = [];
   orderedPool.forEach((p, pi) => {
-    const ranked = rankMethodFamilies(p.evidence.map(e => e.title ?? ''));
+    const titles = p.evidence.map(e => e.title ?? '');
+    const ranked = ONTOLOGY_V2_ACTIVE
+      ? rankMethodFamiliesV2(titles)
+      : rankMethodFamilies(titles);
     if (ranked.length >= 2) polymath.push({ pi, families: ranked.length, papers: p.paperCount90d });
   });
   polymath.sort((a, b) => b.families - a.families || b.papers - a.papers);
@@ -1703,7 +1813,10 @@ export function loadPoolViz(): PoolViz {
   const familyTotals = new Map<string, { count: number; vla: number; ai: number }>();
 
   for (const p of pool) {
-    const ranked = rankMethodFamilies(p.evidence.map(e => e.title ?? ''));
+    const titles = p.evidence.map(e => e.title ?? '');
+    const ranked = ONTOLOGY_V2_ACTIVE
+      ? rankMethodFamiliesV2(titles)
+      : rankMethodFamilies(titles);
     if (ranked.length === 0) continue;
     const family = ranked[0][0];
     let vla = 0, ai = 0;
@@ -1727,7 +1840,7 @@ export function loadPoolViz(): PoolViz {
     .slice(0, 12)
     .map(([f, v]) => ({
       family:        f,
-      familyDisplay: familyDisplay(f),
+      familyDisplay: displayLabel(f),
       domain:        (v.vla >= v.ai ? 'vla' : 'ai') as 'vla' | 'ai',
     }));
   const keptFamilies = new Set(heatmapFamilies.map(f => f.family));
@@ -1773,7 +1886,7 @@ export function loadPoolViz(): PoolViz {
     paperCount90d:        h.p.paperCount90d,
     rating:               h.p.topRating,
     primaryFamily:        h.family,
-    primaryFamilyDisplay: familyDisplay(h.family),
+    primaryFamilyDisplay: displayLabel(h.family),
     domain:               h.domain,
     affiliation:          h.p.affiliation,
   }));
