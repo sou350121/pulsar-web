@@ -19,16 +19,16 @@
  * Run locally:  pnpm embed:talent
  * Cost: ~$0.001 per run (300 calls × ~80 tokens each at $0.05/1M tokens).
  */
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, renameSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 import {
   loadPeople,
   loadPoolViz,
   rankMethodFamilies,
-  slugifyName,
   topMethodsForEvidence,
 } from '../src/utils/talent.ts';
+import type { Evidence } from '../src/utils/talent.ts';
 
 const API_KEY = process.env.DASHSCOPE_API_KEY;
 if (!API_KEY) {
@@ -47,7 +47,7 @@ const OUTPUT        = 'src/data/talent-embeddings.json';
 // on research substance, not on the rating label.
 // ---------------------------------------------------------------------------
 function buildProfile(p: { name: string; affiliation: string | null; evidence: { title: string }[] }): string {
-  const methods = topMethodsForEvidence(p.evidence as never, 3).join(', ') || 'no labelled method family';
+  const methods = topMethodsForEvidence(p.evidence as Evidence[], 3).join(', ') || 'no labelled method family';
   const titles  = p.evidence.slice(0, 5).map(e => `- ${e.title}`).join('\n');
   const aff     = p.affiliation ?? 'no affiliation on record';
   return `Researcher: ${p.name}\nAffiliation: ${aff}\nMethod focus: ${methods}\nRecent papers (90d):\n${titles}`;
@@ -238,7 +238,7 @@ async function main() {
     const primaryFamily = ranked[0]?.[0] ?? null;
     return {
       idx:                 i,
-      slug:                slugifyName(p.name),
+      slug:                p.slug,
       name:                p.name,
       affiliation:         p.affiliation,
       topRating:           p.topRating,
@@ -247,7 +247,7 @@ async function main() {
       primaryFamily,
       primaryFamilyDisplay: ranked[0] ? poolViz.heatmapFamilies.find(f => f.family === primaryFamily)?.familyDisplay ?? null : null,
       region:              inferRegion(p.affiliation),
-      topMethods:          topMethodsForEvidence(p.evidence as never, 3),
+      topMethods:          topMethodsForEvidence(p.evidence as Evidence[], 3),
       neighbors:           personNeighbors[i],
     };
   });
@@ -269,8 +269,15 @@ async function main() {
   };
 
   mkdirSync(dirname(OUTPUT), { recursive: true });
-  writeFileSync(OUTPUT, JSON.stringify(output, null, 0));
-  const kb = (JSON.stringify(output).length / 1024).toFixed(1);
+  // Atomic write: write to .tmp first, then rename. POSIX rename is atomic
+  // on the same filesystem, so if the embedding pipeline crashes mid-write
+  // the previous good JSON stays intact (build-time fallback to last-known
+  // good data instead of a half-written file).
+  const tmp = `${OUTPUT}.tmp`;
+  const serialised = JSON.stringify(output, null, 0);
+  writeFileSync(tmp, serialised);
+  renameSync(tmp, OUTPUT);
+  const kb = (serialised.length / 1024).toFixed(1);
   console.log(`✅ wrote ${OUTPUT} (${kb} KB, ${people.length} people, ${queries.length} queries)`);
 }
 

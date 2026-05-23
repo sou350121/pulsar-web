@@ -681,14 +681,14 @@ function fmtAccel(a: number): string {
         </a>
       </header>
       <p class="tv2-section-lede">
-        <span data-tc>兩張圖揭示三層關係 — <strong>實驗室之間</strong>共享哪些方法（誰在搶同一批人）、<strong>研究員之間</strong>各自寫什麼方向、誰是<strong>橋樑型</strong>跨方向作者。</span>
-        <span data-sc>两张图揭示三层关系 — <strong>实验室之间</strong>共享哪些方法（谁在抢同一批人）、<strong>研究员之间</strong>各自写什么方向、谁是<strong>桥梁型</strong>跨方向作者。</span>
+        <span data-tc>五個區塊串起關係 → 評分 → 名單：<strong>§4a</strong> 實驗室共享方法、<strong>§4b</strong> 研究員 × 方法族圖譜、<strong>§4c</strong> 評分散點（為什麼 ⚡ 那麼少）、<strong>§4d</strong> 方法族 × 評分熱力圖、<strong>§4e</strong> 全部已評級研究員。</span>
+        <span data-sc>五个区块串起关系 → 评分 → 名单：<strong>§4a</strong> 实验室共享方法、<strong>§4b</strong> 研究员 × 方法族图谱、<strong>§4c</strong> 评分散点（为什么 ⚡ 那么少）、<strong>§4d</strong> 方法族 × 评分热力图、<strong>§4e</strong> 全部已评级研究员。</span>
       </p>
 
       {/* ── 4a · Lab Cluster Network — the LAB-level relational view ──── */}
       <figure class="tv2-labnet">
         <figcaption class="tv2-labnet-title">
-          <span class="tv2-labnet-title-num">A</span>
+          <span class="tv2-labnet-title-num">§4a</span>
           <span class="tv2-labnet-title-name">
             <span data-tc>實驗室聚類圖 · 共享方法的實驗室會被一條線連起來</span>
             <span data-sc>实验室聚类图 · 共享方法的实验室会被一条线连起来</span>
@@ -812,7 +812,7 @@ function fmtAccel(a: number): string {
       </figure>
 
       <figcaption class="tv2-const-title">
-        <span class="tv2-const-title-num">B</span>
+        <span class="tv2-const-title-num">§4b</span>
         <span class="tv2-const-title-name">
           <span data-tc>研究員 × 方法族 圖譜</span>
           <span data-sc>研究员 × 方法族 图谱</span>
@@ -1004,7 +1004,7 @@ function fmtAccel(a: number): string {
       {/* ── 4d · Scatter — paperCount × rating × method family ─────────── */}
       <figure class="tv2-scatter">
         <figcaption class="tv2-scatter-title">
-          <span class="tv2-scatter-title-num">C</span>
+          <span class="tv2-scatter-title-num">§4c</span>
           <span class="tv2-scatter-title-name">
             <span data-tc>評分散點 · 為什麼 ⚡ 那麼少</span>
             <span data-sc>评分散点 · 为什么 ⚡ 那么少</span>
@@ -1056,12 +1056,23 @@ function fmtAccel(a: number): string {
           >papers · 90d</text>
           {/* dots */}
           {poolViz.scatter.map(d => {
-            const cx = xPos(d.paperCount90d) + jitter(d.slug);
-            const cy = ratingY[d.rating] + jitter(d.slug + 'y') * 0.6;
+            // Clamp dot positions to the plot area (jitter can push them
+            // outside the SC_PAD region otherwise, especially at the x-axis
+            // extremes where the 1-paper crowd piles up).
+            const rawCx = xPos(d.paperCount90d) + jitter(d.slug);
+            const rawCy = ratingY[d.rating] + jitter(d.slug + 'y') * 0.6;
+            const cx = Math.max(SC_PAD.l + 4, Math.min(SC_W - SC_PAD.r - 4, rawCx));
+            const cy = Math.max(SC_PAD.t, Math.min(SC_H - SC_PAD.b, rawCy));
             const r  = d.rating === '⚡' ? 5.5 : d.rating === '🔧' ? 4 : 3;
             const fill = familyColour(d.primaryFamily);
+            // Transparent over-sized hit target underneath the visible dot so
+            // mobile users get a tappable area. At a 300px-wide phone viewport
+            // the 760px viewBox scales ×0.39 → r=18 viewBox px ≈ 7.1px on
+            // screen. Still small, but ~3× the visible 2.2px dot. Compromise
+            // we accept until we add a clustering pass.
             return (
               <a href={`${base}/talent/people/#person-${d.slug}`} class="tv2-scatter-dot-link">
+                <circle cx={cx} cy={cy} r={18} fill="transparent" stroke="none" />
                 <circle
                   cx={cx} cy={cy} r={r}
                   fill={fill}
@@ -1099,7 +1110,7 @@ function fmtAccel(a: number): string {
       {poolViz.heatmapFamilies.length > 0 && (
         <figure class="tv2-heatmap">
           <figcaption class="tv2-heatmap-title">
-            <span class="tv2-heatmap-title-num">D</span>
+            <span class="tv2-heatmap-title-num">§4d</span>
             <span class="tv2-heatmap-title-name">
               <span data-tc>方法族 × 評分 熱力圖 · 哪個方向人才密集</span>
               <span data-sc>方法族 × 评分 热力图 · 哪个方向人才密集</span>
@@ -1122,7 +1133,7 @@ function fmtAccel(a: number): string {
               const total = cells.reduce((s, c) => s + (c?.count ?? 0), 0);
               return (
                 <>
-                  <div class={`tv2-heatmap-cell tv2-heatmap-rowlabel tv2-heatmap-rowlabel--${f.domain}`}>
+                  <div class={`tv2-heatmap-cell tv2-heatmap-rowlabel tv2-heatmap-rowlabel--${f.domain}`} title={f.familyDisplay}>
                     <span class="tv2-heatmap-rowlabel-dot" style={`background: ${familyColour(f.family)}`}></span>
                     {f.familyDisplay}
                   </div>
@@ -1160,8 +1171,9 @@ function fmtAccel(a: number): string {
         </figure>
       )}
 
-      {/* ── 4f · Full rated grid ──────────────────────────────────────── */}
+      {/* ── §4e · Full rated grid ─────────────────────────────────────── */}
       <h3 id="watchlist-grid" class="tv2-const-gridtitle">
+        <span class="tv2-const-gridtitle-num">§4e</span>
         <span data-tc>全部已評級研究員</span>
         <span data-sc>全部已评级研究员</span>
         <span class="tv2-const-gridtitle-en">· {watchlist.length} researchers · ⚡ {watchlist.filter(p => p.topRating === '⚡').length} · 🔧 {watchlist.filter(p => p.topRating === '🔧').length}</span>
@@ -1184,12 +1196,14 @@ function fmtAccel(a: number): string {
         <span class="tv2-method-summary-cue" aria-hidden="true">+</span>
       </summary>
       <ol class="tv2-method-list">
-        <li><strong>Section 01 · HR 候選人 (Scout)</strong> — 三層漏斗：<em>HOT</em> 通過完整門檻（頂評 ≥ 🔧、90 日 ≥ 2 篇、機構可解析、聯繫狀態非 <em>not_linked</em>）；<em>WARM</em> 缺一道門檻（新星型、產量未達、機構未確認）；<em>WATCH</em> 為單篇 ⚡ 異常爆點。每位候選人附 <em>方法標籤</em>（同 §4b 詞表）。</li>
-        <li><strong>Section 02 · 速度榜 (Subdirections)</strong> — 方法族趨勢來自 <code>field-state-*.json</code> + <code>ai-field-state-*.json</code>（機械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)；顯示時 ±500% 為上限以避開小樣本噪音。<em>新冒頭</em>欄目單獨展示 <em>insufficient_data</em>（前期樣本 = 0）的方向。</li>
-        <li><strong>Section 03 · 實驗室</strong> — 來自 <code>entity-index.json</code> 的 <code>type=lab</code> 實體，90 日滾動窗口；卡片含 14 日活躍走勢條。</li>
+        <li><strong>§01 · HR 候選人 (Scout)</strong> — 三層漏斗：<em>HOT</em> 通過完整門檻（頂評 ≥ 🔧、90 日 ≥ 2 篇、機構可解析）；<em>WARM</em> 缺一道門檻（新星型、產量未達、機構未確認）；<em>WATCH</em> 為單篇 ⚡ 異常爆點。每位候選人附 <em>方法標籤</em>（同 §4b 詞表）。</li>
+        <li><strong>§02 · 速度榜 (Subdirections)</strong> — 方法族趨勢來自 <code>field-state-*.json</code> + <code>ai-field-state-*.json</code>（機械化，零 LLM）。加速度 = (近 7d − 前 7d) / max(前值, 1)；顯示時 ±500% 為上限以避開小樣本噪音。<em>新冒頭</em>欄目單獨展示 <em>insufficient_data</em>（前期樣本 = 0）的方向。</li>
+        <li><strong>§03 · 實驗室</strong> — 來自 <code>entity-index.json</code> 的 <code>type=lab</code> 實體，90 日滾動窗口；卡片含 14 日活躍走勢條。</li>
         <li><strong>§4a · 實驗室聚類圖 (Lab Network)</strong> — 取信號數前 14 名實驗室，按主要方法錨向排列；兩個實驗室共享 ≥1 方法族 → 一條弧線，線寬隨共享數加粗。<em>連接最多實驗室的方法</em>（hub methods）= 當前人才戰場。</li>
         <li><strong>§4b · 研究員 × 方法族圖譜 (Constellation)</strong> — <em>關鍵字詞表</em>比對：每個方法族維護一個短語清單（如 <em>flow_matching</em> 涵蓋「rectified flow」「flow policy」「mean flow」等同義詞）；任一短語出現於論文標題即計分；特定型方法族（Diffusion Policy 等）排序時優先於 catch-all 族（VLA Core / Manipulation）。<em>橋樑型</em>研究員（同時匹配兩個方法族）置於圓心方向。</li>
-        <li><strong>§4d · 全部已評級研究員</strong> — <code>vla-daily-rating-out-*.json</code> 第一作者抽取 + <code>entity-index.json</code> <code>type=researcher</code> 合併（機構經 <code>institution-registry.json</code> 解析）；保留 ⚡ 與 🔧 評級全集，按評級 → 篇數 → 姓名排序。<em>arXiv 僅曝光首位作者</em>，故無法重建合作者網絡 — §4a/§4b 已是現有資料下最強的關係視角。</li>
+        <li><strong>§4c · 評分散點 (Scatter)</strong> — x 軸為 90 日論文數，採 <code>log1p</code> 縮放避免單篇大量 📖 研究員把高產出 ⚡ 擠到視覺角落；y 軸為評分檔（⚡/🔧/📖）。同格內以 slug 雜湊產生穩定抖動（每次渲染同人位移相同），避免重疊也保持位置可記憶。顏色 = 主要方法族；點半徑隨評分加大。</li>
+        <li><strong>§4d · 方法族 × 評分熱力圖 (Heatmap)</strong> — 每格為 (方法族 × 評分) 的人數矩陣，顏色深淺以線性比例隨計數增加（不取對數）。格內最多顯示 2 位代表性研究員，皆為可點擊錨點直跳下方 §4e 卡片。只保留人數 ≥ 3 的方法族（長尾族留在 §4c 散點以顏色區分）。</li>
+        <li><strong>§4e · 全部已評級研究員</strong> — <code>vla-daily-rating-out-*.json</code> 第一作者抽取 + <code>entity-index.json</code> <code>type=researcher</code> 合併（機構經 <code>institution-registry.json</code> 解析）；保留 ⚡ 與 🔧 評級全集，按評級 → 篇數 → 姓名排序。<em>arXiv 僅曝光首位作者</em>，故無法重建合作者網絡 — §4a/§4b 已是現有資料下最強的關係視角。</li>
         <li><strong>Email 永不儲存或顯示</strong> — 僅 <code>contact_status</code> 枚舉：<em>linked_via_lab</em> / <em>social_mention</em> / <em>not_linked</em>。型別層以 <code>email?: never</code> 強制；觸達前請自行核實。</li>
       </ol>
     </details>
@@ -2080,13 +2094,15 @@ function fmtAccel(a: number): string {
     .tv2-labnet-title-num {
       display: inline-flex;
       align-items: center; justify-content: center;
-      width: 22px; height: 22px;
-      border-radius: 50%;
+      min-width: 28px; height: 22px;
+      padding: 0 0.5rem;
+      border-radius: 999px;
       background: var(--accent-amber);
       color: #fff;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.72rem;
       font-weight: 700;
+      letter-spacing: 0.02em;
     }
     .tv2-labnet-title-name {
       font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
@@ -2231,13 +2247,15 @@ function fmtAccel(a: number): string {
     .tv2-const-title-num {
       display: inline-flex;
       align-items: center; justify-content: center;
-      width: 22px; height: 22px;
-      border-radius: 50%;
+      min-width: 28px; height: 22px;
+      padding: 0 0.5rem;
+      border-radius: 999px;
       background: var(--accent-cyan);
       color: #fff;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.72rem;
       font-weight: 700;
+      letter-spacing: 0.02em;
     }
     .tv2-const-title-name {
       font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
@@ -2506,6 +2524,19 @@ function fmtAccel(a: number): string {
       font-weight: 400;
       letter-spacing: 0.08em;
     }
+    .tv2-const-gridtitle-num {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      min-width: 28px; height: 22px;
+      padding: 0 0.5rem;
+      border-radius: 999px;
+      background: var(--accent-amber);
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
 
     /* ─── Section 04d · Scatter (paperCount × rating × family) ──────── */
     .tv2-scatter {
@@ -2525,15 +2556,17 @@ function fmtAccel(a: number): string {
     .tv2-scatter-title-num {
       font-family: 'IBM Plex Mono', monospace;
       font-weight: 700;
-      font-size: 0.9rem;
-      width: 1.4rem;
-      height: 1.4rem;
+      font-size: 0.75rem;
+      min-width: 28px;
+      height: 22px;
+      padding: 0 0.5rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: 999px;
       background: var(--accent-amber);
       color: var(--surface);
+      letter-spacing: 0.02em;
     }
     .tv2-scatter-title-name {
       font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
@@ -2625,13 +2658,15 @@ function fmtAccel(a: number): string {
     .tv2-heatmap-title-num {
       font-family: 'IBM Plex Mono', monospace;
       font-weight: 700;
-      font-size: 0.9rem;
-      width: 1.4rem;
-      height: 1.4rem;
+      font-size: 0.75rem;
+      min-width: 28px;
+      height: 22px;
+      padding: 0 0.5rem;
+      letter-spacing: 0.02em;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: 999px;
       background: var(--accent-cyan);
       color: var(--surface);
     }
@@ -2683,6 +2718,13 @@ function fmtAccel(a: number): string {
       flex-direction: row;
       align-items: center;
       gap: 0.5rem;
+      /* Truncate long method-family names cleanly. The `title` attribute on
+         the element exposes the full name on hover. min-width:0 unlocks
+         flex/grid shrink so ellipsis kicks in. */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
     }
     .tv2-heatmap-rowlabel-dot {
       flex-shrink: 0;

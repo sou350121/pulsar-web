@@ -111,6 +111,12 @@ export type ContactStatus =
 export interface PersonRecord {
   name:           string;      // canonical display name
   normalizedKey:  string;      // lowercased / trimmed for dedup
+  // Stable, anchor-safe slug. Guaranteed unique across the PersonRecord set
+  // returned by loadPeople — collisions from slugifyName (e.g. "J. Smith"
+  // vs "J Smith" both → "j-smith") are disambiguated with a numeric suffix
+  // (`-2`, `-3`, …) on the later occurrence. All downstream callers should
+  // use this field instead of slugifying `name` ad-hoc.
+  slug:           string;
   affiliation:    string | null;
   paperCount90d:  number;
   topRating:      string;
@@ -827,12 +833,30 @@ export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonReco
     records.push({
       name:            entry.canonical,
       normalizedKey:   norm,
+      // Placeholder; replaced below once we have the full set so we can
+      // dedup slug collisions (e.g. "J. Smith" vs "J Smith" both → "j-smith").
+      slug:            '',
       affiliation,
       paperCount90d:   deduped.length,
       topRating,
       contactStatus,
       evidence:        ev,
     });
+  }
+
+  // Slug dedup pass. slugifyName can collide for distinct normalized names
+  // (`normalizeName` keeps initials when needed, but slugifyName strips
+  // punctuation, so "J. Smith" / "J Smith" both → "j-smith"). Walk records
+  // in a stable order (name asc) and append `-2`, `-3`, … to LATER
+  // occurrences. Without this, anchor IDs collide and the find-similar
+  // lookup on /talent/match/ resolves the wrong person.
+  const stableForSlug = [...records].sort((a, b) => a.name.localeCompare(b.name));
+  const slugSeen = new Map<string, number>();
+  for (const rec of stableForSlug) {
+    const base = slugifyName(rec.name) || 'person';
+    const n = slugSeen.get(base) ?? 0;
+    rec.slug = n === 0 ? base : `${base}-${n + 1}`;
+    slugSeen.set(base, n + 1);
   }
 
   return records.sort((a, b) => {
@@ -912,10 +936,14 @@ export function loadHRScout(): HRScout {
 
     const hasAff   = !!p.affiliation;
     const hasMulti = p.paperCount90d >= 2;
+    // `hasDurable` (contactStatus !== 'not_linked') is implied by `hasAff`
+    // on the HOT branch: loadPeople sets contactStatus = 'linked_via_lab'
+    // whenever an affiliation resolves, so the durable check is redundant
+    // there. WARM/WATCH below still use it because they relax `hasAff`.
     const hasDurable = p.contactStatus !== 'not_linked';
 
-    // HOT: full gate (≥🔧 + ≥2 papers + affiliation + durable contact)
-    if (isRated && hasMulti && hasAff && hasDurable) {
+    // HOT: full gate (≥🔧 + ≥2 papers + affiliation)
+    if (isRated && hasMulti && hasAff) {
       hot.push(enrich(p, {
         whyNow: p.topRating === '⚡'
           ? `Author on ⚡-rated paper in last 90 days`
@@ -1144,7 +1172,7 @@ export function loadResearcherConstellation(): ResearcherConstellation {
       const r = personRBase + (i % 3) * 14;
       peopleArr.push({
         name:           entry.p.name,
-        slug:           slugifyName(entry.p.name),
+        slug:           entry.p.slug,
         affiliation:    entry.p.affiliation,
         topRating:      entry.p.topRating,
         contactStatus:  entry.p.contactStatus,
@@ -1167,7 +1195,7 @@ export function loadResearcherConstellation(): ResearcherConstellation {
       bridges++;
       peopleArr.push({
         name:           entry.p.name,
-        slug:           slugifyName(entry.p.name),
+        slug:           entry.p.slug,
         affiliation:    entry.p.affiliation,
         topRating:      entry.p.topRating,
         contactStatus:  entry.p.contactStatus,
@@ -1574,13 +1602,13 @@ export function loadPoolViz(): PoolViz {
     const cell = cellMap.get(k)!;
     ppl.sort((a, b) => b.paperCount90d - a.paperCount90d || a.name.localeCompare(b.name));
     cell.topNames = ppl.slice(0, 2).map(p => p.name);
-    cell.topSlugs = ppl.slice(0, 2).map(p => slugifyName(p.name));
+    cell.topSlugs = ppl.slice(0, 2).map(p => p.slug);
   }
 
   // Scatter dataset — emit one dot per matched person (even outside heatmap families).
   const scatter: ScatterDot[] = hits.map(h => ({
     name:                 h.p.name,
-    slug:                 slugifyName(h.p.name),
+    slug:                 h.p.slug,
     paperCount90d:        h.p.paperCount90d,
     rating:               h.p.topRating,
     primaryFamily:        h.family,

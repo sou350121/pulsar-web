@@ -27,7 +27,6 @@ import {
   loadPeople,
   loadMatchData,
   loadPoolViz,
-  slugifyName,
   topMethodsForEvidence,
 } from '../../utils/talent';
 
@@ -56,7 +55,7 @@ function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
 // JSON exists.
 const peopleClient = pool.map((p, idx) => ({
   idx,
-  slug:          slugifyName(p.name),
+  slug:          p.slug,
   name:          p.name,
   affiliation:   p.affiliation,
   topRating:     p.topRating,
@@ -103,10 +102,16 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
     <!-- ── Header / page intro ─────────────────────────────────────────── -->
     <header class="match-header">
       <div class="match-header-text">
-        <a href={`${base}/talent/`} class="match-back">
-          <span data-tc>← 返回人才雷達</span>
-          <span data-sc>← 返回人才雷达</span>
-        </a>
+        <div class="match-backlinks">
+          <a href={`${base}/talent/`} class="match-back">
+            <span data-tc>← 返回人才雷達</span>
+            <span data-sc>← 返回人才雷达</span>
+          </a>
+          <a href={`${base}/talent/hr-queue/`} class="match-back match-back--alt">
+            <span data-tc>完整 HR 隊列 →</span>
+            <span data-sc>完整 HR 队列 →</span>
+          </a>
+        </div>
         <h1 class="match-h1">
           <span data-tc>HR 需求台</span>
           <span data-sc>HR 需求台</span>
@@ -220,24 +225,26 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
           </span>
         </label>
 
-        <label class="match-control match-control--wide">
-          <span class="match-control-label">
-            <span data-tc>方法族</span>
-            <span data-sc>方法族</span>
-            <span class="match-control-hint">
-              <span data-tc>· 不勾為「全部」</span>
-              <span data-sc>· 不勾为「全部」</span>
+        {familyOpts.length > 0 && (
+          <label class="match-control match-control--wide">
+            <span class="match-control-label">
+              <span data-tc>方法族</span>
+              <span data-sc>方法族</span>
+              <span class="match-control-hint">
+                <span data-tc>· 不勾為「全部」</span>
+                <span data-sc>· 不勾为「全部」</span>
+              </span>
             </span>
-          </span>
-          <span class="match-pills">
-            {familyOpts.map(f => (
-              <label class="match-pill">
-                <input type="checkbox" data-facet="family" value={f.familyDisplay} />
-                <span>{f.familyDisplay}</span>
-              </label>
-            ))}
-          </span>
-        </label>
+            <span class="match-pills">
+              {familyOpts.map(f => (
+                <label class="match-pill">
+                  <input type="checkbox" data-facet="family" value={f.familyDisplay} />
+                  <span>{f.familyDisplay}</span>
+                </label>
+              ))}
+            </span>
+          </label>
+        )}
 
         <label class="match-control">
           <span class="match-control-label">
@@ -359,12 +366,15 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
 
   <!-- ── Data injection for client JS ───────────────────────────────────
        Astro's define:vars serialises straight into the script, no fetch needed.
+       Each JSON payload escapes `<` to `<` so a stray `</script>`
+       inside a paper title can't close the JSON block early — the HTML
+       parser only looks for the literal `</script>` byte sequence.
   ───────────────────────────────────────────────────────────────────── -->
-  <script type="application/json" id="match-people-data" set:html={JSON.stringify(peopleClient)} />
+  <script type="application/json" id="match-people-data" set:html={JSON.stringify(peopleClient).replace(/</g, '\\u003c')} />
   {matchData && (
     <>
-      <script type="application/json" id="match-queries-data" set:html={JSON.stringify(matchData.queries)} />
-      <script type="application/json" id="match-neighbors-data" set:html={JSON.stringify(matchData.people.map(p => ({ slug: p.slug, neighbors: p.neighbors })))} />
+      <script type="application/json" id="match-queries-data" set:html={JSON.stringify(matchData.queries).replace(/</g, '\\u003c')} />
+      <script type="application/json" id="match-neighbors-data" set:html={JSON.stringify(matchData.people.map(p => ({ slug: p.slug, neighbors: p.neighbors }))).replace(/</g, '\\u003c')} />
     </>
   )}
 
@@ -454,6 +464,33 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
 
         countEl.textContent = candidates.length;
 
+        // Empty-state branch — explain WHY zero before showing the
+        // generic "no candidates" message. The three causes we can
+        // distinguish from page state:
+        //   1. find-similar with a slug that has no neighbor data
+        //   2. a chip is active but facets nuked all candidates
+        //   3. plain free-text / facet filtering returned nothing
+        if (candidates.length === 0) {
+          let body;
+          if (similarOfSlug && !neighborsBySlug.has(similarOfSlug)) {
+            // case 1 — similarity data missing (e.g. embeddings not rebuilt
+            // after a new researcher entered the pool).
+            body = `<strong>找相似資料缺失</strong> · this researcher has no pre-computed similarity data.<br/>` +
+                   `<span style="opacity:0.85">Run <code>pnpm embed:talent</code> locally to populate, or pick another candidate.</span>`;
+          } else if (similarOfSlug) {
+            // case 1b — neighbors exist but facets filtered them all out
+            body = `<strong>相似研究員已被細部條件篩光</strong> · facets filtered out all neighbors.`;
+          } else if (activeChipId) {
+            // case 2 — chip active, facets too strict
+            body = `<strong>標籤已選但 facet 篩光所有候選人</strong> · try clearing facets or pick a different tag.`;
+          } else {
+            // case 3 — open filter state, no hits
+            body = `<strong>沒有符合條件的候選人</strong> · no matching candidates · 試試放寬條件`;
+          }
+          grid.innerHTML = `<div class="match-empty">${body}<div class="match-empty-actions"><button type="button" class="match-empty-btn" data-action="reset">重置全部 · Reset</button></div></div>`;
+          return;
+        }
+
         // Render cards
         const html = candidates.slice(0, 80).map(p => {
           const score = scores ? scores.get(slugToIdx.get(p.slug)) : null;
@@ -476,7 +513,22 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
             ${methods ? `<div class="match-card-methods">${methods}</div>` : ''}
           </article>`;
         }).join('');
-        grid.innerHTML = html || '<div class="match-empty">沒有符合條件的候選人 · No matching candidates</div>';
+        grid.innerHTML = html;
+      }
+
+      // Reset all controls back to their initial open state.
+      function resetAll() {
+        activeChipId = null;
+        similarOfSlug = null;
+        queryInput.value = '';
+        paperMin.value = '1';
+        document.querySelectorAll('input[data-facet]').forEach(el => {
+          // Family checkboxes default OFF (their semantic is "any"); everything
+          // else defaults ON (rating tiers / regions / contact statuses).
+          el.checked = el.dataset.facet !== 'family';
+        });
+        document.querySelectorAll('.match-chip').forEach(b => b.classList.remove('match-chip--active'));
+        render();
       }
 
       function escapeHtml(s) {
@@ -506,16 +558,24 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
         });
       });
 
-      // Find-similar buttons (event delegation so dynamically rendered cards work)
+      // Find-similar + reset buttons (event delegation so dynamically rendered
+      // cards/empty-state buttons work).
       grid.addEventListener('click', (ev) => {
+        const resetBtn = ev.target.closest('[data-action="reset"]');
+        if (resetBtn) {
+          ev.preventDefault();
+          resetAll();
+          return;
+        }
         const target = ev.target.closest('.match-card-similar');
         if (!target) return;
         ev.preventDefault();
         const slug = target.getAttribute('data-similar-slug');
-        if (!slug || !neighborsBySlug.has(slug)) {
-          target.title = 'similarity data not available';
-          return;
-        }
+        if (!slug) return;
+        // Always set similarOfSlug so the empty-state branch can explain
+        // missing-data cases instead of silently doing nothing. The render
+        // path detects the missing neighbor data and surfaces a helpful
+        // message + reset button.
         similarOfSlug = slug;
         activeChipId = null;
         document.querySelectorAll('.match-chip').forEach(b => b.classList.remove('match-chip--active'));
@@ -540,15 +600,29 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
       padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
     }
-    .match-back {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      display: inline-block;
+    .match-backlinks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
       margin-bottom: 0.6rem;
     }
-    .match-back:hover { color: var(--accent-amber); }
+    .match-back {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+    .match-back:hover { color: var(--accent-amber); border-color: var(--accent-amber); }
+    .match-back--alt {
+      color: var(--accent-cyan);
+      border-color: color-mix(in srgb, var(--accent-cyan) 40%, var(--border));
+    }
+    .match-back--alt:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); background: rgba(15,143,160,0.06); }
     .match-h1 {
       font-size: 1.85rem;
       font-weight: 700;
@@ -829,10 +903,35 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
       padding: 2rem 1rem;
       text-align: center;
       font-family: 'IBM Plex Mono', monospace;
-      color: var(--text-tertiary);
+      color: var(--text-secondary);
       font-size: 0.85rem;
+      line-height: 1.6;
       border: 1px dashed var(--border);
       border-radius: 4px;
+      background: var(--surface);
+    }
+    .match-empty strong { color: var(--text-primary); font-weight: 700; }
+    .match-empty code {
+      font-size: 0.78rem;
+      padding: 0.05rem 0.3rem;
+      background: rgba(120,120,120,0.12);
+      border-radius: 3px;
+    }
+    .match-empty-actions { margin-top: 0.85rem; }
+    .match-empty-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-amber);
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+    .match-empty-btn:hover {
+      background: var(--accent-amber);
+      color: var(--surface);
     }
 
     .match-method {

@@ -13,8 +13,12 @@ import RatingBadge from './RatingBadge.astro';
 interface Props {
   record: PersonRecord | HRCandidate;
   showWhyNow?: boolean;
+  // Compact mode for dense list pages (e.g. HR queue) — suppresses the
+  // method-family tag row and rating-rationale strip so each card stays
+  // short. Evidence drawer + contact pill are still shown.
+  compact?: boolean;
 }
-const { record, showWhyNow = false } = Astro.props;
+const { record, showWhyNow = false, compact = false } = Astro.props;
 
 // Method-family tags derived from the same matcher used by the constellation
 // (rankMethodFamilies → topMethodsForEvidence). Surfacing them on the card
@@ -79,7 +83,7 @@ const initials = avatarInitials(record.name);
 const hue      = avatarHue(record.name);
 ---
 
-<article id={`person-${slugifyName(record.name)}`} class="card group flex flex-col gap-3 person-card">
+<article id={`person-${record.slug}`} class="card group flex flex-col gap-3 person-card">
   <!-- Header: avatar + name + rating -->
   <div class="flex items-center gap-3">
     <span
@@ -118,7 +122,7 @@ const hue      = avatarHue(record.name);
       <span data-tc>{contact.label}</span>
       <span data-sc>{contact.labelSC}</span>
     </span>
-    {methodTags.map(t => (
+    {!compact && methodTags.map(t => (
       <span
         class="inline-flex items-center font-ibm-plex-mono rounded-full px-2 py-0.5 text-[0.65rem] uppercase tracking-wide"
         style="background: rgba(120,120,120,0.10); color: var(--text-muted); border: 1px solid var(--border)"
@@ -127,8 +131,9 @@ const hue      = avatarHue(record.name);
     ))}
   </div>
 
-  <!-- Rating rationale strip — makes ⚡🔧📖 evidence-backed, not opaque. -->
-  {ratingRationale && (
+  <!-- Rating rationale strip — makes ⚡🔧📖 evidence-backed, not opaque.
+       Suppressed in compact mode (HR queue) to keep card density high. -->
+  {!compact && ratingRationale && (
     <div
       class="text-[0.65rem] font-ibm-plex-mono uppercase tracking-wide flex items-center gap-2"
       style="color: var(--text-muted)"
@@ -230,4 +235,15 @@ const hue      = avatarHue(record.name);
     transform: scale(1.05);
     box-shadow: 0 0 0 3px color-mix(in srgb, hsl(var(--av-hue), 60%, 50%) 18%, transparent);
   }
+
+  /* Hide the native <details>/<summary> marker across browsers. The summary
+     text already supplies a ▾ glyph inline, so we don't want the UA disclosure
+     triangle stacking on top. Safari/Chrome use ::-webkit-details-marker;
+     Firefox uses ::marker (only after `display: list-item` is honoured). */
+  .person-drawer summary {
+    list-style: none;
+    display: list-item;
+  }
+  .person-drawer summary::marker { content: ''; }
+  .person-drawer summary::-webkit-details-marker { display: none; }
 </style>
