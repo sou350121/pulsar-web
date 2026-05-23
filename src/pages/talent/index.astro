@@ -24,6 +24,7 @@ import {
   loadResearcherConstellation,
   loadLabNetwork,
   loadWatchlist,
+  loadPoolViz,
   slugifyName,
   topMethodsForEvidence,
 } from '../../utils/talent';
@@ -85,6 +86,51 @@ const labsShowcase = allLabs.slice(0, 6);
 const labNet        = loadLabNetwork();
 const constellation = loadResearcherConstellation();
 const watchlist     = loadWatchlist();
+const poolViz       = loadPoolViz();
+
+// Scatter plot coordinate math — done in the Astro frontmatter so SVG can
+// just inline numeric attrs. 700×340 viewBox keeps it light on mobile.
+const SC_W = 760, SC_H = 320;
+const SC_PAD = { l: 56, r: 24, t: 28, b: 42 };
+const SC_PLOT_W = SC_W - SC_PAD.l - SC_PAD.r;
+const SC_PLOT_H = SC_H - SC_PAD.t - SC_PAD.b;
+// Y axis: 3 rating tiers stacked top→bottom (⚡ on top — highest)
+const ratingY: Record<string, number> = {
+  '⚡': SC_PAD.t + SC_PLOT_H * 0.20,
+  '🔧': SC_PAD.t + SC_PLOT_H * 0.55,
+  '📖': SC_PAD.t + SC_PLOT_H * 0.85,
+};
+// X axis: log scale on paperCount90d so the 1-paper crowd doesn't crush the
+// 8+ paper outliers. log1p keeps zero/one-paper dots from collapsing to x=0.
+const xMax  = Math.log1p(poolViz.scatterMaxPapers);
+const xPos  = (n: number) => SC_PAD.l + (Math.log1p(n) / xMax) * SC_PLOT_W;
+// Stable jitter so dots in the same (rating × paper) cell don't overlap.
+function jitter(slug: string): number {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) | 0;
+  return ((h & 0xffff) / 0xffff - 0.5) * 22; // ±11px
+}
+// Family → hue assignment (stable across renders). 12 distinct hues max,
+// long-tail families collapse to neutral grey.
+const familyHues = new Map<string, number>();
+poolViz.heatmapFamilies.forEach((f, i) => {
+  // Spread across 360° avoiding hues too close to amber/cyan brand colours.
+  familyHues.set(f.family, (i * (360 / 12) + 24) % 360);
+});
+function familyColour(family: string): string {
+  const h = familyHues.get(family);
+  if (h === undefined) return 'var(--text-muted)';
+  return `hsl(${h}, 62%, 52%)`;
+}
+// Heatmap palette — count → background opacity. Linear in count for legibility.
+const heatMaxCount = Math.max(1, ...poolViz.heatmapCells.map(c => c.count));
+function cellShade(rating: string, count: number): string {
+  if (count === 0) return 'transparent';
+  const a = 0.10 + 0.60 * (count / heatMaxCount);
+  if (rating === '⚡') return `rgba(212,145,10,${a.toFixed(2)})`;
+  if (rating === '🔧') return `rgba(15,143,160,${a.toFixed(2)})`;
+  return `rgba(120,120,120,${(a * 0.7).toFixed(2)})`;
+}
 
 // Lookup table so the SVG can show affiliation in the tooltip
 const methodIndex = new Map(constellation.methods.map(m => [m.family, m]));
@@ -285,10 +331,16 @@ function fmtAccel(a: number): string {
           </h2>
           <span class="tv2-section-en">/ HR Scout · {scout.totals.pool}</span>
         </div>
-        <a class="tv2-more" href={`${base}/talent/hr-queue/`}>
-          <span data-tc>完整隊列 →</span>
-          <span data-sc>完整队列 →</span>
-        </a>
+        <span class="tv2-more-group">
+          <a class="tv2-more tv2-more--accent" href={`${base}/talent/match/`}>
+            <span data-tc>HR 需求台 →</span>
+            <span data-sc>HR 需求台 →</span>
+          </a>
+          <a class="tv2-more" href={`${base}/talent/hr-queue/`}>
+            <span data-tc>完整隊列 →</span>
+            <span data-sc>完整队列 →</span>
+          </a>
+        </span>
       </header>
 
       <p class="tv2-section-lede">
@@ -949,7 +1001,166 @@ function fmtAccel(a: number): string {
         </div>
       )}
 
-      {/* ── 4d · Full rated grid ──────────────────────────────────────── */}
+      {/* ── 4d · Scatter — paperCount × rating × method family ─────────── */}
+      <figure class="tv2-scatter">
+        <figcaption class="tv2-scatter-title">
+          <span class="tv2-scatter-title-num">C</span>
+          <span class="tv2-scatter-title-name">
+            <span data-tc>評分散點 · 為什麼 ⚡ 那麼少</span>
+            <span data-sc>评分散点 · 为什么 ⚡ 那么少</span>
+          </span>
+          <span class="tv2-scatter-title-en">
+            · {poolViz.scatter.length} researchers · x=papers (90d, log) · y=rating · colour=primary method
+          </span>
+        </figcaption>
+        <svg
+          class="tv2-scatter-svg"
+          viewBox={`0 0 ${SC_W} ${SC_H}`}
+          role="img"
+          aria-label="Scatter — paper count × rating × method family"
+        >
+          {/* horizontal rating bands */}
+          {poolViz.ratingTiers.map(r => (
+            <g>
+              <line
+                x1={SC_PAD.l} x2={SC_W - SC_PAD.r}
+                y1={ratingY[r]} y2={ratingY[r]}
+                stroke="var(--border)" stroke-dasharray="2 4" stroke-width="1" opacity="0.55"
+              />
+              <text
+                x={SC_PAD.l - 8} y={ratingY[r] + 4}
+                text-anchor="end"
+                class="tv2-scatter-axis-label"
+              >{r}</text>
+            </g>
+          ))}
+          {/* x-axis ticks at 1, 2, 4, 8, max */}
+          {[1, 2, 4, 8, poolViz.scatterMaxPapers].filter((v, i, a) => a.indexOf(v) === i && v <= poolViz.scatterMaxPapers).map(v => (
+            <g>
+              <line
+                x1={xPos(v)} x2={xPos(v)}
+                y1={SC_PAD.t} y2={SC_H - SC_PAD.b}
+                stroke="var(--border)" stroke-width="0.5" opacity="0.3"
+              />
+              <text
+                x={xPos(v)} y={SC_H - SC_PAD.b + 16}
+                text-anchor="middle"
+                class="tv2-scatter-axis-label"
+              >{v}</text>
+            </g>
+          ))}
+          <text
+            x={SC_PAD.l + SC_PLOT_W / 2} y={SC_H - 6}
+            text-anchor="middle"
+            class="tv2-scatter-axis-title"
+          >papers · 90d</text>
+          {/* dots */}
+          {poolViz.scatter.map(d => {
+            const cx = xPos(d.paperCount90d) + jitter(d.slug);
+            const cy = ratingY[d.rating] + jitter(d.slug + 'y') * 0.6;
+            const r  = d.rating === '⚡' ? 5.5 : d.rating === '🔧' ? 4 : 3;
+            const fill = familyColour(d.primaryFamily);
+            return (
+              <a href={`${base}/talent/people/#person-${d.slug}`} class="tv2-scatter-dot-link">
+                <circle
+                  cx={cx} cy={cy} r={r}
+                  fill={fill}
+                  fill-opacity={d.rating === '⚡' ? 0.95 : d.rating === '🔧' ? 0.78 : 0.55}
+                  stroke="var(--surface)"
+                  stroke-width="0.8"
+                  class="tv2-scatter-dot"
+                />
+                <title>{d.rating} {d.name} · {d.paperCount90d} papers · {d.primaryFamilyDisplay} · {d.affiliation ?? 'unaffiliated'}</title>
+              </a>
+            );
+          })}
+        </svg>
+        <div class="tv2-scatter-foot">
+          <div class="tv2-scatter-stats">
+            <span><strong>{poolViz.totals.flashes}</strong> ⚡</span>
+            <span class="tv2-scatter-sep">·</span>
+            <span><strong>{poolViz.totals.polish}</strong> 🔧</span>
+            <span class="tv2-scatter-sep">·</span>
+            <span><strong>{poolViz.totals.read}</strong> 📖</span>
+            <span class="tv2-scatter-sep">·</span>
+            <span>
+              <span data-tc>所有評分研究員（含 📖）</span>
+              <span data-sc>所有评分研究员（含 📖）</span>
+            </span>
+          </div>
+          <div class="tv2-scatter-readme">
+            <span data-tc><strong>怎麼讀：</strong>右上角=高產出+⚡（明星）；右下=高產出但 📖（搬磚機型）；左上=單篇 ⚡ 異常（觀察值）。</span>
+            <span data-sc><strong>怎么读：</strong>右上角=高产出+⚡（明星）；右下=高产出但 📖（搬砖机型）；左上=单篇 ⚡ 异常（观察值）。</span>
+          </div>
+        </div>
+      </figure>
+
+      {/* ── 4e · Heatmap — method family × rating density ───────────────── */}
+      {poolViz.heatmapFamilies.length > 0 && (
+        <figure class="tv2-heatmap">
+          <figcaption class="tv2-heatmap-title">
+            <span class="tv2-heatmap-title-num">D</span>
+            <span class="tv2-heatmap-title-name">
+              <span data-tc>方法族 × 評分 熱力圖 · 哪個方向人才密集</span>
+              <span data-sc>方法族 × 评分 热力图 · 哪个方向人才密集</span>
+            </span>
+            <span class="tv2-heatmap-title-en">
+              · {poolViz.heatmapFamilies.length} families · cell shows count + top names
+            </span>
+          </figcaption>
+          <div class="tv2-heatmap-grid">
+            <div class="tv2-heatmap-cell tv2-heatmap-header">&nbsp;</div>
+            {poolViz.ratingTiers.map(r => (
+              <div class="tv2-heatmap-cell tv2-heatmap-header">{r}</div>
+            ))}
+            <div class="tv2-heatmap-cell tv2-heatmap-header">
+              <span data-tc>合計</span><span data-sc>合计</span>
+            </div>
+            {poolViz.heatmapFamilies.map(f => {
+              const cells = poolViz.ratingTiers.map(r =>
+                poolViz.heatmapCells.find(c => c.family === f.family && c.rating === r));
+              const total = cells.reduce((s, c) => s + (c?.count ?? 0), 0);
+              return (
+                <>
+                  <div class={`tv2-heatmap-cell tv2-heatmap-rowlabel tv2-heatmap-rowlabel--${f.domain}`}>
+                    <span class="tv2-heatmap-rowlabel-dot" style={`background: ${familyColour(f.family)}`}></span>
+                    {f.familyDisplay}
+                  </div>
+                  {cells.map(c => (
+                    <div
+                      class="tv2-heatmap-cell tv2-heatmap-data"
+                      style={`background: ${c ? cellShade(c.rating, c.count) : 'transparent'}`}
+                    >
+                      {c && c.count > 0 && (
+                        <>
+                          <span class="tv2-heatmap-count">{c.count}</span>
+                          {c.topNames.length > 0 && (
+                            <span class="tv2-heatmap-names">
+                              {c.topNames.map((nm, i) => (
+                                <a
+                                  href={`${base}/talent/people/#person-${c.topSlugs[i]}`}
+                                  class="tv2-heatmap-name-link"
+                                >{nm}</a>
+                              ))}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                  <div class="tv2-heatmap-cell tv2-heatmap-rowtotal">{total}</div>
+                </>
+              );
+            })}
+          </div>
+          <div class="tv2-heatmap-readme">
+            <span data-tc><strong>怎麼讀：</strong>顏色越深該格人越多；行內看分布（⚡ vs 🔧 vs 📖），列內看哪個方法族在哪個評分區堆人。</span>
+            <span data-sc><strong>怎么读：</strong>颜色越深该格人越多；行内看分布（⚡ vs 🔧 vs 📖），列内看哪个方法族在哪个评分区堆人。</span>
+          </div>
+        </figure>
+      )}
+
+      {/* ── 4f · Full rated grid ──────────────────────────────────────── */}
       <h3 id="watchlist-grid" class="tv2-const-gridtitle">
         <span data-tc>全部已評級研究員</span>
         <span data-sc>全部已评级研究员</span>
@@ -1232,6 +1443,25 @@ function fmtAccel(a: number): string {
       letter-spacing: 0.04em;
     }
     .tv2-more:hover { text-decoration: underline; }
+    .tv2-more-group {
+      display: inline-flex;
+      gap: 0.85rem;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+    .tv2-more--accent {
+      color: var(--accent-amber);
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--accent-amber);
+      border-radius: 999px;
+      background: rgba(212,145,10,0.06);
+    }
+    .tv2-more--accent:hover {
+      background: var(--accent-amber);
+      color: var(--surface);
+      text-decoration: none;
+    }
     .tv2-section-lede {
       font-size: 0.85rem;
       color: var(--text-secondary);
@@ -2277,6 +2507,246 @@ function fmtAccel(a: number): string {
       letter-spacing: 0.08em;
     }
 
+    /* ─── Section 04d · Scatter (paperCount × rating × family) ──────── */
+    .tv2-scatter {
+      margin: 1.75rem 0 1.25rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .tv2-scatter-title {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.85rem;
+    }
+    .tv2-scatter-title-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      width: 1.4rem;
+      height: 1.4rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      color: var(--surface);
+    }
+    .tv2-scatter-title-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tv2-scatter-title-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+    }
+    .tv2-scatter-svg {
+      width: 100%;
+      height: auto;
+      max-height: 360px;
+      display: block;
+    }
+    .tv2-scatter-axis-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      fill: var(--text-tertiary);
+    }
+    .tv2-scatter-axis-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      fill: var(--text-secondary);
+      letter-spacing: 0.06em;
+    }
+    .tv2-scatter-dot {
+      transition: r 0.12s ease, fill-opacity 0.12s ease;
+      cursor: pointer;
+    }
+    .tv2-scatter-dot:hover {
+      fill-opacity: 1 !important;
+    }
+    .tv2-scatter-foot {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .tv2-scatter-stats {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: baseline;
+    }
+    .tv2-scatter-stats strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .tv2-scatter-sep {
+      color: var(--text-tertiary);
+    }
+    .tv2-scatter-readme {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      font-family: 'Noto Serif SC', Georgia, serif;
+    }
+    .tv2-scatter-readme strong {
+      color: var(--text-primary);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      margin-right: 0.25rem;
+    }
+
+    /* ─── Section 04e · Method-family × rating heatmap ──────────────── */
+    .tv2-heatmap {
+      margin: 1.5rem 0 1.25rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .tv2-heatmap-title {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.85rem;
+    }
+    .tv2-heatmap-title-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      width: 1.4rem;
+      height: 1.4rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      color: var(--surface);
+    }
+    .tv2-heatmap-title-name {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tv2-heatmap-title-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+    }
+    .tv2-heatmap-grid {
+      display: grid;
+      /* 1 row label + 3 rating cols + 1 total col */
+      grid-template-columns: minmax(160px, 1.4fr) repeat(3, 1fr) minmax(56px, 0.7fr);
+      gap: 2px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .tv2-heatmap-cell {
+      background: var(--surface);
+      padding: 0.55rem 0.6rem;
+      min-height: 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.2rem;
+    }
+    .tv2-heatmap-header {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      letter-spacing: 0.04em;
+      min-height: 36px;
+    }
+    .tv2-heatmap-rowlabel {
+      font-family: Georgia, 'Noto Serif SC', serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tv2-heatmap-rowlabel-dot {
+      flex-shrink: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .tv2-heatmap-rowtotal {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-align: center;
+      align-items: center;
+    }
+    .tv2-heatmap-data {
+      transition: background 0.12s ease;
+    }
+    .tv2-heatmap-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .tv2-heatmap-names {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      font-size: 0.7rem;
+      line-height: 1.25;
+    }
+    .tv2-heatmap-name-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tv2-heatmap-name-link:hover {
+      color: var(--accent-amber);
+      text-decoration: underline;
+    }
+    .tv2-heatmap-readme {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      font-family: 'Noto Serif SC', Georgia, serif;
+      margin-top: 0.75rem;
+    }
+    .tv2-heatmap-readme strong {
+      color: var(--text-primary);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      margin-right: 0.25rem;
+    }
+
+    /* Drawer chrome on the person card */
+    .person-drawer { margin-top: 0.25rem; }
+    .person-drawer summary { list-style: none; }
+    .person-drawer summary::-webkit-details-marker { display: none; }
+    .person-drawer[open] summary::after { content: ''; }
+
     @media (max-width: 700px) {
       .tv2-const-method-label  { font-size: 11px; }
       .tv2-const-method-count  { font-size: 10px; }
@@ -2285,6 +2755,13 @@ function fmtAccel(a: number): string {
       .tv2-bridges-list li a   { grid-template-columns: 22px 1fr; }
       .tv2-bridges-arc         { grid-column: 1 / -1; grid-row: 2; }
       .tv2-bridges-aff         { grid-row: 3; }
+      .tv2-heatmap-grid        {
+        grid-template-columns: minmax(120px, 1.2fr) repeat(3, 1fr) minmax(42px, 0.5fr);
+        font-size: 0.7rem;
+      }
+      .tv2-heatmap-cell        { padding: 0.4rem 0.4rem; min-height: 44px; }
+      .tv2-heatmap-rowlabel    { font-size: 0.75rem; }
+      .tv2-heatmap-names       { font-size: 0.6rem; }
     }
   </style>
 </BaseLayout>

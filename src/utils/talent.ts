@@ -1406,6 +1406,211 @@ export function loadWatchlist(): PersonRecord[] {
 }
 
 // ---------------------------------------------------------------------------
+// Pool Viz — makes the rating distribution legible.
+//
+// Two charts share one upstream pass over the watchlist:
+//   * scatter — every rated person as a dot in (paperCount × rating) space,
+//     coloured by their primary method family. Reveals the "high-volume but
+//     📖" cluster vs the "single-⚡-spike" cluster vs the polish-grinders.
+//   * heatmap — method-family × rating tier matrix. Cells show count plus
+//     top 2 names. Reveals where the talent is dense and where it's thin.
+//
+// Both surfaces share the same family-ranking pass so a researcher's primary
+// family is consistent with their constellation position.
+// ---------------------------------------------------------------------------
+
+export interface ScatterDot {
+  name:                 string;
+  slug:                 string;
+  paperCount90d:        number;
+  rating:               string;           // ⚡ | 🔧 | 📖
+  primaryFamily:        string;
+  primaryFamilyDisplay: string;
+  domain:               'vla' | 'ai';
+  affiliation:          string | null;
+}
+
+export interface HeatmapCell {
+  family:       string;
+  familyDisplay: string;
+  domain:       'vla' | 'ai';
+  rating:       '⚡' | '🔧' | '📖';
+  count:        number;
+  topNames:     string[];        // up to 2
+  topSlugs:     string[];
+}
+
+export interface PoolViz {
+  // scatter dataset — pre-rated 📖 + 🔧 + ⚡, every rated person we tracked
+  scatter:     ScatterDot[];
+  scatterMaxPapers: number;      // x-axis max for SVG scaling
+  // heatmap rows ordered by family popularity descending
+  heatmapFamilies: Array<{ family: string; familyDisplay: string; domain: 'vla' | 'ai' }>;
+  heatmapCells:    HeatmapCell[];
+  ratingTiers:     Array<'⚡' | '🔧' | '📖'>;
+  totals: {
+    rated:    number;             // ⚡ + 🔧
+    read:     number;             // 📖
+    flashes:  number;
+    polish:   number;
+    families: number;
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Embedding-backed match data — produced by scripts/build-talent-embeddings.ts.
+// The file is committed to src/data/talent-embeddings.json. If absent, the
+// /talent/match/ page degrades gracefully to facet-only mode.
+// ---------------------------------------------------------------------------
+
+export interface MatchPerson {
+  idx:                  number;
+  slug:                 string;
+  name:                 string;
+  affiliation:          string | null;
+  topRating:            string;
+  paperCount90d:        number;
+  contactStatus:        ContactStatus;
+  primaryFamily:        string | null;
+  primaryFamilyDisplay: string | null;
+  region:               'cn' | 'us' | 'eu' | 'other';
+  topMethods:           string[];
+  neighbors:            Array<{ pi: number; score: number }>;
+}
+
+export interface MatchQuery {
+  id:      string;
+  label:   string;
+  labelSC: string;
+  text:    string;
+  results: Array<{ pi: number; score: number }>;
+}
+
+export interface MatchData {
+  version:      number;
+  generated_at: string;
+  model:        string;
+  dim:          number;
+  people:       MatchPerson[];
+  queries:      MatchQuery[];
+  families:     Array<{ family: string; familyDisplay: string; domain: 'vla' | 'ai' }>;
+}
+
+export function loadMatchData(): MatchData | null {
+  return readJsonLocal<MatchData>('talent-embeddings.json');
+}
+
+export function loadPoolViz(): PoolViz {
+  // We include 📖 here, not just ⚡/🔧. The whole point of the chart is to
+  // show "here's why ⚡ is rare and where the read-only volume lives".
+  // 📖 with paperCount=1 is the bulk of the right side — that's the story.
+  const pool = loadPeople({ minPaperCount90d: 1 })
+    .filter(p => p.topRating === '⚡' || p.topRating === '🔧' || p.topRating === '📖');
+
+  // Assign primary family by ranking each person's evidence titles. Match the
+  // constellation logic so colours line up across charts.
+  type Hit = { p: PersonRecord; family: string; domain: 'vla' | 'ai' };
+  const hits: Hit[] = [];
+  const familyTotals = new Map<string, { count: number; vla: number; ai: number }>();
+
+  for (const p of pool) {
+    const ranked = rankMethodFamilies(p.evidence.map(e => e.title ?? ''));
+    if (ranked.length === 0) continue;
+    const family = ranked[0][0];
+    let vla = 0, ai = 0;
+    for (const e of p.evidence) {
+      if (e.domain === 'vla') vla++;
+      else if (e.domain === 'ai') ai++;
+    }
+    const domain: 'vla' | 'ai' = vla >= ai ? 'vla' : 'ai';
+    hits.push({ p, family, domain });
+    if (!familyTotals.has(family)) familyTotals.set(family, { count: 0, vla: 0, ai: 0 });
+    const ft = familyTotals.get(family)!;
+    ft.count++;
+    if (domain === 'vla') ft.vla++; else ft.ai++;
+  }
+
+  // Heatmap: keep the families with ≥3 researchers; everything else collapses
+  // into the "long tail" handled by the scatter colour-coding only.
+  const heatmapFamilies = [...familyTotals.entries()]
+    .filter(([, v]) => v.count >= 3)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 12)
+    .map(([f, v]) => ({
+      family:        f,
+      familyDisplay: familyDisplay(f),
+      domain:        (v.vla >= v.ai ? 'vla' : 'ai') as 'vla' | 'ai',
+    }));
+  const keptFamilies = new Set(heatmapFamilies.map(f => f.family));
+
+  // Cell builder: per (family, rating), pull names sorted by paperCount desc.
+  const ratingTiers: Array<'⚡' | '🔧' | '📖'> = ['⚡', '🔧', '📖'];
+  const cellMap = new Map<string, HeatmapCell>();
+  for (const hf of heatmapFamilies) {
+    for (const r of ratingTiers) {
+      cellMap.set(`${hf.family}|${r}`, {
+        family:       hf.family,
+        familyDisplay: hf.familyDisplay,
+        domain:       hf.domain,
+        rating:       r,
+        count:        0,
+        topNames:     [],
+        topSlugs:     [],
+      });
+    }
+  }
+  // We need names per cell sorted by paperCount; collect first, then trim.
+  const cellPicks = new Map<string, PersonRecord[]>();
+  for (const h of hits) {
+    if (!keptFamilies.has(h.family)) continue;
+    const k = `${h.family}|${h.p.topRating}`;
+    const cell = cellMap.get(k);
+    if (!cell) continue;
+    cell.count++;
+    if (!cellPicks.has(k)) cellPicks.set(k, []);
+    cellPicks.get(k)!.push(h.p);
+  }
+  for (const [k, ppl] of cellPicks.entries()) {
+    const cell = cellMap.get(k)!;
+    ppl.sort((a, b) => b.paperCount90d - a.paperCount90d || a.name.localeCompare(b.name));
+    cell.topNames = ppl.slice(0, 2).map(p => p.name);
+    cell.topSlugs = ppl.slice(0, 2).map(p => slugifyName(p.name));
+  }
+
+  // Scatter dataset — emit one dot per matched person (even outside heatmap families).
+  const scatter: ScatterDot[] = hits.map(h => ({
+    name:                 h.p.name,
+    slug:                 slugifyName(h.p.name),
+    paperCount90d:        h.p.paperCount90d,
+    rating:               h.p.topRating,
+    primaryFamily:        h.family,
+    primaryFamilyDisplay: familyDisplay(h.family),
+    domain:               h.domain,
+    affiliation:          h.p.affiliation,
+  }));
+  const scatterMaxPapers = Math.max(1, ...scatter.map(s => s.paperCount90d));
+
+  const flashes = pool.filter(p => p.topRating === '⚡').length;
+  const polish  = pool.filter(p => p.topRating === '🔧').length;
+  const read    = pool.filter(p => p.topRating === '📖').length;
+
+  return {
+    scatter,
+    scatterMaxPapers,
+    heatmapFamilies,
+    heatmapCells: [...cellMap.values()],
+    ratingTiers,
+    totals: {
+      rated:    flashes + polish,
+      read,
+      flashes,
+      polish,
+      families: heatmapFamilies.length,
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Talent stats — small overview for /talent hub
 // ---------------------------------------------------------------------------
 

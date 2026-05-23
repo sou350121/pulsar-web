@@ -1,0 +1,873 @@
+---
+/**
+ * /talent/match/ — HR demand zone.
+ *
+ * HR types/clicks a requirement → see ranked candidate list.
+ *
+ * Matching strategy (designed for GitHub Pages static deploy):
+ *   1. Canonical query chips — DashScope-embedded at BUILD time. Each chip
+ *      resolves to a pre-baked top-30 list. Click → instant ranked candidates.
+ *   2. Facet filters — pure client-side filter over the full population:
+ *      rating tier · method family · region · paperCount minimum · contact
+ *      status. Works in tandem with the chip selection.
+ *   3. Free-text — substring match across name + affiliation + paper titles.
+ *      Falls back to keyword-OR over method-family vocabulary so common HR
+ *      phrasing ("diffusion policy expert") routes to the right family.
+ *   4. Find similar to X — pre-baked person×person top-10 cosine neighbours.
+ *
+ * The whole page never calls an LLM/embedding API at runtime. The browser
+ * just reads pre-baked JSON and filters in memory.
+ *
+ * If src/data/talent-embeddings.json is absent (script not run yet), the
+ * page degrades to facet-only mode and shows a small notice.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RatingBadge from '../../components/RatingBadge.astro';
+import {
+  loadPeople,
+  loadMatchData,
+  loadPoolViz,
+  slugifyName,
+  topMethodsForEvidence,
+} from '../../utils/talent';
+
+const base       = import.meta.env.BASE_URL;
+const matchData  = loadMatchData();
+const poolViz    = loadPoolViz();
+
+// Build the canonical person table even without embeddings — facet-only mode.
+const pool = loadPeople({ minPaperCount90d: 1 })
+  .filter(p => p.topRating === '⚡' || p.topRating === '🔧' || p.topRating === '📖');
+
+function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
+  if (!aff) return 'other';
+  const a = aff.toLowerCase();
+  const CN = ['清华', '北大', '中科院', '上交', '复旦', '浙大', '人大', '北航', '南大', 'tsinghua', 'peking', 'sjtu', 'shanghai jiao', 'fudan', 'zhejiang', 'cuhk', 'hkust', 'hku', 'chinese academy', 'baidu', 'alibaba', 'huawei', 'bytedance', 'tencent', 'beijing'];
+  const US = ['stanford', 'cmu', 'mit', 'berkeley', 'princeton', 'harvard', 'cornell', 'columbia', 'nyu', 'caltech', 'ucla', 'ucsd', 'ucsb', 'umich', 'gatech', 'georgia tech', 'washington', 'illinois', 'maryland', 'austin', 'wisconsin', 'usc', 'nvidia', 'google', 'meta', 'microsoft', 'apple', 'amazon', 'openai', 'anthropic', 'deepmind'];
+  const EU = ['oxford', 'cambridge', 'imperial', 'ucl', 'eth', 'epfl', 'inria', 'mpi', 'max planck', 'tübingen', 'tubingen', 'amsterdam'];
+  if (CN.some(k => a.includes(k))) return 'cn';
+  if (US.some(k => a.includes(k))) return 'us';
+  if (EU.some(k => a.includes(k))) return 'eu';
+  return 'other';
+}
+
+// Materialise the people array we expose to client JS. Mirrors MatchPerson
+// shape so the client filter code is identical whether or not embeddings
+// JSON exists.
+const peopleClient = pool.map((p, idx) => ({
+  idx,
+  slug:          slugifyName(p.name),
+  name:          p.name,
+  affiliation:   p.affiliation,
+  topRating:     p.topRating,
+  paperCount90d: p.paperCount90d,
+  contactStatus: p.contactStatus,
+  region:        inferRegion(p.affiliation),
+  topMethods:    topMethodsForEvidence(p.evidence, 3),
+  // Lower-case haystack for free-text substring match (name + affiliation + titles)
+  haystack: [
+    p.name,
+    p.affiliation ?? '',
+    ...p.evidence.map(e => e.title),
+  ].join(' ').toLowerCase(),
+}));
+
+// When embeddings exist, use the embedding-side person list (it has neighbor
+// data + primaryFamily). When they don't, fall back to client-side person list.
+const useEmbeddings = matchData !== null && matchData.people.length > 0;
+
+// Page state — facet options derived from data
+const ratingOpts = [
+  { key: '⚡', label: '⚡ Flash', labelSC: '⚡ 突破' },
+  { key: '🔧', label: '🔧 Polish', labelSC: '🔧 精修' },
+  { key: '📖', label: '📖 Read', labelSC: '📖 已讀' },
+];
+const regionOpts = [
+  { key: 'cn',    label: '中國機構', labelSC: '中国机构' },
+  { key: 'us',    label: '北美機構', labelSC: '北美机构' },
+  { key: 'eu',    label: '歐洲機構', labelSC: '欧洲机构' },
+  { key: 'other', label: '其他 / 無', labelSC: '其他 / 无' },
+];
+// Method family options — top 15 by population
+const familyOpts = poolViz.heatmapFamilies.slice(0, 15);
+
+// Canonical queries — order: family chips first, then cross-cuts
+const chips = matchData?.queries ?? [];
+
+// Stat summary
+const totalPool = peopleClient.length;
+const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
+---
+<BaseLayout title="HR · Talent Match" lang="en">
+  <main class="match-main">
+    <!-- ── Header / page intro ─────────────────────────────────────────── -->
+    <header class="match-header">
+      <div class="match-header-text">
+        <a href={`${base}/talent/`} class="match-back">
+          <span data-tc>← 返回人才雷達</span>
+          <span data-sc>← 返回人才雷达</span>
+        </a>
+        <h1 class="match-h1">
+          <span data-tc>HR 需求台</span>
+          <span data-sc>HR 需求台</span>
+          <span class="match-h1-en">/ Talent Match</span>
+        </h1>
+        <p class="match-lede">
+          <span data-tc>輸入需求或點擊預設標籤 — 從 <strong>{totalPool}</strong> 位已評研究員中過濾出對應人選。每位候選人都帶完整論文佐證。</span>
+          <span data-sc>输入需求或点击预设标签 — 从 <strong>{totalPool}</strong> 位已评研究员中过滤出对应人选。每位候选人都带完整论文佐证。</span>
+        </p>
+        <p class="match-meta">
+          <span class="match-meta-pill">
+            <span data-tc>無郵箱 · 純論文署名匹配</span>
+            <span data-sc>无邮箱 · 纯论文署名匹配</span>
+          </span>
+          {useEmbeddings ? (
+            <span class="match-meta-pill match-meta-pill--on">
+              <span data-tc>語意匹配 · {chips.length} 預設標籤 · {lastUpdated}</span>
+              <span data-sc>语意匹配 · {chips.length} 预设标签 · {lastUpdated}</span>
+            </span>
+          ) : (
+            <span class="match-meta-pill match-meta-pill--off">
+              <span data-tc>純條件過濾模式 · 未生成 embedding 資料</span>
+              <span data-sc>纯条件过滤模式 · 未生成 embedding 数据</span>
+            </span>
+          )}
+        </p>
+      </div>
+    </header>
+
+    <!-- ── Canonical query chips ──────────────────────────────────────── -->
+    {chips.length > 0 && (
+      <section class="match-chips-section">
+        <h2 class="match-section-h2">
+          <span data-tc>① 預設需求標籤</span>
+          <span data-sc>① 预设需求标签</span>
+          <span class="match-section-h2-en">· canonical queries · click to load ranked top 30</span>
+        </h2>
+        <div class="match-chips">
+          {chips.map(q => (
+            <button
+              type="button"
+              class="match-chip"
+              data-chip-id={q.id}
+              title={q.text}
+            >
+              <span data-tc>{q.label}</span>
+              <span data-sc>{q.labelSC}</span>
+            </button>
+          ))}
+          <button
+            type="button"
+            class="match-chip match-chip--clear"
+            data-chip-id="__clear__"
+          >
+            <span data-tc>✕ 清除標籤</span>
+            <span data-sc>✕ 清除标签</span>
+          </button>
+        </div>
+      </section>
+    )}
+
+    <!-- ── Free-text + facet filters ──────────────────────────────────── -->
+    <section class="match-controls">
+      <h2 class="match-section-h2">
+        <span data-tc>{chips.length > 0 ? '② 自由文字 + 細部條件' : '① 自由文字 + 細部條件'}</span>
+        <span data-sc>{chips.length > 0 ? '② 自由文字 + 细部条件' : '① 自由文字 + 细部条件'}</span>
+        <span class="match-section-h2-en">· free-text · faceted filters</span>
+      </h2>
+      <div class="match-controls-grid">
+        <label class="match-control match-control--wide">
+          <span class="match-control-label">
+            <span data-tc>關鍵字</span>
+            <span data-sc>关键字</span>
+          </span>
+          <input
+            id="match-query"
+            type="search"
+            placeholder="e.g. diffusion policy, world model, manipulation…"
+            class="match-input"
+            autocomplete="off"
+          />
+        </label>
+
+        <label class="match-control">
+          <span class="match-control-label">
+            <span data-tc>評分</span>
+            <span data-sc>评分</span>
+          </span>
+          <span class="match-pills">
+            {ratingOpts.map(r => (
+              <label class="match-pill">
+                <input type="checkbox" data-facet="rating" value={r.key} checked />
+                <span data-tc>{r.label}</span><span data-sc>{r.labelSC}</span>
+              </label>
+            ))}
+          </span>
+        </label>
+
+        <label class="match-control">
+          <span class="match-control-label">
+            <span data-tc>地區</span>
+            <span data-sc>地区</span>
+          </span>
+          <span class="match-pills">
+            {regionOpts.map(r => (
+              <label class="match-pill">
+                <input type="checkbox" data-facet="region" value={r.key} checked />
+                <span data-tc>{r.label}</span><span data-sc>{r.labelSC}</span>
+              </label>
+            ))}
+          </span>
+        </label>
+
+        <label class="match-control match-control--wide">
+          <span class="match-control-label">
+            <span data-tc>方法族</span>
+            <span data-sc>方法族</span>
+            <span class="match-control-hint">
+              <span data-tc>· 不勾為「全部」</span>
+              <span data-sc>· 不勾为「全部」</span>
+            </span>
+          </span>
+          <span class="match-pills">
+            {familyOpts.map(f => (
+              <label class="match-pill">
+                <input type="checkbox" data-facet="family" value={f.familyDisplay} />
+                <span>{f.familyDisplay}</span>
+              </label>
+            ))}
+          </span>
+        </label>
+
+        <label class="match-control">
+          <span class="match-control-label">
+            <span data-tc>最少論文數</span>
+            <span data-sc>最少论文数</span>
+            <span class="match-control-hint" id="match-papermin-display">≥ 1</span>
+          </span>
+          <input
+            id="match-papermin"
+            type="range"
+            min="1" max="8" step="1" value="1"
+            class="match-range"
+          />
+        </label>
+
+        <label class="match-control">
+          <span class="match-control-label">
+            <span data-tc>聯繫狀態</span>
+            <span data-sc>联系状态</span>
+          </span>
+          <span class="match-pills">
+            <label class="match-pill">
+              <input type="checkbox" data-facet="contact" value="linked_via_lab" checked />
+              <span data-tc>機構關聯</span><span data-sc>机构关联</span>
+            </label>
+            <label class="match-pill">
+              <input type="checkbox" data-facet="contact" value="social_mention" checked />
+              <span data-tc>社交提及</span><span data-sc>社交提及</span>
+            </label>
+            <label class="match-pill">
+              <input type="checkbox" data-facet="contact" value="not_linked" checked />
+              <span data-tc>僅署名</span><span data-sc>仅署名</span>
+            </label>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── Results ─────────────────────────────────────────────────────── -->
+    <section class="match-results">
+      <header class="match-results-header">
+        <h2 class="match-section-h2">
+          <span data-tc>③ 候選名單</span>
+          <span data-sc>③ 候选名单</span>
+          <span class="match-section-h2-en">· ranked candidates</span>
+        </h2>
+        <span class="match-results-count">
+          <span id="match-count">{totalPool}</span>
+          <span data-tc> 位候選人</span>
+          <span data-sc> 位候选人</span>
+        </span>
+      </header>
+      <div id="match-grid" class="match-grid">
+        {/* Client-side JS rebuilds this list. Server-rendered seed shows the
+            first 30 unsorted so something is visible before JS hydrates and
+            so crawlers see real content. */}
+        {peopleClient.slice(0, 30).map(p => (
+          <article class="match-card" data-slug={p.slug}>
+            <div class="match-card-head">
+              <span class="match-card-rating">{p.topRating}</span>
+              <h3 class="match-card-name">{p.name}</h3>
+              <a
+                class="match-card-similar"
+                href={`#`}
+                data-similar-slug={p.slug}
+                title="Find similar"
+              >≈</a>
+            </div>
+            <div class="match-card-meta">
+              <span class="match-card-aff">{p.affiliation ?? '—'}</span>
+              <span class="match-card-sep">·</span>
+              <span class="match-card-papers">{p.paperCount90d} <span data-tc>篇 90d</span><span data-sc>篇 90d</span></span>
+            </div>
+            {p.topMethods.length > 0 && (
+              <div class="match-card-methods">
+                {p.topMethods.map(t => <span class="match-card-method">{t}</span>)}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Method box for client JS ───────────────────────────────────── -->
+    <details class="match-method">
+      <summary>
+        <span data-tc>方法論 · How matching works</span>
+        <span data-sc>方法论 · How matching works</span>
+      </summary>
+      <ul>
+        <li>
+          <strong>① 預設標籤</strong>
+          <span data-tc> — 每個標籤的 query 文字在 build 時被 DashScope text-embedding-v3 編碼，再對全 pool 算 cosine，預烤 top 30。前端只查表，無 runtime API 調用。</span>
+          <span data-sc> — 每个标签的 query 文字在 build 时被 DashScope text-embedding-v3 编码，再对全 pool 算 cosine，预烤 top 30。前端只查表，无 runtime API 调用。</span>
+        </li>
+        <li>
+          <strong>② 自由文字</strong>
+          <span data-tc> — substring 匹配 name + affiliation + 90 日內所有論文標題。沒走 embedding（因為瀏覽器沒法在 GitHub Pages 上做 inference）。</span>
+          <span data-sc> — substring 匹配 name + affiliation + 90 日内所有论文标题。没走 embedding（因为浏览器没法在 GitHub Pages 上做 inference）。</span>
+        </li>
+        <li>
+          <strong>② 細部條件</strong>
+          <span data-tc> — 評分 / 地區 / 方法族 / 最少論文數 / 聯繫狀態。AND 邏輯，與標籤、自由文字疊加。</span>
+          <span data-sc> — 评分 / 地区 / 方法族 / 最少论文数 / 联系状态。AND 逻辑，与标签、自由文字叠加。</span>
+        </li>
+        <li>
+          <strong>≈ 找相似</strong>
+          <span data-tc> — 點某人卡片的 ≈ 按鈕 → 顯示 cosine 最近的 10 位研究員（同樣在 build 時預烤）。</span>
+          <span data-sc> — 点某人卡片的 ≈ 按钮 → 显示 cosine 最近的 10 位研究员（同样在 build 时预烤）。</span>
+        </li>
+        <li>
+          <strong>NO-EMAIL</strong>
+          <span data-tc> — 整個 pipeline 不存任何郵箱欄位；PersonRecord 在型別層強制 <code>email?: never</code>，smoke 測試額外做 runtime assert。</span>
+          <span data-sc> — 整个 pipeline 不存任何邮箱字段；PersonRecord 在类型层强制 <code>email?: never</code>，smoke 测试额外做 runtime assert。</span>
+        </li>
+      </ul>
+    </details>
+  </main>
+
+  <!-- ── Data injection for client JS ───────────────────────────────────
+       Astro's define:vars serialises straight into the script, no fetch needed.
+  ───────────────────────────────────────────────────────────────────── -->
+  <script type="application/json" id="match-people-data" set:html={JSON.stringify(peopleClient)} />
+  {matchData && (
+    <>
+      <script type="application/json" id="match-queries-data" set:html={JSON.stringify(matchData.queries)} />
+      <script type="application/json" id="match-neighbors-data" set:html={JSON.stringify(matchData.people.map(p => ({ slug: p.slug, neighbors: p.neighbors })))} />
+    </>
+  )}
+
+  <script is:inline>
+    (function () {
+      const peopleEl = document.getElementById('match-people-data');
+      if (!peopleEl) return;
+      const PEOPLE = JSON.parse(peopleEl.textContent);
+      const slugToIdx = new Map(PEOPLE.map((p, i) => [p.slug, i]));
+
+      const queriesEl   = document.getElementById('match-queries-data');
+      const neighborsEl = document.getElementById('match-neighbors-data');
+      const QUERIES   = queriesEl   ? JSON.parse(queriesEl.textContent)   : [];
+      const NEIGHBORS = neighborsEl ? JSON.parse(neighborsEl.textContent) : [];
+      const queryById     = new Map(QUERIES.map(q => [q.id, q]));
+      const neighborsBySlug = new Map(NEIGHBORS.map(n => [n.slug, n.neighbors]));
+
+      const grid       = document.getElementById('match-grid');
+      const countEl    = document.getElementById('match-count');
+      const queryInput = document.getElementById('match-query');
+      const paperMin   = document.getElementById('match-papermin');
+      const paperMinDisplay = document.getElementById('match-papermin-display');
+
+      let activeChipId = null;
+      let similarOfSlug = null;
+
+      function readFacet(name) {
+        return [...document.querySelectorAll(`input[data-facet="${name}"]:checked`)].map(el => el.value);
+      }
+      function readFamilies() {
+        // Special case: facet "family" with no boxes ticked means "any family".
+        return [...document.querySelectorAll('input[data-facet="family"]:checked')].map(el => el.value);
+      }
+
+      function passes(p, q, ratings, regions, families, minPapers, contacts) {
+        if (!ratings.includes(p.topRating))    return false;
+        if (!regions.includes(p.region))       return false;
+        if (!contacts.includes(p.contactStatus)) return false;
+        if (p.paperCount90d < minPapers)       return false;
+        if (families.length > 0) {
+          // OR over selected families — at least one tag matches
+          const hit = p.topMethods.some(t => families.includes(t));
+          if (!hit) return false;
+        }
+        if (q && !p.haystack.includes(q)) return false;
+        return true;
+      }
+
+      function render() {
+        const q = (queryInput.value || '').trim().toLowerCase();
+        const ratings  = readFacet('rating');
+        const regions  = readFacet('region');
+        const families = readFamilies();
+        const contacts = readFacet('contact');
+        const minPapers = parseInt(paperMin.value, 10) || 1;
+        paperMinDisplay.textContent = '≥ ' + minPapers;
+
+        // Decide candidate index order:
+        //   1. If similar-to active → pre-baked neighbor order
+        //   2. Else if chip active   → chip's pre-baked top-30 order
+        //   3. Else                  → all people (no scoring)
+        let order = null;     // array of indices in ranked order, or null
+        let scores = null;
+        if (similarOfSlug && neighborsBySlug.has(similarOfSlug)) {
+          // First the source (visually anchor), then their neighbors
+          const srcIdx = slugToIdx.get(similarOfSlug);
+          const nbs = neighborsBySlug.get(similarOfSlug).map(n => n.pi);
+          order = [srcIdx, ...nbs].filter(i => i !== undefined);
+          scores = new Map([[srcIdx, 1.0]]);
+          neighborsBySlug.get(similarOfSlug).forEach(n => scores.set(n.pi, n.score));
+        } else if (activeChipId && queryById.has(activeChipId)) {
+          order = queryById.get(activeChipId).results.map(r => r.pi);
+          scores = new Map(queryById.get(activeChipId).results.map(r => [r.pi, r.score]));
+        }
+
+        let candidates;
+        if (order) {
+          candidates = order.map(i => PEOPLE[i]).filter(Boolean);
+          // Apply facet filters even on top of chip ranking
+          candidates = candidates.filter(p => passes(p, q, ratings, regions, families, minPapers, contacts));
+        } else {
+          candidates = PEOPLE.filter(p => passes(p, q, ratings, regions, families, minPapers, contacts));
+          // Default sort: ⚡ first, then 🔧, then 📖; tie-break by paperCount desc
+          const rOrder = r => r === '⚡' ? 0 : r === '🔧' ? 1 : 2;
+          candidates.sort((a, b) => rOrder(a.topRating) - rOrder(b.topRating) || b.paperCount90d - a.paperCount90d || a.name.localeCompare(b.name));
+        }
+
+        countEl.textContent = candidates.length;
+
+        // Render cards
+        const html = candidates.slice(0, 80).map(p => {
+          const score = scores ? scores.get(slugToIdx.get(p.slug)) : null;
+          const scoreBadge = score !== null && score !== undefined
+            ? `<span class="match-card-score" title="cosine similarity">${(score * 100).toFixed(0)}</span>`
+            : '';
+          const methods = (p.topMethods || []).map(t => `<span class="match-card-method">${escapeHtml(t)}</span>`).join('');
+          return `<article class="match-card" data-slug="${p.slug}">
+            <div class="match-card-head">
+              <span class="match-card-rating">${p.topRating}</span>
+              <h3 class="match-card-name">${escapeHtml(p.name)}</h3>
+              ${scoreBadge}
+              <a class="match-card-similar" href="#" data-similar-slug="${p.slug}" title="Find similar">≈</a>
+            </div>
+            <div class="match-card-meta">
+              <span class="match-card-aff">${escapeHtml(p.affiliation || '—')}</span>
+              <span class="match-card-sep">·</span>
+              <span class="match-card-papers">${p.paperCount90d} 篇 90d</span>
+            </div>
+            ${methods ? `<div class="match-card-methods">${methods}</div>` : ''}
+          </article>`;
+        }).join('');
+        grid.innerHTML = html || '<div class="match-empty">沒有符合條件的候選人 · No matching candidates</div>';
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      }
+
+      // Wire up controls
+      queryInput.addEventListener('input', render);
+      paperMin.addEventListener('input', render);
+      document.querySelectorAll('input[data-facet]').forEach(el => el.addEventListener('change', render));
+
+      // Chip clicks
+      document.querySelectorAll('.match-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-chip-id');
+          if (id === '__clear__') {
+            activeChipId = null;
+            similarOfSlug = null;
+            document.querySelectorAll('.match-chip').forEach(b => b.classList.remove('match-chip--active'));
+          } else {
+            activeChipId  = id;
+            similarOfSlug = null;
+            document.querySelectorAll('.match-chip').forEach(b => b.classList.remove('match-chip--active'));
+            btn.classList.add('match-chip--active');
+          }
+          render();
+        });
+      });
+
+      // Find-similar buttons (event delegation so dynamically rendered cards work)
+      grid.addEventListener('click', (ev) => {
+        const target = ev.target.closest('.match-card-similar');
+        if (!target) return;
+        ev.preventDefault();
+        const slug = target.getAttribute('data-similar-slug');
+        if (!slug || !neighborsBySlug.has(slug)) {
+          target.title = 'similarity data not available';
+          return;
+        }
+        similarOfSlug = slug;
+        activeChipId = null;
+        document.querySelectorAll('.match-chip').forEach(b => b.classList.remove('match-chip--active'));
+        render();
+      });
+
+      // Initial render
+      render();
+    })();
+  </script>
+
+  <style>
+    .match-main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      color: var(--text-primary);
+    }
+    .match-header {
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .match-back {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 0.6rem;
+    }
+    .match-back:hover { color: var(--accent-amber); }
+    .match-h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin: 0 0 0.4rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .match-h1-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .match-lede {
+      margin: 0.25rem 0 0.85rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .match-lede strong { color: var(--text-primary); font-weight: 700; }
+    .match-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0; }
+    .match-meta-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(120,120,120,0.10);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .match-meta-pill--on  {
+      background: rgba(15,143,160,0.10);
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+    .match-meta-pill--off {
+      background: rgba(212,145,10,0.10);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber);
+    }
+
+    .match-section-h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 0.85rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .match-section-h2-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+
+    .match-chips-section, .match-controls, .match-results {
+      margin-top: 1.5rem;
+    }
+    .match-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .match-chip {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+    .match-chip:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+    .match-chip--active {
+      background: var(--accent-amber);
+      border-color: var(--accent-amber);
+      color: var(--surface);
+    }
+    .match-chip--clear {
+      border-style: dashed;
+      color: var(--text-tertiary);
+    }
+
+    .match-controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+      align-items: start;
+    }
+    .match-control {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .match-control--wide { grid-column: span 2; }
+    @media (max-width: 700px) {
+      .match-control--wide { grid-column: span 1; }
+    }
+    .match-control-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      display: flex;
+      gap: 0.4rem;
+      align-items: baseline;
+    }
+    .match-control-hint {
+      font-size: 0.6rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .match-input {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+    .match-input:focus {
+      outline: none;
+      border-color: var(--accent-amber);
+    }
+    .match-range { width: 100%; }
+    .match-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .match-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(120,120,120,0.08);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .match-pill input { margin: 0; accent-color: var(--accent-amber); }
+    .match-pill:has(input:checked) {
+      background: rgba(212,145,10,0.12);
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    .match-results-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+    }
+    .match-results-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .match-results-count #match-count {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .match-card {
+      padding: 0.7rem 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .match-card:hover {
+      border-color: var(--accent-amber);
+      box-shadow: 0 0 0 2px rgba(212,145,10,0.08);
+    }
+    .match-card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .match-card-rating { font-size: 1rem; }
+    .match-card-name {
+      font-family: Georgia, 'Noto Serif SC', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .match-card-score {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      background: rgba(15,143,160,0.15);
+      color: var(--accent-cyan);
+    }
+    .match-card-similar {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      padding: 0 0.3rem;
+      border-radius: 3px;
+      transition: color 0.12s ease, background 0.12s ease;
+    }
+    .match-card-similar:hover {
+      color: var(--accent-cyan);
+      background: rgba(15,143,160,0.08);
+    }
+    .match-card-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      align-items: baseline;
+    }
+    .match-card-aff {
+      color: var(--accent-amber);
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+    .match-card-sep { color: var(--text-tertiary); }
+    .match-card-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .match-card-method {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(120,120,120,0.10);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .match-empty {
+      grid-column: 1 / -1;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-tertiary);
+      font-size: 0.85rem;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+    }
+
+    .match-method {
+      margin-top: 2.5rem;
+      padding: 0.85rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .match-method summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+    }
+    .match-method ul {
+      margin: 0.85rem 0 0;
+      padding-left: 1.25rem;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+    .match-method strong {
+      color: var(--text-primary);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      margin-right: 0.25rem;
+    }
+    .match-method code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      padding: 0.05rem 0.25rem;
+      background: rgba(120,120,120,0.10);
+      border-radius: 2px;
+    }
+  </style>
+</BaseLayout>

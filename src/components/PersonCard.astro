@@ -7,7 +7,7 @@
  * Even social-mention status surfaces only a status pill — no link.
  */
 import type { PersonRecord, ContactStatus, HRCandidate } from '../utils/talent';
-import { slugifyName } from '../utils/talent.ts';
+import { slugifyName, topMethodsForEvidence } from '../utils/talent.ts';
 import RatingBadge from './RatingBadge.astro';
 
 interface Props {
@@ -15,6 +15,25 @@ interface Props {
   showWhyNow?: boolean;
 }
 const { record, showWhyNow = false } = Astro.props;
+
+// Method-family tags derived from the same matcher used by the constellation
+// (rankMethodFamilies → topMethodsForEvidence). Surfacing them on the card
+// makes the rating evidence-backed: HR can see "⚡ because of these methods".
+const methodTags = topMethodsForEvidence(record.evidence, 3);
+
+// Rating rationale — count evidence by tier. This is the "why ⚡?" answer.
+const ratingCounts = {
+  flash:  record.evidence.filter(e => e.rating === '⚡').length,
+  polish: record.evidence.filter(e => e.rating === '🔧').length,
+  read:   record.evidence.filter(e => e.rating === '📖').length,
+};
+const rationaleParts: string[] = [];
+if (ratingCounts.flash  > 0) rationaleParts.push(`${ratingCounts.flash} ⚡`);
+if (ratingCounts.polish > 0) rationaleParts.push(`${ratingCounts.polish} 🔧`);
+if (ratingCounts.read   > 0) rationaleParts.push(`${ratingCounts.read} 📖`);
+const ratingRationale = rationaleParts.join(' · ');
+
+const drawerCount = Math.max(0, record.evidence.length - 2);
 
 const CONTACT_META: Record<ContactStatus, { label: string; labelSC: string; bg: string; color: string }> = {
   linked_via_lab: {
@@ -87,8 +106,9 @@ const hue      = avatarHue(record.name);
     </span>
   </div>
 
-  <!-- Contact status pill. NO-EMAIL is enforced at the data layer and stated
-       on the page banner — repeating it per row was noisy. -->
+  <!-- Contact status pill + method tags. NO-EMAIL is enforced at the data
+       layer; the contact pill never carries an email. Method tags surface
+       WHY the person carries this rating without exposing private signals. -->
   <div class="flex flex-wrap items-center gap-2">
     <span
       class="inline-flex items-center font-ibm-plex-mono rounded-full border px-2 py-0.5 text-xs"
@@ -98,7 +118,26 @@ const hue      = avatarHue(record.name);
       <span data-tc>{contact.label}</span>
       <span data-sc>{contact.labelSC}</span>
     </span>
+    {methodTags.map(t => (
+      <span
+        class="inline-flex items-center font-ibm-plex-mono rounded-full px-2 py-0.5 text-[0.65rem] uppercase tracking-wide"
+        style="background: rgba(120,120,120,0.10); color: var(--text-muted); border: 1px solid var(--border)"
+        title={`Matched method family — ${t}`}
+      >{t}</span>
+    ))}
   </div>
+
+  <!-- Rating rationale strip — makes ⚡🔧📖 evidence-backed, not opaque. -->
+  {ratingRationale && (
+    <div
+      class="text-[0.65rem] font-ibm-plex-mono uppercase tracking-wide flex items-center gap-2"
+      style="color: var(--text-muted)"
+    >
+      <span style="color: var(--accent-amber); font-weight: 700">{record.topRating}</span>
+      <span data-tc>來自 {ratingRationale}（90 天）</span>
+      <span data-sc>来自 {ratingRationale}（90 天）</span>
+    </div>
+  )}
 
   <!-- HR queue: why now -->
   {showWhyNow && isHRCandidate && (
@@ -108,7 +147,8 @@ const hue      = avatarHue(record.name);
     </p>
   )}
 
-  <!-- Evidence: top 2 papers -->
+  <!-- Evidence — top 2 always visible, rest in expandable drawer.
+       Pure <details>/<summary> (no JS) so it works on the static site. -->
   {record.evidence.length > 0 && (
     <div class="flex flex-col gap-2 mt-1 pt-2 border-t border-pulsar-border">
       <span class="text-xs font-ibm-plex-mono text-pulsar-muted uppercase tracking-wide">
@@ -130,11 +170,31 @@ const hue      = avatarHue(record.name);
           </span>
         </a>
       ))}
-      {record.evidence.length > 2 && (
-        <span class="text-xs text-pulsar-muted italic">
-          <span data-tc>+ {record.evidence.length - 2} 篇</span>
-          <span data-sc>+ {record.evidence.length - 2} 篇</span>
-        </span>
+      {drawerCount > 0 && (
+        <details class="person-drawer">
+          <summary class="text-xs font-ibm-plex-mono text-pulsar-amber hover:underline cursor-pointer select-none">
+            <span data-tc>展開另 {drawerCount} 篇 ▾</span>
+            <span data-sc>展开另 {drawerCount} 篇 ▾</span>
+          </summary>
+          <div class="flex flex-col gap-2 mt-2">
+            {record.evidence.slice(2).map(ev => (
+              <a
+                href={ev.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-start gap-2 text-xs text-pulsar-text hover:text-pulsar-amber transition-colors leading-relaxed"
+              >
+                <RatingBadge rating={ev.rating} size="sm" />
+                <span class="line-clamp-2 flex-1">
+                  {ev.title}
+                  <span class="ml-1 text-pulsar-muted font-ibm-plex-mono text-[0.65rem]">
+                    {ev.date}
+                  </span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </details>
       )}
     </div>
   )}
