@@ -87,9 +87,13 @@ jobs:
 
       - name: Restore force-committed data files
         run: |
-          git ls-tree --name-only HEAD src/data/ | while read f; do
+          # -r recurses into subdirs (e.g. src/data/ontology/) so we list
+          # blobs only. Without -r, directories show up as names and fail
+          # the `git show > "$f"` redirect.
+          git ls-tree -r --name-only HEAD src/data/ | while read f; do
             if [ ! -f "$f" ]; then
               echo "Restoring missing: $f"
+              mkdir -p "$(dirname "$f")"
               git show "HEAD:$f" > "$f"
             fi
           done
