@@ -27,6 +27,8 @@ import {
   loadPeople,
   loadMatchData,
   loadPoolViz,
+  loadStructuralChips,
+  loadPoolSanity,
   topMethodsForEvidence,
 } from '../../utils/talent';
 
@@ -37,6 +39,14 @@ const poolViz    = loadPoolViz();
 // Build the canonical person table even without embeddings — facet-only mode.
 const pool = loadPeople({ minPaperCount90d: 1 })
   .filter(p => p.topRating === '⚡' || p.topRating === '🔧' || p.topRating === '📖');
+
+// Pool sanity — pre-render the ceiling so HR sees it before fiddling.
+const sanity = loadPoolSanity(pool);
+
+// Structural chips — polymath / production / safety computed by rule, not
+// embedding. The audit showed embedding chips at these concepts returned
+// 0/30 to noise. Structural rules over the same pool are honest and instant.
+const structuralChips = loadStructuralChips(pool);
 
 function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
   if (!aff) return 'other';
@@ -53,6 +63,9 @@ function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
 // Materialise the people array we expose to client JS. Mirrors MatchPerson
 // shape so the client filter code is identical whether or not embeddings
 // JSON exists.
+// `evidenceTeaser` carries top 2 paper titles + ratings for the card body —
+// this delivers on the lede's promise of "完整論文佐證" without bloating
+// the payload (~80 bytes/title × 2 × 751 ≈ 120 KB).
 const peopleClient = pool.map((p, idx) => ({
   idx,
   slug:          p.slug,
@@ -63,6 +76,11 @@ const peopleClient = pool.map((p, idx) => ({
   contactStatus: p.contactStatus,
   region:        inferRegion(p.affiliation),
   topMethods:    topMethodsForEvidence(p.evidence, 3),
+  evidenceTeaser: p.evidence.slice(0, 2).map(e => ({
+    title:  e.title,
+    rating: e.rating,
+    url:    e.url,
+  })),
   // Lower-case haystack for free-text substring match (name + affiliation + titles)
   haystack: [
     p.name,
@@ -90,8 +108,27 @@ const regionOpts = [
 // Method family options — top 15 by population
 const familyOpts = poolViz.heatmapFamilies.slice(0, 15);
 
-// Canonical queries — order: family chips first, then cross-cuts
-const chips = matchData?.queries ?? [];
+// Chip lineup:
+//   * Semantic chips (one per top method family) — from embedding JSON.
+//     These survive the audit because the queries are vocabulary-anchored.
+//   * Structural chips (polymath / production / safety) — computed by rule,
+//     not embedding. They replaced the verbose semantic chips that failed
+//     the audit. Marked with `kind: 'structural'` for visual distinction.
+type ChipForRender = {
+  id:       string;
+  label:    string;
+  labelSC:  string;
+  text:     string;
+  results:  Array<{ pi: number; score: number }>;
+  kind:     'semantic' | 'structural';
+};
+const semanticChips: ChipForRender[] = (matchData?.queries ?? []).map(q => ({
+  id: q.id, label: q.label, labelSC: q.labelSC, text: q.text, results: q.results, kind: 'semantic',
+}));
+const ruleChips: ChipForRender[] = structuralChips.map(q => ({
+  id: q.id, label: q.label, labelSC: q.labelSC, text: q.text, results: q.results, kind: 'structural',
+}));
+const chips: ChipForRender[] = [...semanticChips, ...ruleChips];
 
 // Stat summary
 const totalPool = peopleClient.length;
@@ -128,32 +165,98 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
           </span>
           {useEmbeddings ? (
             <span class="match-meta-pill match-meta-pill--on">
-              <span data-tc>語意匹配 · {chips.length} 預設標籤 · {lastUpdated}</span>
-              <span data-sc>语意匹配 · {chips.length} 预设标签 · {lastUpdated}</span>
+              <span data-tc>{semanticChips.length} 語意 + {ruleChips.length} 結構標籤 · {lastUpdated}</span>
+              <span data-sc>{semanticChips.length} 语意 + {ruleChips.length} 结构标签 · {lastUpdated}</span>
             </span>
           ) : (
             <span class="match-meta-pill match-meta-pill--off">
-              <span data-tc>純條件過濾模式 · 未生成 embedding 資料</span>
-              <span data-sc>纯条件过滤模式 · 未生成 embedding 数据</span>
+              <span data-tc>{ruleChips.length} 結構標籤 · 未生成 embedding</span>
+              <span data-sc>{ruleChips.length} 结构标签 · 未生成 embedding</span>
             </span>
           )}
         </p>
       </div>
     </header>
 
+    {/* ── Pool sanity banner — surface the ceiling BEFORE the HR clicks ─ */}
+    <aside class="match-sanity" role="note" aria-label="Pool reality check">
+      <span class="match-sanity-kicker">
+        <span data-tc>池子體質</span><span data-sc>池子体质</span>
+        <span class="match-sanity-kicker-en">· pool ceiling</span>
+      </span>
+      <ul class="match-sanity-stats">
+        <li>
+          <strong>{sanity.withAffiliation}/{sanity.total}</strong>
+          <span class="match-sanity-stats-label">
+            <span data-tc>有機構標記 ({sanity.withAffiliationPct}%)</span>
+            <span data-sc>有机构标记 ({sanity.withAffiliationPct}%)</span>
+          </span>
+        </li>
+        <li>
+          <strong>{sanity.maxPapers90d}</strong>
+          <span class="match-sanity-stats-label">
+            <span data-tc>單人 90 日最高篇數</span>
+            <span data-sc>单人 90 日最高篇数</span>
+          </span>
+        </li>
+        <li>
+          <strong>{sanity.countWith3Plus}</strong>
+          <span class="match-sanity-stats-label">
+            <span data-tc>≥ 3 篇研究員</span>
+            <span data-sc>≥ 3 篇研究员</span>
+          </span>
+        </li>
+        <li>
+          <strong>{sanity.countFlash}⚡</strong>
+          <span class="match-sanity-stats-label">
+            +{sanity.countPolish}🔧 +{sanity.countRead}📖
+          </span>
+        </li>
+      </ul>
+      <p class="match-sanity-note">
+        <span data-tc>※ arXiv 第一作者署名 90 日窗口；多數研究員只見過一篇，故「地區」/「跨方法族」匹配仰賴 affiliation 解析。在 affiliation 覆蓋拉到 50%+ 之前，請優先用「方法族」chip + 自由文字。</span>
+        <span data-sc>※ arXiv 第一作者署名 90 日窗口；多数研究员只见过一篇，故「地区」/「跨方法族」匹配仰赖 affiliation 解析。在 affiliation 覆盖拉到 50%+ 之前，请优先用「方法族」chip + 自由文字。</span>
+      </p>
+    </aside>
+
     <!-- ── Canonical query chips ──────────────────────────────────────── -->
     {chips.length > 0 && (
       <section class="match-chips-section">
         <h2 class="match-section-h2">
-          <span data-tc>① 預設需求標籤</span>
-          <span data-sc>① 预设需求标签</span>
-          <span class="match-section-h2-en">· canonical queries · click to load ranked top 30</span>
+          <span data-tc>① 預設標籤</span>
+          <span data-sc>① 预设标签</span>
+          <span class="match-section-h2-en">· semantic family chips + structural rule chips · click for top 30</span>
         </h2>
         <div class="match-chips">
-          {chips.map(q => (
+          {semanticChips.length > 0 && (
+            <span class="match-chips-divider">
+              <span data-tc>方法族 ·</span>
+              <span data-sc>方法族 ·</span>
+              <span class="match-chips-divider-en">embedding</span>
+            </span>
+          )}
+          {semanticChips.map(q => (
             <button
               type="button"
-              class="match-chip"
+              class="match-chip match-chip--semantic"
+              data-chip-id={q.id}
+              title={q.text}
+            >
+              <span data-tc>{q.label}</span>
+              <span data-sc>{q.labelSC}</span>
+            </button>
+          ))}
+          {ruleChips.length > 0 && (
+            <span class="match-chips-divider">
+              <span data-tc>結構規則 ·</span>
+              <span data-sc>结构规则 ·</span>
+              <span class="match-chips-divider-en">rules</span>
+            </span>
+          )}
+          {ruleChips.map(q => (
+            <button
+              type="button"
+              class="match-chip match-chip--structural"
               data-chip-id={q.id}
               title={q.text}
             >
@@ -306,12 +409,13 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
             <div class="match-card-head">
               <span class="match-card-rating">{p.topRating}</span>
               <h3 class="match-card-name">{p.name}</h3>
-              <a
+              <button
+                type="button"
                 class="match-card-similar"
-                href={`#`}
                 data-similar-slug={p.slug}
+                aria-label={`Find researchers similar to ${p.name}`}
                 title="Find similar"
-              >≈</a>
+              >≈</button>
             </div>
             <div class="match-card-meta">
               <span class="match-card-aff">{p.affiliation ?? '—'}</span>
@@ -322,6 +426,16 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
               <div class="match-card-methods">
                 {p.topMethods.map(t => <span class="match-card-method">{t}</span>)}
               </div>
+            )}
+            {p.evidenceTeaser.length > 0 && (
+              <ul class="match-card-evidence">
+                {p.evidenceTeaser.map(ev => (
+                  <li>
+                    <span class="match-card-evidence-rating">{ev.rating}</span>
+                    <a href={ev.url} target="_blank" rel="noopener noreferrer" class="match-card-evidence-title">{ev.title}</a>
+                  </li>
+                ))}
+              </ul>
             )}
           </article>
         ))}
@@ -336,24 +450,34 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
       </summary>
       <ul>
         <li>
-          <strong>① 預設標籤</strong>
-          <span data-tc> — 每個標籤的 query 文字在 build 時被 DashScope text-embedding-v3 編碼，再對全 pool 算 cosine，預烤 top 30。前端只查表，無 runtime API 調用。</span>
-          <span data-sc> — 每个标签的 query 文字在 build 时被 DashScope text-embedding-v3 编码，再对全 pool 算 cosine，预烤 top 30。前端只查表，无 runtime API 调用。</span>
+          <strong>方法族 chip · 語意</strong>
+          <span data-tc> — query 文字在 build 時被 DashScope text-embedding-v3 編碼（1024-dim），對全 pool 算 cosine，預烤 top 30。對單一方法詞彙 chip 表現良好（tactile / dexterous / flow_matching 等）。瀏覽器只查表。</span>
+          <span data-sc> — query 文字在 build 时被 DashScope text-embedding-v3 编码（1024-dim），对全 pool 算 cosine，预烤 top 30。对单一方法词汇 chip 表现良好（tactile / dexterous / flow_matching 等）。浏览器只查表。</span>
         </li>
         <li>
-          <strong>② 自由文字</strong>
-          <span data-tc> — substring 匹配 name + affiliation + 90 日內所有論文標題。沒走 embedding（因為瀏覽器沒法在 GitHub Pages 上做 inference）。</span>
-          <span data-sc> — substring 匹配 name + affiliation + 90 日内所有论文标题。没走 embedding（因为浏览器没法在 GitHub Pages 上做 inference）。</span>
+          <strong>結構 chip · 規則</strong>
+          <span data-tc> — Polymath / Production-deployable / Safety/Eval 改走結構規則，不走 embedding。Polymath = 90 日論文跨 ≥ 2 個方法族；Production = 標題命中 efficient/deploy/real-time/inference 等；Safety = 標題命中 safety/eval/benchmark/align 等。零幻覺、零 API。</span>
+          <span data-sc> — Polymath / Production-deployable / Safety/Eval 改走结构规则，不走 embedding。Polymath = 90 日论文跨 ≥ 2 个方法族；Production = 标题命中 efficient/deploy/real-time/inference 等；Safety = 标题命中 safety/eval/benchmark/align 等。零幻觉、零 API。</span>
         </li>
         <li>
-          <strong>② 細部條件</strong>
-          <span data-tc> — 評分 / 地區 / 方法族 / 最少論文數 / 聯繫狀態。AND 邏輯，與標籤、自由文字疊加。</span>
-          <span data-sc> — 评分 / 地区 / 方法族 / 最少论文数 / 联系状态。AND 逻辑，与标签、自由文字叠加。</span>
+          <strong>≈ 找相似 · 語意</strong>
+          <span data-tc> — 點某人卡片的 ≈ → 顯示 cosine 最近的 10 位（build 時預烤的 person × person 鄰居）。這是 embedding 唯一真正擅長的場景：薄 profile 對薄 profile 公平比較。Score 銜帶顯示 ≥80%=強 / 60-79%=可 / &lt;60%=弱。</span>
+          <span data-sc> — 点某人卡片的 ≈ → 显示 cosine 最近的 10 位（build 时预烤的 person × person 邻居）。这是 embedding 唯一真正擅长的场景：薄 profile 对薄 profile 公平比较。Score 衔带显示 ≥80%=强 / 60-79%=可 / &lt;60%=弱。</span>
         </li>
         <li>
-          <strong>≈ 找相似</strong>
-          <span data-tc> — 點某人卡片的 ≈ 按鈕 → 顯示 cosine 最近的 10 位研究員（同樣在 build 時預烤）。</span>
-          <span data-sc> — 点某人卡片的 ≈ 按钮 → 显示 cosine 最近的 10 位研究员（同样在 build 时预烤）。</span>
+          <strong>自由文字</strong>
+          <span data-tc> — substring 匹配 name + affiliation + 90 日內所有論文標題。不走 embedding（瀏覽器無法在 GH Pages 做 inference）。</span>
+          <span data-sc> — substring 匹配 name + affiliation + 90 日内所有论文标题。不走 embedding（浏览器无法在 GH Pages 做 inference）。</span>
+        </li>
+        <li>
+          <strong>Facet 細部條件</strong>
+          <span data-tc> — 評分 / 地區 / 方法族 / 最少論文數 / 聯繫狀態，AND 邏輯。注意：池子 affiliation 覆蓋僅 ~3%，地區 facet 多數記為「其他/無」— 這也是移除了原本「方法族 × 地區」chip 的原因，請改用 facet 控制地區。</span>
+          <span data-sc> — 评分 / 地区 / 方法族 / 最少论文数 / 联系状态，AND 逻辑。注意：池子 affiliation 覆盖仅 ~3%，地区 facet 多数记为「其他/无」— 这也是移除了原本「方法族 × 地区」chip 的原因，请改用 facet 控制地区。</span>
+        </li>
+        <li>
+          <strong>已知限制</strong>
+          <span data-tc> — 資料源是 arXiv 第一作者 90 日窗口；多數研究員只見過一篇 paper。「跨方法族匹配」和「真正地區匹配」要等 affiliation 回灌（OpenReview / Semantic Scholar）才會活化。在此之前 polymath 走結構規則、地區走 facet。</span>
+          <span data-sc> — 资料源是 arXiv 第一作者 90 日窗口；多数研究员只见过一篇 paper。「跨方法族匹配」和「真正地区匹配」要等 affiliation 回灌（OpenReview / Semantic Scholar）才会活化。在此之前 polymath 走结构规则、地区走 facet。</span>
         </li>
         <li>
           <strong>NO-EMAIL</strong>
@@ -371,11 +495,11 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
        parser only looks for the literal `</script>` byte sequence.
   ───────────────────────────────────────────────────────────────────── -->
   <script type="application/json" id="match-people-data" set:html={JSON.stringify(peopleClient).replace(/</g, '\\u003c')} />
+  {/* Chips JSON always includes structural chips even in facet-only mode.
+      Semantic chips ride along iff matchData is present. */}
+  <script type="application/json" id="match-queries-data" set:html={JSON.stringify(chips.map(c => ({ id: c.id, label: c.label, labelSC: c.labelSC, text: c.text, results: c.results, kind: c.kind }))).replace(/</g, '\\u003c')} />
   {matchData && (
-    <>
-      <script type="application/json" id="match-queries-data" set:html={JSON.stringify(matchData.queries).replace(/</g, '\\u003c')} />
-      <script type="application/json" id="match-neighbors-data" set:html={JSON.stringify(matchData.people.map(p => ({ slug: p.slug, neighbors: p.neighbors }))).replace(/</g, '\\u003c')} />
-    </>
+    <script type="application/json" id="match-neighbors-data" set:html={JSON.stringify(matchData.people.map(p => ({ slug: p.slug, neighbors: p.neighbors }))).replace(/</g, '\\u003c')} />
   )}
 
   <script is:inline>
@@ -491,19 +615,34 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
           return;
         }
 
-        // Render cards
+        // Render cards.
+        //
+        // Score badge policy (post-audit):
+        //   * Only show on ≈ similar results (person↔person cosine — true semantic).
+        //   * Hide on chip results — chip text↔person text similarity is noisy
+        //     and HR misread the number as a "match quality".
+        //   * Banding: ≥0.80 strong / 0.60-0.79 ok / <0.60 weak. The colour
+        //     hints whether to trust the rank.
         const html = candidates.slice(0, 80).map(p => {
           const score = scores ? scores.get(slugToIdx.get(p.slug)) : null;
-          const scoreBadge = score !== null && score !== undefined
-            ? `<span class="match-card-score" title="cosine similarity">${(score * 100).toFixed(0)}</span>`
-            : '';
+          const showScore = similarOfSlug !== null && score !== null && score !== undefined;
+          let scoreBadge = '';
+          if (showScore) {
+            const pct = (score * 100).toFixed(0);
+            const tier = score >= 0.80 ? 'strong' : score >= 0.60 ? 'ok' : 'weak';
+            scoreBadge = `<span class="match-card-score match-card-score--${tier}" title="similarity to source researcher">≈ ${pct}%</span>`;
+          }
           const methods = (p.topMethods || []).map(t => `<span class="match-card-method">${escapeHtml(t)}</span>`).join('');
+          const evidence = (p.evidenceTeaser || []).map(ev =>
+            `<li><span class="match-card-evidence-rating">${ev.rating}</span><a href="${escapeAttr(ev.url)}" target="_blank" rel="noopener noreferrer" class="match-card-evidence-title">${escapeHtml(ev.title)}</a></li>`
+          ).join('');
+          const safeName = escapeHtml(p.name);
           return `<article class="match-card" data-slug="${p.slug}">
             <div class="match-card-head">
               <span class="match-card-rating">${p.topRating}</span>
-              <h3 class="match-card-name">${escapeHtml(p.name)}</h3>
+              <h3 class="match-card-name">${safeName}</h3>
               ${scoreBadge}
-              <a class="match-card-similar" href="#" data-similar-slug="${p.slug}" title="Find similar">≈</a>
+              <button type="button" class="match-card-similar" data-similar-slug="${p.slug}" aria-label="Find researchers similar to ${safeName}" title="Find similar">≈</button>
             </div>
             <div class="match-card-meta">
               <span class="match-card-aff">${escapeHtml(p.affiliation || '—')}</span>
@@ -511,6 +650,7 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
               <span class="match-card-papers">${p.paperCount90d} 篇 90d</span>
             </div>
             ${methods ? `<div class="match-card-methods">${methods}</div>` : ''}
+            ${evidence ? `<ul class="match-card-evidence">${evidence}</ul>` : ''}
           </article>`;
         }).join('');
         grid.innerHTML = html;
@@ -533,6 +673,12 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
 
       function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      }
+      // Stricter for `href`: forbid javascript: schemes and escape quotes.
+      function escapeAttr(s) {
+        const str = String(s).trim();
+        if (/^\s*javascript:/i.test(str)) return '#';
+        return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       }
 
       // Wire up controls
@@ -897,6 +1043,153 @@ const lastUpdated = matchData?.generated_at?.slice(0, 10) ?? '—';
       background: rgba(120,120,120,0.10);
       border: 1px solid var(--border);
       color: var(--text-secondary);
+    }
+
+    /* Per-card evidence list — 1-2 paper titles to deliver on lede promise. */
+    .match-card-evidence {
+      list-style: none;
+      margin: 0.2rem 0 0;
+      padding: 0.35rem 0 0;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .match-card-evidence li {
+      display: flex;
+      gap: 0.4rem;
+      align-items: flex-start;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      line-height: 1.35;
+    }
+    .match-card-evidence-rating {
+      flex-shrink: 0;
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+    .match-card-evidence-title {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color 0.12s ease;
+    }
+    .match-card-evidence-title:hover {
+      color: var(--accent-amber);
+      text-decoration: underline;
+    }
+
+    /* Score badge banding — only shown for ≈ similar results, hidden for
+       chip results. ≥80 strong amber / 60-79 ok cyan / <60 weak grey. */
+    .match-card-score--strong {
+      background: rgba(212,145,10,0.18);
+      color: var(--accent-amber);
+    }
+    .match-card-score--ok {
+      background: rgba(15,143,160,0.15);
+      color: var(--accent-cyan);
+    }
+    .match-card-score--weak {
+      background: rgba(120,120,120,0.15);
+      color: var(--text-secondary);
+    }
+
+    /* Structural chip variant — set apart visually so HR knows these are
+       rule-based, not embedding. Cyan instead of amber accent. */
+    .match-chip--structural {
+      border-style: dashed;
+    }
+    .match-chip--structural:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .match-chip--structural.match-chip--active {
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      color: var(--surface);
+    }
+    .match-chips-divider {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0 0.35rem;
+      white-space: nowrap;
+    }
+    .match-chips-divider-en {
+      color: var(--text-tertiary);
+      opacity: 0.7;
+    }
+
+    /* Pool sanity banner — surface the ceiling BEFORE the HR clicks. */
+    .match-sanity {
+      margin: 1.25rem 0;
+      padding: 0.85rem 1rem;
+      background: rgba(212,145,10,0.05);
+      border: 1px solid rgba(212,145,10,0.25);
+      border-left: 3px solid var(--accent-amber);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .match-sanity-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      gap: 0.4rem;
+      align-items: baseline;
+    }
+    .match-sanity-kicker-en {
+      color: var(--text-tertiary);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .match-sanity-stats {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem 1.5rem;
+    }
+    .match-sanity-stats li {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+    .match-sanity-stats strong {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .match-sanity-stats-label {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .match-sanity-note {
+      margin: 0;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      font-family: 'Noto Serif SC', Georgia, serif;
+    }
+    @media (max-width: 600px) {
+      .match-sanity-stats { gap: 0.85rem 1rem; }
+      .match-sanity-stats strong { font-size: 1rem; }
     }
     .match-empty {
       grid-column: 1 / -1;

@@ -1528,6 +1528,167 @@ export function loadMatchData(): MatchData | null {
   return readJsonLocal<MatchData>('talent-embeddings.json');
 }
 
+// ---------------------------------------------------------------------------
+// Structural chips — what embedding can't do, simple rules CAN.
+//
+// Three "concept" chips were originally embedding-based and they all failed
+// the four-agent UX audit (polymath returned 0/30 multi-method people;
+// production-ready returned RL students; safety-eval returned random
+// students). Root cause: 96% of our pool has only 1 paper, so profiles are
+// uniformly thin and the embedding ends up clustering by surname phonetics
+// + keyword.
+//
+// These three chips are reimplemented as structural rules over the same
+// PersonRecord pool. No DashScope call, no cosine, no false promises.
+// Each chip returns up to 30 candidates with a `score` reflecting evidence
+// strength (normalised 0-1). When the rule's gate fails for everyone the
+// chip emits an empty list — better than embedding noise.
+// ---------------------------------------------------------------------------
+
+export interface StructuralChip {
+  id:      string;
+  label:   string;
+  labelSC: string;
+  text:    string;
+  results: Array<{ pi: number; score: number }>;
+}
+
+const PRODUCTION_KEYWORDS = [
+  'efficient', 'real-time', 'realtime', 'real time',
+  'deploy', 'deployment', 'production',
+  'latency', 'inference', 'optimize', 'optimization',
+  'edge', 'on-device', 'mobile', 'compress', 'distill',
+  'quantiz', 'pruning', 'speedup', 'throughput',
+];
+const SAFETY_KEYWORDS = [
+  'safety', 'safe ', 'safe-',
+  'eval', 'evaluation', 'evaluate',
+  'benchmark', 'harness',
+  'align', 'alignment',
+  'robust', 'reliability',
+  'verif', 'validation',
+  'failure', 'risk',
+];
+
+function titleKeywordHits(p: PersonRecord, keywords: string[]): number {
+  let hits = 0;
+  for (const ev of p.evidence) {
+    const t = (ev.title ?? '').toLowerCase();
+    for (const kw of keywords) {
+      if (t.includes(kw)) hits++;
+    }
+  }
+  return hits;
+}
+
+/**
+ * Compute the three structural chips against a pre-ordered person pool.
+ *
+ * Caller passes the SAME ordered list that will be inlined as `peopleClient`
+ * on the match page; `pi` indices reference this caller-supplied ordering so
+ * client lookups stay consistent.
+ */
+export function loadStructuralChips(orderedPool: PersonRecord[]): StructuralChip[] {
+  // ── polymath: distinct method-family count (≥ 2 to qualify) ─────────
+  const polymath: Array<{ pi: number; families: number; papers: number }> = [];
+  orderedPool.forEach((p, pi) => {
+    const ranked = rankMethodFamilies(p.evidence.map(e => e.title ?? ''));
+    if (ranked.length >= 2) polymath.push({ pi, families: ranked.length, papers: p.paperCount90d });
+  });
+  polymath.sort((a, b) => b.families - a.families || b.papers - a.papers);
+  const polyMax = Math.max(1, ...polymath.map(x => x.families));
+  const polymathResults = polymath.slice(0, 30).map(x => ({
+    pi:    x.pi,
+    score: +(x.families / polyMax).toFixed(3),
+  }));
+
+  // ── production: keyword hits in paper titles ────────────────────────
+  const production: Array<{ pi: number; hits: number; papers: number }> = [];
+  orderedPool.forEach((p, pi) => {
+    const hits = titleKeywordHits(p, PRODUCTION_KEYWORDS);
+    if (hits > 0) production.push({ pi, hits, papers: p.paperCount90d });
+  });
+  production.sort((a, b) => b.hits - a.hits || b.papers - a.papers);
+  const prodMax = Math.max(1, ...production.map(x => x.hits));
+  const productionResults = production.slice(0, 30).map(x => ({
+    pi:    x.pi,
+    score: +(x.hits / prodMax).toFixed(3),
+  }));
+
+  // ── safety / eval: keyword hits ─────────────────────────────────────
+  const safety: Array<{ pi: number; hits: number; papers: number }> = [];
+  orderedPool.forEach((p, pi) => {
+    const hits = titleKeywordHits(p, SAFETY_KEYWORDS);
+    if (hits > 0) safety.push({ pi, hits, papers: p.paperCount90d });
+  });
+  safety.sort((a, b) => b.hits - a.hits || b.papers - a.papers);
+  const safetyMax = Math.max(1, ...safety.map(x => x.hits));
+  const safetyResults = safety.slice(0, 30).map(x => ({
+    pi:    x.pi,
+    score: +(x.hits / safetyMax).toFixed(3),
+  }));
+
+  return [
+    {
+      id:      'structural:polymath',
+      label:   'Polymath (≥2 methods)',
+      labelSC: '橋樑型（≥2 方法族）',
+      text:    'Researchers whose 90d papers span at least 2 distinct method families.',
+      results: polymathResults,
+    },
+    {
+      id:      'structural:production',
+      label:   'Production-deployable',
+      labelSC: '可落地工程',
+      text:    'Papers mention efficiency / deployment / real-time / inference / edge keywords.',
+      results: productionResults,
+    },
+    {
+      id:      'structural:safety',
+      label:   'Safety / Eval',
+      labelSC: '安全 / 評測',
+      text:    'Papers mention safety / evaluation / benchmark / alignment keywords.',
+      results: safetyResults,
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// Pool sanity stats — surfaced BEFORE the HR clicks anything.
+//
+// The four-agent audit hit the same wall: 2.7% affiliation coverage,
+// max papers/90d = 4. The chip semantics over-promise relative to data
+// reality. Show the ceiling so HR doesn't fiddle for 10 min before
+// realising the pool can't fill their role.
+// ---------------------------------------------------------------------------
+
+export interface PoolSanity {
+  total:              number;
+  withAffiliation:    number;
+  withAffiliationPct: number;
+  maxPapers90d:       number;
+  countWith3Plus:     number;
+  countFlash:         number;
+  countPolish:        number;
+  countRead:          number;
+}
+
+export function loadPoolSanity(pool: PersonRecord[]): PoolSanity {
+  const total           = pool.length;
+  const withAffiliation = pool.filter(p => p.affiliation).length;
+  const maxPapers       = Math.max(0, ...pool.map(p => p.paperCount90d));
+  return {
+    total,
+    withAffiliation,
+    withAffiliationPct: total > 0 ? Math.round((withAffiliation / total) * 100) : 0,
+    maxPapers90d:       maxPapers,
+    countWith3Plus:     pool.filter(p => p.paperCount90d >= 3).length,
+    countFlash:         pool.filter(p => p.topRating === '⚡').length,
+    countPolish:        pool.filter(p => p.topRating === '🔧').length,
+    countRead:          pool.filter(p => p.topRating === '📖').length,
+  };
+}
+
 export function loadPoolViz(): PoolViz {
   // We include 📖 here, not just ⚡/🔧. The whole point of the chart is to
   // show "here's why ⚡ is rare and where the read-only volume lives".

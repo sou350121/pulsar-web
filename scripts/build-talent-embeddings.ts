@@ -148,9 +148,19 @@ interface QueryDef {
 }
 
 function buildQueries(poolViz: ReturnType<typeof loadPoolViz>): QueryDef[] {
+  // Why ONLY family chips:
+  //   The four-agent UX audit established that embedding-based chips work
+  //   when the query is a single, vocabulary-anchored topic (method family).
+  //   They FAIL on multi-concept queries (polymath, production-ready,
+  //   safety-eval) and on regional intersections (family × CN/US) because:
+  //     - profiles are too thin (96% of pool has 1 paper)
+  //     - affiliation coverage is 2.7%, so region cannot be embedded
+  //     - embedding clusters by surname phonetics + keyword, not concept
+  //   The polymath / production / safety chips now ship as STRUCTURAL rules
+  //   computed at match-page build time (see loadStructuralChips in talent.ts).
+  //   Region selection moved to the facet UI (where it's honest about gaps).
   const queries: QueryDef[] = [];
 
-  // Family-only chips
   for (const f of poolViz.heatmapFamilies.slice(0, 8)) {
     queries.push({
       id:      `family:${f.family}`,
@@ -159,42 +169,6 @@ function buildQueries(poolViz: ReturnType<typeof loadPoolViz>): QueryDef[] {
       text:    `Researcher working on ${f.familyDisplay}. ${f.domain === 'vla' ? 'Vision-language-action robotics' : 'AI agent infrastructure'}.`,
     });
   }
-
-  // Family × region cross-cuts (top 4 families × CN/US)
-  for (const f of poolViz.heatmapFamilies.slice(0, 4)) {
-    queries.push({
-      id:      `family-cn:${f.family}`,
-      label:   `${f.familyDisplay} · CN`,
-      labelSC: `${f.familyDisplay} · 中國`,
-      text:    `Researcher working on ${f.familyDisplay} at a Chinese institution (清华, 北大, 中科院, 上交, etc.).`,
-    });
-    queries.push({
-      id:      `family-us:${f.family}`,
-      label:   `${f.familyDisplay} · US`,
-      labelSC: `${f.familyDisplay} · 北美`,
-      text:    `Researcher working on ${f.familyDisplay} at a US institution (Stanford, CMU, MIT, Berkeley, NVIDIA, Google, etc.).`,
-    });
-  }
-
-  // Cross-cutting queries — "polymath", "high-velocity"
-  queries.push({
-    id:      'polymath',
-    label:   'Polymath (bridges methods)',
-    labelSC: '橋樑型研究員',
-    text:    'Polymath researcher who bridges multiple distinct method families: works on diffusion policy, world models, reinforcement learning, and imitation learning simultaneously.',
-  });
-  queries.push({
-    id:      'production-ready',
-    label:   'Production-deployable',
-    labelSC: '可落地工程型',
-    text:    'Researcher focused on production deployment, efficient inference, real-time robotics, and engineering practicality rather than only theoretical contributions.',
-  });
-  queries.push({
-    id:      'safety-eval',
-    label:   'Safety / Evaluation',
-    labelSC: '安全 / 評測',
-    text:    'Researcher focused on robotics safety, evaluation harnesses, benchmarking, and alignment of vision-language-action models.',
-  });
 
   return queries;
 }
