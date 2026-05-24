@@ -137,6 +137,32 @@ export const ALIAS_V1_TO_V2: Record<string, string | null> = {
 
   // Extended VLA-paradigm families
   vla_core:                  'vla.foundation.vla_generalist',
+  // ── Server-side V1 slugs from _vla_method_families.py (15-family classifier).
+  //     Most map cleanly; some pre-date V2's finer-grained partitioning so are
+  //     marked LOSSY where the V1 bucket was strictly broader than V2's home.
+  cross_embodiment:          'vla.foundation.cross_embodiment_fm',
+  dexterous_hand:            'vla.manipulation.dexterous_manipulation',
+  // V1 `human_robot` covered teleoperation + learning-from-demo + shared
+  // autonomy. The HRI angle has no V2 home; the LfD angle becomes
+  // imitation_learning. LOSSY but the largest semantic overlap.
+  human_robot:               'vla.policy.imitation_learning',
+  // V1 `instruction_tuning` = SFT / supervised fine-tuning of policies. V2
+  // models that as imitation_learning (the supervised-on-demos lineage).
+  instruction_tuning:        'vla.policy.imitation_learning',
+  // V1 `language_grounding` keywords: 'vision-language-action', 'natural
+  // language instruct', 'language conditioned'. That IS the VLA generalist
+  // story. Route there.
+  language_grounding:        'vla.foundation.vla_generalist',
+  long_horizon:              'vla.reasoning.hierarchical_planning',
+  mobile_manipulation:       'vla.manipulation.mobile_manipulation',
+  // V1 `multi_task` overlapped 'generalist robot', 'foundation model',
+  // 'general purpose robot'. Route to the generalist foundation bucket.
+  multi_task:                'vla.foundation.vla_generalist',
+  // V1 `rl_finetuning` was about post-training VLAs with RL (GRPO/PPO/DPO).
+  // V2's vla_post_training_rl is exactly that lineage.
+  rl_finetuning:             'vla.policy.robot_rl.vla_post_training_rl',
+  // V1 `tactile` vs V2 `tactile_sensing` — same concept, namespaced.
+  tactile:                   'vla.manipulation.tactile_sensing',
   // Lossy: old `manipulation` was a catch-all router covering ALL manipulation
   // sub-families. V2 retires manipulation-as-router; we point V1 callers at
   // the cluster slug (precedence 0 = never matches) so they get a structural

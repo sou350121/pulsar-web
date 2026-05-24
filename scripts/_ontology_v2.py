@@ -19,7 +19,7 @@ Public API:
       Per-title pick: highest match_precedence wins ties; among equals,
       highest keyword-hit count wins. Mirrors TS rankMethodFamiliesV2.
 
-Generated at: 2026-05-24T03:18:27.529Z
+Generated at: 2026-05-24T03:34:09.802Z
 """
 
 ONTOLOGY = {
@@ -997,6 +997,16 @@ ALIAS_V1_TO_V2 = {
     "vertical_agent": "ai.vertical.vertical_agent",
     "3d_representation": "vla.perception.representation_3d",
     "vla_core": "vla.foundation.vla_generalist",
+    "cross_embodiment": "vla.foundation.cross_embodiment_fm",
+    "dexterous_hand": "vla.manipulation.dexterous_manipulation",
+    "human_robot": "vla.policy.imitation_learning",
+    "instruction_tuning": "vla.policy.imitation_learning",
+    "language_grounding": "vla.foundation.vla_generalist",
+    "long_horizon": "vla.reasoning.hierarchical_planning",
+    "mobile_manipulation": "vla.manipulation.mobile_manipulation",
+    "multi_task": "vla.foundation.vla_generalist",
+    "rl_finetuning": "vla.policy.robot_rl.vla_post_training_rl",
+    "tactile": "vla.manipulation.tactile_sensing",
     "manipulation": "vla.manipulation",
     "imitation_learning": "vla.policy.imitation_learning",
     "robot_rl": "vla.policy.robot_rl",
