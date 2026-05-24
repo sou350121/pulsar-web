@@ -463,12 +463,49 @@ def main(dry_run: bool = False, verbose: bool = False):
                 all_institutions[canonical].append(chosen)
             enriched_pi += 1
 
+    # ── Institution → country map ────────────────────────────────────────
+    # The site's inferRegion() currently does substring matching on a
+    # hard-coded list and misses 74% of post-enrichment affiliations
+    # (UIUC, USTC, NUS, Tongji, HIT, Purdue, etc.). Emit a canonical
+    # institution → country code map from the OpenAlex data we already
+    # cached. talent.ts inferRegion consults this first.
+    inst_country_votes: dict[str, Counter] = defaultdict(Counter)
+    for info in author_cache.values():
+        if not info:
+            continue
+        for a in info.get("affiliations", []):
+            name = a.get("name", "")
+            cc = (a.get("country", "") or "").lower()
+            if name and cc:
+                canonical = canonicalize_institution(name)
+                inst_country_votes[canonical][cc] += 1
+    institution_country: dict[str, str] = {}
+    # Map ISO country code → our region bucket (cn / us / eu / other)
+    EU_CCS = {"gb", "fr", "de", "ch", "nl", "be", "se", "no", "fi", "dk",
+              "it", "es", "pt", "at", "ie", "pl", "cz", "ee", "lv", "lt",
+              "lu", "gr", "hu", "ro", "bg", "hr", "si", "sk", "is"}
+    for canonical, votes in inst_country_votes.items():
+        if not votes:
+            continue
+        cc = votes.most_common(1)[0][0]
+        if cc == "us":     region = "us"
+        elif cc == "cn":   region = "cn"
+        elif cc == "hk":   region = "cn"   # treat HK as CN for region facet
+        elif cc == "tw":   region = "cn"   # opinionated; matches existing list (HKUST→cn etc.)
+        elif cc in EU_CCS: region = "eu"
+        else:              region = "other"
+        institution_country[canonical] = region
+
     out = {
         "all_institutions":       all_institutions,
         "researcher_affiliation": researcher_aff,
         # PI registry: separate from researcher_affiliation so the UI can
         # distinguish "rated researcher" from "PI of a paper on the radar".
         "pi_affiliation":         pi_aff,
+        # Institution → region map. Canonical institution name (after
+        # CANONICAL_INSTITUTION pass) → 'cn' | 'us' | 'eu' | 'other'.
+        # Built from OpenAlex country_codes per researcher × institution.
+        "institution_region":     institution_country,
     }
 
     print(f"\n=== Summary ===")

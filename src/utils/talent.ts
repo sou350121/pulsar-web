@@ -798,6 +798,10 @@ interface ResearcherAffiliation {
   // last-author position on OpenAlex. Used by isPI() to label senior
   // researchers (advisor / lab head) vs trainees in the talent UI.
   pi_affiliation?:         Record<string, string>;
+  // Canonical-institution → region map (cn / us / eu / other) populated
+  // from OpenAlex country_code. inferRegion() consults this before its
+  // legacy substring lists.
+  institution_region?:     Record<string, 'cn' | 'us' | 'eu' | 'other'>;
 }
 
 let _registryCache: ResearcherAffiliation | null | undefined;
@@ -813,6 +817,38 @@ function loadResearcherRegistry(): ResearcherAffiliation {
 export function isPI(normalized: string): boolean {
   const reg = loadResearcherRegistry();
   return !!reg.pi_affiliation && normalized in reg.pi_affiliation;
+}
+
+/**
+ * Region inference for an affiliation string.
+ *
+ * Two layers, in order of trust:
+ *   1. institution_region map from the registry — built at enrichment
+ *      time from OpenAlex country_code, covers the long tail (UIUC,
+ *      USTC, NUS, Tongji, HIT, etc.) that pure substring misses.
+ *   2. Legacy substring lists — fallback for affiliations not yet in
+ *      the map (recently enriched papers, hand-curated entries with
+ *      institutions OpenAlex didn't know).
+ *
+ * The substring lists are intentionally kept — when both layers
+ * disagree, the map wins because it carries the actual country code,
+ * but in the absence of map data we still get coarse routing.
+ */
+export function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
+  if (!aff) return 'other';
+  const reg = loadResearcherRegistry();
+  const mapped = reg.institution_region?.[aff];
+  if (mapped === 'cn' || mapped === 'us' || mapped === 'eu' || mapped === 'other') {
+    return mapped;
+  }
+  const a = aff.toLowerCase();
+  const CN = ['清华', '北大', '中科院', '上交', '复旦', '浙大', '人大', '北航', '南大', 'tsinghua', 'peking', 'sjtu', 'shanghai jiao', 'fudan', 'zhejiang', 'cuhk', 'hkust', 'hku', 'chinese academy', 'baidu', 'alibaba', 'huawei', 'bytedance', 'tencent', 'beijing'];
+  const US = ['stanford', 'cmu', 'mit', 'berkeley', 'princeton', 'harvard', 'cornell', 'columbia', 'nyu', 'caltech', 'ucla', 'ucsd', 'ucsb', 'umich', 'gatech', 'georgia tech', 'washington', 'illinois', 'maryland', 'austin', 'wisconsin', 'usc', 'nvidia', 'google', 'meta', 'microsoft', 'apple', 'amazon', 'openai', 'anthropic', 'deepmind'];
+  const EU = ['oxford', 'cambridge', 'imperial', 'ucl', 'eth', 'epfl', 'inria', 'mpi', 'max planck', 'tübingen', 'tubingen', 'amsterdam'];
+  if (CN.some(k => a.includes(k))) return 'cn';
+  if (US.some(k => a.includes(k))) return 'us';
+  if (EU.some(k => a.includes(k))) return 'eu';
+  return 'other';
 }
 
 function lookupAffiliation(normalized: string): string | null {

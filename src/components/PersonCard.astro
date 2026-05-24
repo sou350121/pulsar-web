@@ -7,7 +7,7 @@
  * Even social-mention status surfaces only a status pill — no link.
  */
 import type { PersonRecord, ContactStatus, HRCandidate } from '../utils/talent';
-import { slugifyName, topMethodsForEvidence } from '../utils/talent.ts';
+import { slugifyName, topMethodsForEvidence, isPI } from '../utils/talent.ts';
 import RatingBadge from './RatingBadge.astro';
 
 interface Props {
@@ -94,6 +94,12 @@ const hue      = avatarHue(record.name);
     <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
       {record.name}
     </h3>
+    {isPI(record.normalizedKey) && (
+      <span
+        class="person-pi-badge"
+        title="Identified as last author (corresponding / PI) on ≥1 paper in the 90-day window"
+      >PI</span>
+    )}
     <RatingBadge rating={record.topRating} size="sm" />
   </div>
 
@@ -209,6 +215,29 @@ const hue      = avatarHue(record.name);
   /* Initials avatar — stable per name, no PII stored. The HSL fallback uses
      light values for legibility on the cream background; dark mode picks
      deeper saturations via the .dark scope. */
+  /* PI badge — visible distinction between trainee (no badge) and PI/
+     corresponding author. Used by HR to gauge seniority at a glance. */
+  .person-pi-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: rgba(212, 145, 10, 0.18);
+    color: var(--accent-amber);
+    border: 1px solid var(--accent-amber);
+    cursor: help;
+  }
+  :global(html.dark) .person-pi-badge {
+    background: rgba(212, 145, 10, 0.10);
+    color: var(--accent-amber);
+  }
+
   .person-avatar {
     flex-shrink: 0;
     display: inline-flex;

@@ -31,6 +31,7 @@ import {
   loadPoolSanity,
   topMethodsForEvidence,
   chipLabelV2,
+  inferRegion,
 } from '../../utils/talent';
 
 const base       = import.meta.env.BASE_URL;
@@ -49,17 +50,9 @@ const sanity = loadPoolSanity(pool);
 // 0/30 to noise. Structural rules over the same pool are honest and instant.
 const structuralChips = loadStructuralChips(pool);
 
-function inferRegion(aff: string | null): 'cn' | 'us' | 'eu' | 'other' {
-  if (!aff) return 'other';
-  const a = aff.toLowerCase();
-  const CN = ['清华', '北大', '中科院', '上交', '复旦', '浙大', '人大', '北航', '南大', 'tsinghua', 'peking', 'sjtu', 'shanghai jiao', 'fudan', 'zhejiang', 'cuhk', 'hkust', 'hku', 'chinese academy', 'baidu', 'alibaba', 'huawei', 'bytedance', 'tencent', 'beijing'];
-  const US = ['stanford', 'cmu', 'mit', 'berkeley', 'princeton', 'harvard', 'cornell', 'columbia', 'nyu', 'caltech', 'ucla', 'ucsd', 'ucsb', 'umich', 'gatech', 'georgia tech', 'washington', 'illinois', 'maryland', 'austin', 'wisconsin', 'usc', 'nvidia', 'google', 'meta', 'microsoft', 'apple', 'amazon', 'openai', 'anthropic', 'deepmind'];
-  const EU = ['oxford', 'cambridge', 'imperial', 'ucl', 'eth', 'epfl', 'inria', 'mpi', 'max planck', 'tübingen', 'tubingen', 'amsterdam'];
-  if (CN.some(k => a.includes(k))) return 'cn';
-  if (US.some(k => a.includes(k))) return 'us';
-  if (EU.some(k => a.includes(k))) return 'eu';
-  return 'other';
-}
+// inferRegion lives in utils/talent.ts now — single source of truth that
+// consults the institution_region map (post-enrichment) before its legacy
+// substring fallbacks. Imported above.
 
 // Materialise the people array we expose to client JS. Mirrors MatchPerson
 // shape so the client filter code is identical whether or not embeddings
