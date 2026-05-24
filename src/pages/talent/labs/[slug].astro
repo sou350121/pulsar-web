@@ -1,0 +1,522 @@
+---
+/**
+ * /talent/labs/<slug>/ — per-lab mentorship view.
+ *
+ * Shows the PI ↔ trainee structure of one institution, computed from:
+ *   - institution-registry.json (pi_affiliation + researcher_affiliation)
+ *   - coauthor-graph.json (paper authorships with first/middle/last positions)
+ *
+ * Layout: bipartite SVG.
+ *   - PIs (last-author candidates) on the top row
+ *   - Trainees (first/second authors) on the bottom row
+ *   - Edges thickness ∝ shared paper count
+ *
+ * Built statically via getStaticPaths from loadKnownLabs.
+ */
+import BaseLayout       from '../../../layouts/BaseLayout.astro';
+import RatingBadge      from '../../../components/RatingBadge.astro';
+import {
+  loadKnownLabs,
+  loadLabMentorship,
+  slugifyName,
+} from '../../../utils/talent';
+
+export async function getStaticPaths() {
+  const labs = loadKnownLabs();
+  return labs.map(l => ({
+    params: { slug: l.slug },
+    props:  { labMeta: l },
+  }));
+}
+
+const { slug }   = Astro.params;
+const lab        = loadLabMentorship(slug!);
+const base       = import.meta.env.BASE_URL;
+
+if (!lab) {
+  return new Response('Lab not found', { status: 404 });
+}
+
+// ── SVG layout math ────────────────────────────────────────────────────────
+// Bipartite: PIs on top, trainees on bottom. Horizontal scaling auto-fits.
+// Cap displayed nodes to keep the SVG legible: top 10 PIs and top 24
+// trainees (by paper count). Edges only between displayed nodes.
+const MAX_PI       = 10;
+const MAX_TRAINEE  = 24;
+const displayedPis      = lab.pis.slice(0, MAX_PI);
+const displayedTrainees = lab.trainees.slice(0, MAX_TRAINEE);
+const piKeys      = new Set(displayedPis.map(p => p.normalizedKey));
+const traineeKeys = new Set(displayedTrainees.map(t => t.normalizedKey));
+const displayedEdges = lab.edges.filter(
+  e => piKeys.has(e.advisor) && traineeKeys.has(e.trainee)
+);
+
+const W       = 980;
+const PADX    = 48;
+const TOP_Y   = 80;
+const BOT_Y   = 360;
+const H       = 440;
+const piPos: Record<string, { x: number; y: number }> = {};
+const trPos: Record<string, { x: number; y: number }> = {};
+
+const piSpacing = displayedPis.length > 1
+  ? (W - 2 * PADX) / (displayedPis.length - 1)
+  : 0;
+displayedPis.forEach((p, i) => {
+  const x = displayedPis.length === 1 ? W / 2 : PADX + i * piSpacing;
+  piPos[p.normalizedKey] = { x, y: TOP_Y };
+});
+
+const trSpacing = displayedTrainees.length > 1
+  ? (W - 2 * PADX) / (displayedTrainees.length - 1)
+  : 0;
+displayedTrainees.forEach((t, i) => {
+  const x = displayedTrainees.length === 1 ? W / 2 : PADX + i * trSpacing;
+  trPos[t.normalizedKey] = { x, y: BOT_Y };
+});
+
+const maxEdgeWeight = Math.max(1, ...displayedEdges.map(e => e.weight));
+function edgeStrokeWidth(w: number) {
+  return 1 + 3 * (w / maxEdgeWeight);
+}
+function edgeOpacity(w: number) {
+  return 0.30 + 0.55 * (w / maxEdgeWeight);
+}
+
+// Truncate names for display under the node — keep SVG compact at width.
+function shortName(n: string, max: number = 13): string {
+  if (n.length <= max) return n;
+  const parts = n.split(' ');
+  if (parts.length >= 2) {
+    const last = parts[parts.length - 1];
+    const initial = parts[0].charAt(0);
+    return `${initial}. ${last}`.slice(0, max);
+  }
+  return n.slice(0, max - 1) + '…';
+}
+
+const domainLabel = lab.domains.includes('vla') && lab.domains.includes('ai_app')
+  ? 'VLA + AI Agent'
+  : lab.domains.includes('vla') ? 'VLA'
+  : lab.domains.includes('ai_app') ? 'AI Agent'
+  : 'Other';
+---
+<BaseLayout
+  title={`${lab.name} · Lab Mentorship — Talent Radar`}
+  description={`PI ↔ trainee map at ${lab.name}. Mentorship edges from 90-day co-author graph.`}
+>
+  <main class="lab-main">
+    <header class="lab-header">
+      <div class="lab-back">
+        <a href={`${base}/talent/labs/`} class="lab-back-link">← 全部實驗室</a>
+      </div>
+      <h1 class="lab-h1">
+        <span class="lab-h1-name">{lab.name}</span>
+        <span class="lab-h1-en">/ Lab Mentorship</span>
+      </h1>
+      <p class="lab-lede">
+        <strong>{lab.totals.pis}</strong> PI · <strong>{lab.totals.trainees}</strong> trainee ·
+        <strong>{lab.totals.edges}</strong> mentorship edge ·
+        <strong>{lab.totals.advised}</strong>/{lab.totals.trainees} advised ·
+        domain: <strong>{domainLabel}</strong>
+      </p>
+      <p class="lab-disclaimer">
+        Edges are inferred from co-authorship in arXiv papers (90-day window):
+        first/second author of a paper whose last author is a PI at this lab.
+        First/second = lead worker (student / postdoc), last = corresponding
+        author. Treat as candidate advisor-advisee — confirm before outreach.
+      </p>
+    </header>
+
+    {lab.pis.length === 0 ? (
+      <section class="lab-empty">
+        <p>No PI surfaced yet — this lab's researchers haven't appeared as last author on any paper in the 90-day window.</p>
+      </section>
+    ) : lab.totals.edges === 0 ? (
+      <section class="lab-empty">
+        <p>No mentorship edges found — PIs and trainees both surfaced but their co-author graph doesn't intersect in the 90-day window. They may be working independently or our paper sample missed the connecting papers.</p>
+      </section>
+    ) : (
+      <section class="lab-tree-section">
+        <h2 class="lab-section-h2">PI ↔ Trainee Network</h2>
+        <figure class="lab-tree">
+          <svg
+            viewBox={`0 0 ${W} ${H}`}
+            class="lab-tree-svg"
+            role="img"
+            aria-label="Bipartite mentorship graph"
+          >
+            <text x={PADX} y={36} class="lab-row-label">
+              PI · 通訊 / corresponding · {displayedPis.length}
+            </text>
+            <text x={PADX} y={H - 32} class="lab-row-label">
+              Trainee · 第一/二作者 / lead worker · {displayedTrainees.length}
+            </text>
+
+            {/* Edges first so nodes draw on top */}
+            {displayedEdges.map(e => {
+              const ap = piPos[e.advisor];
+              const tp = trPos[e.trainee];
+              if (!ap || !tp) return null;
+              const sw = edgeStrokeWidth(e.weight);
+              const op = edgeOpacity(e.weight);
+              return (
+                <g>
+                  <title>{e.weight} shared paper{e.weight === 1 ? '' : 's'}</title>
+                  <line
+                    x1={ap.x} y1={ap.y + 18}
+                    x2={tp.x} y2={tp.y - 18}
+                    stroke="var(--accent-amber)"
+                    stroke-width={sw}
+                    opacity={op}
+                    stroke-linecap="round"
+                  />
+                </g>
+              );
+            })}
+
+            {/* PI nodes — top row */}
+            {displayedPis.map(p => {
+              const pos = piPos[p.normalizedKey];
+              return (
+                <g class="lab-node lab-node--pi">
+                  <a href={`${base}/talent/people/#person-${p.slug}`}>
+                    <title>{p.name} · PI{p.paperCount90d ? ` · ${p.paperCount90d} papers 90d` : ''}</title>
+                    <circle
+                      cx={pos.x} cy={pos.y} r="14"
+                      fill="var(--accent-amber)"
+                      stroke="var(--surface)"
+                      stroke-width="2"
+                    />
+                    <text x={pos.x} y={pos.y + 4} text-anchor="middle" class="lab-node-glyph">PI</text>
+                    <text x={pos.x} y={pos.y - 26} text-anchor="middle" class="lab-node-name">
+                      {shortName(p.name)}
+                    </text>
+                    {p.topRating && (
+                      <text x={pos.x} y={pos.y - 42} text-anchor="middle" class="lab-node-rating">{p.topRating}</text>
+                    )}
+                  </a>
+                </g>
+              );
+            })}
+
+            {/* Trainee nodes — bottom row */}
+            {displayedTrainees.map(t => {
+              const pos = trPos[t.normalizedKey];
+              const advised = displayedEdges.some(e => e.trainee === t.normalizedKey);
+              return (
+                <g class={`lab-node lab-node--trainee ${advised ? '' : 'lab-node--orphan'}`}>
+                  <a href={`${base}/talent/people/#person-${t.slug}`}>
+                    <title>{t.name}{t.paperCount90d ? ` · ${t.paperCount90d} papers 90d` : ''}{advised ? '' : ' · no advisor surfaced'}</title>
+                    <circle
+                      cx={pos.x} cy={pos.y} r="11"
+                      fill={advised ? 'var(--accent-cyan)' : 'var(--text-tertiary)'}
+                      fill-opacity={advised ? 0.9 : 0.35}
+                      stroke="var(--surface)"
+                      stroke-width="2"
+                    />
+                    <text x={pos.x} y={pos.y + 26} text-anchor="middle" class="lab-node-name">
+                      {shortName(t.name)}
+                    </text>
+                    {t.topRating && (
+                      <text x={pos.x} y={pos.y + 42} text-anchor="middle" class="lab-node-rating">{t.topRating}</text>
+                    )}
+                  </a>
+                </g>
+              );
+            })}
+          </svg>
+          {(lab.pis.length > MAX_PI || lab.trainees.length > MAX_TRAINEE) && (
+            <figcaption class="lab-tree-foot">
+              Showing top {Math.min(MAX_PI, lab.pis.length)} PI and top {Math.min(MAX_TRAINEE, lab.trainees.length)} trainees by 90d paper count.
+              {lab.pis.length > MAX_PI && ` Hidden ${lab.pis.length - MAX_PI} PI.`}
+              {lab.trainees.length > MAX_TRAINEE && ` Hidden ${lab.trainees.length - MAX_TRAINEE} trainees.`}
+            </figcaption>
+          )}
+        </figure>
+      </section>
+    )}
+
+    {lab.edges.length > 0 && (
+      <section class="lab-edge-list-section">
+        <h2 class="lab-section-h2">Top mentorship pairs · 共著數排序</h2>
+        <ul class="lab-edge-list">
+          {lab.edges.slice(0, 20).map(e => {
+            const advisor = lab.pis.find(p => p.normalizedKey === e.advisor);
+            const trainee = [...lab.trainees, ...lab.pis].find(p => p.normalizedKey === e.trainee);
+            return (
+              <li class="lab-edge-row">
+                <span class="lab-edge-weight">{e.weight}×</span>
+                <a href={`${base}/talent/people/#person-${trainee?.slug ?? slugifyName(e.trainee)}`}>{trainee?.name ?? e.trainee}</a>
+                <span class="lab-edge-arrow">→</span>
+                <a href={`${base}/talent/people/#person-${advisor?.slug ?? slugifyName(e.advisor)}`}>{advisor?.name ?? e.advisor}</a>
+                {trainee?.topRating && <span class="lab-edge-tag">{trainee.topRating}</span>}
+                <span class="lab-edge-papers">
+                  papers: {e.arxivIds.slice(0, 2).map(a => (
+                    <a href={`https://arxiv.org/abs/${a}`} target="_blank" rel="noopener noreferrer">{a}</a>
+                  )).reduce((acc: any, x, i, arr) => acc.concat(i < arr.length - 1 ? [x, ', '] : [x]), [])}
+                  {e.arxivIds.length > 2 && ` +${e.arxivIds.length - 2}`}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+
+    <section class="lab-roster-section">
+      <h2 class="lab-section-h2">全部成員 · {lab.totals.pis + lab.totals.trainees}</h2>
+      <div class="lab-roster">
+        {lab.pis.map(p => (
+          <article class="lab-roster-card lab-roster-card--pi">
+            <a href={`${base}/talent/people/#person-${p.slug}`}>
+              <span class="lab-roster-tier">PI</span>
+              <span class="lab-roster-name">{p.name}</span>
+              {p.topRating && <span class="lab-roster-rating">{p.topRating}</span>}
+              {p.paperCount90d !== undefined && (
+                <span class="lab-roster-papers">{p.paperCount90d} <span class="lab-roster-papers-en">90d</span></span>
+              )}
+            </a>
+          </article>
+        ))}
+        {lab.trainees.map(t => (
+          <article class="lab-roster-card lab-roster-card--trainee">
+            <a href={`${base}/talent/people/#person-${t.slug}`}>
+              <span class="lab-roster-name">{t.name}</span>
+              {t.topRating && <span class="lab-roster-rating">{t.topRating}</span>}
+              {t.paperCount90d !== undefined && (
+                <span class="lab-roster-papers">{t.paperCount90d} <span class="lab-roster-papers-en">90d</span></span>
+              )}
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .lab-main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      color: var(--text-primary);
+    }
+    .lab-header {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .lab-back {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      margin-bottom: 0.6rem;
+    }
+    .lab-back-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .lab-back-link:hover { color: var(--accent-amber); }
+    .lab-h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin: 0 0 0.45rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .lab-h1-name {
+      color: var(--text-primary);
+    }
+    .lab-h1-en {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .lab-lede {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 0 0 0.5rem;
+    }
+    .lab-lede strong { color: var(--text-primary); font-weight: 700; }
+    .lab-disclaimer {
+      margin: 0;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .lab-section-h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    .lab-empty {
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      font-family: 'Noto Serif SC', Georgia, serif;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .lab-tree {
+      margin: 0 0 1rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .lab-tree-svg {
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      display: block;
+    }
+    .lab-tree-foot {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: 'IBM Plex Mono', monospace;
+      margin-top: 0.75rem;
+    }
+
+    .lab-row-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      fill: var(--text-tertiary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .lab-node-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      fill: var(--text-primary);
+    }
+    .lab-node-rating { font-size: 11px; }
+    .lab-node-glyph {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      fill: var(--surface);
+      letter-spacing: 0.05em;
+    }
+    .lab-node--orphan circle {
+      stroke-dasharray: 3 2;
+    }
+    .lab-node a:hover circle {
+      stroke: var(--accent-amber);
+      stroke-width: 3;
+    }
+
+    .lab-edge-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .lab-edge-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 0.45rem 0.7rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+    }
+    .lab-edge-weight {
+      font-weight: 700;
+      color: var(--accent-amber);
+      min-width: 2.2rem;
+    }
+    .lab-edge-row a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .lab-edge-row a:hover { color: var(--accent-amber); text-decoration: underline; }
+    .lab-edge-arrow {
+      color: var(--text-tertiary);
+      padding: 0 0.2rem;
+    }
+    .lab-edge-tag {
+      font-size: 0.85rem;
+    }
+    .lab-edge-papers {
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      margin-left: auto;
+    }
+    .lab-edge-papers a {
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .lab-roster {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.5rem;
+    }
+    .lab-roster-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .lab-roster-card--pi {
+      border-left: 3px solid var(--accent-amber);
+    }
+    .lab-roster-card a {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 0.7rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .lab-roster-tier {
+      font-weight: 700;
+      color: var(--accent-amber);
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+    .lab-roster-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: Georgia, 'Noto Serif SC', serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .lab-roster-rating { font-size: 0.9rem; }
+    .lab-roster-papers {
+      color: var(--text-tertiary);
+      font-size: 0.7rem;
+    }
+    .lab-roster-papers-en {
+      color: var(--text-tertiary);
+    }
+
+    @media (max-width: 700px) {
+      .lab-h1 { font-size: 1.5rem; }
+      .lab-tree-svg { max-height: 360px; }
+      .lab-node-name { font-size: 9px; }
+      .lab-edge-papers { display: none; }
+    }
+  </style>
+</BaseLayout>

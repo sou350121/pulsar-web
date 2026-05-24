@@ -878,8 +878,18 @@ function socialMentions(normalized: string, daysWindow: number = 90): boolean {
   });
 }
 
+// Module-level cache for loadPeople(). Re-parsing 70+ daily rating files
+// + entity-index per call is expensive; pages calling loadPeople with the
+// same option fingerprint (e.g. the per-lab dynamic route in [slug].astro
+// renders ~300 pages, each calling loadPeople) get the same result, so we
+// memoize keyed by the option's minPaperCount90d. SSR-only — Astro builds
+// run in a single Node process so the cache lives for the whole build.
+const _peopleCache = new Map<number, PersonRecord[]>();
+
 export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonRecord[] {
   const { minPaperCount90d = 1 } = opts;
+  const cached = _peopleCache.get(minPaperCount90d);
+  if (cached !== undefined) return cached;
 
   // Step 1: enumerate first authors across the rated paper pool
   const vlaDays = loadVLADailyPicks(90);
@@ -1009,13 +1019,15 @@ export function loadPeople(opts: { minPaperCount90d?: number } = {}): PersonReco
     slugSeen.set(base, n + 1);
   }
 
-  return records.sort((a, b) => {
+  const sorted = records.sort((a, b) => {
     // Rank: rated⚡ first, then 🔧, then by paper count
     const rOrder = (r: string) => r === '⚡' ? 0 : r === '🔧' ? 1 : 2;
     const rd = rOrder(a.topRating) - rOrder(b.topRating);
     if (rd !== 0) return rd;
     return b.paperCount90d - a.paperCount90d;
   });
+  _peopleCache.set(minPaperCount90d, sorted);
+  return sorted;
 }
 
 // HOT-tier gate criteria, exposed as a display constant so the HR queue page
@@ -1595,6 +1607,220 @@ export function loadWatchlist(): PersonRecord[] {
     rOrder(a.topRating) - rOrder(b.topRating) ||
     b.paperCount90d - a.paperCount90d ||
     a.name.localeCompare(b.name));
+}
+
+// ---------------------------------------------------------------------------
+// Lab Mentorship — bipartite PI ↔ trainee view per institution.
+//
+// Substrate:
+//   institution-registry.json  — researcher_affiliation + pi_affiliation
+//   coauthor-graph.json        — paper_id → ordered author array with
+//                                 (name, position, openalex_id)
+//
+// For a given institution, we:
+//   1. List PIs at that institution (from pi_affiliation, filtered by name)
+//   2. List trainees (researcher_affiliation \ pi_affiliation at the lab)
+//   3. Walk the co-author graph: for every paper with ≥3 authors, the
+//      LAST author is the candidate advisor; the FIRST and SECOND authors
+//      are candidate trainees. An edge fires when:
+//        - advisor's normalized name is in our PI list at this lab, AND
+//        - trainee's normalized name is in our researcher list at this lab
+//   4. Aggregate edges with weight = paper count.
+//
+// We intentionally DON'T require both endpoints to share affiliation in
+// every paper — co-authorship across labs is common, and we trust the
+// institution match on each individual researcher (from OpenAlex
+// last_known_institutions) more than per-paper raw_affiliations.
+// ---------------------------------------------------------------------------
+
+interface CoauthorPaper {
+  name:     string;
+  position: 'first' | 'middle' | 'last' | string;
+  oa_id:    string;
+}
+interface CoauthorGraph {
+  generated_at: string;
+  paper_count:  number;
+  papers:       Record<string, CoauthorPaper[]>;
+}
+
+let _coauthorCache: CoauthorGraph | null | undefined;
+function loadCoauthorGraph(): CoauthorGraph {
+  if (_coauthorCache === undefined) {
+    _coauthorCache = readJsonLocal<CoauthorGraph>('coauthor-graph.json');
+  }
+  return _coauthorCache ?? { generated_at: '', paper_count: 0, papers: {} };
+}
+
+export interface LabMentorshipPerson {
+  name:           string;     // canonical display
+  normalizedKey:  string;
+  slug:           string;
+  topRating?:     string;
+  paperCount90d?: number;
+  contactStatus?: ContactStatus;
+}
+
+export interface LabMentorshipEdge {
+  trainee:    string;       // normalized name (key)
+  advisor:    string;       // normalized name (key)
+  weight:     number;       // shared paper count
+  arxivIds:   string[];     // up to 3 example papers
+}
+
+export interface LabMentorship {
+  slug:        string;
+  name:        string;       // canonical institution
+  domains:     Array<'vla' | 'ai_app'>;
+  pis:         LabMentorshipPerson[];
+  trainees:    LabMentorshipPerson[];
+  edges:       LabMentorshipEdge[];
+  totals: {
+    pis:       number;
+    trainees:  number;
+    edges:     number;
+    advised:   number;       // trainees with ≥1 edge to a PI at this lab
+    orphans:   number;       // trainees with 0 edges (no advisor surfaced)
+  };
+}
+
+/**
+ * Institutions worth giving a dedicated mentorship page to.
+ *
+ * Filter: ≥1 PI AND ≥2 trainees, OR total members ≥ 4. Empirically yields
+ * ~60 labs (down from 311 institutions in the registry) — the long tail
+ * is single-researcher entries where a mentorship view has nothing to show.
+ *
+ * Sorted by total member count descending so the most active labs build
+ * first (matters if the build ever hits a timeout).
+ */
+export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: number; traineeCount: number }> {
+  const reg = loadResearcherRegistry();
+  const ra  = reg.researcher_affiliation;
+  const pa  = reg.pi_affiliation ?? {};
+  const institutions = new Map<string, { piCount: number; traineeCount: number }>();
+  for (const inst of Object.values(ra)) {
+    if (!institutions.has(inst)) institutions.set(inst, { piCount: 0, traineeCount: 0 });
+    institutions.get(inst)!.traineeCount++;
+  }
+  for (const inst of Object.values(pa)) {
+    if (!institutions.has(inst)) institutions.set(inst, { piCount: 0, traineeCount: 0 });
+    institutions.get(inst)!.piCount++;
+  }
+  return [...institutions.entries()]
+    .map(([name, c]) => ({
+      slug:        slugifyName(name),
+      name,
+      piCount:     c.piCount,
+      // PIs are double-counted in researcher_affiliation; subtract.
+      traineeCount: Math.max(0, c.traineeCount - c.piCount),
+    }))
+    .filter(l => (l.piCount >= 1 && l.traineeCount >= 2) || (l.piCount + l.traineeCount) >= 4)
+    .sort((a, b) => (b.piCount + b.traineeCount) - (a.piCount + a.traineeCount));
+}
+
+export function loadLabMentorship(slug: string): LabMentorship | null {
+  const reg = loadResearcherRegistry();
+  const ra  = reg.researcher_affiliation;
+  const pa  = reg.pi_affiliation ?? {};
+
+  // slug → institution: find any institution whose slug matches.
+  const institutionName = Object.values(ra).find(inst => slugifyName(inst) === slug)
+                       ?? Object.values(pa).find(inst => slugifyName(inst) === slug);
+  if (!institutionName) return null;
+
+  // Build the PI and trainee sets for this lab.
+  const piNames      = new Set<string>();
+  const traineeNames = new Set<string>();
+  for (const [n, inst] of Object.entries(pa)) {
+    if (inst === institutionName) piNames.add(n);
+  }
+  for (const [n, inst] of Object.entries(ra)) {
+    if (inst === institutionName && !piNames.has(n)) traineeNames.add(n);
+  }
+
+  // Enrich with PersonRecord data (rating, paperCount) when available.
+  // loadPeople returns the rated pool; people who aren't rated (yet) still
+  // show in the mentorship view but lack the rating badge.
+  const pool = loadPeople({ minPaperCount90d: 0 });
+  const byKey = new Map(pool.map(p => [p.normalizedKey, p]));
+  const peopleFromKey = (n: string): LabMentorshipPerson => {
+    const p = byKey.get(n);
+    return p ? {
+      name:           p.name,
+      normalizedKey:  p.normalizedKey,
+      slug:           p.slug,
+      topRating:      p.topRating,
+      paperCount90d:  p.paperCount90d,
+      contactStatus:  p.contactStatus,
+    } : {
+      // Synthesise display name from normalized key.
+      name:           n.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+      normalizedKey:  n,
+      slug:           slugifyName(n),
+    };
+  };
+
+  // Walk coauthor graph for edges.
+  const graph = loadCoauthorGraph();
+  const edgeKey = (t: string, p: string) => `${t}::${p}`;
+  const edgeMap = new Map<string, LabMentorshipEdge>();
+  for (const [arxivId, authors] of Object.entries(graph.papers)) {
+    if (!authors || authors.length < 3) continue;
+    const last = authors[authors.length - 1];
+    const advisor = normalizeName(last.name);
+    if (!piNames.has(advisor)) continue;
+    const trainees = [authors[0], authors[1]].filter(Boolean);
+    for (const tAuthor of trainees) {
+      const trainee = normalizeName(tAuthor.name);
+      if (!trainee || trainee === advisor) continue;
+      if (!traineeNames.has(trainee) && !piNames.has(trainee)) continue;
+      const k = edgeKey(trainee, advisor);
+      let e = edgeMap.get(k);
+      if (!e) {
+        e = { trainee, advisor, weight: 0, arxivIds: [] };
+        edgeMap.set(k, e);
+      }
+      e.weight++;
+      if (e.arxivIds.length < 3) e.arxivIds.push(arxivId);
+    }
+  }
+
+  const pis      = [...piNames].map(peopleFromKey);
+  const trainees = [...traineeNames].map(peopleFromKey);
+  const edges    = [...edgeMap.values()].sort((a, b) => b.weight - a.weight);
+
+  // Determine domain ownership: count how many edge papers come from VLA
+  // vs AI by joining against subdirections/method families (heuristic via
+  // entity-index domain inference is heavier; we use VLA pool inclusion).
+  const vlaPool = new Set(loadPeople({ minPaperCount90d: 1 })
+    .filter(p => p.evidence.some(e => e.domain === 'vla'))
+    .map(p => p.normalizedKey));
+  const aiPool = new Set(loadPeople({ minPaperCount90d: 1 })
+    .filter(p => p.evidence.some(e => e.domain === 'ai'))
+    .map(p => p.normalizedKey));
+  const domains: Array<'vla' | 'ai_app'> = [];
+  const inLab = [...piNames, ...traineeNames];
+  if (inLab.some(n => vlaPool.has(n)))  domains.push('vla');
+  if (inLab.some(n => aiPool.has(n)))   domains.push('ai_app');
+
+  const advised = new Set(edges.map(e => e.trainee)).size;
+
+  return {
+    slug,
+    name:     institutionName,
+    domains,
+    pis:      pis.sort((a, b) => (b.paperCount90d ?? 0) - (a.paperCount90d ?? 0)),
+    trainees: trainees.sort((a, b) => (b.paperCount90d ?? 0) - (a.paperCount90d ?? 0)),
+    edges,
+    totals: {
+      pis:      pis.length,
+      trainees: trainees.length,
+      edges:    edges.length,
+      advised,
+      orphans:  trainees.length - advised,
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
