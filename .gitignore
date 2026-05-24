@@ -28,6 +28,10 @@ src/data/*.md
 # Committed because (a) static site needs it at request time; (b) regen
 # is manual + costs an API call; (c) sync-data.py doesn't produce it.
 !src/data/talent-embeddings.json
+# Co-author graph: build artifact from `pnpm enrich:affiliations`. Stable
+# (changes only when new papers + new OpenAlex ingestion); commit it so
+# the site can render mentorship/colleague edges without re-fetching.
+!src/data/coauthor-graph.json
 
 # ── Editor / OS ───────────────────────────────────────────────────────────
 .DS_Store

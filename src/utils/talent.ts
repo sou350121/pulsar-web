@@ -794,6 +794,10 @@ export function loadLabs(opts: { minSignals?: number } = {}): LabRecord[] {
 interface ResearcherAffiliation {
   all_institutions:        Record<string, string[]>;
   researcher_affiliation:  Record<string, string>;
+  // PI / corresponding-author tier — populated by enrich-affiliations.py from
+  // last-author position on OpenAlex. Used by isPI() to label senior
+  // researchers (advisor / lab head) vs trainees in the talent UI.
+  pi_affiliation?:         Record<string, string>;
 }
 
 let _registryCache: ResearcherAffiliation | null | undefined;
@@ -801,7 +805,14 @@ function loadResearcherRegistry(): ResearcherAffiliation {
   if (_registryCache === undefined) {
     _registryCache = readJsonLocal<ResearcherAffiliation>('institution-registry.json');
   }
-  return _registryCache ?? { all_institutions: {}, researcher_affiliation: {} };
+  return _registryCache ?? { all_institutions: {}, researcher_affiliation: {}, pi_affiliation: {} };
+}
+
+/** True if this normalized name appears as the last author (=PI/corresponding)
+ *  on any paper in our 90-day window. Used to badge advisors distinctly. */
+export function isPI(normalized: string): boolean {
+  const reg = loadResearcherRegistry();
+  return !!reg.pi_affiliation && normalized in reg.pi_affiliation;
 }
 
 function lookupAffiliation(normalized: string): string | null {

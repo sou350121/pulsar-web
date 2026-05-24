@@ -111,6 +111,7 @@ CANONICAL_INSTITUTION = {
     "Georgia Institute of Technology":             "Georgia Tech",
     "University of Washington":                    "UW",
     "University of Texas at Austin":               "UT Austin",
+    "The University of Texas at Austin":           "UT Austin",
     "University of Michigan, Ann Arbor":           "Michigan",
     "University of Illinois Urbana-Champaign":     "UIUC",
     "University of Maryland, College Park":        "Maryland",
@@ -305,38 +306,77 @@ def main(dry_run: bool = False, verbose: bool = False):
     print(f"  paper cache: {len(paper_cache)} entries; author cache: {len(author_cache)} entries")
 
     # Phase 1: paper → authorships
+    #
+    # Indexing strategy (revised — user clarification):
+    #   * First author (position 0)  — student / lead, primary talent target.
+    #     Match against pulsar byline for high-confidence identification.
+    #   * Second author (position 1, ONLY when paper has ≥3 authors)        —
+    #     usually a co-mentee / fellow student. Add to talent pool but no
+    #     pulsar-byline match available (rating-out only carries first byline).
+    #   * Last author (position -1, ONLY when paper has ≥3 authors)         —
+    #     usually the PI / corresponding author. Tracked separately for future
+    #     师徒 mapping; NOT added to the talent pool's affiliation registry.
+    #
+    # Why ≥3 authors gate: in 2-author papers the "second" IS the last
+    # (= corresponding/PI). Don't conflate worker vs PI.
     print("\nPhase 1: paper → OpenAlex authorships")
     new_paper_lookups = 0
-    name_to_first_author_id: dict[str, str] = {}  # normalized pulsar name → openalex author ID
-    raw_aff_by_name: dict[str, Counter] = defaultdict(Counter)  # for raw fallback
+    name_to_author_id: dict[str, str] = {}                   # talent: first + second author
+    name_to_last_author_id: dict[str, str] = {}              # PIs (separate registry, future)
+    raw_aff_by_name: dict[str, Counter] = defaultdict(Counter)
+    coauthor_graph: dict[str, list[dict]] = {}               # arxiv_id → [{name, position, oa_id}]
     for i, (byline, arxiv_id) in enumerate(papers):
         was_cached = arxiv_id in paper_cache
         rows = fetch_paper_authorships(arxiv_id, paper_cache, verbose=verbose)
         if not was_cached:
             new_paper_lookups += 1
             time.sleep(SLEEP_S)
-            if new_paper_lookups % 50 == 0:
+            if new_paper_lookups % 100 == 0:
                 save_cache(PAPER_CACHE, paper_cache)
                 print(f"  …{i+1}/{len(papers)} processed ({new_paper_lookups} new fetches)")
         if not rows:
             continue
-        # Match pulsar's extracted byline to OpenAlex's first-position author
-        first = next((r for r in rows if r["position"] == "first"), rows[0] if rows else None)
-        if not first:
-            continue
-        if byline:
+        # Capture co-author graph for future 师徒 visualization (paper-level).
+        coauthor_graph[arxiv_id] = [
+            {"name": r["name"], "position": r["position"], "oa_id": r["author_id"]}
+            for r in rows if r.get("author_id")
+        ]
+        # Position-aware indexing.
+        first = rows[0] if rows else None
+        second = rows[1] if len(rows) >= 3 else None
+        last = rows[-1] if len(rows) >= 3 else None
+
+        # First author — match against pulsar byline for confidence.
+        if first and byline:
             byline_norm = normalize_name(byline)
             oa_norm = normalize_name(first["name"])
             if byline_norm and oa_norm:
-                # Accept if surname matches AND given-name initial matches
                 bp, op = byline_norm.split(" "), oa_norm.split(" ")
                 if bp[-1] == op[-1] and (bp[0][:1] == op[0][:1] or bp[0] == op[0]):
-                    name_to_first_author_id.setdefault(byline_norm, first["author_id"])
-                    # Also collect raw affiliations as a fallback
+                    name_to_author_id.setdefault(byline_norm, first["author_id"])
                     for raw in first["raw_affs"]:
                         if raw:
                             raw_aff_by_name[byline_norm][raw] += 1
-        # For middle/last authors too — store raw affs against their normalized name
+
+        # Second author — index by OpenAlex's display_name normalization
+        # (no pulsar byline available to cross-check). Lower confidence but
+        # adds a fresh pool of names that the byline-only path misses.
+        if second and second.get("author_id"):
+            sn = normalize_name(second["name"])
+            if sn and len(sn.split()) >= 2:
+                name_to_author_id.setdefault(sn, second["author_id"])
+                for raw in second["raw_affs"]:
+                    if raw:
+                        raw_aff_by_name[sn][raw] += 1
+
+        # Last author — PI tier, separate map. Don't pollute talent registry.
+        if last and last.get("author_id"):
+            ln = normalize_name(last["name"])
+            if ln and len(ln.split()) >= 2:
+                name_to_last_author_id.setdefault(ln, last["author_id"])
+
+        # Raw-affiliation harvest for ALL authors (fallback when OpenAlex
+        # last_known_institutions is empty).
         for r in rows:
             n = normalize_name(r["name"])
             if not n:
@@ -345,11 +385,15 @@ def main(dry_run: bool = False, verbose: bool = False):
                 if raw:
                     raw_aff_by_name[n][raw] += 1
     save_cache(PAPER_CACHE, paper_cache)
-    print(f"  total paper fetches new: {new_paper_lookups}; matched names: {len(name_to_first_author_id)}")
+    print(f"  total paper fetches new: {new_paper_lookups}")
+    print(f"  first+second authors matched: {len(name_to_author_id)}")
+    print(f"  last authors (PIs) catalogued separately: {len(name_to_last_author_id)}")
+    print(f"  co-author graph entries: {len(coauthor_graph)}")
 
-    # Phase 2: author ID → last_known_institution
+    # Phase 2: author ID → last_known_institution.
+    # Fetch for both talent (first+second) AND PI (last) IDs.
     print("\nPhase 2: author → OpenAlex last_known_institution")
-    unique_author_ids = set(name_to_first_author_id.values())
+    unique_author_ids = set(name_to_author_id.values()) | set(name_to_last_author_id.values())
     new_author_lookups = 0
     for i, aid in enumerate(sorted(unique_author_ids)):
         was_cached = aid in author_cache
@@ -357,7 +401,7 @@ def main(dry_run: bool = False, verbose: bool = False):
         if not was_cached:
             new_author_lookups += 1
             time.sleep(SLEEP_S)
-            if new_author_lookups % 50 == 0:
+            if new_author_lookups % 100 == 0:
                 save_cache(AUTHOR_CACHE, author_cache)
                 print(f"  …{i+1}/{len(unique_author_ids)} ({new_author_lookups} new fetches)")
     save_cache(AUTHOR_CACHE, author_cache)
@@ -369,22 +413,28 @@ def main(dry_run: bool = False, verbose: bool = False):
     researcher_aff = dict(existing.get("researcher_affiliation", {}))  # preserve hand-curated
     all_institutions = dict(existing.get("all_institutions", {}))
 
-    # Per author, take last_known_institution (canonical current employer).
-    # If empty (rare), fall back to most-frequent recent raw affiliation from papers.
-    enriched = 0
-    skipped_manual = 0
-    for name_norm, aid in name_to_first_author_id.items():
-        if name_norm in researcher_aff:
-            # Don't overwrite manual curation
-            skipped_manual += 1
-            continue
+    # Resolve a single name → canonical institution. Prefer:
+    #   1. OpenAlex last_known_institutions (current employer, deterministic)
+    #   2. Most-frequent raw_affiliation_strings from paper authorships
+    def resolve_institution(name_norm: str, aid: str) -> str | None:
         info = author_cache.get(aid)
-        chosen = None
         if info and info.get("last_known"):
-            chosen = info["last_known"][0]
-        elif raw_aff_by_name.get(name_norm):
-            # Pick most-frequent raw affiliation string
-            chosen = raw_aff_by_name[name_norm].most_common(1)[0][0]
+            return info["last_known"][0]
+        if raw_aff_by_name.get(name_norm):
+            return raw_aff_by_name[name_norm].most_common(1)[0][0]
+        return None
+
+    enriched_first_second = 0
+    enriched_pi = 0
+    skipped_existing = 0
+    before_count = len(researcher_aff)
+
+    # ── Talent pool (first + second author) ─────────────────────────────
+    for name_norm, aid in name_to_author_id.items():
+        if name_norm in researcher_aff:
+            skipped_existing += 1
+            continue
+        chosen = resolve_institution(name_norm, aid)
         if not chosen:
             continue
         canonical = canonicalize_institution(chosen)
@@ -392,27 +442,66 @@ def main(dry_run: bool = False, verbose: bool = False):
         all_institutions.setdefault(canonical, [])
         if chosen not in all_institutions[canonical]:
             all_institutions[canonical].append(chosen)
-        enriched += 1
+        enriched_first_second += 1
+
+    # ── PI list (last author = corresponding) ───────────────────────────
+    # Separate registry so the UI can label these as PI / advisor when we
+    # build 师徒 visualization, without polluting the talent pool.
+    pi_aff: dict[str, str] = {}
+    for name_norm, aid in name_to_last_author_id.items():
+        chosen = resolve_institution(name_norm, aid)
+        if not chosen:
+            continue
+        canonical = canonicalize_institution(chosen)
+        pi_aff[name_norm] = canonical
+        # Also surface PIs in the talent registry if they weren't already
+        # captured as a first+second-author (some PIs also lead papers).
+        if name_norm not in researcher_aff:
+            researcher_aff[name_norm] = canonical
+            all_institutions.setdefault(canonical, [])
+            if chosen not in all_institutions[canonical]:
+                all_institutions[canonical].append(chosen)
+            enriched_pi += 1
 
     out = {
         "all_institutions":       all_institutions,
         "researcher_affiliation": researcher_aff,
+        # PI registry: separate from researcher_affiliation so the UI can
+        # distinguish "rated researcher" from "PI of a paper on the radar".
+        "pi_affiliation":         pi_aff,
     }
 
     print(f"\n=== Summary ===")
-    print(f"  before: {len(existing.get('researcher_affiliation', {}))} entries")
-    print(f"  manual entries preserved: {skipped_manual}")
-    print(f"  enriched from OpenAlex: {enriched}")
-    print(f"  after: {len(researcher_aff)} entries (+{len(researcher_aff) - len(existing.get('researcher_affiliation', {}))})")
+    print(f"  before: {before_count} entries")
+    print(f"  skipped (already in registry): {skipped_existing}")
+    print(f"  enriched (first+second author): +{enriched_first_second}")
+    print(f"  enriched (PI / last author): +{enriched_pi}")
+    print(f"  PI registry entries: {len(pi_aff)}")
+    print(f"  total researcher_affiliation: {len(researcher_aff)} (+{len(researcher_aff) - before_count})")
 
     if dry_run:
-        print(f"\n[dry-run] would write {REGISTRY_OUT}")
+        print(f"\n[dry-run] would write {REGISTRY_OUT} and coauthor-graph.json")
         return
 
     tmp = REGISTRY_OUT.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
     tmp.replace(REGISTRY_OUT)
     print(f"\n✅ wrote {REGISTRY_OUT}")
+
+    # Co-author graph artifact (paper → author list with positions).
+    # Used by future 师徒 / mentorship visualization. Stored separately so
+    # the registry stays small + diffable; the graph is the data.
+    graph_out = DATA_DIR / "coauthor-graph.json"
+    graph_data = {
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "paper_count":  len(coauthor_graph),
+        "papers":       coauthor_graph,
+    }
+    tmp = graph_out.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(graph_data, ensure_ascii=False) + "\n")
+    tmp.replace(graph_out)
+    kb = graph_out.stat().st_size / 1024
+    print(f"✅ wrote {graph_out} ({kb:.0f} KB)")
 
 
 if __name__ == "__main__":
