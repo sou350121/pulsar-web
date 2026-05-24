@@ -241,6 +241,10 @@ function extractFirstAuthor(authors: string | undefined): string {
 
 interface FieldStateMethodTrend {
   family:          string;
+  // PR 4: Python pipeline dual-writes a V2 slug here once it migrates. If
+  // present, prefer this over alias-resolving `family`. Absent during/after
+  // rollback — readers fall through to the V1 alias map.
+  family_v2?:      string;
   count_7d:        number;
   count_prior_7d:  number;
   count_14d:       number;
@@ -601,16 +605,22 @@ export function loadSubdirections(opts: { domain?: 'vla' | 'ai' | 'all' } = {}):
     const pool = src.key === 'vla' ? vlaPool : aiPool;
 
     for (const t of trends) {
-      // PR 3: alias-resolve V1 slugs from field-state files when V2 is active.
-      // The upstream Python pipeline (compute-field-state.py) still writes V1
-      // slugs — that's PR 4's job. open_source aliases to null = retired;
-      // skip those trends entirely so the UI doesn't surface a dead family.
+      // PR 3/4: family slug resolution chain.
+      //   1. If Python pipeline emitted `family_v2` natively (PR 4 dual-write),
+      //      use it directly — no aliasing needed.
+      //   2. Else if `family` is a V1 slug, alias-resolve via ALIAS_V1_TO_V2.
+      //      open_source aliases to null = retired; skip those trends.
+      //   3. Else pass `family` through (already V2 or unknown).
+      // The upstream Python pipeline migration is documented in
+      // scripts/ONTOLOGY_V2_SERVER_PATCH.md.
       let v2Family: string | null = t.family;
       if (ONTOLOGY_V2_ACTIVE) {
-        if (t.family in ALIAS_V1_TO_V2) {
+        if (t.family_v2) {
+          v2Family = t.family_v2;          // PR 4 native V2 emit — preferred
+        } else if (t.family in ALIAS_V1_TO_V2) {
           v2Family = ALIAS_V1_TO_V2[t.family];
         }
-        if (v2Family === null) continue;  // retired family
+        if (v2Family === null) continue;   // retired family
       }
 
       // Find sample papers for this family. In V1 mode, use the per-family

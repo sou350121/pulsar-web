@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node --experimental-strip-types scripts/verify-feeds.ts && node --experimental-strip-types scripts/smoke-talent.ts && node --experimental-strip-types scripts/smoke-ontology.ts",
+    "build": "astro build && node --experimental-strip-types scripts/build-ontology-py.ts && node --experimental-strip-types scripts/verify-feeds.ts && node --experimental-strip-types scripts/smoke-talent.ts && node --experimental-strip-types scripts/smoke-ontology.ts",
+    "build-ontology-py": "node --experimental-strip-types scripts/build-ontology-py.ts",
     "preview": "astro preview",
     "sync-data": "python3.11 scripts/sync-data.py",
     "verify-feeds": "node --experimental-strip-types scripts/verify-feeds.ts",
