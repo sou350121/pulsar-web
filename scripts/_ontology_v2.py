@@ -19,7 +19,7 @@ Public API:
       Per-title pick: highest match_precedence wins ties; among equals,
       highest keyword-hit count wins. Mirrors TS rankMethodFamiliesV2.
 
-Generated at: 2026-05-24T03:34:09.802Z
+Generated at: 2026-05-24T04:00:01.865Z
 """
 
 ONTOLOGY = {
@@ -54,7 +54,7 @@ ONTOLOGY = {
         "parents": ["vla.foundation"],
         "primary_parent": "vla.foundation",
         "domain": "vla",
-        "display_name": "Cross-Embodiment FM",
+        "display_name": "Cross-Embodiment Foundation Models",
         "keywords": ["cross-embodiment","cross embodiment","open-x","open x-embodiment","rt-x","octo policy","crossformer","rdt-1b","heterogeneous policy","hpt policy"],
         "match_precedence": 100,
         "effective_date": "2026-05-24",
@@ -576,7 +576,7 @@ ONTOLOGY = {
         "parents": ["ai.tools"],
         "primary_parent": "ai.tools",
         "domain": "ai",
-        "display_name": "MCP Protocol",
+        "display_name": "MCP (Model Context Protocol)",
         "keywords": ["mcp","model context protocol","context protocol","fastmcp","mcp server","mcp-python-sdk"],
         "match_precedence": 100,
         "effective_date": "2026-05-24",
@@ -684,7 +684,7 @@ ONTOLOGY = {
         "parents": ["ai.reasoning"],
         "primary_parent": "ai.reasoning",
         "domain": "ai",
-        "display_name": "Reasoning & Planning",
+        "display_name": "Explicit Reasoning (CoT / Search)",
         "keywords": [],
         "match_precedence": 0,
         "effective_date": "2026-05-24",
@@ -954,7 +954,7 @@ ONTOLOGY = {
         "parents": ["ai.frontier"],
         "primary_parent": "ai.frontier",
         "domain": "ai",
-        "display_name": "Voice / Multimodal",
+        "display_name": "Voice & Multimodal",
         "keywords": ["voice agent","speech-to-speech","gpt realtime","gemini live","pipecat","ultravox","full-duplex voice","omni-modal speech"],
         "match_precedence": 100,
         "effective_date": "2026-05-24",
@@ -963,7 +963,7 @@ ONTOLOGY = {
         "parents": ["ai"],
         "primary_parent": "ai",
         "domain": "ai",
-        "display_name": "Vertical Agents",
+        "display_name": "Vertical / Domain",
         "keywords": [],
         "match_precedence": 0,
         "effective_date": "2026-05-24",

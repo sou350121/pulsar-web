@@ -190,6 +190,24 @@ for (const n of nodes) {
   }
   if (v1Keys.length === 0) fail('parsed 0 V1 keys from METHOD_FAMILY_KEYWORDS');
 
+  // V1 alias sources can come from TWO origins:
+  //   1. pulsar-web's `METHOD_FAMILY_KEYWORDS` (legacy site-side vocab, ~16 slugs)
+  //   2. server-side `_vla_method_families.py` + `_ai_method_families` (~15 + 12)
+  // The server set is materialised here so the orphan check accepts both.
+  // Anything not in either union IS a real orphan (typo or stale).
+  const SERVER_V1_SLUGS = new Set<string>([
+    // VLA side (from /home/admin/clawd/scripts/_vla_method_families.py)
+    'cross_embodiment', 'dexterous_hand', 'human_robot', 'instruction_tuning',
+    'language_grounding', 'long_horizon', 'mobile_manipulation', 'multi_task',
+    'rl_finetuning', 'tactile',
+    // AI side — already covered by METHOD_FAMILY_KEYWORDS for the most part,
+    // but the server-side AI families list is independent so be explicit.
+    'agentic_coding', 'mcp_protocol', 'context_engineering', 'multi_agent',
+    'agent_safety', 'agent_eval', 'agent_infra', 'frontier_model', 'vertical_agent',
+    'voice_multimodal', 'reasoning_planning', 'open_source',
+  ]);
+  const validV1 = new Set<string>([...v1Keys, ...SERVER_V1_SLUGS]);
+
   for (const k of v1Keys) {
     if (!(k in ALIAS_V1_TO_V2)) {
       fail(`ALIAS_V1_TO_V2 is missing V1 key "${k}"`);
@@ -199,10 +217,18 @@ for (const n of nodes) {
       fail(`ALIAS_V1_TO_V2["${k}"] -> "${target}" is not a known V2 slug`);
     }
   }
-  // Also: every alias key must correspond to a real V1 key (no orphan aliases).
+  // Orphan check: every alias key must be a known V1 slug (site or server origin).
+  // Catches typos like `cross_embodyment` while accepting legitimate
+  // server-only slugs (cross_embodiment, dexterous_hand, …).
   for (const k of Object.keys(ALIAS_V1_TO_V2)) {
-    if (!v1Keys.includes(k)) {
-      fail(`ALIAS_V1_TO_V2 has orphan key "${k}" not present in V1 METHOD_FAMILY_KEYWORDS`);
+    if (!validV1.has(k)) {
+      fail(`ALIAS_V1_TO_V2 has orphan key "${k}" — not in METHOD_FAMILY_KEYWORDS nor SERVER_V1_SLUGS`);
+    }
+    // Also re-validate target for server-origin keys (the v1Keys loop above
+    // only covers site-side keys).
+    const target = ALIAS_V1_TO_V2[k];
+    if (target !== null && !byKey.has(target)) {
+      fail(`ALIAS_V1_TO_V2["${k}"] -> "${target}" is not a known V2 slug`);
     }
   }
 }

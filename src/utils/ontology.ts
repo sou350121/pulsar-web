@@ -269,14 +269,26 @@ function ancestorsOf(slug: string): Set<string> {
   return out;
 }
 
+// Domain roots (`'vla'`, `'ai'`) are the implicit top of every ancestor chain.
+// Including them in the cross-parent check collapses the semantic to
+// cross-DOMAIN — every intra-domain pair shares the root and is therefore
+// "not cross-parent", which makes constellation bridges across L1 clusters
+// (e.g. vla.action ↔ vla.policy) impossible. Exclude them when comparing.
+const DOMAIN_ROOTS = new Set<string>(['vla', 'ai']);
+
 export function isCrossParent(a: string, b: string): boolean {
   if (!BY_KEY.has(a) || !BY_KEY.has(b)) return false;
   if (a === b) return false;
   const ancA = ancestorsOf(a);
   const ancB = ancestorsOf(b);
-  // If they share ANY ancestor (including each other or a common cluster),
-  // they're not cross-parent. The implicit root 'vla' / 'ai' would only
-  // intersect within the same domain — distinct domains have no shared root.
-  for (const x of ancA) if (ancB.has(x)) return false;
+  // Compare ancestor sets MINUS the implicit domain roots. If any non-root
+  // ancestor is shared (the leaves themselves, or any L1/L2 cluster), they
+  // belong to the same family/cluster — NOT a bridge. If the only shared
+  // ancestor is `vla` or `ai`, they're cross-parent within the same domain.
+  // Cross-domain pairs share nothing — also cross-parent.
+  for (const x of ancA) {
+    if (DOMAIN_ROOTS.has(x)) continue;
+    if (ancB.has(x)) return false;
+  }
   return true;
 }
