@@ -51,6 +51,62 @@ const displayedEdges = lab.edges.filter(
   e => piKeys.has(e.advisor) && traineeKeys.has(e.trainee)
 );
 
+// Method-family color palette — hand-curated to harmonize with brand
+// amber/cyan on cream surface. Each researcher's primary L1 cluster
+// (vla.action / ai.tools / etc.) colors their dot. Edge color follows
+// the advisor's family.
+const FAMILY_COLORS: Record<string, string> = {
+  'vla.foundation':    'hsl(36, 75%, 55%)',
+  'vla.action':        'hsl(193, 65%, 47%)',
+  'vla.policy':        'hsl(330, 55%, 60%)',
+  'vla.manipulation':  'hsl(12, 70%, 55%)',
+  'vla.locomotion':    'hsl(80, 35%, 45%)',
+  'vla.perception':    'hsl(168, 50%, 42%)',
+  'vla.reasoning':     'hsl(252, 50%, 60%)',
+  'vla.world':         'hsl(298, 50%, 60%)',
+  'vla.sim_data':      'hsl(140, 38%, 45%)',
+  'vla.efficiency':    'hsl(220, 25%, 55%)',
+  'vla.navigation':    'hsl(208, 55%, 60%)',
+  'vla.eval':          'hsl(5, 65%, 60%)',
+  'ai.tools':          'hsl(176, 55%, 45%)',
+  'ai.computer_use':   'hsl(258, 50%, 60%)',
+  'ai.context':        'hsl(48, 70%, 55%)',
+  'ai.reasoning':      'hsl(285, 50%, 55%)',
+  'ai.multi_agent':    'hsl(108, 45%, 48%)',
+  'ai.coding':         'hsl(20, 65%, 55%)',
+  'ai.rag':            'hsl(155, 45%, 45%)',
+  'ai.eval':           'hsl(0, 55%, 55%)',
+  'ai.safety':         'hsl(230, 50%, 60%)',
+  'ai.infra':          'hsl(200, 25%, 50%)',
+  'ai.frontier':       'hsl(280, 60%, 55%)',
+  'ai.vertical':       'hsl(60, 45%, 50%)',
+};
+function familyColor(family: string | undefined): string {
+  if (!family) return 'var(--text-tertiary)';
+  const cluster = family.split('.').slice(0, 2).join('.');
+  return FAMILY_COLORS[cluster] || 'var(--text-tertiary)';
+}
+
+// Dot radius scales by paper count so productive trainees pop visually.
+function dotR(papers: number | undefined): number {
+  const n = papers || 1;
+  return Math.min(14, 8 + Math.sqrt(n) * 1.4);
+}
+
+// Family legend: only clusters that actually appear in this lab.
+const familyLegend: Array<{ cluster: string; display: string; color: string }> = [];
+const seenLegend = new Set<string>();
+for (const person of [...displayedPis, ...displayedTrainees]) {
+  if (!person.primaryFamily) continue;
+  const cluster = person.primaryFamily.split('.').slice(0, 2).join('.');
+  if (seenLegend.has(cluster)) continue;
+  seenLegend.add(cluster);
+  const parts = cluster.split('.');
+  const display = parts[0].toUpperCase() + ' · ' +
+    parts[1].replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  familyLegend.push({ cluster, display, color: FAMILY_COLORS[cluster] || 'var(--text-tertiary)' });
+}
+
 const W       = 980;
 const PADX    = 48;
 const TOP_Y   = 80;
@@ -153,73 +209,86 @@ const domainLabel = lab.domains.includes('vla') && lab.domains.includes('ai_app'
               Trainee · 第一/二作者 / lead worker · {displayedTrainees.length}
             </text>
 
-            {/* Edges first so nodes draw on top */}
+            {/* Edges first so nodes draw on top. Bezier curve sweeps from
+                PI down to trainee with a gentle inward bow — more organic
+                than straight lines, plus the curve direction makes it
+                easier to follow which PI an edge ends at. Color follows
+                the advisor's primary method family. */}
             {displayedEdges.map(e => {
               const ap = piPos[e.advisor];
               const tp = trPos[e.trainee];
               if (!ap || !tp) return null;
+              const advisor = displayedPis.find(p => p.normalizedKey === e.advisor);
               const sw = edgeStrokeWidth(e.weight);
               const op = edgeOpacity(e.weight);
+              const dx = tp.x - ap.x;
+              // Control points pull toward midline for a smooth S-curve.
+              const cpY = (ap.y + tp.y) / 2;
+              const path = `M ${ap.x} ${ap.y + 18} C ${ap.x + dx * 0.15} ${cpY}, ${tp.x - dx * 0.15} ${cpY}, ${tp.x} ${tp.y - 18}`;
               return (
-                <g>
-                  <title>{e.weight} shared paper{e.weight === 1 ? '' : 's'}</title>
-                  <line
-                    x1={ap.x} y1={ap.y + 18}
-                    x2={tp.x} y2={tp.y - 18}
-                    stroke="var(--accent-amber)"
+                <g class="lab-edge" data-advisor={e.advisor} data-trainee={e.trainee}>
+                  <title>{e.weight} shared paper{e.weight === 1 ? '' : 's'} · {advisor?.name} ↔ {e.trainee}</title>
+                  <path
+                    d={path}
+                    fill="none"
+                    stroke={familyColor(advisor?.primaryFamily)}
                     stroke-width={sw}
-                    opacity={op}
+                    stroke-opacity={op}
                     stroke-linecap="round"
                   />
                 </g>
               );
             })}
 
-            {/* PI nodes — top row */}
+            {/* PI nodes — top row. Outer halo + inner core in family color.
+                Halo gives the PI gravitational weight without scaling up
+                the node and overlapping neighbors. */}
             {displayedPis.map(p => {
               const pos = piPos[p.normalizedKey];
+              const c = familyColor(p.primaryFamily);
               return (
-                <g class="lab-node lab-node--pi">
+                <g class="lab-node lab-node--pi" data-node-key={p.normalizedKey}>
                   <a href={`${base}/talent/people/#person-${p.slug}`}>
                     <title>{p.name} · PI{p.paperCount90d ? ` · ${p.paperCount90d} papers 90d` : ''}</title>
-                    <circle
-                      cx={pos.x} cy={pos.y} r="14"
-                      fill="var(--accent-amber)"
-                      stroke="var(--surface)"
-                      stroke-width="2"
-                    />
+                    <circle cx={pos.x} cy={pos.y} r="22" fill={c} fill-opacity="0.16" class="lab-pi-halo" />
+                    <circle cx={pos.x} cy={pos.y} r="14" fill={c} stroke="var(--surface)" stroke-width="2.5" />
                     <text x={pos.x} y={pos.y + 4} text-anchor="middle" class="lab-node-glyph">PI</text>
-                    <text x={pos.x} y={pos.y - 26} text-anchor="middle" class="lab-node-name">
+                    <text x={pos.x} y={pos.y - 30} text-anchor="middle" class="lab-node-name lab-node-name--pi">
                       {shortName(p.name)}
                     </text>
                     {p.topRating && (
-                      <text x={pos.x} y={pos.y - 42} text-anchor="middle" class="lab-node-rating">{p.topRating}</text>
+                      <text x={pos.x} y={pos.y - 46} text-anchor="middle" class="lab-node-rating">{p.topRating}</text>
                     )}
                   </a>
                 </g>
               );
             })}
 
-            {/* Trainee nodes — bottom row */}
+            {/* Trainee nodes — bottom row. Color matches their primary
+                method family; orphan dots (no advisor edge) get dashed
+                stroke + reduced fill opacity to read as "unbound". */}
             {displayedTrainees.map(t => {
               const pos = trPos[t.normalizedKey];
               const advised = displayedEdges.some(e => e.trainee === t.normalizedKey);
+              const c = familyColor(t.primaryFamily);
+              const r = dotR(t.paperCount90d);
               return (
-                <g class={`lab-node lab-node--trainee ${advised ? '' : 'lab-node--orphan'}`}>
+                <g class={`lab-node lab-node--trainee ${advised ? '' : 'lab-node--orphan'}`} data-node-key={t.normalizedKey}>
                   <a href={`${base}/talent/people/#person-${t.slug}`}>
                     <title>{t.name}{t.paperCount90d ? ` · ${t.paperCount90d} papers 90d` : ''}{advised ? '' : ' · no advisor surfaced'}</title>
                     <circle
-                      cx={pos.x} cy={pos.y} r="11"
-                      fill={advised ? 'var(--accent-cyan)' : 'var(--text-tertiary)'}
-                      fill-opacity={advised ? 0.9 : 0.35}
+                      cx={pos.x} cy={pos.y} r={r}
+                      fill={c}
+                      fill-opacity={advised ? 0.92 : 0.45}
                       stroke="var(--surface)"
                       stroke-width="2"
+                      stroke-dasharray={advised ? '' : '3 2'}
                     />
-                    <text x={pos.x} y={pos.y + 26} text-anchor="middle" class="lab-node-name">
+                    <text x={pos.x} y={pos.y + 28} text-anchor="middle" class="lab-node-name">
                       {shortName(t.name)}
                     </text>
                     {t.topRating && (
-                      <text x={pos.x} y={pos.y + 42} text-anchor="middle" class="lab-node-rating">{t.topRating}</text>
+                      <text x={pos.x} y={pos.y + 44} text-anchor="middle" class="lab-node-rating">{t.topRating}</text>
                     )}
                   </a>
                 </g>
@@ -234,6 +303,19 @@ const domainLabel = lab.domains.includes('vla') && lab.domains.includes('ai_app'
             </figcaption>
           )}
         </figure>
+
+        {/* Method-family legend — only clusters actually present in this lab. */}
+        {familyLegend.length > 0 && (
+          <div class="lab-legend">
+            <span class="lab-legend-label">METHOD FAMILY</span>
+            {familyLegend.map(f => (
+              <span class="lab-legend-item">
+                <span class="lab-legend-swatch" style={`background:${f.color}`}></span>
+                <span>{f.display}</span>
+              </span>
+            ))}
+          </div>
+        )}
       </section>
     )}
 
@@ -369,18 +451,75 @@ const domainLabel = lab.domains.includes('vla') && lab.domains.includes('ai_app'
     }
 
     .lab-tree {
-      margin: 0 0 1rem;
-      padding: 1rem;
-      background: var(--surface);
+      margin: 0 0 0.75rem;
+      padding: 1.25rem;
+      background:
+        radial-gradient(ellipse at top,
+          color-mix(in srgb, var(--surface) 92%, var(--accent-amber)) 0%,
+          var(--surface) 70%);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
     }
     .lab-tree-svg {
       width: 100%;
       height: auto;
-      max-height: 480px;
+      max-height: 560px;
       display: block;
     }
+    /* Hover focus — pure CSS via :has(). When hovering any node,
+       all other nodes + every edge dim to 0.2; the hovered subtree
+       stays full opacity, drawing the eye. */
+    .lab-tree-svg:has(g.lab-node:hover) g.lab-node:not(:hover),
+    .lab-tree-svg:has(g.lab-node:hover) g.lab-edge {
+      opacity: 0.18;
+    }
+    .lab-tree-svg g.lab-node,
+    .lab-tree-svg g.lab-edge {
+      transition: opacity 0.15s ease;
+    }
+    .lab-pi-halo {
+      transition: r 0.18s ease, fill-opacity 0.18s ease;
+    }
+    .lab-node--pi:hover .lab-pi-halo {
+      r: 28;
+    }
+    .lab-node-name--pi {
+      font-weight: 700;
+    }
+
+    /* Method-family legend — readable, compact, doesn't overpower the chart. */
+    .lab-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      margin: 0 0 1rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .lab-legend-label {
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      font-size: 0.6rem;
+      font-weight: 700;
+    }
+    .lab-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .lab-legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px var(--border);
+    }
+
     .lab-tree-foot {
       font-size: 0.75rem;
       color: var(--text-tertiary);

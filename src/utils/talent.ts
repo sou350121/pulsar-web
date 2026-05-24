@@ -1659,6 +1659,9 @@ export interface LabMentorshipPerson {
   topRating?:     string;
   paperCount90d?: number;
   contactStatus?: ContactStatus;
+  // Primary V2 method-family slug (e.g. vla.action.diffusion_policy).
+  // Used for color-coding researcher dots on the radial mentorship tree.
+  primaryFamily?: string;
 }
 
 export interface LabMentorshipEdge {
@@ -1746,18 +1749,23 @@ export function loadLabMentorship(slug: string): LabMentorship | null {
   const byKey = new Map(pool.map(p => [p.normalizedKey, p]));
   const peopleFromKey = (n: string): LabMentorshipPerson => {
     const p = byKey.get(n);
-    return p ? {
+    if (!p) {
+      return {
+        name:           n.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+        normalizedKey:  n,
+        slug:           slugifyName(n),
+      };
+    }
+    // Primary method family from V2 ranking — used for dot color on the tree.
+    const ranked = rankMethodFamiliesV2(p.evidence.map(e => e.title ?? ''));
+    return {
       name:           p.name,
       normalizedKey:  p.normalizedKey,
       slug:           p.slug,
       topRating:      p.topRating,
       paperCount90d:  p.paperCount90d,
       contactStatus:  p.contactStatus,
-    } : {
-      // Synthesise display name from normalized key.
-      name:           n.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-      normalizedKey:  n,
-      slug:           slugifyName(n),
+      primaryFamily:  ranked[0]?.[0],
     };
   };
 
