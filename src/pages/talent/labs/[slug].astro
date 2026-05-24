@@ -93,18 +93,56 @@ function dotR(papers: number | undefined): number {
   return Math.min(14, 8 + Math.sqrt(n) * 1.4);
 }
 
-// Family legend: only clusters that actually appear in this lab.
+// Trainee → primary advisor lookup (strongest edge wins). Used to color
+// trainees by their advisor's family when they have no own primaryFamily
+// (most second-author trainees aren't in loadPeople's first-author pool;
+// inheriting advisor color makes the chart visually meaningful instead of
+// rendering as 14 grey dots).
+const primaryAdvisorOf: Record<string, string> = {};
+{
+  const bestWeight: Record<string, number> = {};
+  for (const e of displayedEdges) {
+    if (e.weight > (bestWeight[e.trainee] || 0)) {
+      bestWeight[e.trainee] = e.weight;
+      primaryAdvisorOf[e.trainee] = e.advisor;
+    }
+  }
+}
+function traineeColor(t: typeof displayedTrainees[number]): string {
+  if (t.primaryFamily) return familyColor(t.primaryFamily);
+  const advKey = primaryAdvisorOf[t.normalizedKey];
+  if (advKey) {
+    const advisor = displayedPis.find(p => p.normalizedKey === advKey);
+    if (advisor && advisor.primaryFamily) return familyColor(advisor.primaryFamily);
+  }
+  return 'var(--text-tertiary)';
+}
+
+// Family legend: clusters that actually drive a visible dot color on the
+// chart (direct claim OR inherited via advisor).
 const familyLegend: Array<{ cluster: string; display: string; color: string }> = [];
 const seenLegend = new Set<string>();
-for (const person of [...displayedPis, ...displayedTrainees]) {
-  if (!person.primaryFamily) continue;
-  const cluster = person.primaryFamily.split('.').slice(0, 2).join('.');
-  if (seenLegend.has(cluster)) continue;
+function pushFamilyToLegend(family: string | undefined): void {
+  if (!family) return;
+  const cluster = family.split('.').slice(0, 2).join('.');
+  if (seenLegend.has(cluster)) return;
   seenLegend.add(cluster);
   const parts = cluster.split('.');
   const display = parts[0].toUpperCase() + ' · ' +
     parts[1].replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   familyLegend.push({ cluster, display, color: FAMILY_COLORS[cluster] || 'var(--text-tertiary)' });
+}
+for (const p of displayedPis) pushFamilyToLegend(p.primaryFamily);
+for (const t of displayedTrainees) {
+  if (t.primaryFamily) {
+    pushFamilyToLegend(t.primaryFamily);
+  } else {
+    const advKey = primaryAdvisorOf[t.normalizedKey];
+    if (advKey) {
+      const advisor = displayedPis.find(p => p.normalizedKey === advKey);
+      pushFamilyToLegend(advisor && advisor.primaryFamily);
+    }
+  }
 }
 
 const W       = 980;
@@ -270,7 +308,7 @@ const domainLabel = lab.domains.includes('vla') && lab.domains.includes('ai_app'
             {displayedTrainees.map(t => {
               const pos = trPos[t.normalizedKey];
               const advised = displayedEdges.some(e => e.trainee === t.normalizedKey);
-              const c = familyColor(t.primaryFamily);
+              const c = traineeColor(t);
               const r = dotR(t.paperCount90d);
               return (
                 <g class={`lab-node lab-node--trainee ${advised ? '' : 'lab-node--orphan'}`} data-node-key={t.normalizedKey}>
