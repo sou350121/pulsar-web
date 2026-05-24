@@ -1638,16 +1638,36 @@ interface CoauthorPaper {
   position: 'first' | 'middle' | 'last' | string;
   oa_id:    string;
 }
+// v1 shape: papers[id] = CoauthorPaper[]
+// v2 shape: papers[id] = { title, authors: CoauthorPaper[] }
+// loadCoauthorGraph below normalises both shapes to v2 so callers don't care.
+type CoauthorPaperV1 = CoauthorPaper[];
+type CoauthorPaperV2 = { title: string; authors: CoauthorPaper[] };
+interface CoauthorGraphRaw {
+  generated_at: string;
+  paper_count:  number;
+  papers:       Record<string, CoauthorPaperV1 | CoauthorPaperV2>;
+}
 interface CoauthorGraph {
   generated_at: string;
   paper_count:  number;
-  papers:       Record<string, CoauthorPaper[]>;
+  papers:       Record<string, CoauthorPaperV2>;
 }
 
 let _coauthorCache: CoauthorGraph | null | undefined;
 function loadCoauthorGraph(): CoauthorGraph {
   if (_coauthorCache === undefined) {
-    _coauthorCache = readJsonLocal<CoauthorGraph>('coauthor-graph.json');
+    const raw = readJsonLocal<CoauthorGraphRaw>('coauthor-graph.json');
+    if (!raw) {
+      _coauthorCache = null;
+    } else {
+      // Normalise v1 (array) → v2 (object with title + authors).
+      const papers: Record<string, CoauthorPaperV2> = {};
+      for (const [k, v] of Object.entries(raw.papers ?? {})) {
+        papers[k] = Array.isArray(v) ? { title: '', authors: v } : v;
+      }
+      _coauthorCache = { generated_at: raw.generated_at, paper_count: raw.paper_count, papers };
+    }
   }
   return _coauthorCache ?? { generated_at: '', paper_count: 0, papers: {} };
 }
@@ -1769,12 +1789,28 @@ export function loadLabMentorship(slug: string): LabMentorship | null {
     };
   };
 
-  // Walk coauthor graph for edges.
+  // Walk coauthor graph for edges + collect per-person paper titles so
+  // non-rated trainees (not in loadPeople's first-author pool) can still
+  // get a primaryFamily via rankMethodFamiliesV2.
   const graph = loadCoauthorGraph();
   const edgeKey = (t: string, p: string) => `${t}::${p}`;
   const edgeMap = new Map<string, LabMentorshipEdge>();
-  for (const [arxivId, authors] of Object.entries(graph.papers)) {
-    if (!authors || authors.length < 3) continue;
+  const titlesByName = new Map<string, string[]>();
+  for (const [arxivId, paperEntry] of Object.entries(graph.papers)) {
+    const authors = paperEntry.authors;
+    const title = paperEntry.title;
+    if (!authors || authors.length < 1) continue;
+    // Index titles for every author position so primaryFamily can be
+    // computed for anyone in the lab whose name appears here.
+    if (title) {
+      for (const a of authors) {
+        const n = normalizeName(a.name);
+        if (!n) continue;
+        if (!titlesByName.has(n)) titlesByName.set(n, []);
+        titlesByName.get(n)!.push(title);
+      }
+    }
+    if (authors.length < 3) continue;
     const last = authors[authors.length - 1];
     const advisor = normalizeName(last.name);
     if (!piNames.has(advisor)) continue;
@@ -1797,6 +1833,18 @@ export function loadLabMentorship(slug: string): LabMentorship | null {
   const pis      = [...piNames].map(peopleFromKey);
   const trainees = [...traineeNames].map(peopleFromKey);
   const edges    = [...edgeMap.values()].sort((a, b) => b.weight - a.weight);
+
+  // Backfill primaryFamily for trainees / PIs whose name isn't in loadPeople
+  // (mostly second-author co-authors picked up by OpenAlex enrichment but
+  // never first-authored a rated paper). We have their paper titles via the
+  // coauthor-graph; rank method families directly.
+  for (const person of [...pis, ...trainees]) {
+    if (person.primaryFamily) continue;
+    const titles = titlesByName.get(person.normalizedKey);
+    if (!titles || titles.length === 0) continue;
+    const ranked = rankMethodFamiliesV2(titles);
+    if (ranked.length > 0) person.primaryFamily = ranked[0][0];
+  }
 
   // Determine domain ownership: count how many edge papers come from VLA
   // vs AI by joining against subdirections/method families (heuristic via

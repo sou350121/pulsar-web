@@ -199,8 +199,8 @@ def save_cache(path: Path, data: dict) -> None:
 ARXIV_RE = re.compile(r"arxiv\.org/(?:abs|pdf)/(\d{4}\.\d{4,5})", re.IGNORECASE)
 
 
-def extract_papers_from_data(verbose: bool = False) -> list[tuple[str, str]]:
-    """Scan src/data/ rating files; return list of (first_author_byline, arxiv_id)."""
+def extract_papers_from_data(verbose: bool = False) -> list[tuple[str, str, str]]:
+    """Scan src/data/ rating files; return list of (first_author_byline, arxiv_id, title)."""
     out = []
     seen_urls = set()
     # VLA rating-out files: each has papers[] with title, url, summary
@@ -225,7 +225,8 @@ def extract_papers_from_data(verbose: bool = False) -> list[tuple[str, str]]:
             byline = re.sub(r"\s+et\s+al\.?\s*$", "", authors_raw, flags=re.IGNORECASE).strip()
             # Sometimes there are commas — take the first comma-separated chunk
             byline = byline.split(",")[0].strip()
-            out.append((byline, arxiv_id))
+            title = (p.get("title", "") or "").strip()
+            out.append((byline, arxiv_id, title))
     # AI daily picks: same shape via different paper file
     for fname in sorted(DATA_DIR.glob("_ai_daily_pick_*.md")):
         # Markdown — extract arxiv URLs only (no byline easily)
@@ -236,7 +237,7 @@ def extract_papers_from_data(verbose: bool = False) -> list[tuple[str, str]]:
             if url in seen_urls:
                 continue
             seen_urls.add(url)
-            out.append(("", arxiv_id))
+            out.append(("", arxiv_id, ""))
     if verbose:
         print(f"  harvested {len(out)} unique arxiv IDs across rating files")
     return out
@@ -324,8 +325,16 @@ def main(dry_run: bool = False, verbose: bool = False):
     name_to_author_id: dict[str, str] = {}                   # talent: first + second author
     name_to_last_author_id: dict[str, str] = {}              # PIs (separate registry, future)
     raw_aff_by_name: dict[str, Counter] = defaultdict(Counter)
-    coauthor_graph: dict[str, list[dict]] = {}               # arxiv_id → [{name, position, oa_id}]
-    for i, (byline, arxiv_id) in enumerate(papers):
+    # Co-author graph: arxiv_id → { title, authors[] }. Title lets site-side
+    # readers (loadLabMentorship) compute primaryFamily for co-author trainees
+    # who aren't in loadPeople's first-author pool — without that, ~75% of
+    # mentorship-tree dots render as default grey.
+    coauthor_graph: dict[str, dict] = {}
+    paper_titles: dict[str, str] = {}  # arxiv_id → title (from rating-out files)
+    for byline, arxiv_id, title in papers:
+        if title:
+            paper_titles[arxiv_id] = title
+    for i, (byline, arxiv_id, _title) in enumerate(papers):
         was_cached = arxiv_id in paper_cache
         rows = fetch_paper_authorships(arxiv_id, paper_cache, verbose=verbose)
         if not was_cached:
@@ -336,11 +345,14 @@ def main(dry_run: bool = False, verbose: bool = False):
                 print(f"  …{i+1}/{len(papers)} processed ({new_paper_lookups} new fetches)")
         if not rows:
             continue
-        # Capture co-author graph for future 师徒 visualization (paper-level).
-        coauthor_graph[arxiv_id] = [
-            {"name": r["name"], "position": r["position"], "oa_id": r["author_id"]}
-            for r in rows if r.get("author_id")
-        ]
+        # Capture co-author graph for 师徒 visualization (paper-level).
+        coauthor_graph[arxiv_id] = {
+            "title":   paper_titles.get(arxiv_id, ""),
+            "authors": [
+                {"name": r["name"], "position": r["position"], "oa_id": r["author_id"]}
+                for r in rows if r.get("author_id")
+            ],
+        }
         # Position-aware indexing.
         first = rows[0] if rows else None
         second = rows[1] if len(rows) >= 3 else None
