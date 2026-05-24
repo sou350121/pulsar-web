@@ -12,525 +12,1039 @@
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "AI Agent"
     },
-
     {
       "slug": "ai.tools",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for tool-use protocols and capabilities (MCP, function calling, code execution, browser). Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Tool Use & Action Surfaces"
     },
     {
       "slug": "ai.tools.mcp_protocol",
-      "parents": ["ai.tools"],
+      "parents": [
+        "ai.tools"
+      ],
       "primary_parent": "ai.tools",
       "domain": "ai",
       "scope": "Anthropic's Model Context Protocol and conforming server/client implementations. Excludes provider-specific function-calling formats (see ai.tools.function_calling) and broader agent protocols across vendors (see ai.multi_agent.agent_protocols).",
-      "keywords": ["mcp", "model context protocol", "context protocol", "fastmcp", "mcp server", "mcp-python-sdk"],
+      "keywords": [
+        "mcp",
+        "model context protocol",
+        "context protocol",
+        "fastmcp",
+        "mcp server",
+        "mcp-python-sdk"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Anthropic MCP", "FastMCP", "mcp-python-sdk", "mcp-server-everything"]
+      "examples": [
+        "Anthropic MCP",
+        "FastMCP",
+        "mcp-python-sdk",
+        "mcp-server-everything"
+      ],
+      "display_name": "MCP Protocol"
     },
     {
       "slug": "ai.tools.function_calling",
-      "parents": ["ai.tools"],
+      "parents": [
+        "ai.tools"
+      ],
       "primary_parent": "ai.tools",
       "domain": "ai",
       "scope": "Provider-native function/tool calling APIs (OpenAI tools, Anthropic tool_use, Gemini function calling). Excludes MCP-style universal protocols (see ai.tools.mcp_protocol).",
-      "keywords": ["function calling", "function-calling", "tool use api", "tool_use", "openai tools api", "gemini function-calling", "structured tool call"],
+      "keywords": [
+        "function calling",
+        "function-calling",
+        "tool use api",
+        "tool_use",
+        "openai tools api",
+        "gemini function-calling",
+        "structured tool call"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["OpenAI tools", "Anthropic tool_use", "Gemini function-calling"]
+      "examples": [
+        "OpenAI tools",
+        "Anthropic tool_use",
+        "Gemini function-calling"
+      ],
+      "display_name": "Function Calling"
     },
     {
       "slug": "ai.tools.code_execution_tools",
-      "parents": ["ai.tools"],
+      "parents": [
+        "ai.tools"
+      ],
       "primary_parent": "ai.tools",
       "domain": "ai",
       "scope": "Sandboxed code-execution tools for agents (CodeAct, e2b, Modal sandboxes, bash tools). Excludes browser automation (see ai.tools.browser_use) and agentic coding products that wrap full IDE workflows (see ai.coding.agentic_coding).",
-      "keywords": ["code execution tool", "code interpreter", "codeact", "e2b sandbox", "modal sandbox", "claude code bash", "code sandbox tool"],
+      "keywords": [
+        "code execution tool",
+        "code interpreter",
+        "codeact",
+        "e2b sandbox",
+        "modal sandbox",
+        "claude code bash",
+        "code sandbox tool"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["CodeAct", "e2b", "Claude Code bash tool", "Modal sandboxes"]
+      "examples": [
+        "CodeAct",
+        "e2b",
+        "Claude Code bash tool",
+        "Modal sandboxes"
+      ],
+      "display_name": "Code-Execution Tools"
     },
     {
       "slug": "ai.tools.browser_use",
-      "parents": ["ai.tools"],
+      "parents": [
+        "ai.tools"
+      ],
       "primary_parent": "ai.tools",
       "domain": "ai",
       "scope": "Browser automation libraries and agents (BrowserUse, Playwright-MCP, Stagehand). Excludes generic desktop GUI control (see ai.computer_use.computer_use_desktop) and mobile-app drivers (see ai.computer_use.mobile_agent).",
-      "keywords": ["browser use", "browseruse", "playwright-mcp", "stagehand browser", "browser automation agent", "headless browser agent"],
+      "keywords": [
+        "browser use",
+        "browseruse",
+        "playwright-mcp",
+        "stagehand browser",
+        "browser automation agent",
+        "headless browser agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["BrowserUse", "Claude Computer Use browser", "Playwright-MCP", "Stagehand"]
+      "examples": [
+        "BrowserUse",
+        "Claude Computer Use browser",
+        "Playwright-MCP",
+        "Stagehand"
+      ],
+      "display_name": "Browser Use"
     },
-
     {
       "slug": "ai.computer_use",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for GUI-driving agents on desktop and mobile. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Computer Use & GUI Agents"
     },
     {
       "slug": "ai.computer_use.computer_use_desktop",
-      "parents": ["ai.computer_use"],
+      "parents": [
+        "ai.computer_use"
+      ],
       "primary_parent": "ai.computer_use",
       "domain": "ai",
       "scope": "Desktop GUI-driving agents that observe screenshots and emit mouse/keyboard actions (Claude Computer Use, OpenAI Operator, UI-TARS). Excludes browser-only automation (see ai.tools.browser_use) and mobile-app drivers (see ai.computer_use.mobile_agent).",
-      "keywords": ["computer use", "computer-use agent", "operator agent", "ui-tars", "cradle agent", "desktop gui agent", "screenshot mouse keyboard"],
+      "keywords": [
+        "computer use",
+        "computer-use agent",
+        "operator agent",
+        "ui-tars",
+        "cradle agent",
+        "desktop gui agent",
+        "screenshot mouse keyboard"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Claude Computer Use", "OpenAI Operator", "UI-TARS", "Cradle"]
+      "examples": [
+        "Claude Computer Use",
+        "OpenAI Operator",
+        "UI-TARS",
+        "Cradle"
+      ],
+      "display_name": "Computer Use (Desktop)"
     },
     {
       "slug": "ai.computer_use.mobile_agent",
-      "parents": ["ai.computer_use"],
+      "parents": [
+        "ai.computer_use"
+      ],
       "primary_parent": "ai.computer_use",
       "domain": "ai",
       "scope": "Phone-OS GUI agents (AutoDroid, MobileAgent-v3, Apple Intelligence app intents). Excludes desktop GUI agents (see ai.computer_use.computer_use_desktop) and browser-only automation (see ai.tools.browser_use).",
-      "keywords": ["mobile agent", "android agent", "autodroid", "mobileagent-v3", "app intents", "phone gui agent"],
+      "keywords": [
+        "mobile agent",
+        "android agent",
+        "autodroid",
+        "mobileagent-v3",
+        "app intents",
+        "phone gui agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["AutoDroid", "MobileAgent-v3", "Apple Intelligence app intents"]
+      "examples": [
+        "AutoDroid",
+        "MobileAgent-v3",
+        "Apple Intelligence app intents"
+      ],
+      "display_name": "Mobile Agent"
     },
-
     {
       "slug": "ai.context",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for context engineering, agent memory, and long-context model use. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Memory & Context"
     },
     {
       "slug": "ai.context.context_engineering",
-      "parents": ["ai.context"],
+      "parents": [
+        "ai.context"
+      ],
       "primary_parent": "ai.context",
       "domain": "ai",
       "scope": "Prompt-and-context shaping practices and tooling (Anthropic context-engineering, RepoPrompt, Cline rules). Excludes persistent memory stores (see ai.context.agent_memory) and raw long-context models (see ai.context.long_context).",
-      "keywords": ["context engineering", "context-engineering", "repoprompt", "cline rules", "prompt scaffolding", "context shaping"],
+      "keywords": [
+        "context engineering",
+        "context-engineering",
+        "repoprompt",
+        "cline rules",
+        "prompt scaffolding",
+        "context shaping"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Anthropic context-engineering blog", "RepoPrompt", "Cline rules"]
+      "examples": [
+        "Anthropic context-engineering blog",
+        "RepoPrompt",
+        "Cline rules"
+      ],
+      "display_name": "Context Engineering"
     },
     {
       "slug": "ai.context.agent_memory",
-      "parents": ["ai.context"],
+      "parents": [
+        "ai.context"
+      ],
       "primary_parent": "ai.context",
       "domain": "ai",
       "scope": "Persistent agent memory stores and frameworks (MemGPT/Letta, Zep, mem0, LangMem). Excludes per-call prompt context shaping (see ai.context.context_engineering) and raw long-context models (see ai.context.long_context).",
-      "keywords": ["agent memory", "memgpt", "letta memory", "zep memory", "mem0", "langmem", "persistent memory store"],
+      "keywords": [
+        "agent memory",
+        "memgpt",
+        "letta memory",
+        "zep memory",
+        "mem0",
+        "langmem",
+        "persistent memory store"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["MemGPT/Letta", "Zep", "mem0", "LangMem"]
+      "examples": [
+        "MemGPT/Letta",
+        "Zep",
+        "mem0",
+        "LangMem"
+      ],
+      "display_name": "Agent Memory"
     },
     {
       "slug": "ai.context.long_context",
-      "parents": ["ai.context"],
+      "parents": [
+        "ai.context"
+      ],
       "primary_parent": "ai.context",
       "domain": "ai",
       "scope": "Million-token model context windows and evaluations (Gemini 2.5 1M, Claude 1M, RULER). Excludes prompt engineering of moderate-length context (see ai.context.context_engineering) and persistent agent memory (see ai.context.agent_memory).",
-      "keywords": ["long context", "long-context", "1m context", "million-token context", "ruler benchmark", "extended context window"],
+      "keywords": [
+        "long context",
+        "long-context",
+        "1m context",
+        "million-token context",
+        "ruler benchmark",
+        "extended context window"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Gemini 2.5 1M", "Claude 1M", "RULER"]
+      "examples": [
+        "Gemini 2.5 1M",
+        "Claude 1M",
+        "RULER"
+      ],
+      "display_name": "Long Context"
     },
-
     {
       "slug": "ai.reasoning",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for AI reasoning, planning, and world-model-style LLM cognition. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Reasoning & Planning"
     },
     {
       "slug": "ai.reasoning.reasoning_planning",
-      "parents": ["ai.reasoning"],
+      "parents": [
+        "ai.reasoning"
+      ],
       "primary_parent": "ai.reasoning",
       "domain": "ai",
       "scope": "Cluster for reasoning and planning sub-families (chain-of-thought, tree-search). Structural node; L3 leaves carry matching.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Reasoning & Planning"
     },
     {
       "slug": "ai.reasoning.reasoning_planning.chain_of_thought",
-      "parents": ["ai.reasoning.reasoning_planning"],
+      "parents": [
+        "ai.reasoning.reasoning_planning"
+      ],
       "primary_parent": "ai.reasoning.reasoning_planning",
       "domain": "ai",
       "scope": "Inline chain-of-thought and extended-thinking traces in LLMs (o1, Anthropic extended thinking). Excludes tree-search style deliberation (see ai.reasoning.reasoning_planning.tree_search_planning).",
-      "keywords": ["chain-of-thought", "chain of thought", "extended thinking", "o1-preview", "thinking trace", "inline reasoning trace"],
+      "keywords": [
+        "chain-of-thought",
+        "chain of thought",
+        "extended thinking",
+        "o1-preview",
+        "thinking trace",
+        "inline reasoning trace"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["o1-preview", "Anthropic extended thinking"]
+      "examples": [
+        "o1-preview",
+        "Anthropic extended thinking"
+      ],
+      "display_name": "Chain-of-Thought"
     },
     {
       "slug": "ai.reasoning.reasoning_planning.tree_search_planning",
-      "parents": ["ai.reasoning.reasoning_planning"],
+      "parents": [
+        "ai.reasoning.reasoning_planning"
+      ],
       "primary_parent": "ai.reasoning.reasoning_planning",
       "domain": "ai",
       "scope": "Tree-search and MCTS-style deliberation (rStar-Math, AlphaProof, ToT, LATS). Excludes inline chain-of-thought (see ai.reasoning.reasoning_planning.chain_of_thought).",
-      "keywords": ["tree search planning", "monte carlo tree", "rstar-math", "alphaproof", "tree-of-thoughts", "lats agent"],
+      "keywords": [
+        "tree search planning",
+        "monte carlo tree",
+        "rstar-math",
+        "alphaproof",
+        "tree-of-thoughts",
+        "lats agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["rStar-Math", "AlphaProof", "ToT", "LATS"]
+      "examples": [
+        "rStar-Math",
+        "AlphaProof",
+        "ToT",
+        "LATS"
+      ],
+      "display_name": "Tree-Search Planning"
     },
     {
       "slug": "ai.reasoning.world_model_llm",
-      "parents": ["ai.reasoning"],
+      "parents": [
+        "ai.reasoning"
+      ],
       "primary_parent": "ai.reasoning",
       "domain": "ai",
       "scope": "LLM-driven world models for open-ended environments (Genie 3, WorldDreamer-Agent, Voyager-style). Excludes robot dynamics world models (see vla.world.world_model_dynamics).",
-      "keywords": ["genie 3", "voyager agent", "world model agent", "worlddreamer agent", "open-ended world model llm"],
+      "keywords": [
+        "genie 3",
+        "voyager agent",
+        "world model agent",
+        "worlddreamer agent",
+        "open-ended world model llm"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Genie 3", "WorldDreamer-Agent", "Voyager-style"]
+      "examples": [
+        "Genie 3",
+        "WorldDreamer-Agent",
+        "Voyager-style"
+      ],
+      "display_name": "World Model (LLM)"
     },
-
     {
       "slug": "ai.multi_agent",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for multi-agent systems, inter-agent protocols, and handoff. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Multi-Agent Orchestration"
     },
     {
       "slug": "ai.multi_agent.multi_agent",
-      "parents": ["ai.multi_agent"],
+      "parents": [
+        "ai.multi_agent"
+      ],
       "primary_parent": "ai.multi_agent",
       "domain": "ai",
       "scope": "Multi-agent orchestration frameworks (CrewAI, AutoGen v0.4, OpenAI Swarm, MetaGPT). Excludes vendor-neutral inter-agent protocols (see ai.multi_agent.agent_protocols) and intra-framework handoff primitives (see ai.multi_agent.agent_handoff).",
-      "keywords": ["multi-agent", "multi agent", "multiagent", "agent collaboration", "agent orchestration", "crewai", "autogen", "openai swarm", "metagpt"],
+      "keywords": [
+        "multi-agent",
+        "multi agent",
+        "multiagent",
+        "agent collaboration",
+        "agent orchestration",
+        "crewai",
+        "autogen",
+        "openai swarm",
+        "metagpt"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["CrewAI", "AutoGen v0.4", "OpenAI Swarm", "MetaGPT"]
+      "examples": [
+        "CrewAI",
+        "AutoGen v0.4",
+        "OpenAI Swarm",
+        "MetaGPT"
+      ],
+      "display_name": "Multi-Agent Teams"
     },
     {
       "slug": "ai.multi_agent.agent_protocols",
-      "parents": ["ai.multi_agent"],
+      "parents": [
+        "ai.multi_agent"
+      ],
       "primary_parent": "ai.multi_agent",
       "domain": "ai",
       "scope": "Open inter-agent protocols across vendors (Google A2A, IBM ACP, AGNTCY). Excludes Anthropic-specific MCP for tool servers (see ai.tools.mcp_protocol).",
-      "keywords": ["a2a protocol", "agent-to-agent protocol", "acp protocol", "agntcy", "inter-agent protocol", "open agent protocol"],
+      "keywords": [
+        "a2a protocol",
+        "agent-to-agent protocol",
+        "acp protocol",
+        "agntcy",
+        "inter-agent protocol",
+        "open agent protocol"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Google A2A", "IBM ACP", "AGNTCY"]
+      "examples": [
+        "Google A2A",
+        "IBM ACP",
+        "AGNTCY"
+      ],
+      "display_name": "Agent Protocols (A2A/ACP)"
     },
     {
       "slug": "ai.multi_agent.agent_handoff",
-      "parents": ["ai.multi_agent"],
+      "parents": [
+        "ai.multi_agent"
+      ],
       "primary_parent": "ai.multi_agent",
       "domain": "ai",
       "scope": "Supervisor/sub-agent handoff primitives inside a single framework (LangGraph supervisor, Claude sub-agents). Excludes full multi-agent orchestration frameworks (see ai.multi_agent.multi_agent).",
-      "keywords": ["agent handoff", "supervisor agent", "sub-agent handoff", "langgraph supervisor", "claude sub-agents", "agent routing handoff"],
+      "keywords": [
+        "agent handoff",
+        "supervisor agent",
+        "sub-agent handoff",
+        "langgraph supervisor",
+        "claude sub-agents",
+        "agent routing handoff"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["LangGraph supervisor", "Claude sub-agents"]
+      "examples": [
+        "LangGraph supervisor",
+        "Claude sub-agents"
+      ],
+      "display_name": "Agent Handoff"
     },
-
     {
       "slug": "ai.coding",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for AI coding tooling: agentic coding harnesses, code review, repo indexing. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Coding Agents"
     },
     {
       "slug": "ai.coding.agentic_coding",
-      "parents": ["ai.coding"],
+      "parents": [
+        "ai.coding"
+      ],
       "primary_parent": "ai.coding",
       "domain": "ai",
       "scope": "Autonomous coding harnesses (Claude Code, Cursor Agent, Aider, Devin). Excludes one-shot code completion and PR-review bots (see ai.coding.code_review_agent) and indexing-only tools (see ai.coding.repo_indexing).",
-      "keywords": ["agentic coding", "coding agent", "claude code", "cursor agent", "aider coder", "devin agent", "software engineer agent"],
+      "keywords": [
+        "agentic coding",
+        "coding agent",
+        "claude code",
+        "cursor agent",
+        "aider coder",
+        "devin agent",
+        "software engineer agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Claude Code", "Cursor Agent", "Aider", "Devin"]
+      "examples": [
+        "Claude Code",
+        "Cursor Agent",
+        "Aider",
+        "Devin"
+      ],
+      "display_name": "Agentic Coding"
     },
     {
       "slug": "ai.coding.code_review_agent",
-      "parents": ["ai.coding"],
+      "parents": [
+        "ai.coding"
+      ],
       "primary_parent": "ai.coding",
       "domain": "ai",
       "scope": "AI PR / diff review bots (CodeRabbit, Greptile, Graphite Diamond). Excludes interactive coding harnesses (see ai.coding.agentic_coding).",
-      "keywords": ["code review agent", "ai code review", "coderabbit", "greptile review", "graphite diamond", "pr review bot"],
+      "keywords": [
+        "code review agent",
+        "ai code review",
+        "coderabbit",
+        "greptile review",
+        "graphite diamond",
+        "pr review bot"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["CodeRabbit", "Greptile", "Graphite Diamond"]
+      "examples": [
+        "CodeRabbit",
+        "Greptile",
+        "Graphite Diamond"
+      ],
+      "display_name": "Code-Review Agent"
     },
     {
       "slug": "ai.coding.repo_indexing",
-      "parents": ["ai.coding"],
+      "parents": [
+        "ai.coding"
+      ],
       "primary_parent": "ai.coding",
       "domain": "ai",
       "scope": "Repository-scale code indexing and retrieval backends (Sourcegraph Cody, Codeium Cortex, Sweep). Excludes general RAG infrastructure (see ai.rag.rag_classic) and full coding agents (see ai.coding.agentic_coding).",
-      "keywords": ["repo indexing", "code indexing", "sourcegraph cody", "codeium cortex", "sweep coding", "repository-scale retrieval"],
+      "keywords": [
+        "repo indexing",
+        "code indexing",
+        "sourcegraph cody",
+        "codeium cortex",
+        "sweep coding",
+        "repository-scale retrieval"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Sourcegraph Cody", "Codeium Cortex", "Sweep"]
+      "examples": [
+        "Sourcegraph Cody",
+        "Codeium Cortex",
+        "Sweep"
+      ],
+      "display_name": "Repo Indexing"
     },
-
     {
       "slug": "ai.rag",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for retrieval-augmented generation flavors. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "RAG & Retrieval"
     },
     {
       "slug": "ai.rag.rag_classic",
-      "parents": ["ai.rag"],
+      "parents": [
+        "ai.rag"
+      ],
       "primary_parent": "ai.rag",
       "domain": "ai",
       "scope": "Embedding + reranker classic RAG pipelines (LlamaIndex, LangChain RAG, Cohere Rerank). Excludes knowledge-graph RAG (see ai.rag.graph_rag) and agentic / iterative RAG loops (see ai.rag.agentic_rag).",
-      "keywords": ["classic rag", "llamaindex rag", "langchain rag", "cohere rerank", "embedding rag", "vector retrieval rag"],
+      "keywords": [
+        "classic rag",
+        "llamaindex rag",
+        "langchain rag",
+        "cohere rerank",
+        "embedding rag",
+        "vector retrieval rag"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["LlamaIndex", "LangChain RAG", "Cohere Rerank"]
+      "examples": [
+        "LlamaIndex",
+        "LangChain RAG",
+        "Cohere Rerank"
+      ],
+      "display_name": "Classic RAG"
     },
     {
       "slug": "ai.rag.graph_rag",
-      "parents": ["ai.rag"],
+      "parents": [
+        "ai.rag"
+      ],
       "primary_parent": "ai.rag",
       "domain": "ai",
       "scope": "Knowledge-graph-augmented RAG (Microsoft GraphRAG, LightRAG, Neo4j LLM graph). Excludes vector-only RAG (see ai.rag.rag_classic).",
-      "keywords": ["graph rag", "graphrag", "lightrag", "neo4j llm graph", "knowledge graph rag"],
+      "keywords": [
+        "graph rag",
+        "graphrag",
+        "lightrag",
+        "neo4j llm graph",
+        "knowledge graph rag"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Microsoft GraphRAG", "Neo4j LLM Graph", "LightRAG"]
+      "examples": [
+        "Microsoft GraphRAG",
+        "Neo4j LLM Graph",
+        "LightRAG"
+      ],
+      "display_name": "Graph RAG"
     },
     {
       "slug": "ai.rag.agentic_rag",
-      "parents": ["ai.rag"],
+      "parents": [
+        "ai.rag"
+      ],
       "primary_parent": "ai.rag",
       "domain": "ai",
       "scope": "Agentic iterative RAG with self-reflection and adaptive retrieval (Self-RAG, Adaptive-RAG, Perplexity Pro). Excludes single-shot classic RAG (see ai.rag.rag_classic).",
-      "keywords": ["agentic rag", "self-rag", "adaptive-rag", "perplexity pro", "iterative retrieval agent"],
+      "keywords": [
+        "agentic rag",
+        "self-rag",
+        "adaptive-rag",
+        "perplexity pro",
+        "iterative retrieval agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Self-RAG", "Adaptive-RAG", "Perplexity Pro"]
+      "examples": [
+        "Self-RAG",
+        "Adaptive-RAG",
+        "Perplexity Pro"
+      ],
+      "display_name": "Agentic RAG"
     },
-
     {
       "slug": "ai.eval",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for AI agent evaluation, observability, and failure taxonomies. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Agentic Evaluation"
     },
     {
       "slug": "ai.eval.agent_eval",
-      "parents": ["ai.eval"],
+      "parents": [
+        "ai.eval"
+      ],
       "primary_parent": "ai.eval",
       "domain": "ai",
       "scope": "Agent benchmarks for software / web / OS tasks (SWE-bench Verified, GAIA, OSWorld, τ-bench, BrowseComp). Excludes robot benchmarks (see vla.eval.robot_eval_benchmarks) and runtime observability platforms (see ai.eval.agent_observability).",
-      "keywords": ["swe-bench verified", "gaia benchmark", "osworld", "tau-bench", "browsecomp", "agent benchmark suite"],
+      "keywords": [
+        "swe-bench verified",
+        "gaia benchmark",
+        "osworld",
+        "tau-bench",
+        "browsecomp",
+        "agent benchmark suite"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["SWE-bench Verified", "GAIA", "OSWorld", "τ-bench", "BrowseComp"]
+      "examples": [
+        "SWE-bench Verified",
+        "GAIA",
+        "OSWorld",
+        "τ-bench",
+        "BrowseComp"
+      ],
+      "display_name": "Agent Eval"
     },
     {
       "slug": "ai.eval.agent_observability",
-      "parents": ["ai.eval"],
+      "parents": [
+        "ai.eval"
+      ],
       "primary_parent": "ai.eval",
       "domain": "ai",
       "scope": "Production observability platforms for agent runs (LangSmith, Braintrust, Arize Phoenix, Logfire). Excludes offline benchmarks (see ai.eval.agent_eval).",
-      "keywords": ["langsmith", "braintrust eval", "arize phoenix", "logfire observability", "agent tracing platform", "agent observability"],
+      "keywords": [
+        "langsmith",
+        "braintrust eval",
+        "arize phoenix",
+        "logfire observability",
+        "agent tracing platform",
+        "agent observability"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["LangSmith", "Braintrust", "Arize Phoenix", "Logfire"]
+      "examples": [
+        "LangSmith",
+        "Braintrust",
+        "Arize Phoenix",
+        "Logfire"
+      ],
+      "display_name": "Agent Observability"
     },
     {
       "slug": "ai.eval.failure_taxonomy",
-      "parents": ["ai.eval"],
+      "parents": [
+        "ai.eval"
+      ],
       "primary_parent": "ai.eval",
       "domain": "ai",
       "scope": "Categorizations of agent failure modes (Anthropic agent post-mortems, AgentBench failure categories). Excludes robot-specific failure analysis (see vla.eval.failure_analysis_robotics) and red-team adversarial evals (see ai.safety.agent_red_team).",
-      "keywords": ["failure taxonomy", "agent failure modes", "agent post-mortem", "agentbench failure", "failure categorization"],
+      "keywords": [
+        "failure taxonomy",
+        "agent failure modes",
+        "agent post-mortem",
+        "agentbench failure",
+        "failure categorization"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Anthropic agent post-mortems", "AgentBench failure cats"]
+      "examples": [
+        "Anthropic agent post-mortems",
+        "AgentBench failure cats"
+      ],
+      "display_name": "Failure Taxonomy"
     },
-
     {
       "slug": "ai.safety",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for AI agent safety, prompt-injection defense, and red-teaming. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Agent Safety & Alignment"
     },
     {
       "slug": "ai.safety.agent_safety",
-      "parents": ["ai.safety"],
+      "parents": [
+        "ai.safety"
+      ],
       "primary_parent": "ai.safety",
       "domain": "ai",
       "scope": "Runtime guardrails and policy enforcement for AI agents (NVIDIA NeMo Guardrails, Lakera, Invariant Labs). Excludes physical robot safety (see vla.eval.robot_safety), input-channel prompt injection defenses (see ai.safety.prompt_injection_defense), and offensive evals (see ai.safety.agent_red_team).",
-      "keywords": ["nemo guardrails", "lakera guardrails", "invariant labs", "agent guardrail runtime", "policy enforcement agent"],
+      "keywords": [
+        "nemo guardrails",
+        "lakera guardrails",
+        "invariant labs",
+        "agent guardrail runtime",
+        "policy enforcement agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["NVIDIA NeMo Guardrails", "Lakera", "Invariant Labs"]
+      "examples": [
+        "NVIDIA NeMo Guardrails",
+        "Lakera",
+        "Invariant Labs"
+      ],
+      "display_name": "Agent Safety"
     },
     {
       "slug": "ai.safety.prompt_injection_defense",
-      "parents": ["ai.safety"],
+      "parents": [
+        "ai.safety"
+      ],
       "primary_parent": "ai.safety",
       "domain": "ai",
       "scope": "Defenses against prompt-injection attacks on agents (Anthropic CaMeL, Spotlight, Simon Willison's catalog). Excludes general runtime guardrails (see ai.safety.agent_safety) and offensive red-team evals (see ai.safety.agent_red_team).",
-      "keywords": ["prompt injection defense", "prompt-injection defense", "camel defense", "spotlight defense", "indirect prompt injection"],
+      "keywords": [
+        "prompt injection defense",
+        "prompt-injection defense",
+        "camel defense",
+        "spotlight defense",
+        "indirect prompt injection"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Anthropic CaMeL", "SPotlight", "Simon Willison's catalog"]
+      "examples": [
+        "Anthropic CaMeL",
+        "SPotlight",
+        "Simon Willison's catalog"
+      ],
+      "display_name": "Prompt-Injection Defense"
     },
     {
       "slug": "ai.safety.agent_red_team",
-      "parents": ["ai.safety"],
+      "parents": [
+        "ai.safety"
+      ],
       "primary_parent": "ai.safety",
       "domain": "ai",
       "scope": "Adversarial / red-team evaluations for AI agents (HarmBench, AgentDojo, Cybench). Excludes runtime guardrails (see ai.safety.agent_safety) and benign capability benchmarks (see ai.eval.agent_eval).",
-      "keywords": ["harmbench", "agentdojo", "cybench", "agent red team", "red-team agent eval", "adversarial agent benchmark"],
+      "keywords": [
+        "harmbench",
+        "agentdojo",
+        "cybench",
+        "agent red team",
+        "red-team agent eval",
+        "adversarial agent benchmark"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["HarmBench", "AgentDojo", "Cybench"]
+      "examples": [
+        "HarmBench",
+        "AgentDojo",
+        "Cybench"
+      ],
+      "display_name": "Agent Red-Team"
     },
-
     {
       "slug": "ai.infra",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for agent infrastructure: frameworks, runtimes, serving infra. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Frameworks & Infrastructure"
     },
     {
       "slug": "ai.infra.agent_framework",
-      "parents": ["ai.infra"],
+      "parents": [
+        "ai.infra"
+      ],
       "primary_parent": "ai.infra",
       "domain": "ai",
       "scope": "Open-source agent-building SDKs and frameworks (LangGraph, OpenAI Agents SDK, Claude Agent SDK, Pydantic-AI, Mastra). Excludes managed hosted runtimes (see ai.infra.agent_runtime) and lower-level model serving (see ai.infra.agent_infra).",
-      "keywords": ["langgraph", "openai agents sdk", "claude agent sdk", "pydantic-ai", "mastra framework", "agent sdk", "agent framework library"],
+      "keywords": [
+        "langgraph",
+        "openai agents sdk",
+        "claude agent sdk",
+        "pydantic-ai",
+        "mastra framework",
+        "agent sdk",
+        "agent framework library"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["LangGraph", "OpenAI Agents SDK", "Claude Agent SDK", "Pydantic-AI", "Mastra"]
+      "examples": [
+        "LangGraph",
+        "OpenAI Agents SDK",
+        "Claude Agent SDK",
+        "Pydantic-AI",
+        "Mastra"
+      ],
+      "display_name": "Agent Framework"
     },
     {
       "slug": "ai.infra.agent_runtime",
-      "parents": ["ai.infra"],
+      "parents": [
+        "ai.infra"
+      ],
       "primary_parent": "ai.infra",
       "domain": "ai",
       "scope": "Hosted / managed agent runtimes (OpenAI Assistants v2, AWS Bedrock AgentCore, Cloudflare Agents, Vercel AI SDK). Excludes self-hosted frameworks (see ai.infra.agent_framework) and model-serving infra (see ai.infra.agent_infra).",
-      "keywords": ["openai assistants v2", "bedrock agentcore", "cloudflare agents runtime", "vercel ai sdk", "managed agent runtime", "hosted agent runtime"],
+      "keywords": [
+        "openai assistants v2",
+        "bedrock agentcore",
+        "cloudflare agents runtime",
+        "vercel ai sdk",
+        "managed agent runtime",
+        "hosted agent runtime"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["OpenAI Assistants v2", "AWS Bedrock AgentCore", "Cloudflare Agents", "Vercel AI SDK"]
+      "examples": [
+        "OpenAI Assistants v2",
+        "AWS Bedrock AgentCore",
+        "Cloudflare Agents",
+        "Vercel AI SDK"
+      ],
+      "display_name": "Agent Runtime"
     },
     {
       "slug": "ai.infra.agent_infra",
-      "parents": ["ai.infra"],
+      "parents": [
+        "ai.infra"
+      ],
       "primary_parent": "ai.infra",
       "domain": "ai",
       "scope": "Lower-level serving / caching infrastructure (vLLM, SGLang, prompt-caching APIs, RouteLLM). Excludes high-level agent frameworks (see ai.infra.agent_framework) and managed runtimes (see ai.infra.agent_runtime).",
-      "keywords": ["vllm serving", "sglang serving", "prompt-caching api", "routellm", "kv-cache serving", "model serving infra"],
+      "keywords": [
+        "vllm serving",
+        "sglang serving",
+        "prompt-caching api",
+        "routellm",
+        "kv-cache serving",
+        "model serving infra"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["vLLM", "SGLang", "prompt-caching APIs", "RouteLLM"]
+      "examples": [
+        "vLLM",
+        "SGLang",
+        "prompt-caching APIs",
+        "RouteLLM"
+      ],
+      "display_name": "Agent Infra"
     },
-
     {
       "slug": "ai.frontier",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for frontier model releases and voice/multimodal stacks. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Frontier Capabilities"
     },
     {
       "slug": "ai.frontier.frontier_model",
-      "parents": ["ai.frontier"],
+      "parents": [
+        "ai.frontier"
+      ],
       "primary_parent": "ai.frontier",
       "domain": "ai",
       "scope": "Releases and capability studies of frontier base models (GPT-5, Claude Opus 4.5, Gemini 3 Pro, DeepSeek-V3.5). Excludes voice/audio stacks built on top (see ai.frontier.voice_multimodal).",
-      "keywords": ["gpt-5", "gpt 5", "claude opus", "claude sonnet", "gemini 3 pro", "deepseek-v3", "frontier model release", "foundation model release"],
+      "keywords": [
+        "gpt-5",
+        "gpt 5",
+        "claude opus",
+        "claude sonnet",
+        "gemini 3 pro",
+        "deepseek-v3",
+        "frontier model release",
+        "foundation model release"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["GPT-5", "Claude Opus 4.5", "Gemini 3 Pro", "DeepSeek-V3.5"]
+      "examples": [
+        "GPT-5",
+        "Claude Opus 4.5",
+        "Gemini 3 Pro",
+        "DeepSeek-V3.5"
+      ],
+      "display_name": "Frontier Models"
     },
     {
       "slug": "ai.frontier.voice_multimodal",
-      "parents": ["ai.frontier"],
+      "parents": [
+        "ai.frontier"
+      ],
       "primary_parent": "ai.frontier",
       "domain": "ai",
       "scope": "Real-time voice and omnimodal speech stacks (GPT Realtime, Gemini Live, Pipecat, Ultravox). Excludes pure text frontier-model capability work (see ai.frontier.frontier_model).",
-      "keywords": ["voice agent", "speech-to-speech", "gpt realtime", "gemini live", "pipecat", "ultravox", "full-duplex voice", "omni-modal speech"],
+      "keywords": [
+        "voice agent",
+        "speech-to-speech",
+        "gpt realtime",
+        "gemini live",
+        "pipecat",
+        "ultravox",
+        "full-duplex voice",
+        "omni-modal speech"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["GPT Realtime", "Gemini Live", "Pipecat", "Ultravox"]
+      "examples": [
+        "GPT Realtime",
+        "Gemini Live",
+        "Pipecat",
+        "Ultravox"
+      ],
+      "display_name": "Voice / Multimodal"
     },
-
     {
       "slug": "ai.vertical",
-      "parents": ["ai"],
+      "parents": [
+        "ai"
+      ],
       "primary_parent": "ai",
       "domain": "ai",
       "scope": "Cluster for vertical / domain-specific AI agents. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Vertical Agents"
     },
     {
       "slug": "ai.vertical.vertical_agent",
-      "parents": ["ai.vertical"],
+      "parents": [
+        "ai.vertical"
+      ],
       "primary_parent": "ai.vertical",
       "domain": "ai",
       "scope": "Domain-specialized vertical agents (Harvey legal, Sierra CX, Glean work, OpenEvidence clinical). Excludes general-purpose horizontal coding/agent products (see ai.coding.agentic_coding) and infra plays (see ai.infra.agent_framework).",
-      "keywords": ["vertical agent", "harvey legal", "sierra cx", "glean work agent", "openevidence clinical", "domain-specific agent", "legal agent", "clinical agent"],
+      "keywords": [
+        "vertical agent",
+        "harvey legal",
+        "sierra cx",
+        "glean work agent",
+        "openevidence clinical",
+        "domain-specific agent",
+        "legal agent",
+        "clinical agent"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Harvey legal", "Sierra CX", "Glean work", "OpenEvidence clinical"]
+      "examples": [
+        "Harvey legal",
+        "Sierra CX",
+        "Glean work",
+        "OpenEvidence clinical"
+      ],
+      "display_name": "Vertical Agents"
     }
   ]
 }

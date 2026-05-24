@@ -12,657 +12,1350 @@
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "VLA"
     },
-
     {
       "slug": "vla.foundation",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster of VLA foundation policies and cross-embodiment foundation models. Structural node only; specific generalist/cross-embodiment leaves carry the matching.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Foundation Models"
     },
     {
       "slug": "vla.foundation.vla_generalist",
-      "parents": ["vla.foundation"],
+      "parents": [
+        "vla.foundation"
+      ],
       "primary_parent": "vla.foundation",
       "domain": "vla",
       "scope": "Single-embodiment or single-body-class generalist VLA policies that condition a transformer on language and vision. Excludes cross-embodiment foundation models (see vla.foundation.cross_embodiment_fm) and dual-system architectures (see vla.foundation.dual_system_vla).",
-      "keywords": ["vla policy", "vla model", "vision-language-action policy", "rt-2", "openvla", "π0", "gr00t", "helix policy", "generalist vla"],
+      "keywords": [
+        "vla policy",
+        "vla model",
+        "vision-language-action policy",
+        "rt-2",
+        "openvla",
+        "π0",
+        "gr00t",
+        "helix policy",
+        "generalist vla"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["RT-2", "OpenVLA", "π0", "π0.5", "GR00T-N1", "Helix"]
+      "examples": [
+        "RT-2",
+        "OpenVLA",
+        "π0",
+        "π0.5",
+        "GR00T-N1",
+        "Helix"
+      ],
+      "display_name": "VLA Generalist"
     },
     {
       "slug": "vla.foundation.cross_embodiment_fm",
-      "parents": ["vla.foundation"],
+      "parents": [
+        "vla.foundation"
+      ],
       "primary_parent": "vla.foundation",
       "domain": "vla",
       "scope": "Foundation policies trained jointly across many robot embodiments (arms, mobile bases, humanoids). Excludes single-embodiment generalist VLAs (see vla.foundation.vla_generalist).",
-      "keywords": ["cross-embodiment", "cross embodiment", "open-x", "open x-embodiment", "rt-x", "octo policy", "crossformer", "rdt-1b", "heterogeneous policy", "hpt policy"],
+      "keywords": [
+        "cross-embodiment",
+        "cross embodiment",
+        "open-x",
+        "open x-embodiment",
+        "rt-x",
+        "octo policy",
+        "crossformer",
+        "rdt-1b",
+        "heterogeneous policy",
+        "hpt policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Open-X-Embodiment", "RT-X", "Octo", "CrossFormer", "RDT-1B", "HPT"]
+      "examples": [
+        "Open-X-Embodiment",
+        "RT-X",
+        "Octo",
+        "CrossFormer",
+        "RDT-1B",
+        "HPT"
+      ],
+      "display_name": "Cross-Embodiment FM"
     },
     {
       "slug": "vla.foundation.dual_system_vla",
-      "parents": ["vla.foundation"],
+      "parents": [
+        "vla.foundation"
+      ],
       "primary_parent": "vla.foundation",
       "domain": "vla",
       "scope": "Two-system VLA architectures combining a slow VLM planner (System 2) with a fast control policy (System 1). Excludes monolithic VLAs (see vla.foundation.vla_generalist) and pure VLM grounding without a low-level policy (see vla.foundation.vlm_grounded_policy).",
-      "keywords": ["dual-system vla", "system 1 system 2", "system-1 system-2", "fast slow policy", "helix s1 s2", "hi robot", "lcb policy", "slow-fast vla"],
+      "keywords": [
+        "dual-system vla",
+        "system 1 system 2",
+        "system-1 system-2",
+        "fast slow policy",
+        "helix s1 s2",
+        "hi robot",
+        "lcb policy",
+        "slow-fast vla"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Figure Helix S1/S2", "GR00T N1", "Hi Robot", "LCB"]
+      "examples": [
+        "Figure Helix S1/S2",
+        "GR00T N1",
+        "Hi Robot",
+        "LCB"
+      ],
+      "display_name": "Dual-System VLA"
     },
     {
       "slug": "vla.foundation.vlm_grounded_policy",
-      "parents": ["vla.foundation"],
+      "parents": [
+        "vla.foundation"
+      ],
       "primary_parent": "vla.foundation",
       "domain": "vla",
       "scope": "Methods that ground a frozen VLM into action via affordance keypoints, code-as-policies, or value maps without training a dedicated action head. Excludes trained VLA policies (see vla.foundation.vla_generalist).",
-      "keywords": ["voxposer", "moka policy", "pivot policy", "rekep", "code as policies", "code-as-policies", "vlm grounding policy", "value map policy"],
+      "keywords": [
+        "voxposer",
+        "moka policy",
+        "pivot policy",
+        "rekep",
+        "code as policies",
+        "code-as-policies",
+        "vlm grounding policy",
+        "value map policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["VoxPoser", "MOKA", "PIVOT", "ReKep"]
+      "examples": [
+        "VoxPoser",
+        "MOKA",
+        "PIVOT",
+        "ReKep"
+      ],
+      "display_name": "VLM-Grounded Policy"
     },
-
     {
       "slug": "vla.action",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for VLA action-head designs (tokenization, flow, diffusion, autoregressive, continuous regression). Structural node; leaves carry the matching.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Action Representation"
     },
     {
       "slug": "vla.action.action_tokenization",
-      "parents": ["vla.action"],
+      "parents": [
+        "vla.action"
+      ],
       "primary_parent": "vla.action",
       "domain": "vla",
       "scope": "Discrete action tokenization schemes: bin tokens, BPE-for-actions, frequency/FAST tokens, learned codebooks. Excludes continuous generative heads (see vla.action.flow_matching / vla.action.diffusion_policy) and regression heads (see vla.action.continuous_regression_head).",
-      "keywords": ["action tokenization", "action tokens", "fast tokens", "bpe action", "action codebook", "discretized action", "bin tokens", "quest tokenizer"],
+      "keywords": [
+        "action tokenization",
+        "action tokens",
+        "fast tokens",
+        "bpe action",
+        "action codebook",
+        "discretized action",
+        "bin tokens",
+        "quest tokenizer"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["FAST", "BPE-for-actions", "RT-2 bin tokens", "Quest"]
+      "examples": [
+        "FAST",
+        "BPE-for-actions",
+        "RT-2 bin tokens",
+        "Quest"
+      ],
+      "display_name": "Action Tokenization"
     },
     {
       "slug": "vla.action.flow_matching",
-      "parents": ["vla.action"],
+      "parents": [
+        "vla.action"
+      ],
       "primary_parent": "vla.action",
       "domain": "vla",
       "scope": "Flow-matching / rectified-flow / mean-flow action heads that learn continuous transport from noise to actions. Excludes score-based denoising heads (see vla.action.diffusion_policy) and autoregressive action prediction (see vla.action.autoregressive_action).",
-      "keywords": ["flow matching", "flow-matching", "rectified flow", "rectflow", "mean flow", "mean-flow", "consistency flow", "flow policy", "flow vla", "discrete flow"],
+      "keywords": [
+        "flow matching",
+        "flow-matching",
+        "rectified flow",
+        "rectflow",
+        "mean flow",
+        "mean-flow",
+        "consistency flow",
+        "flow policy",
+        "flow vla",
+        "discrete flow"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["π0 flow head", "MeanFlow policy", "RectFlow VLA", "ConsistencyFlow"]
+      "examples": [
+        "π0 flow head",
+        "MeanFlow policy",
+        "RectFlow VLA",
+        "ConsistencyFlow"
+      ],
+      "display_name": "Flow Matching"
     },
     {
       "slug": "vla.action.diffusion_policy",
-      "parents": ["vla.action"],
+      "parents": [
+        "vla.action"
+      ],
       "primary_parent": "vla.action",
       "domain": "vla",
       "scope": "Score/denoising action heads conditioned on observation tokens. Excludes flow-matching heads (see vla.action.flow_matching) and continuous regression heads (see vla.action.continuous_regression_head).",
-      "keywords": ["diffusion policy", "diffusion policies", "ddpm action", "score-based policy", "diffusion head", "denoising policy", "dp3", "diffusion-based action", "diffusion vla"],
+      "keywords": [
+        "diffusion policy",
+        "diffusion policies",
+        "ddpm action",
+        "score-based policy",
+        "diffusion head",
+        "denoising policy",
+        "dp3",
+        "diffusion-based action",
+        "diffusion vla"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Diffusion Policy (Chi 2023)", "DP3 (Ze 2024)", "RDT diffusion head"]
+      "examples": [
+        "Diffusion Policy (Chi 2023)",
+        "DP3 (Ze 2024)",
+        "RDT diffusion head"
+      ],
+      "display_name": "Diffusion Policy"
     },
     {
       "slug": "vla.action.autoregressive_action",
-      "parents": ["vla.action"],
+      "parents": [
+        "vla.action"
+      ],
       "primary_parent": "vla.action",
       "domain": "vla",
       "scope": "Autoregressive next-token action prediction over a discrete action vocabulary. Excludes diffusion (see vla.action.diffusion_policy) and flow-matching (see vla.action.flow_matching) heads.",
-      "keywords": ["autoregressive action", "ar action policy", "openvla ar", "rt-2 ar", "next-action token", "autoregressive vla"],
+      "keywords": [
+        "autoregressive action",
+        "ar action policy",
+        "openvla ar",
+        "rt-2 ar",
+        "next-action token",
+        "autoregressive vla"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["OpenVLA AR", "RT-2 AR"]
+      "examples": [
+        "OpenVLA AR",
+        "RT-2 AR"
+      ],
+      "display_name": "Autoregressive Action"
     },
     {
       "slug": "vla.action.continuous_regression_head",
-      "parents": ["vla.action"],
+      "parents": [
+        "vla.action"
+      ],
       "primary_parent": "vla.action",
       "domain": "vla",
       "scope": "MSE/MLP action heads that regress continuous joint or end-effector targets directly. Excludes generative heads (see vla.action.diffusion_policy, vla.action.flow_matching) and discrete action tokens (see vla.action.action_tokenization).",
-      "keywords": ["mse action head", "regression policy head", "mlp action head", "continuous regression head", "deterministic action head"],
+      "keywords": [
+        "mse action head",
+        "regression policy head",
+        "mlp action head",
+        "continuous regression head",
+        "deterministic action head"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["MSE/MLP baselines"]
+      "examples": [
+        "MSE/MLP baselines"
+      ],
+      "display_name": "Continuous Regression Head"
     },
-
     {
       "slug": "vla.policy",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for policy-learning paradigms: imitation, residual, inverse dynamics, robot RL. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Policy Learning"
     },
     {
       "slug": "vla.policy.imitation_learning",
-      "parents": ["vla.policy"],
+      "parents": [
+        "vla.policy"
+      ],
       "primary_parent": "vla.policy",
       "domain": "vla",
       "scope": "Behavior cloning and demonstration-driven supervised policy learning. Excludes RL-based policy training (see vla.policy.robot_rl) and residual corrections atop a base policy (see vla.policy.residual_policy).",
-      "keywords": ["imitation learning", "behavior cloning", "behavioral cloning", "act policy", "diffusion policy training", "umi data", "demonstration policy"],
+      "keywords": [
+        "imitation learning",
+        "behavior cloning",
+        "behavioral cloning",
+        "act policy",
+        "diffusion policy training",
+        "umi data",
+        "demonstration policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["ACT", "Diffusion Policy training", "UMI"]
+      "examples": [
+        "ACT",
+        "Diffusion Policy training",
+        "UMI"
+      ],
+      "display_name": "Imitation Learning"
     },
     {
       "slug": "vla.policy.residual_policy",
-      "parents": ["vla.policy"],
+      "parents": [
+        "vla.policy"
+      ],
       "primary_parent": "vla.policy",
       "domain": "vla",
       "scope": "Policies trained to output a corrective residual on top of a base controller or pretrained policy. Excludes from-scratch imitation (see vla.policy.imitation_learning) and full RL fine-tuning (see vla.policy.robot_rl.vla_post_training_rl).",
-      "keywords": ["residual policy", "residual rl", "residual correction", "resip", "rfm residual", "residual learning policy"],
+      "keywords": [
+        "residual policy",
+        "residual rl",
+        "residual correction",
+        "resip",
+        "rfm residual",
+        "residual learning policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["ResiP", "RFM residuals"]
+      "examples": [
+        "ResiP",
+        "RFM residuals"
+      ],
+      "display_name": "Residual Policy"
     },
     {
       "slug": "vla.policy.inverse_dynamics_models",
-      "parents": ["vla.policy"],
+      "parents": [
+        "vla.policy"
+      ],
       "primary_parent": "vla.policy",
       "domain": "vla",
       "scope": "Inverse-dynamics models that label actions from observed (video) state transitions for downstream policy training. Excludes forward dynamics / world models (see vla.world.world_model_dynamics).",
-      "keywords": ["inverse dynamics", "latent action", "lapa policy", "genima labels", "vid2robot", "action labeling video"],
+      "keywords": [
+        "inverse dynamics",
+        "latent action",
+        "lapa policy",
+        "genima labels",
+        "vid2robot",
+        "action labeling video"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["LAPA", "GENIMA", "Vid2Robot"]
+      "examples": [
+        "LAPA",
+        "GENIMA",
+        "Vid2Robot"
+      ],
+      "display_name": "Inverse Dynamics Models"
     },
     {
       "slug": "vla.policy.robot_rl",
-      "parents": ["vla.policy"],
+      "parents": [
+        "vla.policy"
+      ],
       "primary_parent": "vla.policy",
       "domain": "vla",
       "scope": "Cluster for reinforcement learning on robot policies (online, offline, VLA post-training). Structural node only; L3 leaves carry matching.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Robot RL"
     },
     {
       "slug": "vla.policy.robot_rl.online_robot_rl",
-      "parents": ["vla.policy.robot_rl"],
+      "parents": [
+        "vla.policy.robot_rl"
+      ],
       "primary_parent": "vla.policy.robot_rl",
       "domain": "vla",
       "scope": "On-robot online RL with human-in-the-loop or autonomous resets. Excludes offline RL from logged data (see vla.policy.robot_rl.offline_robot_rl) and post-training a pretrained VLA (see vla.policy.robot_rl.vla_post_training_rl).",
-      "keywords": ["online robot rl", "on-robot rl", "hil-serl", "serl framework", "human-in-the-loop rl"],
+      "keywords": [
+        "online robot rl",
+        "on-robot rl",
+        "hil-serl",
+        "serl framework",
+        "human-in-the-loop rl"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["SERL", "HIL-SERL", "ResiP"]
+      "examples": [
+        "SERL",
+        "HIL-SERL",
+        "ResiP"
+      ],
+      "display_name": "Online Robot RL"
     },
     {
       "slug": "vla.policy.robot_rl.offline_robot_rl",
-      "parents": ["vla.policy.robot_rl"],
+      "parents": [
+        "vla.policy.robot_rl"
+      ],
       "primary_parent": "vla.policy.robot_rl",
       "domain": "vla",
       "scope": "Offline RL on robot logs / demonstration replay using Cal-QL, IQL, Q-Transformer-style critics. Excludes online RL (see vla.policy.robot_rl.online_robot_rl) and pure imitation (see vla.policy.imitation_learning).",
-      "keywords": ["offline robot rl", "cal-ql", "iql demos", "q-transformer", "conservative q-learning robot"],
+      "keywords": [
+        "offline robot rl",
+        "cal-ql",
+        "iql demos",
+        "q-transformer",
+        "conservative q-learning robot"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Cal-QL", "IQL-demos", "Q-Transformer"]
+      "examples": [
+        "Cal-QL",
+        "IQL-demos",
+        "Q-Transformer"
+      ],
+      "display_name": "Offline Robot RL"
     },
     {
       "slug": "vla.policy.robot_rl.vla_post_training_rl",
-      "parents": ["vla.policy.robot_rl"],
+      "parents": [
+        "vla.policy.robot_rl"
+      ],
       "primary_parent": "vla.policy.robot_rl",
       "domain": "vla",
       "scope": "RL fine-tuning of pretrained VLA policies (PA-RL, iRe-VLA, GRPO-for-VLA). Excludes RL from scratch on a single robot (see online/offline_robot_rl).",
-      "keywords": ["ire-vla", "pa-rl", "grpo-for-vla", "rl fine-tune vla", "vla post-training rl", "rl fine-tuning vla"],
+      "keywords": [
+        "ire-vla",
+        "pa-rl",
+        "grpo-for-vla",
+        "rl fine-tune vla",
+        "vla post-training rl",
+        "rl fine-tuning vla"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["iRe-VLA", "PA-RL", "GRPO-for-VLA"]
+      "examples": [
+        "iRe-VLA",
+        "PA-RL",
+        "GRPO-for-VLA"
+      ],
+      "display_name": "VLA Post-Training RL"
     },
-
     {
       "slug": "vla.manipulation",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for manipulation sub-families (dexterous, bimanual, mobile, contact-rich, tactile). RETIRED as router: this cluster never matches directly; specific sub-families carry routing.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Manipulation Skills"
     },
     {
       "slug": "vla.manipulation.dexterous_manipulation",
-      "parents": ["vla.manipulation"],
+      "parents": [
+        "vla.manipulation"
+      ],
       "primary_parent": "vla.manipulation",
       "domain": "vla",
       "scope": "Multi-finger dexterous grasping and in-hand manipulation. Excludes bimanual two-arm coordination (see vla.manipulation.bimanual_manipulation) and tactile sensing alone (see vla.manipulation.tactile_sensing).",
-      "keywords": ["dexterous manipulation", "dexterous grasp", "dexgrasp", "in-hand manipulation", "multi-finger", "fingertip control", "anydexgrasp"],
+      "keywords": [
+        "dexterous manipulation",
+        "dexterous grasp",
+        "dexgrasp",
+        "in-hand manipulation",
+        "multi-finger",
+        "fingertip control",
+        "anydexgrasp"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["DexGrasp-Anything", "AnyDexGrasp", "Sparsh"]
+      "examples": [
+        "DexGrasp-Anything",
+        "AnyDexGrasp",
+        "Sparsh"
+      ],
+      "display_name": "Dexterous Manipulation"
     },
     {
       "slug": "vla.manipulation.bimanual_manipulation",
-      "parents": ["vla.manipulation"],
+      "parents": [
+        "vla.manipulation"
+      ],
       "primary_parent": "vla.manipulation",
       "domain": "vla",
       "scope": "Two-arm coordinated manipulation (ALOHA-class). Excludes single-arm dexterous tasks (see vla.manipulation.dexterous_manipulation) and mobile bases (see vla.manipulation.mobile_manipulation).",
-      "keywords": ["bimanual manipulation", "two-arm policy", "aloha policy", "mobile aloha", "bidex policy", "dual-arm coordination"],
+      "keywords": [
+        "bimanual manipulation",
+        "two-arm policy",
+        "aloha policy",
+        "mobile aloha",
+        "bidex policy",
+        "dual-arm coordination"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["ALOHA", "Mobile ALOHA", "BiDex"]
+      "examples": [
+        "ALOHA",
+        "Mobile ALOHA",
+        "BiDex"
+      ],
+      "display_name": "Bimanual Manipulation"
     },
     {
       "slug": "vla.manipulation.mobile_manipulation",
-      "parents": ["vla.manipulation"],
+      "parents": [
+        "vla.manipulation"
+      ],
       "primary_parent": "vla.manipulation",
       "domain": "vla",
       "scope": "Wheeled/legged mobile bases coordinating navigation with arm manipulation. Excludes pure navigation (see vla.navigation.vision_language_navigation) and stationary bimanual setups (see vla.manipulation.bimanual_manipulation).",
-      "keywords": ["mobile manipulation", "mobile aloha", "tidybot", "ok-robot", "wheeled manipulator", "base-arm coordination"],
+      "keywords": [
+        "mobile manipulation",
+        "mobile aloha",
+        "tidybot",
+        "ok-robot",
+        "wheeled manipulator",
+        "base-arm coordination"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["TidyBot++", "Mobile ALOHA", "OK-Robot"]
+      "examples": [
+        "TidyBot++",
+        "Mobile ALOHA",
+        "OK-Robot"
+      ],
+      "display_name": "Mobile Manipulation"
     },
     {
       "slug": "vla.manipulation.contact_rich_assembly",
-      "parents": ["vla.manipulation"],
+      "parents": [
+        "vla.manipulation"
+      ],
       "primary_parent": "vla.manipulation",
       "domain": "vla",
       "scope": "High-force contact-rich industrial assembly (peg-in-hole, gear meshing). Excludes general grasping (see vla.manipulation.dexterous_manipulation) and pure tactile readout work (see vla.manipulation.tactile_sensing).",
-      "keywords": ["contact-rich assembly", "contact rich manipulation", "industreal", "automate assembly", "peg-in-hole policy", "force-controlled assembly"],
+      "keywords": [
+        "contact-rich assembly",
+        "contact rich manipulation",
+        "industreal",
+        "automate assembly",
+        "peg-in-hole policy",
+        "force-controlled assembly"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["IndustReal", "AutoMate"]
+      "examples": [
+        "IndustReal",
+        "AutoMate"
+      ],
+      "display_name": "Contact-Rich Assembly"
     },
     {
       "slug": "vla.manipulation.tactile_sensing",
-      "parents": ["vla.manipulation"],
+      "parents": [
+        "vla.manipulation"
+      ],
       "primary_parent": "vla.manipulation",
       "domain": "vla",
       "scope": "Tactile / haptic sensing hardware and tactile representation learning. Excludes contact-rich control policies that consume tactile signals (see vla.manipulation.contact_rich_assembly).",
-      "keywords": ["tactile sensing", "tactile representation", "visuo-tactile", "visuotactile", "haptic sensing", "anyskin", "digit-360", "t-dex"],
+      "keywords": [
+        "tactile sensing",
+        "tactile representation",
+        "visuo-tactile",
+        "visuotactile",
+        "haptic sensing",
+        "anyskin",
+        "digit-360",
+        "t-dex"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Sparsh", "T-DEX", "AnySkin", "DIGIT-360"]
+      "examples": [
+        "Sparsh",
+        "T-DEX",
+        "AnySkin",
+        "DIGIT-360"
+      ],
+      "display_name": "Tactile Sensing"
     },
-
     {
       "slug": "vla.locomotion",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for locomotion: humanoid whole-body, legged, loco-manipulation. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Locomotion & Whole-Body"
     },
     {
       "slug": "vla.locomotion.humanoid_whole_body",
-      "parents": ["vla.locomotion"],
+      "parents": [
+        "vla.locomotion"
+      ],
       "primary_parent": "vla.locomotion",
       "domain": "vla",
       "scope": "Humanoid whole-body control (WBC) for full-body motion tracking and balance. Excludes pure legged locomotion without an upper body (see vla.locomotion.legged_locomotion) and loco-manipulation on legs (see vla.locomotion.loco_manipulation).",
-      "keywords": ["humanoid whole-body", "whole-body control", "wbc policy", "omnih2o", "humanplus", "helix wbc", "gr00t wbc", "h2o policy"],
+      "keywords": [
+        "humanoid whole-body",
+        "whole-body control",
+        "wbc policy",
+        "omnih2o",
+        "humanplus",
+        "helix wbc",
+        "gr00t wbc",
+        "h2o policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["H2O", "OmniH2O", "HumanPlus", "Helix WBC", "GR00T WBC"]
+      "examples": [
+        "H2O",
+        "OmniH2O",
+        "HumanPlus",
+        "Helix WBC",
+        "GR00T WBC"
+      ],
+      "display_name": "Humanoid Whole-Body"
     },
     {
       "slug": "vla.locomotion.legged_locomotion",
-      "parents": ["vla.locomotion"],
+      "parents": [
+        "vla.locomotion"
+      ],
       "primary_parent": "vla.locomotion",
       "domain": "vla",
       "scope": "Quadruped / biped legged locomotion (parkour, rough terrain). Excludes humanoid whole-body (see vla.locomotion.humanoid_whole_body) and locomotion combined with manipulation (see vla.locomotion.loco_manipulation).",
-      "keywords": ["legged locomotion", "quadruped locomotion", "extreme parkour", "anymal parkour", "dtc locomotion", "rough terrain locomotion"],
+      "keywords": [
+        "legged locomotion",
+        "quadruped locomotion",
+        "extreme parkour",
+        "anymal parkour",
+        "dtc locomotion",
+        "rough terrain locomotion"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Extreme Parkour", "ANYmal Parkour", "DTC"]
+      "examples": [
+        "Extreme Parkour",
+        "ANYmal Parkour",
+        "DTC"
+      ],
+      "display_name": "Legged Locomotion"
     },
     {
       "slug": "vla.locomotion.loco_manipulation",
-      "parents": ["vla.locomotion"],
+      "parents": [
+        "vla.locomotion"
+      ],
       "primary_parent": "vla.locomotion",
       "domain": "vla",
       "scope": "Joint locomotion + manipulation control on legged platforms. Excludes wheeled mobile manipulation (see vla.manipulation.mobile_manipulation) and pure locomotion (see vla.locomotion.legged_locomotion).",
-      "keywords": ["loco-manipulation", "loco manipulation", "umi-on-legs", "humanplus arm", "legged manipulation"],
+      "keywords": [
+        "loco-manipulation",
+        "loco manipulation",
+        "umi-on-legs",
+        "humanplus arm",
+        "legged manipulation"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["UMI-on-Legs", "HumanPlus arm policies"]
+      "examples": [
+        "UMI-on-Legs",
+        "HumanPlus arm policies"
+      ],
+      "display_name": "Loco-Manipulation"
     },
-
     {
       "slug": "vla.perception",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for robotic perception representations: 3D, gaussian splats, affordance, visual pretraining. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Perception for Action"
     },
     {
       "slug": "vla.perception.representation_3d",
-      "parents": ["vla.perception"],
+      "parents": [
+        "vla.perception"
+      ],
       "primary_parent": "vla.perception",
       "domain": "vla",
       "scope": "3D scene representations for robot policies: voxels, point clouds, NeRF features (non-gaussian). Excludes gaussian-splat-specific methods (see vla.perception.gaussian_splat_robotics) and 2D affordance grounding (see vla.perception.affordance_grounding).",
-      "keywords": ["3d representation", "3d policy", "3d scene encoder", "voxel policy", "point cloud policy", "rvt-2", "idp3 policy", "nerf for robot"],
+      "keywords": [
+        "3d representation",
+        "3d policy",
+        "3d scene encoder",
+        "voxel policy",
+        "point cloud policy",
+        "rvt-2",
+        "idp3 policy",
+        "nerf for robot"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["DP3", "iDP3", "Splat-MOVER", "RVT-2"]
+      "examples": [
+        "DP3",
+        "iDP3",
+        "Splat-MOVER",
+        "RVT-2"
+      ],
+      "display_name": "3D Representation"
     },
     {
       "slug": "vla.perception.gaussian_splat_robotics",
-      "parents": ["vla.perception"],
+      "parents": [
+        "vla.perception"
+      ],
       "primary_parent": "vla.perception",
       "domain": "vla",
       "scope": "3D Gaussian Splatting (3DGS) used as scene representation or simulator for robot policies. Excludes non-gaussian 3D representations (see vla.perception.representation_3d).",
-      "keywords": ["gaussian splatting", "3d gaussian splat", "3dgs policy", "splat-mover", "robosplat", "gaussian splat scene"],
+      "keywords": [
+        "gaussian splatting",
+        "3d gaussian splat",
+        "3dgs policy",
+        "splat-mover",
+        "robosplat",
+        "gaussian splat scene"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Splat-MOVER", "RoboSplat"]
+      "examples": [
+        "Splat-MOVER",
+        "RoboSplat"
+      ],
+      "display_name": "Gaussian Splat Robotics"
     },
     {
       "slug": "vla.perception.affordance_grounding",
-      "parents": ["vla.perception"],
+      "parents": [
+        "vla.perception"
+      ],
       "primary_parent": "vla.perception",
       "domain": "vla",
       "scope": "Affordance keypoint / value-map grounding from VLMs for downstream manipulation. Excludes general visual pretraining (see vla.perception.visual_pretraining_for_robots).",
-      "keywords": ["affordance grounding", "affordance keypoint", "voxposer", "moka affordance", "rekep affordance", "robopoint", "value-map grounding"],
+      "keywords": [
+        "affordance grounding",
+        "affordance keypoint",
+        "voxposer",
+        "moka affordance",
+        "rekep affordance",
+        "robopoint",
+        "value-map grounding"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["VoxPoser", "MOKA", "ReKep", "RoboPoint"]
+      "examples": [
+        "VoxPoser",
+        "MOKA",
+        "ReKep",
+        "RoboPoint"
+      ],
+      "display_name": "Affordance Grounding"
     },
     {
       "slug": "vla.perception.visual_pretraining_for_robots",
-      "parents": ["vla.perception"],
+      "parents": [
+        "vla.perception"
+      ],
       "primary_parent": "vla.perception",
       "domain": "vla",
       "scope": "Visual encoders pretrained for robot manipulation (R3M, VC-1, Theia). Excludes 3D scene encoders (see vla.perception.representation_3d) and affordance grounding (see vla.perception.affordance_grounding).",
-      "keywords": ["visual pretraining robot", "r3m encoder", "vc-1 encoder", "theia encoder", "visual representation for robot"],
+      "keywords": [
+        "visual pretraining robot",
+        "r3m encoder",
+        "vc-1 encoder",
+        "theia encoder",
+        "visual representation for robot"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["R3M", "VC-1", "Theia"]
+      "examples": [
+        "R3M",
+        "VC-1",
+        "Theia"
+      ],
+      "display_name": "Visual Pretraining for Robots"
     },
-
     {
       "slug": "vla.reasoning",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for embodied reasoning: CoT, hierarchical planning, error recovery. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Reasoning for Embodiment"
     },
     {
       "slug": "vla.reasoning.embodied_cot",
-      "parents": ["vla.reasoning"],
+      "parents": [
+        "vla.reasoning"
+      ],
       "primary_parent": "vla.reasoning",
       "domain": "vla",
       "scope": "Chain-of-thought reasoning inlined inside the VLA action loop (ECoT, CoT-VLA, RT-H). Excludes high-level multi-step planning (see vla.reasoning.hierarchical_planning) and replanning on failure (see vla.reasoning.error_recovery_replanning).",
-      "keywords": ["embodied cot", "embodied chain-of-thought", "ecot", "cot-vla", "rt-h", "chain-of-thought policy"],
+      "keywords": [
+        "embodied cot",
+        "embodied chain-of-thought",
+        "ecot",
+        "cot-vla",
+        "rt-h",
+        "chain-of-thought policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["ECoT", "CoT-VLA", "RT-H"]
+      "examples": [
+        "ECoT",
+        "CoT-VLA",
+        "RT-H"
+      ],
+      "display_name": "Embodied CoT"
     },
     {
       "slug": "vla.reasoning.hierarchical_planning",
-      "parents": ["vla.reasoning"],
+      "parents": [
+        "vla.reasoning"
+      ],
       "primary_parent": "vla.reasoning",
       "domain": "vla",
       "scope": "Hierarchical task planners that produce sub-goals consumed by a low-level policy (SayCan-style). Excludes inline CoT inside the action head (see vla.reasoning.embodied_cot) and reactive error recovery (see vla.reasoning.error_recovery_replanning).",
-      "keywords": ["hierarchical planning", "task and motion planning", "saycan", "hi robot planner", "lcb planner", "high-level planner"],
+      "keywords": [
+        "hierarchical planning",
+        "task and motion planning",
+        "saycan",
+        "hi robot planner",
+        "lcb planner",
+        "high-level planner"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["SayCan", "Hi Robot", "LCB"]
+      "examples": [
+        "SayCan",
+        "Hi Robot",
+        "LCB"
+      ],
+      "display_name": "Hierarchical Planning"
     },
     {
       "slug": "vla.reasoning.error_recovery_replanning",
-      "parents": ["vla.reasoning"],
+      "parents": [
+        "vla.reasoning"
+      ],
       "primary_parent": "vla.reasoning",
       "domain": "vla",
       "scope": "Failure detection and replanning during execution (REFLECT, DoReMi, OLAF). Excludes offline failure analysis benchmarks (see vla.eval.failure_analysis_robotics).",
-      "keywords": ["error recovery", "replanning policy", "reflect framework", "doremi recovery", "olaf recovery", "failure detection policy"],
+      "keywords": [
+        "error recovery",
+        "replanning policy",
+        "reflect framework",
+        "doremi recovery",
+        "olaf recovery",
+        "failure detection policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["REFLECT", "DoReMi", "OLAF"]
+      "examples": [
+        "REFLECT",
+        "DoReMi",
+        "OLAF"
+      ],
+      "display_name": "Error Recovery & Replanning"
     },
-
     {
       "slug": "vla.world",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for world models in robotics: latent dynamics, video generation, neural simulators. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Generative World Models"
     },
     {
       "slug": "vla.world.world_model_dynamics",
-      "parents": ["vla.world"],
+      "parents": [
+        "vla.world"
+      ],
       "primary_parent": "vla.world",
       "domain": "vla",
       "scope": "Latent / pixel dynamics world models trained for planning or representation in robotics (Dreamer-class, GR-1/GR-2, iVideoGPT). Excludes large pixel video generators used as data (see vla.world.video_generation_for_robotics) and learned simulators as drop-in environments (see vla.world.neural_simulator).",
-      "keywords": ["world model dynamics", "latent dynamics model", "dreamerv3", "daydreamer", "gr-1 robot", "gr-2 robot", "ivideogpt"],
+      "keywords": [
+        "world model dynamics",
+        "latent dynamics model",
+        "dreamerv3",
+        "daydreamer",
+        "gr-1 robot",
+        "gr-2 robot",
+        "ivideogpt"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["DreamerV3", "DayDreamer", "GR-1", "GR-2", "iVideoGPT"]
+      "examples": [
+        "DreamerV3",
+        "DayDreamer",
+        "GR-1",
+        "GR-2",
+        "iVideoGPT"
+      ],
+      "display_name": "World Model Dynamics"
     },
     {
       "slug": "vla.world.video_generation_for_robotics",
-      "parents": ["vla.world"],
+      "parents": [
+        "vla.world"
+      ],
       "primary_parent": "vla.world",
       "domain": "vla",
       "scope": "Pixel video generators producing robot futures used as plans, augmentation, or supervision (UniPi, Cosmos, RoboDreamer, GR00T Dreams). Excludes compact latent-dynamics world models (see vla.world.world_model_dynamics).",
-      "keywords": ["video generation robotics", "video planner", "unipi policy", "robodreamer", "gr00t dreams", "cosmos world", "video prediction for robot"],
+      "keywords": [
+        "video generation robotics",
+        "video planner",
+        "unipi policy",
+        "robodreamer",
+        "gr00t dreams",
+        "cosmos world",
+        "video prediction for robot"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["UniPi", "Cosmos", "RoboDreamer", "GR00T Dreams"]
+      "examples": [
+        "UniPi",
+        "Cosmos",
+        "RoboDreamer",
+        "GR00T Dreams"
+      ],
+      "display_name": "Video Generation for Robotics"
     },
     {
       "slug": "vla.world.neural_simulator",
-      "parents": ["vla.world"],
+      "parents": [
+        "vla.world"
+      ],
       "primary_parent": "vla.world",
       "domain": "vla",
       "scope": "Learned neural simulators used as drop-in physics environments (1X World Model, Genie 2 used as sim). Excludes representational world models (see vla.world.world_model_dynamics) and traditional sim-to-real pipelines (see vla.sim_data.sim_to_real).",
-      "keywords": ["neural simulator", "1x world model", "genie 2 sim", "learned simulator", "playable world model"],
+      "keywords": [
+        "neural simulator",
+        "1x world model",
+        "genie 2 sim",
+        "learned simulator",
+        "playable world model"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["1X World Model", "Genie 2 as sim"]
+      "examples": [
+        "1X World Model",
+        "Genie 2 as sim"
+      ],
+      "display_name": "Neural Simulator"
     },
-
     {
       "slug": "vla.sim_data",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for simulation, real-to-sim, data collection, synthetic data, and VLA scaling laws. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Sim-to-Real & Data"
     },
     {
       "slug": "vla.sim_data.sim_to_real",
-      "parents": ["vla.sim_data"],
+      "parents": [
+        "vla.sim_data"
+      ],
       "primary_parent": "vla.sim_data",
       "domain": "vla",
       "scope": "Domain randomization and policy transfer from simulation to physical robots. Excludes building digital twins from real scans (see vla.sim_data.real_to_sim) and learned neural simulators (see vla.world.neural_simulator).",
-      "keywords": ["sim-to-real", "sim to real", "sim2real", "domain randomization", "rialto sim2real", "dr-ft policy"],
+      "keywords": [
+        "sim-to-real",
+        "sim to real",
+        "sim2real",
+        "domain randomization",
+        "rialto sim2real",
+        "dr-ft policy"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["domain randomization", "RialTo", "DR-FT"]
+      "examples": [
+        "domain randomization",
+        "RialTo",
+        "DR-FT"
+      ],
+      "display_name": "Sim-to-Real"
     },
     {
       "slug": "vla.sim_data.real_to_sim",
-      "parents": ["vla.sim_data"],
+      "parents": [
+        "vla.sim_data"
+      ],
       "primary_parent": "vla.sim_data",
       "domain": "vla",
       "scope": "Reconstructing simulation assets from real-world scans / URDFs (URDFormer, RoboCasa, DigitalCousins). Excludes sim-to-real transfer (see vla.sim_data.sim_to_real) and synthetic-trajectory generation (see vla.sim_data.synthetic_data_generation).",
-      "keywords": ["real-to-sim", "real to sim", "urdformer", "robocasa scene", "digital cousins", "scene reconstruction sim"],
+      "keywords": [
+        "real-to-sim",
+        "real to sim",
+        "urdformer",
+        "robocasa scene",
+        "digital cousins",
+        "scene reconstruction sim"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["URDFormer", "RoboCasa", "DigitalCousins"]
+      "examples": [
+        "URDFormer",
+        "RoboCasa",
+        "DigitalCousins"
+      ],
+      "display_name": "Real-to-Sim"
     },
     {
       "slug": "vla.sim_data.data_collection_systems",
-      "parents": ["vla.sim_data"],
+      "parents": [
+        "vla.sim_data"
+      ],
       "primary_parent": "vla.sim_data",
       "domain": "vla",
       "scope": "Hardware/software for teleoperated robot data collection (UMI, DexCap, HATO, AnyTeleop). Excludes synthetic data generation in simulation (see vla.sim_data.synthetic_data_generation).",
-      "keywords": ["data collection system", "umi gripper", "dexcap", "hato teleop", "anyteleop", "teleoperation rig"],
+      "keywords": [
+        "data collection system",
+        "umi gripper",
+        "dexcap",
+        "hato teleop",
+        "anyteleop",
+        "teleoperation rig"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["UMI", "DexCap", "HATO", "AnyTeleop"]
+      "examples": [
+        "UMI",
+        "DexCap",
+        "HATO",
+        "AnyTeleop"
+      ],
+      "display_name": "Data Collection Systems"
     },
     {
       "slug": "vla.sim_data.synthetic_data_generation",
-      "parents": ["vla.sim_data"],
+      "parents": [
+        "vla.sim_data"
+      ],
       "primary_parent": "vla.sim_data",
       "domain": "vla",
       "scope": "Procedural / generative synthetic trajectory generation for VLA training (RoboGen, DexMimicGen, GR00T-Mimic). Excludes physical teleoperated data collection (see vla.sim_data.data_collection_systems).",
-      "keywords": ["synthetic data generation robot", "robogen", "dexmimicgen", "gr00t-mimic", "procedural trajectory generation"],
+      "keywords": [
+        "synthetic data generation robot",
+        "robogen",
+        "dexmimicgen",
+        "gr00t-mimic",
+        "procedural trajectory generation"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["RoboGen", "DexMimicGen", "GR00T-Mimic"]
+      "examples": [
+        "RoboGen",
+        "DexMimicGen",
+        "GR00T-Mimic"
+      ],
+      "display_name": "Synthetic Data Generation"
     },
     {
       "slug": "vla.sim_data.vla_scaling_laws",
-      "parents": ["vla.sim_data"],
+      "parents": [
+        "vla.sim_data"
+      ],
       "primary_parent": "vla.sim_data",
       "domain": "vla",
       "scope": "Empirical scaling-law studies for VLA / robot foundation models. Excludes generic LLM scaling work and individual model releases.",
-      "keywords": ["vla scaling laws", "robot scaling laws", "octo scaling", "rdt-1b scaling", "dataset scaling vla", "tuyls scaling"],
+      "keywords": [
+        "vla scaling laws",
+        "robot scaling laws",
+        "octo scaling",
+        "rdt-1b scaling",
+        "dataset scaling vla",
+        "tuyls scaling"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Octo scaling", "RDT-1B scaling", "π0 dataset scaling", "Tuyls 2023"]
+      "examples": [
+        "Octo scaling",
+        "RDT-1B scaling",
+        "π0 dataset scaling",
+        "Tuyls 2023"
+      ],
+      "display_name": "VLA Scaling Laws"
     },
-
     {
       "slug": "vla.efficiency",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for VLA efficiency: acceleration, async inference. Catch-all cluster; never matches directly (leaves carry routing).",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Efficient Inference"
     },
     {
       "slug": "vla.efficiency.vla_acceleration",
-      "parents": ["vla.efficiency"],
+      "parents": [
+        "vla.efficiency"
+      ],
       "primary_parent": "vla.efficiency",
       "domain": "vla",
       "scope": "Catch-all for VLA inference acceleration (quantization, distillation, pruning, parallel decoding). Excludes async / chunked inference scheduling (see vla.efficiency.async_inference).",
-      "keywords": ["tinyvla", "deer-vla", "openvla-oft", "vla acceleration", "vla quantization", "vla distillation", "vla pruning", "fast vla inference"],
+      "keywords": [
+        "tinyvla",
+        "deer-vla",
+        "openvla-oft",
+        "vla acceleration",
+        "vla quantization",
+        "vla distillation",
+        "vla pruning",
+        "fast vla inference"
+      ],
       "match_precedence": 10,
       "effective_date": "2026-05-24",
-      "examples": ["TinyVLA", "DeeR-VLA", "OpenVLA-OFT"]
+      "examples": [
+        "TinyVLA",
+        "DeeR-VLA",
+        "OpenVLA-OFT"
+      ],
+      "display_name": "VLA Acceleration"
     },
     {
       "slug": "vla.efficiency.async_inference",
-      "parents": ["vla.efficiency"],
+      "parents": [
+        "vla.efficiency"
+      ],
       "primary_parent": "vla.efficiency",
       "domain": "vla",
       "scope": "Asynchronous / chunked action prediction for low-latency control (action chunking, RTC). Excludes weight-level acceleration (see vla.efficiency.vla_acceleration).",
-      "keywords": ["async inference", "asynchronous inference", "action chunking", "rtc policy", "real-time chunking"],
+      "keywords": [
+        "async inference",
+        "asynchronous inference",
+        "action chunking",
+        "rtc policy",
+        "real-time chunking"
+      ],
       "match_precedence": 10,
       "effective_date": "2026-05-24",
-      "examples": ["ACT chunking", "RTC"]
+      "examples": [
+        "ACT chunking",
+        "RTC"
+      ],
+      "display_name": "Async Inference"
     },
-
     {
       "slug": "vla.navigation",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for navigation: vision-language navigation, autonomous driving end-to-end. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Navigation"
     },
     {
       "slug": "vla.navigation.vision_language_navigation",
-      "parents": ["vla.navigation"],
+      "parents": [
+        "vla.navigation"
+      ],
       "primary_parent": "vla.navigation",
       "domain": "vla",
       "scope": "Indoor/outdoor vision-language navigation policies (VLN). Excludes end-to-end self-driving (see vla.navigation.autonomous_driving_e2e) and mobile manipulation (see vla.manipulation.mobile_manipulation).",
-      "keywords": ["vision-language navigation", "visual navigation policy", "navid", "nomad policy", "vint navigation", "vln benchmark"],
+      "keywords": [
+        "vision-language navigation",
+        "visual navigation policy",
+        "navid",
+        "nomad policy",
+        "vint navigation",
+        "vln benchmark"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["NaVid", "NoMaD", "ViNT"]
+      "examples": [
+        "NaVid",
+        "NoMaD",
+        "ViNT"
+      ],
+      "display_name": "Vision-Language Navigation"
     },
     {
       "slug": "vla.navigation.autonomous_driving_e2e",
-      "parents": ["vla.navigation"],
+      "parents": [
+        "vla.navigation"
+      ],
       "primary_parent": "vla.navigation",
       "domain": "vla",
       "scope": "End-to-end autonomous driving policies (UniAD, DriveVLM, EMMA). Excludes indoor navigation (see vla.navigation.vision_language_navigation).",
-      "keywords": ["autonomous driving end-to-end", "e2e driving", "uniad", "drivevlm", "emma driving", "end-to-end self-driving"],
+      "keywords": [
+        "autonomous driving end-to-end",
+        "e2e driving",
+        "uniad",
+        "drivevlm",
+        "emma driving",
+        "end-to-end self-driving"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["UniAD", "DriveVLM", "EMMA"]
+      "examples": [
+        "UniAD",
+        "DriveVLM",
+        "EMMA"
+      ],
+      "display_name": "Autonomous Driving (E2E)"
     },
-
     {
       "slug": "vla.eval",
-      "parents": ["vla"],
+      "parents": [
+        "vla"
+      ],
       "primary_parent": "vla",
       "domain": "vla",
       "scope": "Cluster for VLA evaluation: safety, benchmarks, failure analysis. Structural node only.",
       "keywords": [],
       "match_precedence": 0,
       "effective_date": "2026-05-24",
-      "examples": []
+      "examples": [],
+      "display_name": "Safety, Eval & Benchmarks"
     },
     {
       "slug": "vla.eval.robot_safety",
-      "parents": ["vla.eval"],
+      "parents": [
+        "vla.eval"
+      ],
       "primary_parent": "vla.eval",
       "domain": "vla",
       "scope": "Safe RL and ISO-compliant safety constraints for physical robots. Excludes AI agent safety (see ai.safety.agent_safety) and adversarial/red-team evaluation in software-only agents (see ai.safety.agent_red_team).",
-      "keywords": ["robot safety", "safe rl manipulation", "iso-compliant policy", "safe contact", "safety-aware policy", "safety filter robot"],
+      "keywords": [
+        "robot safety",
+        "safe rl manipulation",
+        "iso-compliant policy",
+        "safe contact",
+        "safety-aware policy",
+        "safety filter robot"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["Safe RL manipulation", "ISO-compliant policies"]
+      "examples": [
+        "Safe RL manipulation",
+        "ISO-compliant policies"
+      ],
+      "display_name": "Robot Safety"
     },
     {
       "slug": "vla.eval.robot_eval_benchmarks",
-      "parents": ["vla.eval"],
+      "parents": [
+        "vla.eval"
+      ],
       "primary_parent": "vla.eval",
       "domain": "vla",
       "scope": "Robot manipulation / VLA evaluation benchmarks (LIBERO, SimplerEnv, RoboArena, CALVIN, RoboCasa). Excludes AI agent benchmarks (see ai.eval.agent_eval).",
-      "keywords": ["libero benchmark", "simplerenv", "roboarena", "calvin benchmark", "robocasa benchmark", "robot benchmark suite"],
+      "keywords": [
+        "libero benchmark",
+        "simplerenv",
+        "roboarena",
+        "calvin benchmark",
+        "robocasa benchmark",
+        "robot benchmark suite"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["LIBERO", "SimplerEnv", "RoboArena", "CALVIN", "RoboCasa"]
+      "examples": [
+        "LIBERO",
+        "SimplerEnv",
+        "RoboArena",
+        "CALVIN",
+        "RoboCasa"
+      ],
+      "display_name": "Robot Eval Benchmarks"
     },
     {
       "slug": "vla.eval.failure_analysis_robotics",
-      "parents": ["vla.eval"],
+      "parents": [
+        "vla.eval"
+      ],
       "primary_parent": "vla.eval",
       "domain": "vla",
       "scope": "Robot-specific failure-mode analysis (RoboFAC, REFLECT-eval). Excludes general AI agent failure taxonomies (see ai.eval.failure_taxonomy) and online error recovery (see vla.reasoning.error_recovery_replanning).",
-      "keywords": ["robofac", "reflect-eval", "robot failure analysis", "robotics failure taxonomy", "manipulation failure modes"],
+      "keywords": [
+        "robofac",
+        "reflect-eval",
+        "robot failure analysis",
+        "robotics failure taxonomy",
+        "manipulation failure modes"
+      ],
       "match_precedence": 100,
       "effective_date": "2026-05-24",
-      "examples": ["RoboFAC", "REFLECT-eval"]
+      "examples": [
+        "RoboFAC",
+        "REFLECT-eval"
+      ],
+      "display_name": "Robotics Failure Analysis"
     }
   ]
 }
