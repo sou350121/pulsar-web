@@ -25,6 +25,7 @@ import {
   loadLabNetwork,
   loadWatchlist,
   loadPoolViz,
+  loadKnownLabs,
   slugifyName,
   topMethodsForEvidence,
 } from '../../utils/talent';
@@ -75,6 +76,11 @@ const featuredMethods = featuredHR
 
 // ── Labs showcase: 6 with non-zero recent OR top by 90d signals ─────────────
 const labsShowcase = allLabs.slice(0, 6);
+
+// ── Mentorship tile stats (primary nav into /talent/labs/<slug>/) ──────────
+const mentorshipLabs    = loadKnownLabs();
+const mentorshipPiCount = mentorshipLabs.reduce((s, l) => s + l.piCount, 0);
+const mentorshipTraineeCount = mentorshipLabs.reduce((s, l) => s + l.traineeCount, 0);
 
 // ── Lab Network + researcher constellation + full watchlist ────────────────
 // Section 04 now stacks two relational charts:
@@ -219,6 +225,32 @@ function fmtAccel(a: number): string {
         <span data-sc>每项推荐皆附论文级佐证。系统 <strong>从不存储或显示邮箱</strong>。</span>
       </p>
     </header>
+
+    <!-- ══ Primary nav tile — Mentorship Map entry ═══════════════════════
+         Standalone CTA tile bridging the dashboard into per-lab 师徒 trees.
+         Placed above the Weekly Brief because the brief is narrative-by-date
+         while this is a structural pivot a user returns to repeatedly. -->
+    <nav class="tv2-nav" aria-label="Primary navigation tiles">
+      <a class="tv2-nav-tile" href={`${base}/talent/labs/`}>
+        <span class="tv2-nav-tile-icon" aria-hidden="true">↔</span>
+        <div class="tv2-nav-tile-body">
+          <span class="tv2-nav-tile-kicker">
+            <span data-tc>新</span><span data-sc>新</span>
+            <span class="tv2-nav-tile-kicker-en">NEW</span>
+          </span>
+          <h3 class="tv2-nav-tile-title">
+            <span data-tc>師徒可視化</span>
+            <span data-sc>师徒可视化</span>
+            <span class="tv2-nav-tile-en">/ Mentorship Map</span>
+          </h3>
+          <p class="tv2-nav-tile-desc">
+            <span data-tc>PI ↔ trainee 共著網絡 · {mentorshipLabs.length} 個實驗室 · {mentorshipPiCount} 位 PI · {mentorshipTraineeCount} 位學生</span>
+            <span data-sc>PI ↔ trainee 共著网络 · {mentorshipLabs.length} 个实验室 · {mentorshipPiCount} 位 PI · {mentorshipTraineeCount} 位学生</span>
+          </p>
+        </div>
+        <span class="tv2-nav-tile-arrow" aria-hidden="true">→</span>
+      </a>
+    </nav>
 
     <!-- ══ Weekly Brief — 3 narrative cards ═══════════════════════════════ -->
     <section class="tv2-brief" aria-label="Weekly brief">
@@ -1417,6 +1449,92 @@ function fmtAccel(a: number): string {
     }
     .tv2-brief-affil { color: var(--accent-amber); }
     .tv2-brief-meta  { color: var(--text-tertiary); }
+
+    /* ── PRIMARY NAV TILE (Mentorship Map entry) ────────────────────── */
+    .tv2-nav { margin: 1.5rem 0 2rem; }
+    .tv2-nav-tile {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--accent-amber);
+      border-radius: 12px;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--accent-amber) 10%, var(--surface)) 0%,
+        var(--surface) 70%
+      );
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .tv2-nav-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .tv2-nav-tile-icon {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 10px;
+      background: var(--accent-amber);
+      color: var(--surface);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+    }
+    .tv2-nav-tile-body { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+    .tv2-nav-tile-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-amber);
+      font-weight: 700;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .tv2-nav-tile-kicker-en {
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+    .tv2-nav-tile-title {
+      font-family: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin: 0;
+      display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap;
+    }
+    .tv2-nav-tile-en {
+      color: var(--text-tertiary);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .tv2-nav-tile-desc {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.45;
+    }
+    .tv2-nav-tile-arrow {
+      flex-shrink: 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.4rem;
+      color: var(--accent-amber);
+      transition: transform 0.15s;
+    }
+    .tv2-nav-tile:hover .tv2-nav-tile-arrow { transform: translateX(4px); }
+    @media (max-width: 640px) {
+      .tv2-nav-tile { gap: 0.85rem; padding: 0.9rem 1rem; }
+      .tv2-nav-tile-icon { width: 40px; height: 40px; font-size: 1.3rem; }
+      .tv2-nav-tile-title { font-size: 1.15rem; }
+    }
 
     /* ── SECTION HEADER ─────────────────────────────────────────────── */
     .tv2-section { margin: 3rem 0; }
