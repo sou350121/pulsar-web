@@ -1,6 +1,52 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-24",
+      "items": [
+        {
+          "title": "NVIDIA Nemotron-Labs Diffusion LM：并行生成+迭代精炼，打破自回归速度瓶颈",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/nvidia/nemotron-labs-diffusion",
+          "why_picked": "NVIDIA 发布扩散语言模型（3B/8B/14B），可并行生成多个 token 再迭代精炼，突破 AR 模型逐 token 生成的硬限制，支持修订已有文本",
+          "so_what": "如果你在做低延迟 LLM 推理管线：扩散 LM 代表了一条与自回归并行的新架构路径。SGLang 已支持部署，可关注 8B 模型的延迟/成本对比。虽然目前质量仍不及顶级 AR 模型，但在 fill-in-the-middle 和文本修订场景有天然优势。"
+        },
+        {
+          "title": "Google 发布 Chrome DevTools MCP：让 Coding Agent 直接调试浏览器",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+          "why_picked": "Chrome 官方首次推出 MCP server，让 Claude/Cursor/Copilot 等编码 Agent 能直接控制 Chrome、分析网络请求、截图、性能追踪",
+          "so_what": "如果你在用 Agent 做前端开发或自动化测试：这个 MCP server 让 Agent 能看到浏览器真实渲染结果，而不是盲猜 DOM。集成到 Claude Code/Cursor 后，前端 debug 效率会显著提升。"
+        },
+        {
+          "title": "Multica：开源多 Agent 编排平台，把 AI 编程 Agent 变成「队友」",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/multica-ai/multica",
+          "why_picked": "GitHub Trending 前列。支持将 Claude Code/Codex/Copilot 等 Agent 注册为「队友」——自动分配 Issue、追踪进度、上报阻塞，支持 Squads 分组编排",
+          "so_what": "如果你在管理多 Agent 并行开发：Multica 提供了一套 vendor-neutral 的 Agent 任务分配+状态追踪基础设施。Squads 模式（Leader Agent 委派任务）对中型团队特别有参考价值。"
+        },
+        {
+          "title": "AI 驱动的 HBM 需求吞噬内存产能：消费电子产品面临涨价",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/May/22/memory-shortage/",
+          "why_picked": "HN 高热。AI 数据中心 HBM 需求将占晶圆厂产能 20%（从 2% 飙升），直接挤压消费级 LPDDR/DDR 供应，$100 以下智能手机已受影响",
+          "so_what": "如果你在规划边缘 AI 部署或 IoT 产品：HBM 挤占消费内存产能意味着端侧设备的 RAM 成本将持续上升。这进一步强化了「小模型+高效推理」的必要性——大模型上边缘设备的经济模型正在恶化。"
+        },
+        {
+          "title": "FTC 制裁 Cox Media「AI 主动监听」虚假营销：AI 洗白广告被叫停",
+          "category": "行业",
+          "source": "Web",
+          "source_primary": "FTC",
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2026/05/ftc-require-cox-media-group-two-other-firms-pay-nearly-1-million-settle-charges-they-deceived",
+          "why_picked": "FTC 对三家营销公司罚款 $93 万，因其谎称 AI 服务能通过智能设备监听消费者对话来精准投放广告——实际只是转售邮件列表",
+          "so_what": "如果你在构建 AI 营销/广告产品：这是监管对「AI 洗白」的明确信号。任何涉及用户数据采集的 AI 产品，必须确保宣传与实际能力一致，否则 FTC 会介入。合规成本正在上升。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-23",
       "items": [
         {
@@ -1378,43 +1424,6 @@
           "url": "https://github.com/huggingface/ml-intern",
           "why_picked": "HuggingFace开源ML工程师项目，能读论文、训练模型、部署模型；同时zilliztech/claude-context提供代码库MCP搜索，让Coding Agent获得全量上下文。",
           "so_what": "如果你在搭建ML Agent工作流：ml-intern展示了从论文到训练到部署的端到端自动化路径；claude-context则解决了Coding Agent的核心痛点——如何让Agent理解整个代码库而非单个文件。两者都值得持续关注。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-23",
-      "items": [
-        {
-          "title": "ChatGPT Images 2.0 发布：首个「会思考」的图像模型",
-          "category": "新发布",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3777221631150343",
-          "why_picked": "OpenAI 正式发布 ChatGPT Images 2.0，具备推理能力（Thinking Mode），可联网搜索+自检，支持中日韩等多语言精准渲染，一次生成8张连贯画面，Arena榜单登顶",
-          "so_what": "如果你在做图像生成管线：Images 2.0 的 Thinking Mode 引入了推理+搜索+自检的三阶段流程，这意味着图像生成正在从「纯渲染」转向「视觉推理」。建议关注其 API 开放节奏——如果你的应用需要多语言文本渲染或连贯多图生成，这是目前最强的选项。"
-        },
-        {
-          "title": "Firefox 150 用 Claude Mythos 发现 271 个漏洞",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Apr/22/bobby-holley/",
-          "why_picked": "Firefox CTO Bobby Holley 分享将 Claude Mythos Preview 应用于 Firefox 的经验，首轮评估即发现 271 个漏洞，标志着 AI 安全审计进入实用阶段",
-          "so_what": "如果你在做安全审计或代码审查：Claude Mythos 在 Firefox 上的实战证明 AI 漏洞发现已从实验走向生产。考虑将类似工具集成到 CI 流程中——特别是对于 C/C++ 等内存安全敏感项目，AI 辅助审计可以显著扩大覆盖范围。"
-        },
-        {
-          "title": "OpenAI 推出 ChatGPT for Clinicians，对认证医师免费",
-          "category": "行业",
-          "source": "OpenAI 官方博客",
-          "url": "https://openai.com/index/making-chatgpt-better-for-clinicians",
-          "why_picked": "OpenAI 正式发布垂直版本 ChatGPT for Clinicians，面向美国认证医师/NP/药剂师免费开放，配套开源 HealthBench Professional 基准",
-          "so_what": "如果你在做垂直领域 Agent：OpenAI 正在用「免费+认证」模式占领医疗场景。这验证了垂直化是 LLM 商业化的重要路径——通用模型打底，垂直场景做深。如果你的领域也有强合规需求，可以参考这个模式。"
-        },
-        {
-          "title": "AWS SageMaker AI 推出 GenAI 推理优化推荐",
-          "category": "工具",
-          "source": "AWS ML Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/amazon-sagemaker-ai-now-supports-optimized-generative-ai-inference-recommendations/",
-          "why_picked": "SageMaker AI 新增推理配置推荐功能，集成 NVIDIA AIPerf 自动 benchmark，将原本需数周的 GPU 配置调优自动化",
-          "so_what": "如果你在生产环境部署 LLM：SageMaker 的推理推荐消除了手动调优 GPU 实例+并行策略+优化技术的组合爆炸问题。如果你的团队正在为推理延迟/成本发愁，这个功能可以把部署周期从几周压缩到几小时。"
         }
       ]
     }
