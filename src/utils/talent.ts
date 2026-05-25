@@ -1717,6 +1717,27 @@ export interface LabMentorship {
  * Sorted by total member count descending so the most active labs build
  * first (matters if the build ever hits a timeout).
  */
+// Per-lab page slug overrides. The registry stores some institutions under
+// CJK short names ("清华", "北大", …) which slugifyName preserves as-is.
+// That's fine for HTML #anchors but breaks as filesystem path segments on
+// GitHub Pages (URL-encoded CJK paths return 400). Map them to stable
+// ASCII slugs and route the per-lab page builds through these.
+const LAB_SLUG_OVERRIDE: Record<string, string> = {
+  '清华':  'tsinghua',
+  '北大':  'peking',
+  '北航':  'beihang',
+  '浙大':  'zhejiang',
+  '复旦':  'fudan',
+  '上交':  'sjtu',
+  '中科院': 'cas',
+  '人大':  'renmin',
+  '南大':  'nanjing',
+};
+
+export function labSlug(name: string): string {
+  return LAB_SLUG_OVERRIDE[name] ?? slugifyName(name);
+}
+
 export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: number; traineeCount: number }> {
   const reg = loadResearcherRegistry();
   const ra  = reg.researcher_affiliation;
@@ -1732,7 +1753,7 @@ export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: nu
   }
   return [...institutions.entries()]
     .map(([name, c]) => ({
-      slug:        slugifyName(name),
+      slug:        labSlug(name),
       name,
       piCount:     c.piCount,
       // PIs are double-counted in researcher_affiliation; subtract.
@@ -1742,14 +1763,27 @@ export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: nu
     .sort((a, b) => (b.piCount + b.traineeCount) - (a.piCount + a.traineeCount));
 }
 
+// Cached set of lab slugs with a per-lab mentorship page. LabCard uses this
+// to decide whether to render the `師徒 →` link — labs without a page
+// (entity-tracker entries that didn't survive loadKnownLabs's filter, or
+// name-space mismatches like "Berkeley" vs "UC Berkeley") get no link.
+let _knownLabSlugsCache: Set<string> | null = null;
+export function knownLabSlugs(): Set<string> {
+  if (_knownLabSlugsCache) return _knownLabSlugsCache;
+  _knownLabSlugsCache = new Set(loadKnownLabs().map(l => l.slug));
+  return _knownLabSlugsCache;
+}
+
 export function loadLabMentorship(slug: string): LabMentorship | null {
   const reg = loadResearcherRegistry();
   const ra  = reg.researcher_affiliation;
   const pa  = reg.pi_affiliation ?? {};
 
-  // slug → institution: find any institution whose slug matches.
-  const institutionName = Object.values(ra).find(inst => slugifyName(inst) === slug)
-                       ?? Object.values(pa).find(inst => slugifyName(inst) === slug);
+  // slug → institution: find any institution whose slug matches. Uses
+  // labSlug (which honours LAB_SLUG_OVERRIDE for CJK short names) so the
+  // page-build slug and the lookup slug agree.
+  const institutionName = Object.values(ra).find(inst => labSlug(inst) === slug)
+                       ?? Object.values(pa).find(inst => labSlug(inst) === slug);
   if (!institutionName) return null;
 
   // Build the PI and trainee sets for this lab.

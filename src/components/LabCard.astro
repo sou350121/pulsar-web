@@ -5,13 +5,21 @@
  * Renders inline 14-day sparkline (CSS-only, no JS).
  */
 import type { LabRecord } from '../utils/talent';
-import { slugifyName } from '../utils/talent.ts';
+import { slugifyName, labSlug, knownLabSlugs } from '../utils/talent.ts';
 import RatingBadge from './RatingBadge.astro';
 
 interface Props {
   record: LabRecord;
 }
 const { record } = Astro.props;
+
+// Only show `師徒 →` when a per-lab mentorship page actually exists.
+// loadLabs() (entity-tracker derived) and loadKnownLabs() (registry
+// derived) use different name-spaces ("Berkeley" vs "UC Berkeley"), and
+// loadKnownLabs has a minimum PI/trainee count filter — many LabCards
+// won't have a corresponding `/talent/labs/<slug>/` page.
+const mentorshipSlug = labSlug(record.name);
+const hasMentorshipPage = knownLabSlugs().has(mentorshipSlug);
 
 const maxBar = Math.max(1, ...record.velocityBars);
 const recent7Color = record.recentSignalCount7d > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)';
@@ -31,11 +39,13 @@ const isStale = daysSince !== null && daysSince > 14;
     <h3 class="font-lora font-semibold text-pulsar-text text-base leading-snug flex-1 min-w-0">
       {record.name}
     </h3>
-    <a
-      href={`${import.meta.env.BASE_URL}/talent/labs/${slugifyName(record.name)}/`}
-      class="lab-mentorship-link"
-      title="PI ↔ trainee map for this lab"
-    >師徒 →</a>
+    {hasMentorshipPage && (
+      <a
+        href={`${import.meta.env.BASE_URL}/talent/labs/${mentorshipSlug}/`}
+        class="lab-mentorship-link"
+        title="PI ↔ trainee map for this lab"
+      >師徒 →</a>
+    )}
     <RatingBadge rating={record.topRating} size="sm" />
   </div>
 
