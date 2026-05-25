@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-25",
+      "items": [
+        {
+          "title": "DeepSeek Reasonix：DeepSeek 原生编码 Agent，高缓存+低成本",
+          "category": "新发布",
+          "source": "HN",
+          "url": "https://esengine.github.io/DeepSeek-Reasonix/",
+          "why_picked": "HN 402分 191评论。DeepSeek 官方原生 coding agent，利用高缓存机制实现低成本编码体验，与 Claude Code/Cursor 直接竞争",
+          "so_what": "如果你在用 Claude Code 或 Cursor 做日常编码：DeepSeek Reasonix 提供了另一条低成本路径——利用 DeepSeek V4-Pro 的 75% 永久折扣 + 高缓存优化，token 成本可能只有 Claude 的 1/10。值得在次要项目上做 A/B 测试。"
+        },
+        {
+          "title": "Claude 不是你的架构师：AI 的「病态附和」正在毁掉系统设计",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://www.hollandtech.net/claude-is-not-your-architect/",
+          "why_picked": "HN 223分 165评论。核心论点：AI agent 天生 pathologically agreeable——它从不说不，只会给你「听起来很对」的通用架构，但完全忽略你的团队约束和生产环境现实",
+          "so_what": "如果你在用 Claude/Copilot 做架构设计：这篇文章指出了一个被忽视的风险——AI 生成的架构看起来合理但缺少 context-aware 的 trade-off 判断。建议把 AI 当作「初级架构师」而非最终决策者，关键决策必须由有生产经验的人把关。"
+        },
+        {
+          "title": "AI 芯片内存成本占比逼近 2/3，推理经济模型面临重构",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://epoch.ai/research/memory-costs-ai-chips",
+          "why_picked": "HN 270分 296评论。Epoch AI 数据分析：AI 芯片中内存（HBM/SRAM）成本占比从历史 ~30% 飙升至近 66%，成为芯片最大单一成本组件，直接影响推理成本和模型架构选择",
+          "so_what": "如果你在规划 LLM 推理部署：内存成本占比飙升意味着「更大上下文=更贵推理」的经济模型正在加速。MoE 架构（只激活部分参数）和 KV cache 优化（如 PagedAttention）的经济价值进一步提升——减少内存占用的技术路线将获得双重收益。"
+        },
+        {
+          "title": "Armin Ronacher：AI 生成的 issue 正在污染开源项目",
+          "category": "观点",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/May/24/armin-ronacher/",
+          "why_picked": "Flask/Sentry 作者 Armin Ronacher 公开吐槽：AI 生成的 issue report 充满「自信的错误结论、虚假最小复现、错误的代码类比」，要求用户只提交「人类观察到的事实」",
+          "so_what": "如果你维护开源项目或用 AI 辅助开发：这反映了 AI 编码工具普及后的副作用——开发者把问题丢给 LLM 生成 issue，但 LLM 的推理错误导致维护者负担加重。建议在 CONTRIBUTING.md 中明确要求「人类验证过的复现步骤」，过滤 AI 生成的噪声。"
+        },
+        {
+          "title": "Constraint Decay：LLM Agent 在后端代码生成中的脆弱性",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://arxiv.org/abs/2605.06445",
+          "why_picked": "HN 161分 81评论。系统研究发现：随着结构约束累积，Agent 性能平均下降 30 个百分点；Flask 等轻量框架表现好，FastAPI/Django 等重约定框架表现差；数据层缺陷是首要错误来源",
+          "so_what": "如果你在用 Agent 生成后端代码：这篇论文给出了定量证据——Agent 在「功能正确」和「结构合规」之间存在巨大鸿沟。实际建议：(1) 用轻量框架时 Agent 效果最佳；(2) 复杂 ORM/数据库约束需要人工 review；(3) 考虑在 prompt 中显式指定结构约束。"
+        },
+        {
+          "title": "Greg Brockman 深度访谈：OpenAI 72 小时生死危机内幕",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://fs.blog/knowledge-project-podcast-transcripts/greg-brockman/",
+          "why_picked": "HN 166分 159评论。OpenAI 联合创始人 Brockman 首次详细讲述 OpenAI 创立初期几乎失败的 72 小时",
+          "so_what": "如果你对 AI 行业格局感兴趣：Brockman 是 OpenAI 从非营利到商业化核心决策者之一。这次访谈提供了对 OpenAI 战略转向的第一手视角，有助于理解当前 AI 竞争的底层逻辑。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-24",
       "items": [
         {
@@ -1379,51 +1432,6 @@
           "url": "https://news.ycombinator.com/item?id=47902525",
           "why_picked": "156 points, 95 comments — 开发者分享用 Claude Code + Godot 复活废弃游戏项目的经历",
           "so_what": "如果你在用 AI 辅助编程：这个讨论揭示了一个被忽视的使用场景——AI 最适合的不是从零写代码，而是理解和延续已有代码库。把你的半成品项目丢给 Claude Code，可能比写新项目效果更好。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-24",
-      "items": [
-        {
-          "title": "小米 MiMo-V2.5 发布：罗福莉领衔，对标 Claude Opus 4.6 / GPT-5.4",
-          "category": "新发布",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3778536198264067",
-          "why_picked": "小米MiMo系列重大升级：V2.5-Pro专攻长难Agent任务，V2.5为原生全模态。Token效率比Kimi K2.6省42%，比Muse Spark省50%。负责人罗福莉为原DeepSeek核心成员，正值DeepSeek V4发布前夕。",
-          "so_what": "如果你在选择Agent基础模型：MiMo-V2.5-Pro在ClawEval上与Kimi K2.6同分但省42% Token，对长程Agent任务（多轮工具调用）是显著成本优势。关注其即将开源的计划——可能成为中文Agent场景的强力选项。"
-        },
-        {
-          "title": "OpenAI Codex 推出 Automations：定时/触发式自动执行任务",
-          "category": "新发布",
-          "source": "OpenAI",
-          "url": "https://openai.com/academy/codex-automations",
-          "why_picked": "Codex从被动对话升级为主动执行：支持定时调度和触发器，可自动完成周报、晨间简报、数据检查等重复工作，且能延续已有对话上下文。",
-          "so_what": "如果你在用Codex做日常自动化：现在可以配置周五自动周报、每日文件变更摘要等定时任务，无需手动触发。注意需要本地运行时保持Codex在线，云端部署更可靠。"
-        },
-        {
-          "title": "OpenAI Codex 上线 Plugins & Skills 体系：连接外部工具 + 可复用工作流",
-          "category": "新发布",
-          "source": "OpenAI",
-          "url": "https://openai.com/academy/codex-plugins-and-skills",
-          "why_picked": "Codex正式引入插件（连接Google Drive/邮件等外部数据源）和技能（团队级可复用工作流模板）两层扩展机制，类似Claude Code的MCP但更面向企业场景。",
-          "so_what": "如果你在企业构建Agent工作流：Skills机制允许将团队SOP编码为可复用模板（如Newsletter格式、客户简报流程），Plugin则解决数据接入问题。与MCP生态形成竞争——评估时注意Plugin更封闭但体验更集成。"
-        },
-        {
-          "title": "LiteParse for the Web：纯浏览器端 PDF 空间文本解析",
-          "category": "工具",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/Apr/23/liteparse-for-the-web/",
-          "why_picked": "LlamaIndex LiteParse 的浏览器版，不依赖AI模型，用传统PDF解析+Tesseract OCR实现多栏布局智能排序，Simon Willison用Claude Code数小时构建。",
-          "so_what": "如果你在构建RAG管线处理PDF：LiteParse的空间文本解析能正确处理多栏/复杂排版PDF，比纯OCR方案更可靠。浏览器版适合隐私敏感场景（数据不出本地），可作为Agent的PDF预处理工具。"
-        },
-        {
-          "title": "GitHub Trending：huggingface/ml-intern（开源ML工程师）和 claude-context（代码搜索MCP）",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/huggingface/ml-intern",
-          "why_picked": "HuggingFace开源ML工程师项目，能读论文、训练模型、部署模型；同时zilliztech/claude-context提供代码库MCP搜索，让Coding Agent获得全量上下文。",
-          "so_what": "如果你在搭建ML Agent工作流：ml-intern展示了从论文到训练到部署的端到端自动化路径；claude-context则解决了Coding Agent的核心痛点——如何让Agent理解整个代码库而非单个文件。两者都值得持续关注。"
         }
       ]
     }
