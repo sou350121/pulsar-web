@@ -1,0 +1,322 @@
+{
+  "ok": true,
+  "date": "2026-05-26",
+  "generated_at": "2026-05-26T11:02:10.922532",
+  "summary": {
+    "total_assumptions": 20,
+    "confirmed": 20,
+    "weakened": 1,
+    "invalidated": 0,
+    "total_signals": 165,
+    "vla_signals": 80,
+    "ai_signals": 85,
+    "counter_evidence_hits": 0,
+    "data_days": 48,
+    "method_trends": "3d_representation: declining, cross_embodiment: declining, dexterous_hand: declining, diffusion_policy: stable, flow_matching: stable, human_robot: stable, instruction_tuning: declining, language_grounding: stable, long_horizon: stable, mobile_manipulation: stable, multi_task: stable, rl_finetuning: stable, sim_to_real: declining, tactile: stable, world_model: stable",
+    "saturated_benchmarks": [
+      "CALVIN/ABC-D (4.8%)",
+      "CALVIN/ABCD-D (4.8%)",
+      "CALVIN/D-D (4.3%)",
+      "LIBERO/non-standard (99.2%)",
+      "LIBERO/standard-closed (99.8%)",
+      "LIBERO/standard-opensource (99.3%)"
+    ],
+    "overall_health": "stable"
+  },
+  "assumptions": [
+    {
+      "id": "T-003",
+      "domain": "system",
+      "hypothesis": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling....",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 0,
+      "mechanical_score": "N/A",
+      "mechanical_reasons": [],
+      "evidence": "No freshness violations detected; daily outputs remain within 72h window"
+    },
+    {
+      "id": "T-004",
+      "domain": "system",
+      "hypothesis": "Key claims in daily outputs should be grounded in primary sources (official blog / GitHub release / docs)....",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 1,
+      "mechanical_score": "N/A",
+      "mechanical_reasons": [],
+      "evidence": "1 watch-boost signal; no hallucination or ungrounded claim detected in daily outputs"
+    },
+    {
+      "id": "V-001",
+      "domain": "vla",
+      "hypothesis": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA a...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 34,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "diffusion_policy/flow_matching stable in method trends; 5 watch-boost signals; pi0-EqM new paper reinforces flow-matching dominance; no counter-evidence"
+    },
+    {
+      "id": "V-002",
+      "domain": "vla",
+      "hypothesis": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation p...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "tactile stable in method trends; TactileReflex paper (2605.23568) confirms ongoing tactile research; no counter-evidence"
+    },
+    {
+      "id": "V-003",
+      "domain": "vla",
+      "hypothesis": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA co...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "sim-to-real declining in method trends but Isaac Lab/Genesis remain standard; SCRIPT paper uses Isaac simulation; no abandonment signals"
+    },
+    {
+      "id": "V-004",
+      "domain": "vla",
+      "hypothesis": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA cont...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 6,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "humanoid_robot stable; SCRIPT humanoid control paper + 5 watch-boost signals; no pivot/shutdown signals from major players"
+    },
+    {
+      "id": "V-005",
+      "domain": "vla",
+      "hypothesis": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm ...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 2,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "evidence": "rl_finetuning stable; 2 semantic index signals; no RL degradation meta-analysis; keyword decline moderate but not critical"
+    },
+    {
+      "id": "V-006",
+      "domain": "vla",
+      "hypothesis": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planni...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 2,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "world_model stable; GEM-4D world model paper + Point Tracking paper; 2 watch-boost signals; no abandonment signals"
+    },
+    {
+      "id": "V-007",
+      "domain": "vla",
+      "hypothesis": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method fo...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "human_robot stable; 5 watch-boost signals; Instrumentation for Imitation Learning paper reinforces teleop data collection; no zero-teleop breakthrough"
+    },
+    {
+      "id": "V-008",
+      "domain": "vla",
+      "hypothesis": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-mon...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "3 watch-boost signals; no open-source gap widening signals; no hardware lock-in announcements"
+    },
+    {
+      "id": "V-009",
+      "domain": "vla",
+      "hypothesis": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) w...",
+      "status": "confirmed",
+      "confidence_delta": -0.03,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "method_decline:moderate (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "cross_embodiment declining in method trends (method_decline:moderate); 5 watch-boost signals but declining trend warrants slight confidence reduction; no >70% zero-shot transfer paper"
+    },
+    {
+      "id": "V-010",
+      "domain": "vla",
+      "hypothesis": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 0,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "benchmark_relevance:weak (0.25)",
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "3d_representation declining in method trends but no 2D-only breakthrough; benchmark relevance weak (saturated LIBERO); no counter-evidence"
+    },
+    {
+      "id": "A-001",
+      "domain": "ai_agent",
+      "hypothesis": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration, with major IDEs/platforms p...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 5,
+      "mechanical_score": "N/A",
+      "mechanical_reasons": [],
+      "evidence": "3 semantic index signals + 2 watch-boost; no incompatible protocol announcements; no critical MCP vulnerability"
+    },
+    {
+      "id": "A-002",
+      "domain": "ai_agent",
+      "hypothesis": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming t...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 3,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "3 semantic index signals; keyword decline weak but no SWE-bench stagnation evidence; no major company reduction reports"
+    },
+    {
+      "id": "A-003",
+      "domain": "ai_agent",
+      "hypothesis": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade framework...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 6,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "2 semantic index + 4 watch-boost signals; no 6-month stagnation; keyword decline weak"
+    },
+    {
+      "id": "A-004",
+      "domain": "ai_agent",
+      "hypothesis": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming stand...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 5,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "5 watch-boost signals; reasoning models remain dominant in agent tasks; no benchmark stagnation evidence"
+    },
+    {
+      "id": "A-005",
+      "domain": "ai_agent",
+      "hypothesis": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA ap...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 0,
+      "mechanical_score": "N/A",
+      "mechanical_reasons": [],
+      "evidence": "no direct semantic index signals this cycle; but no Gartner/Forrester report contradicting workflow automation growth; assumption still valid"
+    },
+    {
+      "id": "S-001",
+      "domain": "system",
+      "hypothesis": "Open-weight models (Qwen, LLaMA, Gemma) will match 80% of closed-source model capabilities on AI agent tasks by end of 2...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 6,
+      "mechanical_score": "N/A",
+      "mechanical_reasons": [],
+      "evidence": "1 semantic index + 5 watch-boost signals; Qwen remains in use; no stagnation on agent benchmarks"
+    },
+    {
+      "id": "S-002",
+      "domain": "system",
+      "hypothesis": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures w...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 1,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:moderate (0.25)"
+      ],
+      "evidence": "1 watch-boost signal; pipeline running 48 consecutive days; keyword decline moderate but no report gaps"
+    },
+    {
+      "id": "A-006",
+      "domain": "ai_agent",
+      "hypothesis": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government co...",
+      "status": "confirmed",
+      "confidence_delta": 0,
+      "signal_count": 7,
+      "mechanical_score": 0.25,
+      "mechanical_reasons": [
+        "keyword_decline:weak (0.25)"
+      ],
+      "evidence": "2 semantic index + 5 watch-boost signals; geopolitical pressure narrative continues; no stable government partnership evidence contradicting"
+    }
+  ],
+  "method_trends": {
+    "declining": [
+      "3d_representation",
+      "cross_embodiment",
+      "dexterous_hand",
+      "instruction_tuning",
+      "sim_to_real"
+    ],
+    "stable": [
+      "diffusion_policy",
+      "flow_matching",
+      "human_robot",
+      "language_grounding",
+      "long_horizon",
+      "mobile_manipulation",
+      "multi_task",
+      "rl_finetuning",
+      "tactile",
+      "world_model"
+    ]
+  },
+  "mechanical_context": {
+    "field_state_date": "2026-05-26",
+    "data_days": 48,
+    "low_confidence": false
+  },
+  "notes": [
+    "All 20 assumptions remain confirmed — no invalidations triggered",
+    "V-009 (cross-embodiment transfer) shows slight confidence decrease (-0.03) due to method_decline:moderate in cross_embodiment trend",
+    "No counter-evidence hits across any assumption",
+    "5 method families in declining trend: 3d_representation, cross_embodiment, dexterous_hand, instruction_tuning, sim_to_real",
+    "LIBERO benchmarks near saturation (>99%) — benchmark relevance scores weak across VLA assumptions",
+    "Pipeline running 48 consecutive days with stable output"
+  ]
+}
