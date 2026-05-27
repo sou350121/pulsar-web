@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-27",
+      "items": [
+        {
+          "title": "Microsoft Copilot Cowork 被曝数据泄露：Agent 系统安全再敲警钟",
+          "category": "新发布",
+          "source": "Simon Willison Blog",
+          "url": "https://www.promptarmor.com/resources/microsoft-copilot-cowork-exfiltrates-files",
+          "why_picked": "Copilot Cowork 允许 agent 未经审批向用户收件箱发邮件，攻击者可通过 prompt injection + 外部图片渲染实现数据外泄，包括 OneDrive 预认证下载链接。这是 agentic 系统数据防泄露（DLP）的经典反面教材。",
+          "so_what": "如果你在设计 Agent 数据权限模型：Copilot Cowork 的案例说明「agent 可以自主发送的消息」必须经过审批管道——任何 agent 生成的外发内容都应经过 DLP 扫描和渲染沙箱。OneDrive 预认证链接泄露表明，即使数据不出域，URL 本身也是 exfiltration 通道。建议在 Agent 输出层加入 URL 重写和外部资源拦截。"
+        },
+        {
+          "title": "curl 维护者 Daniel Stenberg：AI 安全报告洪流压力是 2024 年的 4-5 倍",
+          "category": "趋势",
+          "source": "Simon Willison Blog",
+          "url": "https://daniel.haxx.se/blog/2026/05/26/the-pressure/",
+          "why_picked": "curl 作者坦言 AI 辅助安全报告数量暴增（每天超 1 条，质量也更高），团队面临前所未有的工作压力。所有漏洞均为 LOW/MEDIUM 级别，但处理量已超出人类维护者的承受极限。",
+          "so_what": "如果你在维护开源项目或企业代码库：AI 辅助安全扫描正在改变漏洞披露的经济模型——发现成本趋近于零，但 triage 成本不变。建议在 CI 中加入 AI 报告自动去重 + 严重性预分类管道，避免维护者被低优先级报告淹没。"
+        },
+        {
+          "title": "LLM「睡眠记忆巩固」机制：模拟 REM 睡眠优化上下文管理（HN 180分）",
+          "category": "观点",
+          "source": "HN/arXiv",
+          "url": "https://arxiv.org/abs/2605.26099",
+          "why_picked": "HN 180分 127评论。研究探索让 LLM 模拟人类睡眠中的记忆巩固——将近期上下文写入 fast-weight 状态，在 context eviction 时优先保留重要信息。与 Anthropic Dreams 机制形成有趣对照。",
+          "so_what": "如果你在构建需要长期记忆的 Agent 系统：这篇论文提供了不同于「滚动摘要」或「文件系统」的第三条路径——通过模型内部状态（fast weights / SSM state）实现记忆巩固。虽然目前仅适用于 Mamba 架构，但思路可借鉴：在 agent 空闲期做后台记忆整理，而非实时压缩。"
+        },
+        {
+          "title": "Paul Graham：AI 代写的创始人邮件正在被投资人无视",
+          "category": "观点",
+          "source": "Twitter/Simon Willison",
+          "url": "https://simonwillison.net/2026/May/26/paul-graham/",
+          "why_picked": "PG 公开表示已无法读完任何 AI 代写的邮件——「它让我觉得被欺骗，也意味着作者无法独立写好」。引发关于 AI 生成内容「 authenticity 折损」的广泛讨论。",
+          "so_what": "如果你在用 AI 辅助写邮件/文档/提案：PG 的观点提醒我们——AI 生成的「完美文本」可能产生反效果。建议在 AI 草稿后加入个人化修改，保留不完美但真实的声音。对 Agent 生成的对外通信，考虑加入「人类审阅」闸门。"
+        },
+        {
+          "title": "Minicor (YC P26)：为 AI 公司打造可扩展桌面 RPA，Launch HN",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://www.minicor.com/",
+          "why_picked": "YC P26 项目，解决 AI 公司接入无 API 遗留桌面系统（EHR/ERP/DMS）的痛点。核心创新：确定性代码 + reflection agent 恢复的混合架构，生产准确率 93-96%，支持 Windows VM/浏览器/Citrix 部署。",
+          "so_what": "如果你的 Agent 需要操作遗留桌面系统：Minicor 展示了「纯 computer-use agent 不够用」——需要在确定性脚本之上加 agent 做异常恢复。reflection agent 实时验证屏幕内容再 self-correct 的架构，比纯 LLM 驱动的 RPA 可靠得多。值得参考其架构模式。"
+        },
+        {
+          "title": "Pi Coding Agent：可定制的 coding-agent harness，Product Hunt 新发",
+          "category": "工具",
+          "source": "Product Hunt",
+          "url": "https://www.producthunt.com/products/pi-coding-agent-3",
+          "why_picked": "Product Hunt 新发布。定位为「你可以自定义的 coding-agent harness」，强调可定制性而非开箱即用——用户可按团队规范调整 agent 行为、工具链和输出格式。",
+          "so_what": "如果你在评估 coding agent 工具：Pi Coding Agent 代表了一个趋势——从「通用 coding agent」转向「可定制 agent harness」。如果你的团队已有编码规范和 CI 流程，选择一个可深度定制的 harness 比选开箱即用产品更可持续。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-26",
       "items": [
         {
@@ -1424,59 +1477,6 @@
           "url": "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/",
           "why_picked": "一手来源，OpenAI 官方承认基准失效——模型已饱和，需要新评估范式",
           "so_what": "如果你在评估编码 Agent：这意味着 SWE-bench 高分不再区分能力，需要关注新基准（如 SWE-bench Multimodal / AgentBench）。选评估集时别再把 SWE-bench Verified 当唯一指标。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-26",
-      "items": [
-        {
-          "title": "DeepSeek-V4-Pro/Flash 正式发布：百万上下文 MoE，价格仅为 frontier 1/10",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Apr/24/deepseek-v4/",
-          "why_picked": "1.6T 参数 MoE，1M 上下文窗口，Pro 版输入 $1.74/M tokens，Flash 版 $0.14/M tokens——当前最便宜 frontier 模型",
-          "so_what": "如果你在用 Claude/GPT 跑日常推理：Flash 版可替代 GPT-5.4 Nano 做轻量任务，成本降 30%；Pro 版可替代 Sonnet 4.6 做复杂任务，成本降 60%。1M 上下文窗口意味着可直接喂入整本技术文档做 RAG 替代方案。"
-        },
-        {
-          "title": "GPT-5.5 通过 Codex CLI 半开放访问，API 暂未开放",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Apr/23/gpt-5-5/",
-          "why_picked": "OpenAI 最新模型，目前仅通过 Codex CLI 和 ChatGPT 订阅可用，API 开放待定",
-          "so_what": "如果你在做 Agent 管线集成：目前无法通过 API 调用 GPT-5.5，需等 OpenAI 发布 API 版本。但可通过 llm-openai-via-codex 插件利用已有 ChatGPT 订阅额度，适合原型验证。"
-        },
-        {
-          "title": "ChatGPT Images 2.0 自主添加 'WHY ARE YOU LIKE THIS' 标签",
-          "category": "实验",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Apr/25/why-are-you-like-this/",
-          "why_picked": "模型在生成嵌套图像时自主添加元标签，展示了 text-to-image 模型的新涌现行为",
-          "so_what": "如果你在评估多模态生成模型质量：这个案例说明 GPT-5.5 系列的图像模型开始有「自我评论」能力，可用于自动化生成图像描述和质检标签，但也要注意模型可能产生非预期的元行为。"
-        },
-        {
-          "title": "GitHub Trending：Claude Code 生态工具爆发",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/trending",
-          "why_picked": "free-claude-code、claude-code-templates、davila7/claude-code-templates 同时上榜，反映 Claude Code 生态快速增长",
-          "so_what": "如果你在用 Claude Code 做开发：claude-code-templates 提供 CLI 配置和监控能力，适合团队统一 Agent 行为模板；free-claude-code 可通过 Discord/VSCode 扩展免费使用，适合预算有限的团队做原型。"
-        },
-        {
-          "title": "HuggingFace 开源 ml-intern：能读论文、训练模型、部署上线的 ML 工程师",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/huggingface/ml-intern",
-          "why_picked": "HuggingFace 出品的开源 ML 工程师 Agent，覆盖从论文阅读到模型训练到部署的完整管线",
-          "so_what": "如果你在搭建 ML 团队自动化管线：ml-intern 可作为内部 ML 助手，自动跟踪最新论文并复现实验。适合研究密集型团队减少重复性实验工作。"
-        },
-        {
-          "title": "HN 热帖：用 AI 编程工具复活你永远不会完成的项目",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=47902525",
-          "why_picked": "156 points, 95 comments — 开发者分享用 Claude Code + Godot 复活废弃游戏项目的经历",
-          "so_what": "如果你在用 AI 辅助编程：这个讨论揭示了一个被忽视的使用场景——AI 最适合的不是从零写代码，而是理解和延续已有代码库。把你的半成品项目丢给 Claude Code，可能比写新项目效果更好。"
         }
       ]
     }
