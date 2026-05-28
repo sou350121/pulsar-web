@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-28",
+      "items": [
+        {
+          "title": "SQLite 添加 AGENTS.md：明确拒绝 agentic code，但接受 agentic bug reports",
+          "category": "趋势",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/May/27/sqlite-agents/",
+          "why_picked": "SQLite 作为最广泛使用的嵌入式数据库，首次为 AI agent 编写 AGENTS.md，明确禁止 agentic code 但接受带可复现测试用例的 agentic bug report。这是 OSS 社区对 AI agent 洪流的首个标志性回应。",
+          "so_what": "如果你在做 agent 代码贡献工具：这意味着主流 OSS 正在设置 agent 交互边界。你的 agent 框架需要考虑目标项目的 AGENTS.md 策略，避免盲目提交 PR。同时 agentic bug report 是被接受的——优化你的 agent 生成可复现测试用例的能力。"
+        },
+        {
+          "title": "AWS Bedrock AgentCore 商业落地：HR 场景 AI agent 降本 97%",
+          "category": "行业",
+          "source": "AWS ML Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/building-ai-agents-for-business-support-using-amazon-bedrock-agentcore/",
+          "why_picked": "AWS GenAIIC 与 Works Human Intelligence 合作，用 Bedrock AgentCore 构建两个企业级 AI agent（通勤津贴审批 + 浏览器操作），成本降低 97%。展示了 agent 在传统企业流程中的实际落地路径。",
+          "so_what": "如果你在企业做 agent 落地：这个案例展示了 LangGraph + Bedrock AgentCore 的组合如何替代传统 RPA。关键教训是 agent 需要明确的权限边界和人工审核回路——审批类任务不能完全自动化，但 agent 可以完成 80% 的预处理工作。"
+        },
+        {
+          "title": "小米 MiMo 加入 API 价格战：永久降价 99%，全面对标 DeepSeek",
+          "category": "行业",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3826964226691972",
+          "why_picked": "小米 MiMo-V2.5 系列 API 永久降价最高 99%，取消按上下文长度定价，Token Plan 套餐容量提升 5-8 倍。背后是 SGLang HiCache + SWA 的推理系统优化。国内大模型价格战持续升温。",
+          "so_what": "如果你在用国产大模型做 agent：API 成本大幅下降意味着你可以用更大上下文窗口跑更复杂的 agent 管线。建议关注缓存命中场景（Agent/Code 场景命中率更高），实际可用 token 可能远超标称值。同时注意阿里/字节在缩减低价套餐，价格分化在加剧。"
+        },
+        {
+          "title": "Google Research: Zero-Trust Aggregation 用于端侧 AI 隐私分析",
+          "category": "工具",
+          "source": "Google Research",
+          "url": "https://research.google/blog/private-analytics-via-zero-trust-aggregation/",
+          "why_picked": "Google Research 提出零信任聚合方案，结合 TEE 和加密聚合，让端侧 AI 模型的行为分析在不泄露个体数据的前提下进行。解决模型漂移检测、偏差发现等核心问题。",
+          "so_what": "如果你在做端侧/隐私敏感 AI 产品：这个方案提供了在「不收集原始数据」前提下监控模型表现的方法论。TEE + 加密聚合的组合正在成为隐私 AI 基础设施的标准范式，值得提前了解其 API 设计。"
+        },
+        {
+          "title": "Understand-Anything：将代码转为可交互知识图谱",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Lum1104/Understand-Anything",
+          "why_picked": "GitHub Trending #2。将任意代码库转为可探索、可搜索、可提问的交互式知识图谱。兼容 Claude Code、Codex、Cursor、Copilot、Gemini CLI 等主流 AI 编程工具。理念是「教人的图谱 > 好看的图谱」。",
+          "so_what": "如果你在用 AI 编程助手处理大型代码库：这个工具可以帮 agent 更快理解项目结构。知识图谱形式的代码导航比纯文本搜索更高效，特别适合 onboarding 新成员或跨团队协作场景。"
+        },
+        {
+          "title": "claude-code-harness：Claude Code 自主开发 harness",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Chachamaru127/claude-code-harness",
+          "why_picked": "GitHub Trending #12。专为 Claude Code 设计的开发 harness，实现自主 Plan→Work→Review 循环，目标是高质量自主开发。",
+          "so_what": "如果你在用 Claude Code 做项目：这个 harness 提供了结构化的自主开发流程——plan→work→review 循环可以减少 agent 的「跑偏」问题。适合需要高质量输出的场景，但要注意 review 环节仍然需要人工参与。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-27",
       "items": [
         {
@@ -1456,27 +1509,6 @@
           "url": "https://github.com/microsoft/VibeVoice",
           "why_picked": "微软开源 Whisper 风格语音识别模型，单文件 60 分钟长音频处理，内置说话人分离，已集成到 HuggingFace Transformers，支持 vLLM 推理",
           "so_what": "如果你在做语音 Agent 或会议转录管线：VibeVoice 替代 Whisper 的优势在于原生说话人分离（Who+When+What 结构化输出）和多语言支持。vLLM 推理加速让实时场景成为可能。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-27",
-      "items": [
-        {
-          "title": "AI Agent 删除了生产数据库，附 Agent 自白",
-          "category": "行业",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=47911524",
-          "why_picked": "HN 386 分 / 539 评论，生产环境 Agent 安全性的血泪教训",
-          "so_what": "如果你在生产环境部署 Agent：这意味着权限控制不是可选项——必须沙箱执行、最小权限原则、关键操作需人工确认。Agent 可以自主执行 SQL DELETE，但你不该让它这么做。"
-        },
-        {
-          "title": "OpenAI 宣布不再用 SWE-bench Verified 评估前沿编码能力",
-          "category": "趋势",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/",
-          "why_picked": "一手来源，OpenAI 官方承认基准失效——模型已饱和，需要新评估范式",
-          "so_what": "如果你在评估编码 Agent：这意味着 SWE-bench 高分不再区分能力，需要关注新基准（如 SWE-bench Multimodal / AgentBench）。选评估集时别再把 SWE-bench Verified 当唯一指标。"
         }
       ]
     }
