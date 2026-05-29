@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-05-29",
+      "items": [
+        {
+          "title": "Anthropic H 轮融资 650 亿美元，估值 9650 亿美元",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8tVZr39G7RP",
+          "why_picked": "Anthropic 完成 H 轮 650 亿美元融资，估值 9650 亿美元，是有史以来最大 AI 融资轮。距上一轮（2025 年初 ~620B）估值增长 55%，反映资本市场对 Claude 商业化能力的极度乐观。",
+          "so_what": "如果你在用 Claude API 做 Agent 管线：Anthropic 的巨额融资意味着长期服务能力有保障，但也可能加速 API 价格分化——企业客户已按 API 用量付费（见 Simon Willison 同日分析）。建议评估当前用量成本，考虑预留容量合约锁定价格。同时关注 Anthropic 盈利化节奏对开源模型生态的挤压效应。"
+        },
+        {
+          "title": "国家大基金领投 DeepSeek 首轮融资，投前估值 450 亿美元",
+          "category": "行业",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/956371.htm",
+          "why_picked": "国家集成电路产业投资基金（成立 12 年来首次跨界投资纯大模型公司）领投 DeepSeek 首轮融资，标志 DeepSeek 上升为国家级 AI 战略平台。月底基本敲定名单。",
+          "so_what": "如果你在用国产开源模型：国家队的入局意味着 DeepSeek 的长期研发投入有国家层面保障，开源承诺更可信。关注后续模型迭代节奏和对国内 AI 基础设施（算力/数据）的整合动作。对 Agent 开发者而言，DeepSeek 的 API 低成本策略（缓存命中 0.025 元/M tokens）可能持续。"
+        },
+        {
+          "title": "Simon Willison：Anthropic & OpenAI 已找到 product-market fit",
+          "category": "观点",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/May/27/product-market-fit/",
+          "why_picked": "SW 通过自身数据发现：个人订阅 $200/月 = API 价值 $2,180（Anthropic $1,200 + OpenAI $980），但企业客户正被按 API 用量收费—— Anthropic Enterprise 已改为 $20/seat + API 定价。Anthropic 即将迎来首个盈利季度。",
+          "so_what": "如果你在评估 AI 编码工具的团队成本：SW 的分析证实了「个人订阅是折扣，企业 API 是正价」的双轨定价模型。团队部署 Claude Code/Codex 前，必须核算 API 用量成本——Uber 式预算失控不是个案而是常态。建议在 Agent 管线中加入用量监控和配额限制。"
+        },
+        {
+          "title": "OpenAI 发布 Frontier Governance Framework",
+          "category": "趋势",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/openai-frontier-governance-framework",
+          "why_picked": "OpenAI 发布首个公开的 Frontier Governance Framework，对齐加州 Frontier AI Act 和 EU AI Act，覆盖网络攻击、CBRN 风险、有害操纵、失控等前沿 AI 风险领域。",
+          "so_what": "如果你在构建企业级 AI Agent 或合规系统：OpenAI 的治理框架为前沿模型的安全治理提供了可参考模板——风险分级、事件响应、外部专家审核三件套正在成为行业标准。关注加州/EU 监管落地时间表，提前准备模型安全评估文档。"
+        },
+        {
+          "title": "Endava 用 Codex 构建「agentic organization」",
+          "category": "行业",
+          "source": "OpenAI Blog",
+          "url": "https://openai.com/index/endava",
+          "why_picked": "全球软件外包公司 Endava 将 Codex 嵌入全生命周期（需求→设计→开发→运维），称自己为「agentic organization」—— senior 经验编码为 agent，junior 开发者产出 senior 级别质量，需求分析从数周压缩到数小时。",
+          "so_what": "如果你在管理开发团队或评估 AI 编码工具落地：Endava 案例展示了 agentic coding 的最大价值不是「替代程序员」而是「知识杠杆」—— senior 架构师的判断力通过 agent 同时指导多个 junior 团队。关键成功因素：将 agent 嵌入全生命周期而非仅编码阶段。"
+        },
+        {
+          "title": "OpenAI 发布 Gartner 2026 企业 AI 编码 Agent 魔力象限 Leader",
+          "category": "行业",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/gartner-2026-agentic-coding-leader",
+          "why_picked": "OpenAI 被 Gartner 评为 2026 企业 AI 编码 Agent 魔力象限 Leader，Codex 获「创新和大规模部署」认可。这是 Gartner 首次发布该品类报告。",
+          "so_what": "如果你在选型企业级 coding agent：Gartner 首次覆盖此品类具有风向标意义——Leader 象限的 Codex 和竞品（Claude Code、Cursor 等）的对比将影响企业采购决策。建议结合团队实际场景（monorepo/多语言/CI 集成）做 PoC，而非仅看榜单。"
+        }
+      ]
+    },
+    {
       "date": "2026-05-28",
       "items": [
         {
@@ -1456,59 +1509,6 @@
           "url": "https://simonwillison.net/2026/Apr/28/pip-261/#atom-everything",
           "why_picked": "pip 首次支持 lockfile（pip lock）和依赖冷却期（--uploaded-prior-to P4D 防供应链攻击），Python 生态工具链的重要里程碑。",
           "so_what": "如果你在管理 Python Agent 项目的依赖：pip lock 可生成确定性 pylock.toml，--uploaded-prior-to 可避免刚发布的恶意包，建议升级 pip 并纳入 CI 流程。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-28",
-      "items": [
-        {
-          "title": "GPT-5.5 Pro 视觉 IQ 145，首次跨过门萨线",
-          "category": "行业",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3784222232403206",
-          "why_picked": "GPT-5.5 Pro 在 LisanBench 上文本 IQ 133、视觉 IQ 145，首次正式跨过门萨 130 门槛，视觉能力达前 0.1% 水平；Token 使用减少 45.6% 但智能提升 1.77 倍",
-          "so_what": "如果你在做高负载编码或分析任务：GPT-5.5 的 token 效率提升意味着你可以用更低成本跑更复杂的 agent 工作流。有效性比率 99.44% 超越所有竞品，建议评估从 Claude Opus 4.7 迁移的 ROI。数学和 agent 任务上已显著领先。"
-        },
-        {
-          "title": "OpenAI 手机曝光：2028 量产，联发科/高通联合开发芯片",
-          "category": "行业",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3784515192577284",
-          "why_picked": "天风国际郭明錤报告：OpenAI 正与联发科、高通合作开发手机处理器，立讯精密独家制造，2028 年量产。AI agent 原生手机将颠覆 App 分发模式",
-          "so_what": "如果你在做 Agent 应用分发或跨平台工具调用：OpenAI 手机意味着从底层 OS 层打通 agent 权限，不再受限于 iOS 沙箱。提前关注 agent-native UI 范式——App 图标货架模式可能被「对话即界面」取代。"
-        },
-        {
-          "title": "OpenAI 发布新原则文档：民主化、赋权、全民繁荣",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://openai.com/index/our-principles/",
-          "why_picked": "HN 65 points / 93 comments。OpenAI 首次系统阐述三大原则：民主化（抵抗权力集中）、赋权（用户自主）、全民繁荣（需新经济模型），信号明确",
-          "so_what": "如果你在企业部署 AI 并关注合规与治理：OpenAI 的原则转向「去中心化赋权」意味着其产品路线图会更倾向开放 API 和多云策略，而非封闭生态。这对你的供应商锁定风险是利好。"
-        },
-        {
-          "title": "mattpocock/skills — Agent 工程技能包，GitHub Trending #1",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/mattpocock/skills",
-          "why_picked": "TypeScript 教母 Matt Pocock 开源的 Claude Code 技能集，含 TDD、PRD 生成、Issue 拆解、架构改进等 10+ 实用技能，非 vibe coding 而是真实工程实践",
-          "so_what": "如果你在用 Claude Code 或任何 coding agent：这套技能包可以直接注入 .claude 目录，让 agent 从「写代码」升级为「按工程规范写代码」。TDD 技能的红-绿-重构循环尤其值得集成到 CI 流程。"
-        },
-        {
-          "title": "ComposioHQ/awesome-codex-skills — Codex 技能生态聚合",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/ComposioHQ/awesome-codex-skills",
-          "why_picked": "Curated list of 50+ Codex skills：邮件、Issue、Slack、1000+ app 自动化。Composio 提供 skill installer 一键安装，Codex CLI 生态正在成型",
-          "so_what": "如果你在用 OpenAI Codex 做 CI/CD 或工作流自动化：这个合集覆盖了从 meeting notes 到 spreadsheet formula 的实用场景。配合 Composio 的 1000+ app 连接能力，可以让 Codex 从代码工具升级为跨平台 agent。"
-        },
-        {
-          "title": "Microsoft VibeVoice — 开源 ASR 模型，支持 50+ 语言 + 说话人分离",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/microsoft/VibeVoice",
-          "why_picked": "微软开源 Whisper 风格语音识别模型，单文件 60 分钟长音频处理，内置说话人分离，已集成到 HuggingFace Transformers，支持 vLLM 推理",
-          "so_what": "如果你在做语音 Agent 或会议转录管线：VibeVoice 替代 Whisper 的优势在于原生说话人分离（Who+When+What 结构化输出）和多语言支持。vLLM 推理加速让实时场景成为可能。"
         }
       ]
     }
