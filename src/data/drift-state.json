@@ -1,19 +1,19 @@
 {
-  "last_check": "2026-05-29",
+  "last_check": "2026-05-30",
   "metrics": {
     "vla_papers_scanned": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 1692,
-      "baseline": 1280.71,
-      "ratio": 1.321
+      "last_value": 1792,
+      "baseline": 1288.57,
+      "ratio": 1.391
     },
     "vla_final_in_report": {
       "streak": 0,
       "alerted_at_streak": 0,
       "last_value": 30,
-      "baseline": 25.0,
-      "ratio": 1.2,
+      "baseline": 22.0,
+      "ratio": 1.364,
       "sustained_degradation": true
     },
     "vla_sources_active": {
@@ -26,14 +26,14 @@
     "vla_tg_msg_len": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 4611,
-      "baseline": 2981.43,
-      "ratio": 1.547,
+      "last_value": 3338,
+      "baseline": 2829.86,
+      "ratio": 1.18,
       "sustained_degradation": true
     },
     "aiapp_items_scanned": {
-      "streak": 2,
-      "alerted_at_streak": 0,
+      "streak": 4,
+      "alerted_at_streak": 4,
       "last_value": 350,
       "baseline": 1204.57,
       "ratio": 0.291
@@ -42,8 +42,8 @@
       "streak": 0,
       "alerted_at_streak": 0,
       "last_value": 7,
-      "baseline": 6.14,
-      "ratio": 1.14
+      "baseline": 6.29,
+      "ratio": 1.114
     },
     "vla_upstream_count": {
       "streak": 0,
@@ -57,7 +57,8 @@
   "last_remediation": {
     "vla_final_in_report": "2026-05-25",
     "vla_papers_scanned": "2026-03-23",
-    "aiapp_items_report": "2026-04-20"
+    "aiapp_items_report": "2026-04-20",
+    "aiapp_items_scanned": "2026-05-30"
   },
   "remediation_log": [
     {
@@ -235,6 +236,14 @@
       "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
       "ok": false,
       "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
+    },
+    {
+      "date": "2026-05-30",
+      "key": "aiapp_items_scanned",
+      "label": "AI RSS 重跑",
+      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
+      "ok": true,
+      "detail": "[progress] ai-app-rss-collect start: 2026-05-30\n[progress] already collected, skip"
     }
   ]
 }
