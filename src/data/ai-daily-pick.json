@@ -1,6 +1,52 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-01",
+      "items": [
+        {
+          "title": "AI 订阅疲劳：「我本来不想建这 16 个项目的」",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/May/31/the-solution-might-be-cancelling-my-ai-subscription/",
+          "why_picked": "David Wilson 详述 AI 编码工具如何让他 1 小时内从模糊想法变成 16+ 个可运行项目，最终得出结论：唯一可持续的方案是取消订阅。HN 热帖引发 ADHD 群体正反激烈讨论",
+          "so_what": "如果你在用 Claude Code / Codex 等 coding agent：这篇文章揭示了一个被忽视的风险——agent 的「产出速度」远超「维护能力」。建议建立项目筛选纪律：每个 agent 生成的项目必须有明确 owner 和生命周期策略，否则就是在制造技术债。对团队而言，需要定义「agent 产出准入标准」而非放任自由生成。"
+        },
+        {
+          "title": "Anthropic 年化收入达 470 亿美元",
+          "category": "行业",
+          "source": "Reuters/Simon Willison",
+          "url": "https://simonwillison.net/2026/May/31/anthropic-run-rate/",
+          "why_picked": "Reuters Breakingviews 引用 Anthropic CFO Karen Kwok 的话披露：Anthropic 的 run-rate revenue 已突破 470 亿美元。计算方式：消费类收入（最近 28 天 × 13）+ 订阅收入（月 × 12）。在 Series H 650 亿估值背景下，这是 AI 商业化的里程碑信号",
+          "so_what": "如果你在评估 AI 供应商的长期稳定性：Anthropic 的 47B run-rate 意味着它已从「烧钱研究实验室」转变为「自我造血的商业公司」。对 Agent 开发者来说，Claude API 的供应商风险显著降低。但消费端账单激增也是趋势——建议监控你的 token 用量曲线，提前做成本优化。"
+        },
+        {
+          "title": "Anthropic 首次公开 Claude 全产品线沙箱架构",
+          "category": "工具",
+          "source": "Anthropic Engineering/Simon Willison",
+          "url": "https://simonwillison.net/2026/May/30/how-we-contain-claude/",
+          "why_picked": "Anthropic Engineering 博客详细披露 Claude.ai（gVisor）、Claude Code（macOS Seatbelt / Linux Bubblewrap）、Claude Cowork（完整 VM）三层沙箱方案，包括此前遗漏的 api.anthropic.com/v1/files 数据外泄漏洞修复。这是最详细的 AI Agent 沙箱公开文档",
+          "so_what": "如果你在构建需要沙箱隔离的 Agent 系统：Anthropic 的三层架构是现成的参考设计。关键教训——凭证永远不要进入沙箱（即使模型也无法外泄）。开源项目 srt (Sandbox Runtime) 已可用于自建沙箱。建议在你的 Agent 框架中加入「权限最小化 + 凭证隔离」原则。"
+        },
+        {
+          "title": "ChatGPT for Google Sheets 发现严重数据外泄漏洞",
+          "category": "安全",
+          "source": "PromptArmor/HN",
+          "url": "https://www.promptarmor.com/resources/gpt-for-google-sheets-data-exfiltration",
+          "why_picked": "PromptArmor 发现：通过隐藏的白色文本注入，攻击者可以利用 ChatGPT for Google Sheets（已 18.5 万下载）外泄整个 Google Drive 工作簿、执行钓鱼弹窗、覆盖 GPT 侧边栏——且即使用户关闭了「自动编辑」选项也无法防御。已负责任披露但 OpenAI 未回应",
+          "so_what": "如果你在企业环境中部署 AI 插件/扩展：这是 indirect prompt injection 攻击的经典案例。任何 AI 工具如果有文件读写权限 + 外部数据接入能力，就存在被注入攻击的风险。建议在 CI/CD 中加入 prompt injection 扫描，限制 AI 扩展的权限范围，并审计所有已安装的 AI 浏览器插件/插件权限。"
+        },
+        {
+          "title": "Chad Whitacre（Stripe 联合创始人）宣布退出科技界",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/May/30/retiring-from-tech-to-live-offline/",
+          "why_picked": "Stripe 联合创始人 Chad Whitacre 发布打字机手写信宣布「退出科技界，过离线生活」。他描述了自己用 Claude Code + Opus 4.5 连续 3 天 12+ 小时编码后的感受：「像是另一个『人』住进了我的脑海，但这个『人』属于一家新兴巨头公司」。开源可持续性危机 + AI 冲击是两大推手",
+          "so_what": "如果你在思考 AI 对开发者心理的影响：Chad 的经历不是个例——它揭示了 agent 工具如何改变人与技术的关系。好的 Agent 设计应该让用户感到「我在驾驶」而非「AI 在驾驶」。对你的团队：关注 agent 使用后的心理疲劳信号，建立「数字排毒」文化比追求效率更重要。"
+        }
+      ],
+      "source_file": "ai-daily-pick-sources-2026-06-01.json"
+    },
+    {
       "date": "2026-05-30",
       "items": [
         {
@@ -1411,104 +1457,6 @@
           "url": "https://www.bbc.com/news/articles/ai-verified-badges-spotify",
           "why_picked": "Spotify 推出 Verified 徽章区分人类艺术家与 AI 生成音乐，反映 AI 内容泛滥后平台方的治理策略。HN 192 分 210 评",
           "so_what": "如果你在做 AI 生成内容管线：这预示内容平台将越来越多地要求「人类认证」。如果你的 Agent 管线涉及内容生成（文本/音频/图像），建议提前设计内容溯源机制（如 C2PA 标准），否则未来可能面临平台限流或下架风险。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-01",
-      "items": [
-        {
-          "title": "DeepSeek 上线识图模式：多模态能力终于来了",
-          "category": "新发布",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3788474106715144",
-          "why_picked": "DeepSeek 上周刚发布 V4，今天突然灰测上线识图模式，研究员陈小康在 X 发文 Now we see you。实测显示能理解梗图隐喻、自我纠正推理，半秒响应。国产模型多模态格局或将再变",
-          "so_what": "如果你在选择 Agent 基础模型：这意味着 DeepSeek 从纯文本正式进入多模态，V4 + 识图的组合在中文场景的性价比极具竞争力。建议关注其 API 开放节奏——如果你的 Agent 管线需要图文理解，DeepSeek 可能成为 GPT-4o / Claude 的平价替代。注意目前仅灰测且不支持联网搜索和 HEIF 格式。"
-        },
-        {
-          "title": "OpenAI Advanced Account Security：passkey-only 登录 + Codex 覆盖",
-          "category": "新发布",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/advanced-account-security",
-          "why_picked": "OpenAI 推出可选的高级账户安全模式：强制 passkey/安全密钥登录、禁用密码和短信恢复、缩短会话窗口、自动排除训练。保护范围覆盖 ChatGPT 和 Codex，面向高安全需求用户",
-          "so_what": "如果你在生产环境使用 Codex：这意味着你的 Codex 账户可以享受与 ChatGPT 同等的安全强化。建议安全敏感团队（金融/医疗/政府）立即启用 passkey-only 模式。注意启用后 OpenAI Support 无法协助账户恢复——务必配置 backup passkey。"
-        },
-        {
-          "title": "Codex CLI 0.128.0 新增 /goal：Ralph loop 风格自主循环",
-          "category": "工具",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/Apr/30/codex-goals/",
-          "why_picked": "Codex CLI 新增 /goal 命令，设定目标后 Agent 自动循环执行直到目标完成或 token 预算耗尽，类似 Ralph loop 模式。通过 system prompt 模板实现，无需修改核心代码",
-          "so_what": "如果你在用 Codex 做 CI/CD 或自动化任务：/goal 让你只需描述最终状态（如 All tests pass），Agent 自动迭代修复。配合 token budget 控制成本，适合跑回归测试、批量代码修复等场景。注意它依赖 prompt 模板注入，复杂目标可能需要多轮引导。"
-        },
-        {
-          "title": "IBM Granite 4.1 开源：8B 超越前代 32B MoE，Apache 2.0",
-          "category": "新发布",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/ibm-granite/granite-4-1",
-          "why_picked": "IBM 发布 Granite 4.1 系列（3B/8B/30B 密集模型），15T tokens 预训练 + 410万 SFT 样本 + GRPO 强化学习。8B instruct 模型性能超越前代 32B-A9B MoE，Apache 2.0 协议",
-          "so_what": "如果你在做 SLM 选型：Granite 4.1 的 8B 模型用更简单的密集架构超越前代 MoE，说明数据质量 > 架构复杂度。Apache 2.0 无商用限制，适合企业级 Agent 后端。关注其 512K 上下文窗口——可直接处理大型代码库。"
-        },
-        {
-          "title": "Mistral Medium 3.5 发布：128B 参数专注代码与推理",
-          "category": "新发布",
-          "source": "Product Hunt",
-          "url": "https://www.producthunt.com/products/mistral-medium-3-5",
-          "why_picked": "Mistral 推出 Medium 3.5 模型，128B 参数规模，专注于代码生成、复杂推理和长任务处理。作为 Mistral 中等尺寸产品线的重要升级",
-          "so_what": "如果你需要中尺寸模型平衡成本与能力：128B 参数处于 SLM 和 frontier 之间的甜蜜点——比 7B 强得多，比 400B+ 便宜得多。适合需要强代码能力的 Agent 场景，同时保持合理的推理延迟。对比 Granite 4.1 30B 和 DeepSeek V4 做 A/B 测试。"
-        },
-        {
-          "title": "Simon Willison 发布 llm 0.32a0：重大向后兼容重构",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://simonwillison.net/2026/Apr/29/llm/",
-          "why_picked": "Simon Willison 的 llm Python/CLI 工具库发布 0.32a0，包含重大内部重构但保持向后兼容。修复了 tool-calling 对话从 SQLite 恢复的 bug",
-          "so_what": "如果你在用 llm 插件生态管理多模型调用：0.32 的重构为后续功能扩展打下基础，tool-calling 修复意味着 Agent 管线中函数调用的持久化更可靠。建议升级到 alpha 版本测试兼容性，享受更好的插件开发体验。"
-        }
-      ]
-    },
-    {
-      "date": "2026-04-30",
-      "items": [
-        {
-          "title": "亚马逊Q1净利润同比增77%，Anthropic投资获益168亿美元",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8sjkYTtkiJK",
-          "why_picked": "亚马逊Q1营收1815亿美元同比+17%，净利润302亿美元同比+77%，其中Anthropic公允价值收益168亿美元，AI资本流向的标志性信号",
-          "so_what": "如果你在做AI基础设施选型：亚马逊持续重仓Anthropic + AWS增长，意味着Claude生态在AWS上的集成会更深。若你的Agent跑在AWS上，关注Bedrock上Claude新模型的优先支持。同时，AI投资热仍在加速——资本充裕期是采购Agent工具链的窗口。"
-        },
-        {
-          "title": "DeepSeek-V4 Pro上线Together AI：512K上下文 + 可控推理模式",
-          "category": "新发布",
-          "source": "Together AI",
-          "url": "https://www.together.ai/blog/deepseek-v4-pro-now-available-on-together-ai",
-          "why_picked": "DeepSeek-V4系列正式登陆Together AI平台，512K超长上下文+可切换推理模式，针对代码Agent和文档智能场景优化，定价为frontier模型1/10",
-          "so_what": "如果你在做长上下文Agent（文档分析/代码审查）：DeepSeek-V4 Pro在Together AI上提供了性价比极高的替代方案。512K上下文可直接喂入大型代码库，可控推理模式让你在高准确度与低延迟间切换。建议对比测试V4 Pro vs GPT-5.5在同类任务上的cost/quality。"
-        },
-        {
-          "title": "OpenAI公布Stargate算力基础设施蓝图",
-          "category": "趋势",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/building-the-compute-infrastructure-for-the-intelligence-age",
-          "why_picked": "OpenAI详细披露Stargate数据中心扩张计划，为AGI训练构建下一代算力基础设施，反映 frontier 模型训练对算力的指数级需求",
-          "so_what": "如果你在做LLM推理优化：OpenAI自建基础设施说明云端API的算力供给会越来越集中。中小团队应关注蒸馏/量化/小模型路线——不是所有Agent都需要frontier模型。同时关注OpenAI API定价是否会因规模效应下降。"
-        },
-        {
-          "title": "OpenAI发布Intelligence Age网络安全五步行动计划",
-          "category": "行业",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/cybersecurity-in-the-intelligence-age",
-          "why_picked": "OpenAI提出AI时代网络安全框架：民主化AI防御能力、保护关键系统，将安全能力开放给更多组织",
-          "so_what": "如果你在做Agent安全：OpenAI将网络安全作为核心战略方向，预示着未来API层会集成更多安全能力（如输入过滤、行为审计）。Agent开发者应提前设计权限最小化和操作审计机制，而不是事后补。"
-        },
-        {
-          "title": "Claude Code + GLM-5.1 配置指南：零门槛打造私人终端AI程序员",
-          "category": "工具",
-          "source": "掘金",
-          "url": "https://juejin.cn/post/7634047093712486441",
-          "why_picked": "实操教程：将Claude Code底层模型替换为智谱GLM-5.1，解决Claude Code网络环境要求和API额度难题，适合国内开发者",
-          "so_what": "如果你在用Claude Code但受限于网络/额度：GLM-5.1（754B参数开源）作为替代后端是可行的降级方案。教程提供完整配置流程，适合需要本地化编程助手的团队。注意GLM-5.1在代码生成质量上与Claude Opus仍有差距，适合日常编码而非复杂重构。"
         }
       ]
     }
