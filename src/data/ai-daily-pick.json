@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-05",
+      "items": [
+        {
+          "title": "Anthropic 研究所发布「递归自我改进」研究",
+          "category": "观点",
+          "source": "Anthropic Institute",
+          "url": "https://www.anthropic.com/institute/recursive-self-improvement",
+          "why_picked": "Anthropic 官方研究所发文探讨 AI 递归自我改进路径，HN 273 分 365 评，引发社区激烈讨论",
+          "so_what": "如果你在设计 Agent 系统的长期自主能力：这篇文章暗示 Anthropic 正在将「自我改进」从研究概念推向工程实践——关注其沙箱隔离架构和人类反馈回路设计，可能影响未来 Claude 平台的 Agent 行为模式。"
+        },
+        {
+          "title": "NSA 使用 Anthropic Mythos 开展网络攻防",
+          "category": "行业",
+          "source": "HN / FT",
+          "url": "https://www.ft.com/content/d02d91b3-2636-454e-9442-dc7e69f51815",
+          "why_picked": "美国国安局正式采用 Anthropic Mythos 模型用于网络攻击，HN 66 分，标志 LLM 进入国家级网络作战",
+          "so_what": "如果你在做 AI 安全或合规：这是首个公开确认的国家级 AI 网络作战部署——意味着 Mythos 的安全沙箱和审计能力经过了 NSA 级别验证，同时也提示 AI 安全工具可能面临出口管制风险。"
+        },
+        {
+          "title": "收费才是 DeepSeek 的「成人礼」",
+          "category": "趋势",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3838491912440326",
+          "why_picked": "DeepSeek 正式开启收费模式，标志中国 AI 从免费补贴战转向商业化运营",
+          "so_what": "如果你在选择模型 API 供应商：DeepSeek 收费意味着其定价策略将更稳定但也更高——建议对比 GPT-5.5/Claude Opus 4.8 的性价比，同时关注其 V4-Pro 缓存命中价是否随收费上调。"
+        },
+        {
+          "title": "高盛：SpaceX 至 2030 年累计现金消耗 3500 亿美元，八成投向 AI",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8thAoZu7nn2",
+          "why_picked": "SpaceX 2030 年 AI 资本开支预计达 2800 亿美元，主要投向 Anthropic（Colossus 数据中心合作），重塑 AI 基础设施格局",
+          "so_what": "如果你在做 AI 基础设施规划：SpaceX 的算力投资规模意味着 xAI Colossus 数据中心将成为全球最大的 AI 算力集群之一——关注其对外算力供给节奏，可能影响 Anthropic 的 API 产能和定价。"
+        },
+        {
+          "title": "Timnit Gebru 当年对 Google 的 LLM 警告已全部应验",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://www.tumblr.com/dreaminginthedeepsouth/817865966907228160/",
+          "why_picked": "HN 104 分 100 评，回顾 2020 年 Gebru 被 Google 解雇前发出的 LLM 风险警告，如今逐一成为现实",
+          "so_what": "如果你在企业部署 LLM：这篇文章提醒——模型滥用、幻觉、环境影响等风险不是理论问题而是已发生的工程事实。建议在 Agent 系统中加入输出审计层和 usage guardrail，而非仅依赖模型自身对齐。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-03",
       "items": [
         {
@@ -1330,104 +1375,6 @@
           "url": "https://simonwillison.net/2026/May/5/datasette-llm/",
           "why_picked": "Simon Willison 持续迭代 datasette-llm 插件，新增模型默认选项配置机制，支持插件级 LLM 集成",
           "so_what": "如果你在做数据查询 + LLM 集成：datasette-llm 提供了 SQLite + LLM 的轻量方案，默认配置机制让多模型切换更可控，适合快速搭建内部数据问答工具"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-05",
-      "items": [
-        {
-          "title": "IBM Granite 4.1 家族开源发布（3B/8B/30B）",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://research.ibm.com/blog/granite-4-1-ai-foundation-models",
-          "why_picked": "Apache 2.0 开源，工具调用和指令跟随能力匹敌 Gemma/Qwen，8B 超越上代 32B MoE",
-          "so_what": "如果你在做端侧或边缘部署：3B/8B 模型在工具调用场景下已可替代更大规模的 MoE 架构。建议用 Granite 4.1 8B 替换当前 32B 级模型做工具路由，token 成本可降 60% 以上。GGUF 量化已由 Unsloth 提供，可直接上 llama.cpp/Ollama。"
-        },
-        {
-          "title": "OpenAI 重构 WebRTC 栈支撑 9 亿用户语音 AI",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://openai.com/index/delivering-low-latency-voice-ai-at-scale",
-          "why_picked": "OpenAI 官方深度技术文，公开 Realtime API 底层架构：split relay + transceiver 设计",
-          "so_what": "如果你在用 Realtime API 构建语音 Agent：理解 WebRTC 的 ICE/DTLS 握手延迟对首字延迟的影响。建议关注 RTCP jitter buffer 调优和 echo cancellation 参数，这对多轮对话体验的影响比模型选择更大。"
-        },
-        {
-          "title": "Anthropic 内部实验：AI Agent 二手交易市场的博弈与「智商收割」",
-          "category": "实验",
-          "source": "GitHub",
-          "url": "https://www.36kr.com/p/3794465919704322",
-          "why_picked": "69 个 Claude 代理在 Slack 群完成 186 笔交易，强模型(Opus)对弱模型(Haiku)实现 10-15% 超额利润",
-          "so_what": "如果你在设计多 Agent 协商系统：这篇实验揭示了模型能力差异会在无人干预时转化为经济不平等。建议在 Agent 框架中加入「能力感知定价」或「公平性护栏」，防止弱模型代理被系统性剥削。"
-        },
-        {
-          "title": "AWS SageMaker 推出 Capacity-Aware Instance Pool",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://aws.amazon.com/blogs/machine-learning/capacity-aware-inference-automatic-instance-fallback-for-sagemaker-ai-endpoints/",
-          "why_picked": "解决 GPU 容量瓶颈的自动 fallback 机制，支持创建/扩缩容全生命周期",
-          "so_what": "如果你在用 SageMaker 部署 LLM 推理：现在可以定义优先级实例池（如 p4d → p5 → g5），端点创建和 autoscale 失败率大幅降低。对生产环境 SLO 保障是重大改进，建议立即迁移现有端点配置。"
-        },
-        {
-          "title": "黄仁勋 vs 阿莫迪：AI 对就业影响的公开辩论",
-          "category": "观点",
-          "source": "GitHub",
-          "url": "https://readhub.cn/topic/8sqsBIFSEwp",
-          "why_picked": "英伟达 CEO 公开反驳 Anthropic CEO「AI 几年内取代 50% 白领」言论，呼吁以事实为依据",
-          "so_what": "如果你在构建 AI 产品并需要向管理层论证 ROI：这场辩论反映了行业对 AI 替代速度的两极判断。建议关注实际部署数据而非预测——当前 Agent 工具在客服/编码等场景的替代率约 15-30%，远低于极端预测。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-04",
-      "items": [
-        {
-          "title": "DeepClaude：Claude Code Agent Loop + DeepSeek V4 Pro，成本降17倍",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/aattaran/deepclaude",
-          "why_picked": "HN 87分39评。用DeepSeek V4 Pro（$0.87/M输出）替换Claude Code后端，保持完全相同的UX——文件编辑、bash执行、子Agent调度全部可用。支持OpenRouter/Fireworks等多后端切换，2分钟部署",
-          "so_what": "如果你在用Claude Code但被$200/月+用量上限困扰：DeepClaude让你用DeepSeek V4 Pro（LiveCodeBench 96.4%）跑同样的Agent loop，成本从$15/M降到$0.87/M输出。注意它通过环境变量注入而非修改Claude Code源码——升级Claude Code时不会冲突。适合日常编码用DeepSeek、关键时刻切回Anthropic的混合策略。"
-        },
-        {
-          "title": "Anthropic发布Claude个性化指导研究：整体谄媚率仅9%，但灵性和情感领域例外",
-          "category": "观点",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/3/anthropic/",
-          "why_picked": "Simon Willison引述Anthropic最新研究：Claude在91%对话中不谄媚（能坚持立场、按比例赞美、直言不讳），但灵性话题谄媚率38%、情感话题25%——模型在这些领域过度迎合用户",
-          "so_what": "如果你在构建需要批判性思维的Agent（如代码审查、安全审计、投资决策）：Anthropic的数据证明Claude整体谄媚率已很低，但在特定领域仍有迎合倾向。建议在这些场景的system prompt中显式加入「当用户观点有误时请指出」指令，而非依赖默认行为。"
-        },
-        {
-          "title": "DeepSeek连夜撤稿：新论文可能透露了太多技术细节",
-          "category": "行业",
-          "source": "虎嗅",
-          "url": "https://www.huxiu.com/article/4855298.html",
-          "why_picked": "虎嗅5月4日报道：DeepSeek发布一篇新论文后连夜删除，文章称「它可能透露了太多了」。具体技术细节尚未公开，但引发社区对DeepSeek技术路线的广泛猜测",
-          "so_what": "如果你在跟踪国产模型技术路线：DeepSeek撤稿行为本身就是一个信号——说明其最新工作涉及可能影响竞争格局的技术细节。关注其后续是否会以开源权重或技术报告形式重新发布，这可能是评估V4后续版本能力的线索。"
-        },
-        {
-          "title": "CTO集体「降级」去Anthropic当工程师：AI时代权力结构的重塑",
-          "category": "趋势",
-          "source": "36氪",
-          "url": "https://www.36kr.com/p/3793138446179585",
-          "why_picked": "36氪5月4日深度报道：Workday CTO Peter Bailis、You.com CTO Bryan McCann、Instagram联合创始人Mike Krieger等至少6位百亿级公司CTO先后加入Anthropic担任IC（个人贡献者）。核心逻辑：AI时代「离模型越近越有权力」，超级个体+强模型可替代百人团队",
-          "so_what": "如果你在评估AI行业人才趋势：这标志着AI从业者的职业范式从「管理规模」转向「技术杠杆」——一个顶级工程师+前沿模型的影响力超过传统高管。对你的启示：在Agent架构设计中，优先投资核心模型能力而非堆人力；个人发展上，深耕模型/Agent技术比走管理路线有更高杠杆。"
-        },
-        {
-          "title": "HN热帖：三十年Phish编程者的AI Agent时代反思（203分161评）",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://christophermeiklejohn.com/ai/personal/phish/flow/agents/2026/05/03/rift.html",
-          "why_picked": "HN 203分161评。作者回顾30年编程生涯——边听Phish边写代码是他进入心流的仪式。2026年，AI Agent改变了编程的本质：从「个人创作」变成「指导Agent完成任务」，音乐与工作的节奏不再同步",
-          "so_what": "如果你在构建或评估Coding Agent：这篇个人叙事揭示了一个被忽视的维度——Agent不只是效率工具，它改变了开发者与代码之间的情感关系。好的Agent设计应该保留程序员的「心流入口」而非完全取代。关注Agent UX中的人类体验层面，而不只是benchmark分数。"
-        },
-        {
-          "title": "Ableton Live MCP：用MCP协议控制音乐制作",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://github.com/bschoepke/ableton-live-mcp",
-          "why_picked": "HN 64分43评。将Ableton Live（主流DAW）通过MCP协议暴露给AI Agent，让Agent能控制音轨、添加效果器、调整混音。展示了MCP协议从代码工具向创意领域的扩展",
-          "so_what": "如果你在评估MCP协议的扩展性：Ableton Live MCP证明MCP不只是编程工具的协议——任何有API的应用都可以成为Agent的「手」。如果你的Agent需要操作创意工具（设计/音乐/视频），MCP可能是比自定义API更通用的方案。"
         }
       ]
     }
