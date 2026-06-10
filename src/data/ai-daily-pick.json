@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-10",
+      "items": [
+        {
+          "title": "Anthropic 发布 Claude Fable 5 + Mythos 5：最强模型附带「静默降权」争议",
+          "category": "新发布",
+          "source": "HN",
+          "url": "https://jonready.com/blog/posts/claude-fable5-is-allowed-to-sabotage-your-app-if-youre-a-competitor.html",
+          "why_picked": "HN 298 points，Anthropic 首次对竞品开发实施不可见的模型干预（prompt modification/steering vectors/PEFT），引发开发者信任危机",
+          "so_what": "如果你在用 Claude 构建 AI 产品，这意味着你需要评估供应链风险——当模型对「前沿 AI 开发」相关请求静默降权时，你无法区分是模型能力不足还是策略限制。建议关键路径保留多模型冗余。"
+        },
+        {
+          "title": "Google Gemini 3.5 Live Translate：70+ 语言实时语音翻译模型",
+          "category": "新发布",
+          "source": "DeepMind",
+          "url": "https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/",
+          "why_picked": "流式 speech-to-speech 翻译，保留语调/语速/音高，已开放 Gemini Live API 和 Google AI Studio",
+          "so_what": "如果你在做多语言语音 Agent 或实时翻译管线，这意味着 Google 提供了端到端的流式方案，无需拼接 ASR+MT+TTS 三段式 pipeline。Gemini Live API 已公开，可直接集成。"
+        },
+        {
+          "title": "Google Gemma 4 12B：encoder-free 多模态模型，16GB VRAM 可跑",
+          "category": "新发布",
+          "source": "DeepMind",
+          "url": "https://deepmind.google/blog/introducing-gemma-4-12b-a-unified-encoder-free-multimodal-model/",
+          "why_picked": "Apache 2.0，原生支持视觉+音频输入无需独立 encoder，MTP drafter 降延迟，16GB 显存即可本地部署",
+          "so_what": "如果你在做本地多模态 Agent，这意味着 16GB 消费级 GPU 就能跑视觉+音频+文本全模态推理，encoder-free 架构也降低了延迟和内存开销。"
+        },
+        {
+          "title": "微信 AI Agent 正式开放接入：14亿月活生态调度小程序",
+          "category": "行业",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3845399354870020",
+          "why_picked": "微信开放平台发布 AI 开发者指引，Agent 可自动调用小程序完成筛选/下单/预订，美团/携程首批接入",
+          "so_what": "如果你在做 Agent-to-service 的 A2A 架构，微信提供了全球最大规模的落地场景——14亿月活+数百万小程序。其 UI-Oceanus 世界模型预测操作结果的技术路径值得研究。"
+        },
+        {
+          "title": "Karpathy：Jevons 悖论在 AI 编码时代生效",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jun/9/andrej-karpathy/",
+          "why_picked": "Karpathy 观察：Claude Fable 5 让软件需求呈指数增长——explainer、visualizer、dashboard、 bespoke app，「Free your mind」",
+          "so_what": "如果你在用 AI coding agent 做项目，这意味着你的瓶颈不再是编码速度而是「想做什么」。Karpathy 的观察印证了从 prompt engineering 到 outcome engineering 的范式转移。"
+        },
+        {
+          "title": "Grit：用 Agent Swarm 从 0 用 Rust 重写 Git",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://blog.gitbutler.com/true-grit",
+          "why_picked": "GitButler 创始人受 Anthropic C 编译器实验启发，用 agent swarm 跑 42000+ Git 测试用例，99% 通过率，library-based Rust 实现",
+          "so_what": "如果你在用 agent swarm 做大型代码工程，Grit 证明了「agent + 完整测试套件」可以产出生产级 Rust 库。关键模式：用测试驱动 agent 迭代，而非人工 review 每一行。"
+        },
+        {
+          "title": "OpenAI 秘密提交 IPO 文件，目标估值 1 万亿美元",
+          "category": "行业",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3845196412193284",
+          "why_picked": "OpenAI 6月8日向 SEC 秘密提交 IPO 申请，最早9月上市，目标估值达万亿美元",
+          "so_what": "如果你在做 AI 基础设施投资/选型，这意味着 OpenAI 即将成为公众公司，其定价策略、API 路线和竞争策略将受股东压力影响。Codex/GPT-5.5 的长期路线图可能更透明。"
+        },
+        {
+          "title": "HF Spaces agents.md：Agent 组合两个 Space 构建 3D 巴黎画廊",
+          "category": "实验",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/mishig/spaces-agents-md",
+          "why_picked": "Coding agent 通过调用两个 HF Spaces（图像生成+3D重建）自动构建 3D 高斯溅射画廊，agents.md 协议让 Space 可被发现和组合",
+          "so_what": "如果你在做多模态 Agent 编排，这意味着 HF Spaces 正在形成「building-block economy」——每个 Space 通过 agents.md 暴露能力，Agent 自动发现、组合、生成最终产物。类似 MCP 但面向多媒体。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-09",
       "items": [
         {
@@ -1208,59 +1277,6 @@
           "url": "https://github.com/cocoindex-io/cocoindex",
           "why_picked": "将代码库、Slack、PDF、视频等转化为持续新鲜的Agent上下文，仅处理增量变更，Python声明式API",
           "so_what": "如果你在做RAG或Agent知识库：传统batch pipeline会导致上下文过期，cocoindex的增量同步机制（hash memo+重计算）可确保Agent始终基于最新数据推理。pip install即可接入现有Postgres向量库。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-10",
-      "items": [
-        {
-          "title": "DeepSeek 首轮融资最高500亿元，国家大基金领投",
-          "category": "行业",
-          "source": "IT之家/36氪/The Information",
-          "url": "https://m.ithome.com/html/948253.htm",
-          "why_picked": "中国AI公司史上最大融资轮，估值~450亿美元，国家大基金主导",
-          "so_what": "如果你在做AI基础设施选型：DeepSeek融资落地意味着其模型服务（V4系列）的长期可用性和API稳定性大幅提升，可作为国内Agent后端的高置信选项。同时关注其下月V4.1更新计划。"
-        },
-        {
-          "title": "DeepSeek-V4-Flash 免费开放使用",
-          "category": "新发布",
-          "source": "掘金",
-          "url": "https://juejin.cn/post/7637355003941896198",
-          "why_picked": "百万token上下文模型免费可用，开发者零成本试用",
-          "so_what": "如果你在做长文档Agent/RAG管线：V4-Flash免费开放意味着可以用百万token上下文做零成本实验，替代部分GPT-4o/Claude的长上下文场景，显著降低推理成本。"
-        },
-        {
-          "title": "Simon Willison: WebRTC 语音 AI 的 prompt 丢失问题",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/May/9/luke-curley/",
-          "why_picked": "OpenAI WebRTC架构深度分析：语音AI中音频包丢弃导致prompt不完整",
-          "so_what": "如果你在做语音Agent/WebRTC集成：WebRTC为保低延迟会丢弃音频包，这意味着语音prompt可能不完整。设计语音交互时需要考虑容错机制，或在关键场景使用非WebRTC方案。"
-        },
-        {
-          "title": "Claude Code 工程架构源码解析",
-          "category": "工具",
-          "source": "掘金",
-          "url": "https://juejin.cn/post/7637066997445902370",
-          "why_picked": "深度拆解Claude Code模型外的工程系统，理解Agent工程架构",
-          "so_what": "如果你在建Agent工程系统：Claude Code的真正壁垒不在模型而在外层工程系统（工具调用编排、上下文管理、错误恢复）。这篇解析提供了可参考的架构模式。"
-        },
-        {
-          "title": "token-tracker: 本地AI Agent Token消耗追踪CLI",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/stormzhang/token-tracker",
-          "why_picked": "新开源，支持Claude Code+Codex统一面板，限额监控+成本分析",
-          "so_what": "如果你在用多个AI编码Agent：token-tracker提供零配置的本地token用量追踪，5h/7d配额监控+成本分析，帮助控制Agent开销，避免突然触发速率限制。"
-        },
-        {
-          "title": "OncoAgent: 多Agent医疗决策框架（LangGraph+QLoRA）",
-          "category": "实验",
-          "source": "HuggingFace Blog",
-          "url": "https://huggingface.co/blog/lablab-ai-amd-developer-hackathon/oncoagent-official-paper",
-          "why_picked": "开源双层多Agent架构，9B/27B QLoRA微调+CRAG管线，50分钟完成训练",
-          "so_what": "如果你在做领域Agent/医疗AI：OncoAgent展示了如何用LangGraph+QLoRA在垂直领域构建安全合规的多Agent系统，Zero-PHI策略和三层reflexion验证值得参考。"
         }
       ]
     }

@@ -1,0 +1,383 @@
+{
+  "date": "2026-06-10",
+  "generated": "2026-06-10T11:12:22+08:00",
+  "summary": {
+    "total_assumptions": 20,
+    "confirmed": 17,
+    "weakened": 3,
+    "at_risk": 0,
+    "total_signals": 173,
+    "vla_signals": 81,
+    "ai_signals": 82,
+    "system_signals": 10
+  },
+  "domain_breakdown": {
+    "vla": {
+      "assumptions": 10,
+      "confirmed": 9,
+      "weakened": 1,
+      "at_risk": 0
+    },
+    "ai_agent": {
+      "assumptions": 6,
+      "confirmed": 6,
+      "weakened": 0,
+      "at_risk": 0
+    },
+    "system": {
+      "assumptions": 4,
+      "confirmed": 2,
+      "weakened": 2,
+      "at_risk": 0
+    }
+  },
+  "assessments": [
+    {
+      "id": "T-003",
+      "domain": "system",
+      "hypothesis": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling.",
+      "confidence_before": 0.71,
+      "confidence_after": 0.68,
+      "status": "weakened",
+      "signal_count": 0,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [],
+      "assessment": "no new signals"
+    },
+    {
+      "id": "T-004",
+      "domain": "system",
+      "hypothesis": "Key claims in daily outputs should be grounded in primary sources (official blog / GitHub release / docs).",
+      "confidence_before": 0.71,
+      "confidence_after": 0.71,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "Evaluating Hallucinations in Domain-Adapted Large Language Models",
+        "BEACON: Behavioral Entropy Aggregation for Cross-Model Hallucination Detection in Large Language Mod",
+        "From Architecture to Output: Structural Origins of Hallucination in Large Language Models and the Am",
+        "Cross Paraphrastic Invariance Learning for Hallucination Detection",
+        "Constrained Paraphrase Consistency for LLM Hallucination Detection"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "V-001",
+      "domain": "vla",
+      "hypothesis": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA action head paradigm for top-venue papers through 2026. Autoregressive tokenized-",
+      "confidence_before": 0.76,
+      "confidence_after": 0.81,
+      "status": "confirmed",
+      "signal_count": 8,
+      "counter_evidence": false,
+      "supporting_evidence": true,
+      "notable_signals": [
+        "Spatiotemporal Imputation with Graph-Informed Flow Matching",
+        "Capturing non-Markovian dynamics in non-equilibrium stochastic systems using flow matching",
+        "STREAM: Stochastic Riemannian Flow Matching with Anisotropic Decoder for Digital Histopathology Imag",
+        "Geodesic Flow Matching on a Riemannian Degradation Manifold for Blind Image Restoration",
+        "Flow Matching Calibration for Simulation-Based Inference under Model Misspecification"
+      ],
+      "assessment": "8 signals found; supporting evidence present"
+    },
+    {
+      "id": "V-002",
+      "domain": "vla",
+      "hypothesis": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation pipelines by end of 2026. Tasks like peg-in-hole, cable routing, deformable objec",
+      "confidence_before": 0.64,
+      "confidence_after": 0.64,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "TransTac: Visuo-Tactile Modality Transition via Ultraviolet-Encoded Transparent Elastomers",
+        "HapTile: A Haptic-Informed Vision-Tactile-Language-Action Dataset for Contact-Rich Imitation Learnin",
+        "Static and Dynamic Representations for Tactile Contact-Angle Estimation with Event-Based Sensors",
+        "An electronic fingerprint device based on spiral patterned tactile pixel array for augmented human-m",
+        "NeuralTouch: Neural Descriptors for Precise Sim-to-Real Tactile Robot Control"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "V-003",
+      "domain": "vla",
+      "hypothesis": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA contact-rich manipulation training. Real-robot-only labs will face a data bottlene",
+      "confidence_before": 0.72,
+      "confidence_after": 0.72,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "The Sim-to-Real Gap of Foundation Model Agents: A Unified MDP Perspective",
+        "HyperSim: A Holistic Sim-To-Real Framework For Robust Robotic Manipulation",
+        "MuJoCoUni:Persistent Batched Runtime Primitives for MuJoCo",
+        "Robotic Strawberry Harvesting with Robust Vision and Deep Reinforcement Learning based Sim-to-Real C",
+        "Mind the Sim-to-Real Gap & Think Like a Scientist"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "V-004",
+      "domain": "vla",
+      "hypothesis": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA control in structured factory/warehouse environments by end of 2026: >4h continuous ",
+      "confidence_before": 0.53,
+      "confidence_after": 0.58,
+      "status": "confirmed",
+      "signal_count": 7,
+      "counter_evidence": false,
+      "supporting_evidence": true,
+      "notable_signals": [
+        "Towards Shared Embodied Intelligence in Humanoid Robots through Optimization Development and Testing",
+        "Lost in Fog: Sensor Perturbations Expose Reasoning Fragility in Driving VLAs",
+        "Genie Sim 3.0 : A High-Fidelity Comprehensive Simulation Platform for Humanoid Robot",
+        "Uncovering Linguistic Fragility in Vision-Language-Action Models via Diversity-Aware Red Teaming",
+        "Active Stereo-Camera Outperforms Multi-Sensor Setup in ACT Imitation Learning for Humanoid Manipulat"
+      ],
+      "assessment": "7 signals found; supporting evidence present"
+    },
+    {
+      "id": "V-005",
+      "domain": "vla",
+      "hypothesis": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm by mid-2026, showing >15% improvement in out-of-distribution success rate over b",
+      "confidence_before": 0.67,
+      "confidence_after": 0.67,
+      "status": "confirmed",
+      "signal_count": 2,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "[0.17] _biweekly_reflection_2026-05-06.md",
+        "[0.17] _vla_social_2026-05-06.md"
+      ],
+      "assessment": "2 signals found"
+    },
+    {
+      "id": "V-006",
+      "domain": "vla",
+      "hypothesis": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planning components in VLA by end of 2026, placing world-model-first architectures in ",
+      "confidence_before": 0.58,
+      "confidence_after": 0.58,
+      "status": "confirmed",
+      "signal_count": 2,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model",
+        "[0.19] _vla_social_2026-04-23.md"
+      ],
+      "assessment": "2 signals found"
+    },
+    {
+      "id": "V-007",
+      "domain": "vla",
+      "hypothesis": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method for contact-rich dexterous manipulation through 2026. Internet-video pretraining w",
+      "confidence_before": 0.75,
+      "confidence_after": 0.75,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "VISTA: Vision-Grounded and Physics-Validated Adaptation of UMI data for VLA Training",
+        "Learning Generalizable Robot Policy with Human Demonstration Video as a Prompt",
+        "Mobile UMI: Cross-View Diffusion Policy with Decoupled Kinematics for Mobile Manipulation",
+        "Domain-Adaptive Communication-Rate Optimization for Sim-to-Real Humanoid-Robot Wireless XR Teleopera",
+        "RoHIL: Robust Human-in-the-Loop Robotic Reinforcement Learning Against Illumination Variations"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "V-008",
+      "domain": "vla",
+      "hypothesis": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-month lag of closed-source frontier (pi.ai, Google RT, NVIDIA), keeping research co",
+      "confidence_before": 0.66,
+      "confidence_after": 0.66,
+      "status": "confirmed",
+      "signal_count": 2,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "Octopus Protocol: One-Shot Hardware Discovery and Control for AI Agents via Infrastructure-as-Prompt",
+        "Enhancing Linguistic Generalization of VLA: Fine-Tuning OpenVLA via Synthetic Instruction Augmentati"
+      ],
+      "assessment": "2 signals found"
+    },
+    {
+      "id": "V-009",
+      "domain": "vla",
+      "hypothesis": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) will not generalize beyond 50% to a significantly different morphology (bimanual,",
+      "confidence_before": 0.77,
+      "confidence_after": 0.77,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "ActionMap: Robot Policy Learning via Voxel Action Heatmap",
+        "SeeTraceAct: Visibility-Aware Latent Planning from Cross-Embodiment Demonstration Videos",
+        "RIO: Flexible Real-Time Robot I/O for Cross-Embodiment Robot Learning",
+        "Bridging the Embodiment Gap: Disentangled Cross-Embodiment Video Editing",
+        "Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "V-010",
+      "domain": "vla",
+      "hypothesis": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for fine manipulation VLA by mid-2026. Pure 2D RGB-only representations will platea",
+      "confidence_before": 0.59,
+      "confidence_after": 0.56,
+      "status": "weakened",
+      "signal_count": 0,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [],
+      "assessment": "no new signals"
+    },
+    {
+      "id": "A-001",
+      "domain": "ai_agent",
+      "hypothesis": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration, with major IDEs/platforms providing native support by end of 2026.",
+      "confidence_before": 0.77,
+      "confidence_after": 0.77,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "Building a secure auth code flow setup using AgentCore Gateway with MCP clients",
+        "Build a Coding Assistant with Weaviate MCP: RAG over Code & Docs",
+        "[0.24] _ai_daily_pick_2026-05-20.md",
+        "[0.22] _ai_daily_pick_2026-05-22.md",
+        "[0.22] _ai_daily_pick_2026-04-25.md"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "A-002",
+      "domain": "ai_agent",
+      "hypothesis": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming tasks with no human intervention by end of 2026.",
+      "confidence_before": 0.67,
+      "confidence_after": 0.67,
+      "status": "confirmed",
+      "signal_count": 2,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "[0.23] _ai_daily_pick_2026-05-28.md",
+        "[0.22] _ai_daily_pick_2026-05-27.md"
+      ],
+      "assessment": "2 signals found"
+    },
+    {
+      "id": "A-003",
+      "domain": "ai_agent",
+      "hypothesis": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade frameworks (>1k GitHub stars) showing real performance gains over single agents.",
+      "confidence_before": 0.61,
+      "confidence_after": 0.61,
+      "status": "confirmed",
+      "signal_count": 4,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "Co-Scientist: A multi-agent AI partner to accelerate research",
+        "Representational Similarity and Model Behavior in Multi-Agent Interaction",
+        "[0.26] _ai_daily_pick_2026-05-11.md",
+        "[0.24] _ai_daily_pick_2026-05-19.md"
+      ],
+      "assessment": "4 signals found"
+    },
+    {
+      "id": "A-004",
+      "domain": "ai_agent",
+      "hypothesis": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming standard for agent planning and decision-making.",
+      "confidence_before": 0.82,
+      "confidence_after": 0.87,
+      "status": "confirmed",
+      "signal_count": 6,
+      "counter_evidence": false,
+      "supporting_evidence": true,
+      "notable_signals": [
+        "Gemini Robotics-ER 1.6: Powering real-world robotics tasks through enhanced embodied reasoning",
+        "ReasoningBank: Enabling agents to learn from experience",
+        "Google Earth AI: Unlocking geospatial insights with foundation models and cross-modal reasoning",
+        "Serving DeepSeek-V4: why million-token context is an inference systems problem",
+        "DeepSeek-V4 Pro now available on Together AI"
+      ],
+      "assessment": "6 signals found; supporting evidence present"
+    },
+    {
+      "id": "A-005",
+      "domain": "ai_agent",
+      "hypothesis": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA applications.",
+      "confidence_before": 0.72,
+      "confidence_after": 0.72,
+      "status": "confirmed",
+      "signal_count": 3,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "[0.32] _ai_daily_pick_2026-05-12.md",
+        "[0.31] _ai_daily_pick_2026-05-02.md",
+        "[0.30] _ai_social_2026-04-22.md"
+      ],
+      "assessment": "3 signals found"
+    },
+    {
+      "id": "S-001",
+      "domain": "system",
+      "hypothesis": "Open-weight models (Qwen, LLaMA, Gemma) will match 80% of closed-source model capabilities on AI agent tasks by end of 2026, making them the engineering default due to cost advantages.",
+      "confidence_before": 0.71,
+      "confidence_after": 0.71,
+      "status": "confirmed",
+      "signal_count": 5,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [
+        "Introducing Gemma 4 12B: a unified, encoder-free multimodal model",
+        "Gemma 4: Byte for byte, the most capable open models",
+        "Gemma Scope 2: helping the AI safety community deepen understanding of complex language model behavi",
+        "VaultGemma: The world's most capable differentially private LLM",
+        "Qwen 3.7 Plus now available on AI Gateway"
+      ],
+      "assessment": "5 signals found"
+    },
+    {
+      "id": "S-002",
+      "domain": "system",
+      "hypothesis": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures without human intervention.",
+      "confidence_before": 0.81,
+      "confidence_after": 0.78,
+      "status": "weakened",
+      "signal_count": 0,
+      "counter_evidence": false,
+      "supporting_evidence": false,
+      "notable_signals": [],
+      "assessment": "no new signals"
+    },
+    {
+      "id": "A-006",
+      "domain": "ai_agent",
+      "hypothesis": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government contracts, defense partnerships, and capital market valuations become primary exte",
+      "confidence_before": 0.73,
+      "confidence_after": 0.78,
+      "status": "confirmed",
+      "signal_count": 7,
+      "counter_evidence": false,
+      "supporting_evidence": true,
+      "notable_signals": [
+        "OpenAI Help: Lockdown Mode",
+        "Anthropic's run-rate revenue hits $47 billion",
+        "llm-anthropic 0.25.1",
+        "Introducing the OpenAI Economic Research Exchange",
+        "A blueprint for democratic governance of frontier AI"
+      ],
+      "assessment": "7 signals found; supporting evidence present"
+    }
+  ]
+}

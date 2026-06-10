@@ -1,102 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-05-10",
-      "config_version": 10,
-      "items": [
-        {
-          "title": "OpenAI WebRTC 架构遭质疑：Voice AI 不该用 WebRTC",
-          "url": "https://moq.dev/blog/webrtc-is-the-problem/",
-          "source": "moq.dev (Luke Curley, ex-Discord WebRTC 专家)",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "Media over QUIC project",
-          "labels": [
-            "voice-ai",
-            "webrtc",
-            "infrastructure"
-          ],
-          "direction_note_prefix": "",
-          "why": "WebRTC 为保低延迟丢弃音频包，导致 LLM prompt 不完整——Voice AI 需要新传输协议"
-        },
-        {
-          "title": "DeepSeek 大范围开放识图模式：视觉原语推理框架",
-          "url": "https://m.ithome.com/html/948020.htm",
-          "source": "IT之家 + DeepSeek 技术报告",
-          "category": "模型发布",
-          "importance": "actionable",
-          "developer": "DeepSeek",
-          "labels": [
-            "multimodal",
-            "vision",
-            "deepseek"
-          ],
-          "direction_note_prefix": "",
-          "why": "Thinking with Visual Primitives 框架，800x800 图片仅消耗 ~90 tokens（GPT/Claude 需 870-1100）"
-        },
-        {
-          "title": "EMO: Allen AI 涌现模块化 MoE——12.5% experts 保持全模型性能",
-          "url": "https://huggingface.co/blog/allenai/emo",
-          "source": "HuggingFace Blog (Allen AI)",
-          "category": "模型发布",
-          "importance": "actionable",
-          "developer": "Allen AI",
-          "labels": [
-            "moe",
-            "modularity",
-            "open-source"
-          ],
-          "direction_note_prefix": "",
-          "why": "14B-total/1B-active 8/128 MoE，预训练即涌现模块化结构，可按任务加载 subset experts"
-        },
-        {
-          "title": "ChatGPT 5.5 Pro 数学家实测：数论问题 2 小时从指数变多项式",
-          "url": "https://gowers.wordpress.com/2026/05/08/a-recent-experience-with-chatgpt-5-5-pro/",
-          "source": "Tim Gowers Blog (Fields Medalist, Cambridge)",
-          "category": "模型发布",
-          "importance": "read-only",
-          "developer": "OpenAI",
-          "labels": [
-            "evaluation",
-            "chatgpt",
-            "math"
-          ],
-          "direction_note_prefix": "",
-          "why": "剑桥 Fields 奖得主亲测 5.5 Pro 数学推理能力，HN 588 分热门讨论"
-        },
-        {
-          "title": "LLMs Corrupt Documents: 前沿模型在长委托工作流中损坏 25% 文档内容",
-          "url": "https://arxiv.org/abs/2604.15597",
-          "source": "arXiv + Microsoft Research (GitHub: microsoft/delegate52)",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "Microsoft Research",
-          "labels": [
-            "agent-delegation",
-            "evaluation",
-            "reliability"
-          ],
-          "direction_note_prefix": "",
-          "why": "DELEGATE-52 基准测试 19 个 LLM，Gemini/Claude/GPT 在长工作流中平均损坏 25% 文档（arXiv）"
-        },
-        {
-          "title": "OncoAgent: 双层多 Agent 隐私保护肿瘤临床决策框架",
-          "url": "https://huggingface.co/blog/lablab-ai-amd-developer-hackathon/oncoagent-official-paper",
-          "source": "HuggingFace Blog (Lablab AI + AMD)",
-          "category": "Agent 框架",
-          "importance": "read-only",
-          "developer": "Lablab AI",
-          "labels": [
-            "multi-agent",
-            "healthcare",
-            "privacy"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "AMD 黑客松获奖项目，双层 Agent 架构实现隐私保护医疗决策，展示 Agent 在专业领域落地模式"
-        }
-      ]
-    },
-    {
       "date": "2026-05-11",
       "config_version": 11,
       "items": [
@@ -2738,6 +2642,117 @@
           ],
           "direction_note_prefix": "",
           "why": "开放研究申请，系统性研究 AI 对就业、生产力和经济的长期影响"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-10",
+      "config_version": 12,
+      "items": [
+        {
+          "title": "Anthropic 发布 Claude Fable 5：最广泛适用的旗舰模型，禁止用于网络安全",
+          "url": "https://www-cdn.anthropic.com/d00db56fa754a1b115b6dd7cb2e3c342ee809620.pdf",
+          "source": "Anthropic System Card",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "claude",
+            "model-release",
+            "safety"
+          ],
+          "direction_note_prefix": "",
+          "why": "Fable 5 定位为最广泛适用的旗舰，Mythos 5 专注高风险场景；双模型战略明确"
+        },
+        {
+          "title": "🎯 Vercel AI Gateway 上线 Claude Fable 5，一键切换模型路由",
+          "url": "https://vercel.com/changelog/claude-fable-5-now-available-on-ai-gateway",
+          "source": "Vercel Changelog",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "gateway",
+            "claude",
+            "routing"
+          ],
+          "direction_note_prefix": "🎯",
+          "why": "AI Gateway 快速跟进新模型，体现模型路由基础设施的响应速度"
+        },
+        {
+          "title": "Google 发布 Gemini 3.5 Live Translate：70+ 语言实时语音翻译",
+          "url": "https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/",
+          "source": "Google DeepMind Blog",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Google DeepMind",
+          "labels": [
+            "gemini",
+            "translation",
+            "multimodal"
+          ],
+          "direction_note_prefix": "",
+          "why": "实时语音翻译保留语调/语速/音高，AI Studio/Translate/Meet 同步上线"
+        },
+        {
+          "title": "🎯 微信 Agent 发出「英雄令」，互联网半壁江山接入响应",
+          "url": "https://www.36kr.com/p/3845399354870020",
+          "source": "36氪",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "—",
+          "labels": [
+            "agent",
+            "wechat",
+            "ecosystem"
+          ],
+          "direction_note_prefix": "🎯",
+          "why": "微信生态大规模接入 Agent，中国最大 IM 平台正式拥抱 AI Agent"
+        },
+        {
+          "title": "Nextdoor 用 Codex + GPT-5.5 构建跨平台功能，聚焦产品结果",
+          "url": "https://openai.com/index/nextdoor",
+          "source": "OpenAI Blog",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "OpenAI / Nextdoor",
+          "labels": [
+            "coding-agent",
+            "gpt-5.5",
+            "case-study"
+          ],
+          "direction_note_prefix": "",
+          "why": "真实企业案例：Codex 用于排查难复现 bug + 跨平台开发"
+        },
+        {
+          "title": "AWS：Strands Agents SDK + Bedrock AgentCore Browser Tool 构建保险理赔 Agent",
+          "url": "https://aws.amazon.com/blogs/machine-learning/hands-free-first-notice-of-loss-using-strands-agents-and-amazon-bedrock-agentcore-browser-tool-for-intelligent-claims-intake/",
+          "source": "AWS ML Blog",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "agent",
+            "sdk",
+            "browser-tool"
+          ],
+          "direction_note_prefix": "",
+          "why": "Strands Agents SDK 与 Bedrock AgentCore 浏览器工具组合，落地保险场景"
+        },
+        {
+          "title": "Grit：GitButler 用 Rust + Agent 重写 Git 核心",
+          "url": "https://blog.gitbutler.com/true-grit",
+          "source": "GitButler Blog",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "GitButler",
+          "labels": [
+            "git",
+            "rust",
+            "agent"
+          ],
+          "direction_note_prefix": "",
+          "why": "用 Agent 辅助重写 Git 核心库，展示 Agent 在底层系统编程中的潜力"
         }
       ]
     }
