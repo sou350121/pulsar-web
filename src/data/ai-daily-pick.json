@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-11",
+      "items": [
+        {
+          "title": "Anthropic 模型命名规律被网友逆向工程",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://samwilkinson.io/posts/2026-06-09-anthropics-model-naming-extrapolated",
+          "why_picked": "HN 263 pts，拆解 Anthropic 从 Haiku/Sonnet/Opus/Claude 的命名矩阵，揭示 Fable/Mythos 定位逻辑",
+          "so_what": "如果你在选择 Anthropic 模型：理解命名矩阵能帮你预判新模型定位——Fable=消费级/创意，Mythos=企业级/推理。别盲目追新，按场景选。"
+        },
+        {
+          "title": "Google DiffusionGemma：857 tokens/s 的轻量扩散模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Jun/10/diffusiongemma/",
+          "why_picked": "Google 实验性扩散模型，推理速度达 857 tokens/s，比传统自回归快一个数量级，可能改变边缘部署范式",
+          "so_what": "如果你在做低延迟推理或边缘部署：扩散模型路线值得跟踪。857 tokens/s 意味着在手机/树莓派上跑 LLM 不再是梦，但生成质量 vs 速度的 tradeoff 仍需评估。"
+        },
+        {
+          "title": "piFS：HN 451 分的新型文件系统",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://github.com/philipl/pifs",
+          "why_picked": "HN 451 pts / 115 comments，Philipps 用 Rust 实现的极简文件系统，聚焦 AI agent 的文件操作场景",
+          "so_what": "如果你在建 AI agent 的文件操作层：piFS 提供了一种新思路——把文件系统本身设计成 agent-native 的接口，而非事后适配。值得 watch 仓库。"
+        },
+        {
+          "title": "OpenAI 披露 PRC 影响力行动 targeting AI 政策辩论",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/prc-linked-influence-operations-ai-debates",
+          "why_picked": "OpenAI 官方博客首次公开披露国家级 AI 影响力行动，涉及数据中心叙事、关税、ChatGPT 虚假信息",
+          "so_what": "如果你在构建面向企业的 AI 安全方案：这份报告揭示了 AI 被武器化的具体手法——prompt injection 已升级为国家级叙事操纵。安全团队需要关注信息战层面的威胁建模。"
+        },
+        {
+          "title": "Altman 内部信：OpenAI 预计一年内 IPO",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8tqyEuVnl3f",
+          "why_picked": "继昨日 S-1 草案后，Altman 发内部信确认 IPO 时间表，标志着 OpenAI 从非营利转向公开上市公司的关键节点",
+          "so_what": "如果你在评估 AI 基础设施供应商的长期稳定性：OpenAI 上市意味着产品路线图将更受股东压力影响——定价策略、开源承诺可能调整。建议同步评估替代方案。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-10",
       "items": [
         {
@@ -1232,51 +1277,6 @@
           "url": "https://simonwillison.net/2026/May/11/llm-shebang/",
           "why_picked": "HN 社区热传的新玩法——直接在文本文件 shebang 行调用 LLM，让英文文本变成可执行脚本",
           "so_what": "如果你在做 CLI 工具或自动化脚本，这意味着自然语言直接执行成为可能。建议关注 llm 生态的 shebang 插件模式，可能催生新的 Agent 交互范式——但注意安全风险，不要在生产环境直接使用。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-11",
-      "items": [
-        {
-          "title": "OpenAI Symphony: 自主实现运行框架，让团队管理工作而非监督 Agent",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/openai/symphony",
-          "why_picked": "OpenAI 开源新项目，将项目工作转化为隔离的自主实现运行，工程师无需监督 Codex 即可管理更高层级的工作流",
-          "so_what": "如果你在做多Agent编排或CI/CD管线：Symphony代表了一种新范式——从监督Agent写代码转向管理待完成的工作。它监控Linear看板、派生Agent、验证PR、自动合入。Apache 2.0开源，可参考SPEC.md自建类似系统。"
-        },
-        {
-          "title": "Hermes Agent登顶OpenRouter全球调用量榜首：271B Token/日，首超OpenClaw",
-          "category": "趋势",
-          "source": "36氪+OpenRouter",
-          "url": "https://github.com/nousresearch/hermes-agent",
-          "why_picked": "开源Agent首次超越闭源产品登顶全球Token消耗榜，标志真实用量竞争拐点；MiMo-V2-Pro为第一贡献模型",
-          "so_what": "如果你在选择Agent框架：Hermes的自学习闭环（持久记忆+技能创建+跨会话搜索）已被271B/日Token验证。其多模型路由架构（支持OpenRouter 200+模型）可作为Agent供应商锁定的解法参考。"
-        },
-        {
-          "title": "Redis作者antirez发布ds4：DeepSeek V4 Flash本地推理引擎，MacBook免费跑百万上下文",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/antirez/ds4",
-          "why_picked": "Redis创始人solo开发，用GPT-5.5辅助完成；2-bit不对称量化+SSD KV Cache+Metal原生路径，128GB MacBook即可跑284B MoE",
-          "so_what": "如果你在做本地Agent部署：ds4展示了专用引擎vs通用框架(llama.cpp)的极致优化路径。不对称量化策略（候补专家2-bit、核心路径FP16）和SSD KV Cache持久化可直接借鉴到你的推理管线中。"
-        },
-        {
-          "title": "jcode: Rust编写的Coding Agent Harness，RAM占用仅为Claude Code的1/14",
-          "category": "工具",
-          "source": "GitHub Trending",
-          "url": "https://github.com/1jehuang/jcode",
-          "why_picked": "本周2328星，1会话PSS仅27.8MB（Claude Code 386.6MB），首帧时间14ms（Claude Code 3437ms），专为多会话工作流设计",
-          "so_what": "如果你在做Agent规模化部署（多实例并行）：jcode的轻量架构（Rust+可关闭本地embedding）证明Agent Harness可以比主流工具轻10-140倍。适合需要跑10+并发Agent session的CI/CD场景。"
-        },
-        {
-          "title": "cocoindex: 面向长周期Agent的增量数据引擎，告别batch过期",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/cocoindex-io/cocoindex",
-          "why_picked": "将代码库、Slack、PDF、视频等转化为持续新鲜的Agent上下文，仅处理增量变更，Python声明式API",
-          "so_what": "如果你在做RAG或Agent知识库：传统batch pipeline会导致上下文过期，cocoindex的增量同步机制（hash memo+重计算）可确保Agent始终基于最新数据推理。pip install即可接入现有Postgres向量库。"
         }
       ]
     }
