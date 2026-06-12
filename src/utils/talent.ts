@@ -1752,7 +1752,43 @@ const OFF_TOPIC_LAB_NAMES = new Set<string>([
   'Robotics Research (United States)', // generic OpenAlex bucket, not a real lab
 ]);
 
+// Set of institution names that produce >=1 mentorship edge, computed in a
+// SINGLE pass over the coauthor graph. Mirrors loadLabMentorship's edge rule
+// (paper with >=3 authors; last author is a PI at inst; first/second author is
+// affiliated to the same inst) but without the per-lab people-enrichment that
+// made a per-lab call 59x too heavy for the build box. Used to gate loadKnownLabs.
+let _edgeInstCache: Set<string> | null = null;
+function institutionsWithMentorshipEdges(): Set<string> {
+  if (_edgeInstCache) return _edgeInstCache;
+  const reg = loadResearcherRegistry();
+  const pa  = reg.pi_affiliation ?? {};
+  const ra  = reg.researcher_affiliation;
+  const piInst      = new Map<string, string>();  // normalized PI name -> institution
+  for (const [n, inst] of Object.entries(pa)) piInst.set(normalizeName(n), inst);
+  const memberInst  = new Map<string, string>();  // normalized researcher name -> institution
+  for (const [n, inst] of Object.entries(ra)) memberInst.set(normalizeName(n), inst);
+  const out = new Set<string>();
+  for (const paperEntry of Object.values(loadCoauthorGraph().papers)) {
+    const authors = paperEntry.authors;
+    if (!authors || authors.length < 3) continue;
+    const advisor = normalizeName(authors[authors.length - 1].name);
+    const inst = piInst.get(advisor);
+    if (!inst || out.has(inst)) continue;
+    for (const t of [authors[0], authors[1]]) {
+      if (!t) continue;
+      const tn = normalizeName(t.name);
+      if (!tn || tn === advisor) continue;
+      if (memberInst.get(tn) === inst || piInst.get(tn) === inst) { out.add(inst); break; }
+    }
+  }
+  _edgeInstCache = out;
+  return out;
+}
+
+let _knownLabsCache: Array<{ slug: string; name: string; piCount: number; traineeCount: number }> | null = null;
+
 export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: number; traineeCount: number }> {
+  if (_knownLabsCache) return _knownLabsCache;
   const reg = loadResearcherRegistry();
   const ra  = reg.researcher_affiliation;
   const pa  = reg.pi_affiliation ?? {};
@@ -1765,7 +1801,7 @@ export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: nu
     if (!institutions.has(inst)) institutions.set(inst, { piCount: 0, traineeCount: 0 });
     institutions.get(inst)!.piCount++;
   }
-  return [...institutions.entries()]
+  _knownLabsCache = [...institutions.entries()]
     .map(([name, c]) => ({
       slug:        labSlug(name),
       name,
@@ -1775,7 +1811,13 @@ export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: nu
     }))
     .filter(l => (l.piCount >= 1 && l.traineeCount >= 2) || (l.piCount + l.traineeCount) >= 4)
     .filter(l => !OFF_TOPIC_LAB_RE.test(l.name) && !OFF_TOPIC_LAB_NAMES.has(l.name))
+    // Edge gate: only keep labs that actually produce a mentorship graph
+    // (>=1 PI->trainee co-authorship edge). Labs with members but no edges
+    // render a near-empty "0 mentorship edge / No mentorship edges found"
+    // page — noise — so we don't generate them, link to them, or count them.
+    .filter(l => institutionsWithMentorshipEdges().has(l.name))
     .sort((a, b) => (b.piCount + b.traineeCount) - (a.piCount + a.traineeCount));
+  return _knownLabsCache;
 }
 
 // Cached set of lab slugs with a per-lab mentorship page. LabCard uses this
