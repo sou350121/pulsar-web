@@ -499,5 +499,15 @@ const wordmark = title ?? 'PULSAR DIGEST';
       // Keyboard: Enter / Space already fires click on <button>
     });
   });
+
+  // Reveal sections in feeds that have NO tab bar (single-domain pages such as
+  // /ai-daily/[date] and /vla/[date]). The tab logic above only reveals the
+  // sections it manages, so without it the CSS default (.digest-domain-section
+  // { opacity: 0 }) would leave the day's digest invisible — a blank panel.
+  document.querySelectorAll<HTMLElement>('.digest-feed').forEach(feed => {
+    if (feed.querySelector('[data-digest-tabs]')) return; // tabbed feeds handled above
+    feed.querySelectorAll<HTMLElement>('.digest-domain-section')
+        .forEach(sec => sec.classList.add('digest-section-visible'));
+  });
 })();
 </script>

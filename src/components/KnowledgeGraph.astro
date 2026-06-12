@@ -703,7 +703,7 @@
 
     for (const n of gd.nodes) {
       graph.addNode(n.id, {
-        label: n.label.slice(0, 70), nodeType: n.type,
+        label: (n.label ?? '').slice(0, 70), nodeType: n.type,
         url: n.url, date: n.date, rating: n.rating, snippet: n.snippet,
         _id: n.id, size: BASE_SIZES[n.type] ?? 5, color: nodeColor(n.type),
         x: Math.random() * 100, y: Math.random() * 100,

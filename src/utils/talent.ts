@@ -160,7 +160,11 @@ export interface LabRecord {
 export function slugifyName(s: string): string {
   return s.toLowerCase().trim()
     .replace(/\s+/g, '-')
-    .replace(/[^\p{L}\p{N}\-]/gu, '');
+    .replace(/[^\p{L}\p{N}\-]/gu, '')
+    // Collapse runs of dashes left by stripped punctuation ("William & Mary"
+    // → "william--mary" → "william-mary") and trim leading/trailing dashes.
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 export type ContactStatus =
@@ -1738,6 +1742,16 @@ export function labSlug(name: string): string {
   return LAB_SLUG_OVERRIDE[name] ?? slugifyName(name);
 }
 
+// Off-topic institutions that OpenAlex affiliation-misattribution surfaces into
+// the registry — medical / veterinary / health orgs and generic OpenAlex bucket
+// labels that are not robotics / embodied-AI labs (e.g. "IDEXX Laboratories"
+// listing a misattributed robotics PI). Filtered out so the talent atlas stays
+// on-topic. Matched on institution display name.
+const OFF_TOPIC_LAB_RE = /\b(medical|medicine|veterinary|idexx|dental|nursing|hospital|chinese\s+medicine)\b/i;
+const OFF_TOPIC_LAB_NAMES = new Set<string>([
+  'Robotics Research (United States)', // generic OpenAlex bucket, not a real lab
+]);
+
 export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: number; traineeCount: number }> {
   const reg = loadResearcherRegistry();
   const ra  = reg.researcher_affiliation;
@@ -1760,6 +1774,7 @@ export function loadKnownLabs(): Array<{ slug: string; name: string; piCount: nu
       traineeCount: Math.max(0, c.traineeCount - c.piCount),
     }))
     .filter(l => (l.piCount >= 1 && l.traineeCount >= 2) || (l.piCount + l.traineeCount) >= 4)
+    .filter(l => !OFF_TOPIC_LAB_RE.test(l.name) && !OFF_TOPIC_LAB_NAMES.has(l.name))
     .sort((a, b) => (b.piCount + b.traineeCount) - (a.piCount + a.traineeCount));
 }
 

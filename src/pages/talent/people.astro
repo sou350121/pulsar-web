@@ -112,6 +112,13 @@ const bylineOnly = people.filter(p => p.contactStatus === 'not_linked');
           card.style.display = hit ? '' : 'none';
           if (hit) shown++;
         });
+        // Tier-3 cards live inside a <details> collapsed by default. Without
+        // this, a match that only exists there is counted but stays hidden.
+        // Open the panel when it holds a match; restore collapsed when cleared.
+        document.querySelectorAll('.tv2-section details').forEach((d) => {
+          if (q === '') { d.open = false; return; }
+          d.open = !!d.querySelector('article.card:not([style*="display: none"])');
+        });
         document.querySelectorAll('.tv2-section').forEach((sec) => {
           const visible = sec.querySelectorAll('article.card:not([style*="display: none"])');
           sec.style.display = visible.length === 0 && q !== '' ? 'none' : '';

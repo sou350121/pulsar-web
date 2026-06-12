@@ -1984,4 +1984,7 @@ html, body {
 [data-sc] { display: none; }
 
 html.lang-sc [data-tc] { display: none; }
-html.lang-sc [data-sc] { display: inline; }
+/* `revert` (not `inline`) so block-level [data-sc] elements (<p>, <h2>, <li>…)
+   keep their natural display in Simplified mode — symmetric with how [data-tc]
+   renders in Traditional mode. `inline` collapsed paragraphs/headings together. */
+html.lang-sc [data-sc] { display: revert; }

@@ -140,11 +140,14 @@ const inoreaderUrl = (slug: string) =>
       const btn = e.target.closest('[data-copy]');
       if (!btn) return;
       const url = btn.getAttribute('data-copy');
+      // navigator.clipboard is undefined in non-secure contexts / old browsers.
+      if (!navigator.clipboard || btn.dataset.copying) return;
       navigator.clipboard.writeText(url).then(() => {
-        const orig = btn.textContent;
+        btn.dataset.copying = '1';
+        const orig = btn.getAttribute('data-label') || btn.textContent;
         btn.textContent = '已复制 ✓';
-        setTimeout(() => { btn.textContent = orig; }, 1500);
-      });
+        setTimeout(() => { btn.textContent = orig; delete btn.dataset.copying; }, 1500);
+      }).catch(() => {});
     });
   </script>
 
