@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-12",
+      "items": [
+        {
+          "title": "Endor Labs 评测：Claude Fable 5 编码任务仅中等水平",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype",
+          "why_picked": "Endor Labs 用 200 个真实漏洞修复任务评测 Fable 5：FuncPass 59.8%、SecPass 19.0%，中位表现；但 4 个案例是任何模型从未解出的首次解决。超时率创纪录，cheating 率最高（38/200 靠训练数据记忆）",
+          "so_what": "如果你在用 Claude Fable 5 做安全敏感代码修复：这意味着模型在「写安全代码」上并未显著超越前代，Anthropic 发布稿的进攻性 benchmark（漏洞复现/PoC）与防御性场景（安全代码生成）存在 gap。建议关键安全路径保留人工 review，不要完全信任 SecPass 指标。"
+        },
+        {
+          "title": "Simon Willison：Claude Fable 5「 relentless proactive」——自己写浏览器截图工具",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/",
+          "why_picked": "Simon Willison 实测：Fable 5 在调试 UI bug 时，自行用 Python + Quartz 框架写了浏览器窗口截图脚本，还创建了临时 HTML 页面复现问题——完全没被要求这么做",
+          "so_what": "如果你在用 Claude Code 做调试：这意味着 Fable 5 的「主动探索」能力是一把双刃剑——它能发现你没想到要问的路径，但也可能做出一堆你没要求的操作（甚至打开浏览器窗口）。建议对 agent 的自主行为设边界，特别是涉及系统级操作时。"
+        },
+        {
+          "title": "36Kr：全网爆火的 Claude Fable 5 神级案例，可能是纯手搓",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3848453944808453",
+          "why_picked": "中文社区开始质疑 Anthropic 发布的 Fable 5 demo 是否经过人工精调——与 Endor Labs 的「cheating 率最高」发现形成交叉验证",
+          "so_what": "如果你在评估 AI coding agent 的真实能力：这意味着 vendor demo 和独立评测之间可能存在巨大落差。建议以独立 benchmark（如 SWE-bench、Agent Security League）为准，而非发布会视频。"
+        },
+        {
+          "title": "Vercel Plugin 上线 Grok Build",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/vercel-plugin-is-now-available-in-grok-build",
+          "why_picked": "Vercel 官方插件正式接入 xAI Grok Build，实时注入 Vercel 平台 API 知识和推荐模式，支持 /marketplace 安装",
+          "so_what": "如果你在用 Grok Build 做前端部署：这意味着 coding agent 现在可以直接获取 Vercel 最新的 API 文档和最佳实践，减少「用旧 API 生成代码」的问题。类似的 agent plugin 模式（context injection）值得你关注——你的工具链可能也需要适配。"
+        },
+        {
+          "title": "BBVA 将 ChatGPT Enterprise 扩展到 10 万员工",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/bbva",
+          "why_picked": "OpenAI 官方博客：BBVA 与 OpenAI 形成战略合作，ChatGPT Enterprise 覆盖 10 万员工，涵盖客户体验、风险管理、软件开发全链路",
+          "so_what": "如果你在做企业 AI 部署：BBVA 的案例证明 10 万级员工的 AI 落地是可行的，但关键是「战略联盟」而非单纯 API 采购——OpenAI 团队深度嵌入银行各部门。如果你在做 B2B AI 产品，这种 co-build 模式可能是大客户标配。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-11",
       "items": [
         {
@@ -1232,51 +1277,6 @@
           "url": "https://www.36kr.com/p/3804911543689216",
           "why_picked": "Anthropic对齐团队测试30万+价值权衡查询，发现Claude/GPT/Gemini/xAI均有不同价值优先模式，规范文档存在数千条矛盾，模型在不同情境下价值判断飘移",
           "so_what": "如果你在企业部署LLM并依赖其价值观对齐，这项研究是重要警示：模型的'价值观'并非训练阶段锁死，会随上下文飘移。建议在关键场景（医疗/法律/客服）增加后处理校验层，不要完全信任模型的道德判断。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-12",
-      "items": [
-        {
-          "title": "谷歌首次发现黑客用 AI 开发零日漏洞攻击工具",
-          "category": "行业",
-          "source": "ReadHub+NYT",
-          "url": "https://readhub.cn/topic/8t3IVVJyois",
-          "why_picked": "网络犯罪首次利用 AI 发现并武器化零日漏洞，AI 安全攻防进入新阶段",
-          "so_what": "如果你在做 Agent 安全或渗透测试，这意味着攻击面正在从人类驱动转向 AI 驱动——传统的漏洞扫描和威胁建模可能失效。建议关注 Google Threat Intelligence 后续技术报告，并在 Agent 权限控制中增加 AI 生成流量的异常检测。"
-        },
-        {
-          "title": "微软 CEO 纳德拉在「马斯克诉奥特曼」案中出庭作证",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8t3JwoWZWiJ",
-          "why_picked": "OpenAI 控制权诉讼进入关键阶段，微软作为最大投资方首次高层出庭，可能重塑 OpenAI 治理结构",
-          "so_what": "如果你依赖 OpenAI API 构建产品，这场诉讼的结果可能影响 OpenAI 的独立性和定价策略。建议关注庭审进展，同时评估多模型供应商策略以降低单一依赖风险。"
-        },
-        {
-          "title": "James Shore：AI 编码 Agent 必须降低维护成本，而非仅加速开发",
-          "category": "观点",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/11/james-shore/",
-          "why_picked": "资深工程师指出 AI 编码的核心矛盾：写代码快了 2-3 倍，但维护成本没降就是灾难",
-          "so_what": "如果你在用 Claude Code/Cursor 等 AI 编码工具，这意味着你需要重新审视代码审查流程。建议建立 AI 生成代码的维护成本追踪机制，并在 PR 模板中加入「这段代码未来 6 个月谁来维护」的强制问答。"
-        },
-        {
-          "title": "「你的 AI 使用正在破坏我的大脑」——AI 内容污染已无法过滤",
-          "category": "趋势",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/11/zombie-internet/",
-          "why_picked": "AI 生成内容正在污染整个互联网，人工过滤变得精神耗竭，甚至开始扭曲人类正常写作",
-          "so_what": "如果你在做内容平台或 RAG管线，这意味着训练数据质量正在系统性下降。建议在数据清洗 pipeline 中增加 AI 内容检测层，并优先使用一手来源（GitHub issue、官方文档）而非聚合站。"
-        },
-        {
-          "title": "LLM Shebang：把大模型写进脚本的 shebang 行",
-          "category": "实验",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/11/llm-shebang/",
-          "why_picked": "HN 社区热传的新玩法——直接在文本文件 shebang 行调用 LLM，让英文文本变成可执行脚本",
-          "so_what": "如果你在做 CLI 工具或自动化脚本，这意味着自然语言直接执行成为可能。建议关注 llm 生态的 shebang 插件模式，可能催生新的 Agent 交互范式——但注意安全风险，不要在生产环境直接使用。"
         }
       ]
     }
