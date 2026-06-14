@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-14",
+      "items": [
+        {
+          "title": "Anthropic Fable 5 / Mythos 5 被美国政府强制全球停服",
+          "category": "行业",
+          "source": "Anthropic",
+          "url": "https://www.anthropic.com/news/fable-mythos-access",
+          "why_picked": "AI史上首次：已部署商业大模型被政府以国家安全为由强制召回，上线仅72小时",
+          "so_what": "如果你在用 Fable 5 做生产级 agent，必须立即迁移到 Opus 4.8 或其他模型。Anthropic 已将所有新会话默认切换到 Opus 4.8。这个事件意味着模型可用性不再完全由供应商控制——企业级 AI 采购需要评估地缘政治风险。"
+        },
+        {
+          "title": "\"Open source AI must win\" 宣言引爆社区",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://opensourceaimustwin.com/?share=v2",
+          "why_picked": "Ahmad Osman 发文回应 Fable 禁令，HN 1505分/463评论，核心论点：当智能成为少数封闭机构的订阅服务，公众失去的是操作自由",
+          "so_what": "如果你在做开源 agent 框架选型，这个讨论强化了本地可部署模型的战略价值。考虑把 Llama/Gemma/Qwen 等开源模型纳入你的 agent 技术栈，作为封闭 API 的备份方案。"
+        },
+        {
+          "title": "NVIDIA SkillSpector 开源：AI agent 技能安全扫描器",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/NVIDIA/SkillSpector",
+          "why_picked": "GitHub 日增 804 星，专为 agent skill 包设计的安全扫描器，检测漏洞/恶意模式/安全风险",
+          "so_what": "如果你在用第三方 agent skills（MCP tools、Claude plugins 等），SkillSpector 可以集成到 CI 管线中自动扫描。agent 安全正从「沙箱隔离」走向「skill 级验证」，这是新的防御层。"
+        },
+        {
+          "title": "\"There is a shadow hanging over this Fable thing\"",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://12gramsofcarbon.com/p/tech-things-there-is-a-massive-shadow",
+          "why_picked": "开发者亲历 Fable 突然下线：正在用 agent 做游戏开发，模型瞬间消失。HN 459分，代表一线开发者的真实恐慌",
+          "so_what": "如果你依赖单一模型供应商做 agent 开发，这个事件是警示：需要建立模型切换的抽象层。考虑用 multi-model router（如 LiteLLM）降低 vendor lock-in 风险。"
+        },
+        {
+          "title": "FFmpeg 发现 21 个零日漏洞",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://depthfirst.com/research/21-zero-days-in-ffmpeg",
+          "why_picked": "HN 276分，对广泛使用 FFmpeg 的 agent 多媒体管线构成直接威胁，涉及媒体解析、格式处理等核心功能",
+          "so_what": "如果你的 agent 管线处理音视频（ASR、视频理解、多媒体 RAG），立即检查 FFmpeg 版本并升级到修复版。这是 agent 基础设施安全的基本功。"
+        },
+        {
+          "title": "Census Bureau 禁止噪声注入：差分隐私政策转向",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://desfontain.es/blog/banning-noise.html",
+          "why_picked": "HN 692分，美国人口普查局禁止在统计产品中使用噪声注入（差分隐私核心技术），对隐私计算领域影响深远",
+          "so_what": "如果你的 agent 处理敏感用户数据并依赖差分隐私做合规，这个政策转向意味着需要重新评估隐私方案。关注后续更多政府机构是否跟进。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-13",
       "items": [
         {
@@ -1240,67 +1293,6 @@
           "url": "https://simonwillison.net/2026/May/14/datasette-ip-rate-limit/",
           "why_picked": "Simon 用 Codex (GPT-5.5 xhigh) 从零编写 Datasette IP 限速插件，解决爬虫轰炸问题——展示了 AI 编码工具在小型工具开发中的实际效率",
           "so_what": "如果你在用 AI 编码工具做内部工具：Simon 的工作流是典型案例——用 GPT-5.5 生成骨架代码 + 人工 review 调参。对于配置型/规则型小工具，AI 编码效率已经接近即写即用。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-14",
-      "items": [
-        {
-          "title": "Anthropic \"Code w/ Claude\" 大会：Claude Platform 多智能体编排 + Claude Code 异步 Routines",
-          "category": "新发布",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3807022326619650",
-          "why_picked": "Anthropic 最大规模开发者大会，推出 Outcomes/Dreaming/Multi-agent 三大平台能力 + Claude Code Routines",
-          "so_what": "如果你在用 Claude API 构建 agent 管线：Outcomes 目标导向模式可将长任务拆解为可验证里程碑；Routines 让 agent 在你离线时继续修 PR/跑 CI。建议评估是否从同步调用迁移到异步编排。"
-        },
-        {
-          "title": "Thinking Machines Lab（Mira Murati）发布 TML-Interaction-Small：原生全双工交互模型",
-          "category": "新发布",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3806863563660805",
-          "why_picked": "OpenAI 前 CTO 创业首秀，12B 参数模型原生支持实时语音交互，打断延迟仅 0.4s，远超 GPT Realtime",
-          "so_what": "如果你在构建语音 agent 或实时交互系统：TML 证明原生全双工可超越 VAD 外挂方案。关注其 200ms 微轮次架构——这可能是下一代语音交互的标准范式。"
-        },
-        {
-          "title": "OpenAI 发布 Codex Windows 沙箱实现",
-          "category": "工具",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/building-codex-windows-sandbox",
-          "why_picked": "Windows 首次拥有与 macOS Seatbelt/Linux seccomp 对等的 Codex 沙箱，解决安全与便利的两难",
-          "so_what": "如果你在 Windows 上跑 coding agent：此前只能选 Full Access（危险）或逐条审批（低效），现在有了真正的沙箱约束。Windows 部署 agent 的安全基线显著提升。"
-        },
-        {
-          "title": "xAI 推动 Grok 进入华尔街：Apollo、摩根士丹利内部使用",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8t6nkcxZn05",
-          "why_picked": "Grok 首次大规模进入金融核心场景，标志 LLM 在合规敏感行业的渗透加速",
-          "so_what": "如果你在金融/合规领域构建 agent：Grok 进入华尔街意味着合规 LLM 赛道竞争加剧。关注模型在金融场景的审计能力和数据隔离方案。"
-        },
-        {
-          "title": "Mistral 开发对标 Anthropic Mythos 的网络安全模型",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8t6VBXQEO7E",
-          "why_picked": "Mistral 瞄准未获 Mythos 权限的欧洲银行，开发标准化 AI 安全产品",
-          "so_what": "如果你在评估 AI 安全扫描工具：Mistral 的银行级安全模型可能成为 Mythos 的欧洲替代方案。欧洲数据主权场景下值得跟踪。"
-        },
-        {
-          "title": "Ardent (YC P26)：为 coding agent 设计的 Postgres 沙箱",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://www.tryardent.com/",
-          "why_picked": "YC P26 新项目，6 秒克隆 Postgres 数据库供 agent 测试，零生产风险",
-          "so_what": "如果你让 agent 写数据库代码：传统 replica 克隆慢且占存储，Ardent 的写时复制方案可在 6s 内创建隔离沙箱，agent 验证后再合入 prod。"
-        },
-        {
-          "title": "Claude Design 取消订阅后项目丢失引发社区抗议",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=48128003",
-          "why_picked": "HN 129 分热议，用户抱怨取消订阅后项目/credits 全部不可访问",
-          "so_what": "如果你在评估 AI 编程工具的 vendor lock-in 风险：Claude 的订阅绑定策略意味着你的项目资产可能随订阅状态消失。重要项目务必定期导出。"
         }
       ]
     }
