@@ -1,6 +1,55 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-15",
+      "items": [
+        {
+          "title": "Rio3.5 被揭实为 Nex-N2 + Qwen 模型 merge，非自研",
+          "category": "趋势",
+          "source": "GitHub Issue",
+          "url": "https://github.com/nex-agi/Nex-N2/issues/4",
+          "why_picked": "HN 260 分热议：里约热内卢市政府宣称的「自研 397B 模型」被 Nex-AGI 团队用权重分析证明是 0.6*Nex + 0.4*Qwen 的逐元素合并，移掉 system prompt 后模型自报家门 79% 是 Nex",
+          "so_what": "如果你在做模型选型或 benchmark 追踪：这提醒你对「小城小镇自研大模型」保持 skepticism。权重 merge 冒充训练已成新套路，验证方法包括移除 system prompt 测试身份、检查权重分布是否可被线性插值解释。"
+        },
+        {
+          "title": "Bram Cohen：为什么 Claude 变得越来越难用",
+          "category": "观点",
+          "source": "HN Blog",
+          "url": "https://bramcohen.com/p/why-is-claude-turning-into-an-asshole",
+          "why_picked": "BitTorrent 作者发文，HN 89 分 146 条评论。批评 Fable 5 从 Opus 4.7 开始逐步退化为「好辩模式」——默认假设用户想搞坏事、每句话都要抬杠。用 Opus 4.6 对比实验证实不是主观感受",
+          "so_what": "如果你在用 Claude API 做产品：alignment guardrails 过度触发会导致用户体验退化。注意 Fable 5 的 refusal 率和 confrontational 倾向，考虑在 system prompt 中显式压制辩论行为，或回退到 Opus 4.6 做生产环境。"
+        },
+        {
+          "title": "Simon Willison：AI 为何没有、也不会取代软件工程师",
+          "category": "观点",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/Jun/14/why-ai-hasnt-replaced-software-engineers/",
+          "why_picked": "引用 Narayanan & Kapoor 论文 + WARN Act 数据（纽约州 160+ 公司申报，零 AI 相关裁员）。核心论点：写代码不是瓶颈，真正的瓶颈是需求定义、责任归属和深度上下文理解",
+          "so_what": "如果你在构建 AI coding 工具或评估 Agent 能力：理解 AI 的瓶颈不在代码生成而在「决定做什么」和「为结果负责」。产品机会在需求分解、验证和 human-in-the-loop 环节，而非纯代码补全。"
+        },
+        {
+          "title": "OpenAI Partner Network 上线：$150M 推动全球企业 AI 部署",
+          "category": "行业",
+          "source": "OpenAI Blog",
+          "url": "https://openai.com/index/introducing-openai-partner-network",
+          "why_picked": "OpenAI 官方博客宣布合作伙伴网络，投资 1.5 亿美元，目标 2026 年底培训 30 万认证顾问。三级体系（Select/Advanced/Elite），Codex/安全/Agent 三大 specialization 方向",
+          "so_what": "如果你在做企业 AI 集成或 ISV：OpenAI 正在复制 AWS/Azure 的 partner ecosystem 模式。关注 Codex specialization 方向——这可能是 OpenAI 把 coding agent 能力商业化落地的关键通道。"
+        },
+        {
+          "title": "小米 MiMo Code 开源：终端编程 Agent，长程自动化设计",
+          "category": "工具",
+          "source": "稀土掘金",
+          "url": "https://juejin.cn/post/7650451521307770923",
+          "why_picked": "小米 MiMo 团队开源终端编程 Agent，围绕计算/记忆/进化三大核心，针对长程自动化编程任务设计。国内大厂跟进 coding agent 开源赛道",
+          "so_what": "如果你在做 coding agent 或终端工具链：MiMo Code 的「计算-记忆-进化」三核心架构值得关注，特别是长程任务中的记忆管理和自我进化机制，与 Claude Code / Cursor 形成差异化竞争。"
+        }
+      ],
+      "meta": {
+        "total_web_searches": 0,
+        "notes": "Web search credits exhausted; used RSS + web_fetch only"
+      }
+    },
+    {
       "date": "2026-06-14",
       "items": [
         {
@@ -1240,59 +1289,6 @@
           "url": "https://www.seangoedecke.com/steering-vectors/",
           "why_picked": "antirez 的 DwarfStar 4 将 steering 内置 llama.cpp，DeepSeek-V4-Flash 本地可运行且性能接近前沿模型",
           "so_what": "如果你在做需要精细控制模型行为的 agent 系统（如固定输出格式、风格一致性），activation steering 是比 prompt engineering 更稳定的方案。DeepSeek-V4-Flash 的本地可用性让这项技术从学术实验变成工程选项。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-15",
-      "items": [
-        {
-          "title": "GPT-5.6 曝光 + Codex vs Claude Code 补贴战全面开打",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3808515686309377",
-          "why_picked": "GPT-5.6 开发已进入全速阶段，首批 checkpoint 内部测试；同时 OpenAI 推出 2 个月免费迁移补贴抢 Claude Code 用户，Anthropic 回应 50% 编程额度提升——AI 编程工具进入正面竞争",
-          "so_what": "如果你在做 AI 编码工具选型：OpenAI 和 Anthropic 正在用补贴战抢用户，现在是评估迁移成本的好时机。关注 ultrafast 模式（2-3x 提速）对 Agent 循环延迟的影响——选择哪个平台可能直接决定你的 pipeline 吞吐量。"
-        },
-        {
-          "title": "Cerebras IPO 募资 55 亿美元，估值 400 亿",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8t7uPoyb3qp",
-          "why_picked": "AI 芯片赛道最大 IPO 之一，整片硅晶圆架构挑战英伟达垄断；2025 年营收 5.1 亿美元（+76% YoY），与 OpenAI 签 200 亿美元合作协议",
-          "so_what": "如果你在做推理基础设施规划：Cerebras 上市意味着 AI 芯片多极化加速。整片硅晶圆方案在推理场景有独特优势，值得关注其量产能力和代工产能分配——可能影响未来推理成本曲线。"
-        },
-        {
-          "title": "OpenAI 升级 ChatGPT 敏感对话上下文感知",
-          "category": "工具",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/chatgpt-recognize-context-in-sensitive-conversations",
-          "why_picked": "ChatGPT 新增跨对话安全上下文追踪能力——能识别多轮对话中逐步浮现的风险信号，并跨 session 关联安全信号，减少误判同时提高高危场景响应准确性",
-          "so_what": "如果你在做 LLM 安全/护栏系统：OpenAI 展示了 context-aware safety 的最佳实践——风险不是单轮判断而是时序演化。你的 agent 安全层也应该引入对话历史评分机制，而非单轮规则匹配。"
-        },
-        {
-          "title": "Violin：开源视频翻译工具，ASR+LLM+TTS 全链路",
-          "category": "新发布",
-          "source": "Together AI Blog",
-          "url": "https://www.together.ai/blog/violin-open-source-translation-skill",
-          "why_picked": "Together AI 发布开源视频翻译管线：Whisper V3 转写 → DeepSeek V4 Pro 翻译 → Cartia Sonic 3 TTS 合成，还支持视频内容对话助手和语音风格定制",
-          "so_what": "如果你在做多语言内容分发或 RAG 视频索引：Violin 提供了完整的端到端 pipeline 参考实现。ASR→翻译→TTS 三阶段架构可直接复用，DeepSeek V4 Pro 作为翻译引擎的效果值得 benchmark。"
-        },
-        {
-          "title": "Simon Willison：Mitchell Hashimoto 谈编程语言不再是 lock-in",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/May/14/mitchell-hashimoto/",
-          "why_picked": "Bun 从 Zig 迁移到 Rust 引发讨论——Mitchell Hashimoto 认为编程语言如今高度可替代，lock-in 时代正在结束。Simon Willison 跟进观察：工具链成熟让语言切换成本大幅降低",
-          "so_what": "如果你在选择技术栈：这个信号意味着不必过度焦虑语言选型。Agent 框架、编译工具链的成熟让跨语言互操作成为常态——优先选生态和社区，而非死守单一语言。"
-        },
-        {
-          "title": "datasette-ip-rate-limit：Simon Willison 用 GPT-5.5 从零构建插件",
-          "category": "实验",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/May/14/datasette-ip-rate-limit/",
-          "why_picked": "Simon 用 Codex (GPT-5.5 xhigh) 从零编写 Datasette IP 限速插件，解决爬虫轰炸问题——展示了 AI 编码工具在小型工具开发中的实际效率",
-          "so_what": "如果你在用 AI 编码工具做内部工具：Simon 的工作流是典型案例——用 GPT-5.5 生成骨架代码 + 人工 review 调参。对于配置型/规则型小工具，AI 编码效率已经接近即写即用。"
         }
       ]
     }
