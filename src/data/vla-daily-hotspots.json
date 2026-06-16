@@ -1,6 +1,390 @@
 {
   "reported_papers": [
     {
+      "title": "Fast Autoregressive Video Diffusion and World Models with Temporal Cache Compression and Sparse Attention",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2602.01801",
+      "source": "cs.AI",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2602.01801v2 Announce Type: replace-cross Abstract: Autoregressive video diffusion models enable streaming generation, opening the door to long-form synthesis, video world models, and interactive neural game engines. However, their core attention layers become a major bottleneck at inference time: as generation progresses, the KV cache grows, causing both increasing latency and escalating GPU memory, which in turn restricts usable temporal context and harms long-range consistency. In this",
+      "rating": "📖",
+      "reason": "提出时间缓存压缩和稀疏注意力以加速视频扩散模型。虽可用于世界模型加速，但核心贡献在于通用视频生成效率，未针对机器人操作场景进行专门优化或验证。",
+      "affiliation": ""
+    },
+    {
+      "title": "SIMMER: Benchmarking Latent Failures in LLM Executable Planning with a World Model",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14574",
+      "source": "cs.AI",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14574v1 Announce Type: cross Abstract: Large language models (LLMs) are increasingly deployed as planners for autonomous agents in household environments. While existing benchmarks evaluate whether LLM-generated plans execute successfully, they overlook a critical type of failure: latent failures. Unlike immediate failures that trigger instant feedback at execution time and enable timely correction, latent failures do not immediately halt plan execution but silently compromise goal ac",
+      "rating": "📖",
+      "reason": "发布基准测试LLM在执行规划中的潜在失败模式。虽涉及世界模型和规划，但侧重于LLM符号规划的评估，而非底层VLA视觉动作策略的直接改进。",
+      "affiliation": ""
+    },
+    {
+      "title": "Mask, Sample, Revise: A Revisable CTMC Inference Stack for Guided Discrete Flow Matching Text-to-Speech",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13989",
+      "source": "cs.AI",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13989v1 Announce Type: cross Abstract: Recent alignment-free non-autoregressive (NAR) text-to-speech (TTS) models formulate synthesis as a conditional infilling task, bypassing explicit duration predictors and external aligners. When speech is represented with neural codec tokens, the infilling problem becomes discrete, making Discrete Flow Matching (DFM), a Continuous-Time Markov Chain (CTMC) framework for discrete generation, a natural fit. However, inference-time control for stable",
+      "rating": "❌",
+      "reason": "研究文本转语音(TTS)中的离散流匹配推理。属于音频处理领域，与机器人操作无关，予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "EquiDexFlow: Contact-Grounded SE(3)-Equivariant Dexterous Grasp Generative Flows",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.12728",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.12728v2 Announce Type: replace Abstract: Most learned dexterous grasp generators relegate contact forces to a downstream verification step, so a kinematically-plausible pose can still violate the conditions for a stable physical grasp. We address this with EquiDexFlow, an SE(3)-equivariant flow-matching model that jointly predicts wrist pose, joint angles, fingertip contacts, surface normals, and contact forces from an object point cloud. Our architecture projects contacts onto the ob",
+      "rating": "🔧",
+      "reason": "提出SE(3)等变生成流模型EquiDexFlow，将接触力约束融入灵巧抓取生成过程。解决了运动学可行但物理不稳定的问题，是灵巧操作VLA的重要算法补充。",
+      "affiliation": ""
+    },
+    {
+      "title": "Impedance MPC with Disturbance Estimation for Dexterous Hand Control",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14606",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14606v1 Announce Type: new Abstract: Dexterous hands must simultaneously track precise finger trajectories and maintain safe, compliant contact -- objectives in tension for any fixed-gain controller. We present an actuator-agnostic Impedance Model Predictive Control (Impedance MPC) framework for dexterous fingers, instantiating the constant-$A_d$ offset-free architecture established for physical human-robot interaction (pHRI); its stability, recursive-feasibility, and input-to-state-s",
+      "rating": "📖",
+      "reason": "提出带扰动估计的阻抗MPC框架用于灵巧手控制。属于传统控制理论与现代优化的结合，未涉及VLA或学习-based策略，归类为相邻领域。",
+      "affiliation": ""
+    },
+    {
+      "title": "ReactSim-Bench: Benchmarking Reactive Behavior World Model Simulation in Autonomous Driving",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14058",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14058v1 Announce Type: new Abstract: Reactive capability is a key property of data-driven behavior world model simulators for autonomous driving simulation systems. With this capability, simulated world agents can respond feasibly to autonomous vehicle (AV) behaviors that differ from the log. However, existing behavior simulation benchmarks do not directly measure reactive capability. They often let the simulator jointly control the AV and surrounding agents and evaluate realism throu",
+      "rating": "❌",
+      "reason": "发布自动驾驶反应式行为世界模型仿真基准。属于自动驾驶仿真评估工具，与机器人操作无关，予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "Multi-Agent Embodied Autonomous Driving: From V2X Information Exchange to Shared World Models",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13840",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13840v1 Announce Type: new Abstract: Autonomous driving is shifting from isolated vehicle intelligence toward multi-agent embodied systems that share perception, infer intent, and coordinate action under uncertainty. This survey examines this transition through the lens of Shared World Models (SWMs): predictive cross-agent representations maintained across vehicles, infrastructure, and other traffic participants. We review more than 380 publications spanning vehicle-to-everything (V2X",
+      "rating": "❌",
+      "reason": "综述多智能体自动驾驶中的共享世界模型。属于自动驾驶领域综述，非具身智能机器人操作，予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "Scalable Dynamic Tactile Sensing Enabled by Passive and Flexible Acoustic Waveguides",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13746",
+      "source": "cs.RO",
+      "tag": "read-only",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13746v1 Announce Type: new Abstract: Artificial dynamic tactile sensing requires sensitivity, robustness, and compliance, yet existing technologies face trade-offs when scaling to large-area arrays, compounded by wiring complexity and cost. Here, we report a passive distributed paradigm using deep sub-wavelength acoustic waveguides that decouples performance from structural flexibility. Elastic-membrane-capped Helmholtz resonators interconnected by spring-reinforced microtubes form an",
+      "rating": "📖",
+      "reason": "报道一种基于被动声波导的可扩展动态触觉传感技术。属于新型传感器硬件研发，虽对触觉VLA有潜在价值，但非算法或模型层面的直接贡献。",
+      "affiliation": ""
+    },
+    {
+      "title": "Deep Learning and Elicitability for McKean-Vlasov FBSDEs With Common Noise",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2512.14967",
+      "source": "cs.LG",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2512.14967v2 Announce Type: replace Abstract: We present a novel numerical method for solving McKean--Vlasov forward--backward stochastic differential equations (MV--FBSDEs) with common noise, combining Picard iterations, elicitability and deep learning. The key innovation involves elicitability to derive a pathwise loss function, enabling efficient training of neural networks to approximate both the backward process and the conditional expectations arising from common noise, without requi",
+      "rating": "❌",
+      "reason": "研究随机微分方程的数值解法，属于纯数学/金融工程领域。与机器人操作或VLA完全无关，予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "More with LESS -- Local Scene Representations for Tactile Imaging",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14344",
+      "source": "cs.LG",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14344v1 Announce Type: new Abstract: Tactile imaging seeks to reconstruct the internal structure of soft objects through touch sensing, with applications in medical diagnosis and robotic manipulation. Recent self-supervised learning approaches have shown promising results, but rely on global, unstructured representations and robot-controlled sensing, limiting generalization and practical use. We propose Local Encoder for Spatial Sensing (LESS), an object-centric tactile representation",
+      "rating": "📖",
+      "reason": "提出局部场景表示以改进触觉成像重建效果。侧重于触觉传感器数据处理，未直接结合VLA决策框架，属于相邻领域的基础感知研究。",
+      "affiliation": ""
+    },
+    {
+      "title": "Diffusion Policy Optimization without Drifting Apart",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13795",
+      "source": "cs.LG",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13795v1 Announce Type: new Abstract: RL post-training has become increasingly pivotal for improving diffusion policies, but existing diffusion policy-gradient methods are often unstable and cannot achieve reliable policy improvement. We identify the cause as the double-drift phenomenon: optimizing a variational surrogate can let the ELBO separate from the true log-likelihood, which then makes the resulting proxy policy gradient misaligned with the true policy gradient of expected retu",
+      "rating": "🔧",
+      "reason": "识别并解决扩散策略RL微调中的“双重漂移”不稳定问题，提出改进优化目标。直接提升Diffusion Policy的训练稳定性，是VLA RL精调方向的重要进展。",
+      "affiliation": ""
+    },
+    {
+      "title": "MUSE: Agentic 3D Scene Authoring via Memory-Grounded Incremental Requirement Satisfaction",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14168",
+      "source": "cs.CV",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14168v1 Announce Type: new Abstract: Text-driven 3D scene generation is a promising technique for digital content creation, embodied AI simulation, and interactive design, yet practical workflows often require refining, extending, or correcting existing scenes while preserving non-target content. Existing methods can produce realistic and structurally plausible scenes, but they generally lack editability with requirement-level state tracking, so part-level failures often lead to full-",
+      "rating": "📖",
+      "reason": "研究基于记忆的增量式3D场景生成代理，主要用于数字内容创作。虽涉及 embodied AI 仿真场景构建，但核心任务是生成而非机器人操作控制。",
+      "affiliation": ""
+    },
+    {
+      "title": "Output Type Before Quality: A Standards-Derived XAI Admissibility Rubric for Autonomous-Driving Safety",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.05461",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.05461v2 Announce Type: replace Abstract: Safety standards for ML-based autonomous driving specify the kind of evidence an assurance case must contain (directed cause-and-effect chains, quantified interventional effects, named root-cause variables), yet the XAI literature is organised by output type and technique family (saliency maps, feature attribution, counterfactuals, causal graphs, language traces). SHAP, the most-recommended ADS XAI method, returns a ranked feature list that no",
+      "rating": "❌",
+      "reason": "关注自动驾驶安全标准下的可解释性(XAI)评估准则。属于自动驾驶与安全合规领域，与具身智能机器人操作无关，予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "A Pragmatic VLA Foundation Model",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2601.18692",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2601.18692v3 Announce Type: replace Abstract: Offering great potential in robotic manipulation, a capable Vision-Language-Action (VLA) foundation model is expected to faithfully generalize across tasks and platforms while ensuring cost efficiency (e.g., data and GPU hours required for adaptation). To this end, we develop LingBot-VLA with around 20,000 hours of real-world data from 9 popular dual-arm robot configurations. Through a systematic assessment on 3 robotic platforms, each completi",
+      "rating": "📖",
+      "reason": "宣称提出兼顾泛化与成本效率的实用型VLA基础模型。标题宏大但摘要缺乏具体架构创新细节及跨平台量化对比，疑似常规微调或工程优化。 [💧灌水]",
+      "affiliation": ""
+    },
+    {
+      "title": "Encoder Winners Do Not Reliably Transfer Across VLA Backbone Scale: A Frozen-Backbone Grafting Diagnostic",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14153",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14153v1 Announce Type: cross Abstract: Vision-language-action (VLA) policies typically inherit their vision encoder from upstream VLM releases, but it is unclear whether an encoder choice validated on a small VLA transfers to a larger backbone. We introduce a frozen-backbone grafting diagnostic: the vision tower of a released VLA is replaced by a candidate encoder under a fixed protocol (adaptive average pooling, LayerNorm, and a single trainable linear projector), with the language m",
+      "rating": "🔧",
+      "reason": "诊断发现小尺度VLA验证的最佳编码器在大尺度 backbone 中未必有效，并提出冻结骨干嫁接诊断方法。为VLA模型选型提供了关键的工程洞见，避免盲目迁移。",
+      "affiliation": ""
+    },
+    {
+      "title": "RT-VLA: Real-Time Vision-Language-Action Models via Knowledge Distillation",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14010",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14010v1 Announce Type: cross Abstract: Vision-Language-Action (VLA) models have shown strong potential for end-to-end autonomous driving by jointly modeling visual perception, language reasoning, explainability and action prediction. However, their large vision-language backbones and reasoning modules introduce substantial inference latency and thereby prevent their deployment in the unforgiving reality of the road networks. We propose RT-VLA, a lightweight, distilled VLA model that t",
+      "rating": "❌",
+      "reason": "聚焦自动驾驶领域的实时VLA模型，通过知识蒸馏加速推理。属于自动驾驶范畴，非具身智能机器人操作，予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "EgoGuide: Egocentric Guidance for Efficient Robot-Free Demonstration Collection and Learning",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14665",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14665v1 Announce Type: new Abstract: Robot learning from real-world demonstrations is currently constrained by data scaling. Universal Manipulation Interface (UMI) provides an efficient robot-free data collection interface, yet current UMI-style pipelines often collect redundant demonstrations and lack global scene context. To improve data efficiency, we present EgoGuide, a collection interface that records synchronized wrist and head/egocentric observations and couples them with onli",
+      "rating": "🔧",
+      "reason": "提出基于第一人称视角引导的高效无机器人演示收集方法，减少冗余数据。该方法优化了VLA数据收集 pipeline，具有显著的样本效率提升潜力。",
+      "affiliation": ""
+    },
+    {
+      "title": "ORCA: A Platform for Open-Source Dexterity Research",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14561",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14561v1 Announce Type: new Abstract: Robotics manipulation research increasingly focuses on two-finger parallel grippers for their effectiveness, affordability, and ease of teleoperation. Grippers are nonetheless limited by their form factor, often requiring bimanual setups even for simple reorientation tasks. Anthropomorphic hands are a more natural platform for dexterous robot learning -- closer to the human hand, and capable of learning from human video -- yet they remain hard to u",
+      "rating": "📖",
+      "reason": "发布开源灵巧手平台ORCA，旨在促进双指夹爪研究。属于硬件平台发布，虽对社区有益，但不包含VLA算法或训练范式的直接创新。",
+      "affiliation": ""
+    },
+    {
+      "title": "TRACE: Trajectory-Routed Causal Memory for Delayed-Evidence Visuomotor Imitation",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14551",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14551v1 Announce Type: new Abstract: Robots under autonomous operation may require decisions based on evidence that is no longer visible. We study \\emph{delayed-evidence} tasks, where an early cue disappears before a later decision point, so visually similar observations can require different actions. In these settings, the current observation is not a sufficient state for control. We introduce TRAjectory-routed Causal Evidence (TRACE), a memory framework for visuomotor imitation poli",
+      "rating": "🔧",
+      "reason": "引入轨迹路由因果记忆模块，解决早期线索消失后的延迟证据模仿学习问题。针对长视界任务中的记忆瓶颈提出了具体的架构改进，具有明确的技术贡献。",
+      "affiliation": ""
+    },
+    {
+      "title": "Spatially Conditioned Diffusion Policy: Learning Precise and Robust Manipulation with a Single RGB Camera",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14535",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14535v1 Announce Type: new Abstract: Recent visual imitation learning systems have widely adopted multi-camera setups with wrist-mounted cameras as the de facto standard. However, manipulation from a single global view remains challenging, as the policy should capture fine-grained interaction details and identify task-relevant regions without local wrist views. To address this challenge, we present Spatially Conditioned Diffusion Policy (SCDP), a diffusion-based visuomotor policy that",
+      "rating": "🔧",
+      "reason": "提出空间条件扩散策略，仅凭单目RGB相机即可实现高精度操作，摆脱了对腕部相机的依赖。该方法降低了硬件门槛，并在LIBERO等基准上展示了有效性。",
+      "affiliation": ""
+    },
+    {
+      "title": "Hy-Embodied-0.5-VLA: From Vision-Language-Action Models to a Real-World Robot Learning Stack",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14409",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14409v1 Announce Type: new Abstract: In this report, we present Hy-Embodied-0.5-VLA, abbreviated as HyVLA-0.5, an end-to-end system that spans the full robot learning stack: data collection, model design, continued pre-training and supervised fine-tuning, RL post-training, and real-world deployment. Each component serves a distinct role in this stack.",
+      "rating": "📖",
+      "reason": "报告了一个涵盖数据收集到RL后训练的端到端VLA系统栈。属于系统工程报告，虽全面但缺乏单一核心算法突破，更多是工程整合而非理论创新。",
+      "affiliation": ""
+    },
+    {
+      "title": "Elastic Queries Reinforcement Learning: Self-Aware Policy Execution for VLA Models",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14375",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14375v1 Announce Type: new Abstract: Vision-language-action (VLA) models are powerful action generators for robot manipulation, but they are typically executed with fixed inference and replanning schedules. This rigidity ignores the uneven difficulty of robot control: contact-rich or uncertain states may need more computation and fresher feedback, while easier states can often be handled with fewer inference steps and longer open-loop execution. We propose Elastic Queries Reinforcemen",
+      "rating": "📖",
+      "reason": "提出弹性查询RL框架，使VLA能根据任务难度动态调整重规划频率。概念新颖，但摘要未提供充分的Benchmark对比数据证明其优于固定调度策略。",
+      "affiliation": ""
+    },
+    {
+      "title": "ReactVLA: Fast and Lightweight Reactive Robot Manipulation via Improved Mean Flow Action Generation",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14255",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14255v1 Announce Type: new Abstract: Diffusion-based Vision-Language-Action (VLA) policies have demonstrated strong capability in modeling expressive and multimodal action distributions. However, their reliance on iterative sampling introduces substantial inference latency, which limits their applicability to reactive closed-loop robot manipulation. To address this limitation, we propose \\texttt{ReactVLA}, a lightweight and low-latency VLA framework for real-time robotic manipulation.",
+      "rating": "🔧",
+      "reason": "通过改进均值流动作生成技术，显著降低扩散VLA的推理延迟，实现快速反应式操作。解决了VLA部署中的实时性瓶颈，代码与方法具备高复用性。",
+      "affiliation": ""
+    },
+    {
+      "title": "When and How Severely: Scenario-Specific Safety Envelopes for Driving VLAs",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14238",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14238v1 Announce Type: new Abstract: Safety certification of Vision-Language-Action (VLA) driving planners under ISO 21448 (SOTIF) rests on an Operational Design Domain (ODD) specification that answers two complementary questions: when does the planner start to fail, and how severely does it fail once it does? We evaluate Alpamayo R1, a 10B-parameter open-weight driving VLA, on 15,968 (clip, attack) pairs. We find a conservative-aggregate gap: an aggregate safe threshold of $\\sigma \\l",
+      "rating": "❌",
+      "reason": "聚焦自动驾驶VLA的安全认证与ODD规范，属于自动驾驶领域。根据规则，非机器人操作的自动驾驶论文予以过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "Self-Improving VLA Policies: Selected Diffusion Noise for Spurious-Robust Action Smoothing",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14084",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14084v1 Announce Type: new Abstract: Diffusion-based Vision-Language-Action (VLA) policies enable strong generalization in robotic manipulation, but remain sensitive to spurious visual correlations and noisy action generation, leading to brittle behavior under perturbations. We introduce Selected Diffusion Noise (SDN), a simple, training-free test-time method that improves both robustness and success rate by leveraging the diffusion noise space as a controllable degree of freedom. SDN",
+      "rating": "🔧",
+      "reason": "提出通过选择扩散噪声来平滑动作，以增强VLA策略对虚假视觉相关性的鲁棒性。该方法直接改进Diffusion Policy推理阶段，具有明确的性能提升和复用价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "The N2D Haptic Glove: A Multi-Finger Glove for 2D Directional Force Feedback for Contact Rich Manipulation",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.14083",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14083v1 Announce Type: new Abstract: Humans rely on directional fingertip forces to probe and regulate contact during manipulation, yet most wearable haptic gloves render only vibration or single-axis force, leaving force direction ambiguous. Without directional cues, users must infer contact force from vision alone, often leading to over-pressing, inconsistent control, and reduced precision in robotic teleoperation. We present the N2D Haptic Glove, a multi-finger wearable device that",
+      "rating": "📖",
+      "reason": "介绍一款支持二维方向力反馈的多指触觉手套硬件。属于数据采集/遥操作设备创新，虽对触觉VLA有价值，但本身不涉及算法或模型层面的VLA进展。",
+      "affiliation": ""
+    },
+    {
+      "title": "An Attention-based Model for Robust Forecasting with Missing Modality",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13970",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13970v1 Announce Type: new Abstract: Learning with missing modalities is a fundamental challenge in multimodal robot learning, as real-world robotic systems often operate in environments with incomplete sensor data. Attention-based models are appealing for processing multimodal data because they can handle multiple modalities with a single backbone network. However, most multimodal models assume that all modalities are available during both training and inference, limiting their appli",
+      "rating": "📖",
+      "reason": "研究多模态缺失场景下的鲁棒预测问题，提出基于注意力的处理模型。虽与多模态对齐相关，但侧重于通用预测而非具体的机器人动作生成或VLA架构创新。",
+      "affiliation": ""
+    },
+    {
+      "title": "PhysVLA: Towards Physically-Grounded VLA for Embodied Robotic Manipulation",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13886",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13886v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models excel at mapping visual inputs and natural language instructions directly to robotic control policies. However, because they are trained primarily to fit behavioural demonstration data, they do not explicitly enforce fundamental physical principles such as rigid-body dynamics or contact constraints. This exposes a critical physics gap: standard temporal smoothing applied on top of single-step or chunked VLAs trad",
+      "rating": "🔧",
+      "reason": "提出PhysVLA，通过在行为模仿数据中显式嵌入物理约束来增强VLA的物理一致性。该方法直接针对VLA泛化瓶颈，提供了可落地的物理 grounding 训练范式。",
+      "affiliation": ""
+    },
+    {
+      "title": "ContactWorld: What Matters in Vision-Tactile World Models for Contact-Rich Manipulation",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13877",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13877v1 Announce Type: new Abstract: Contact-rich manipulation requires world models to reason over complex contact dynamics from multimodal sensory observations. However, it remains unclear which representation properties fundamentally support stable long-horizon planning in contact-rich settings. In this paper, we present ContactWorld, a benchmark and systematic empirical study of vision-tactile world models spanning 12 contact-rich manipulation tasks, including insertion, disassemb",
+      "rating": "🔧",
+      "reason": "深入分析视觉-触觉世界模型在接触丰富操作中的关键表示属性。填补了触觉VLA理论空白，为构建更稳定的长视界规划模型提供了明确的工程指导方向。",
+      "affiliation": ""
+    },
+    {
+      "title": "Output-Level Regularization Eliminates the Seed Lottery in Single-GPU VLA Fine-Tuning",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13856",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13856v1 Announce Type: new Abstract: Fine-tuning a vision-language-action model (VLA-JEPA) on a single GPU should be simple: load a pretrained checkpoint, run training, deploy. There is a hidden danger. Run the same fine-tuning code thirteen times -- same data, same architecture, different random seed -- and twelve runs produce a robot succeeding 91--94% of the time, while one run silently degrades to 65.2%: a 29 pp gap with no error message, no warning, and no way to predict which se",
+      "rating": "🔧",
+      "reason": "针对单GPU微调VLA时的随机性种子问题，提出输出级正则化方法以提升训练稳定性。该方法工程实用性强，可直接应用于现有VLA微调流程，解决复现难题。",
+      "affiliation": ""
+    },
+    {
+      "title": "FlowMo-WM: A World Model with Object Momentum and Hidden Ambient Drift",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13817",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13817v1 Announce Type: new Abstract: World models in robot learning predict future states from visual observations and actions, enabling agents to reason about the consequences of their controls. However, many action-conditioned models are evaluated in settings where motion is dominated by immediate control, whereas aquatic surface vehicles and other real-world objects continue moving under inertia and are displaced by hidden ambient drift, such as water currents or wind. We propose F",
+      "rating": "📖",
+      "reason": "引入物体动量和隐藏环境漂移机制以改进世界模型的预测能力。主要贡献在于仿真环境下的状态预测优化，缺乏真实机器人操作验证及与主流VLA方法的直接关联。",
+      "affiliation": ""
+    },
+    {
+      "title": "$\\mu_0$: A Scalable 3D Interaction-Trace World Model",
+      "date": "2026-06-16",
+      "url": "https://arxiv.org/abs/2606.13769",
+      "source": "cs.RO",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.13769v1 Announce Type: new Abstract: World models that capture how actions induce physical change enable scalable robot learning without reliance on embodiment-specific action labels. Pixel-space video models provide broad visual priors but expend model capacity on dense appearance reconstruction, while direct action models require embodiment-specific labels that hinder scalability. We present $\\mu_0$, a scalable world model based on 3D traces. Rather than predicting dense pixels or d",
+      "rating": "📖",
+      "reason": "提出基于3D交互轨迹的世界模型，旨在通过捕捉物理变化实现可扩展的机器人学习。属于世界模型方向的重要探索，但摘要未展示具体VLA架构改进或Benchmark对比结果。",
+      "affiliation": ""
+    },
+    {
       "title": "Mana: Dexterous Manipulation of Articulated Tools",
       "date": "2026-06-14",
       "url": "https://tldr.takara.ai/p/2606.13677",
@@ -17995,276 +18379,6 @@
       "affiliation": ""
     },
     {
-      "title": "MoE-ACT: Scaling Multi-Task Bimanual Manipulation with Sparse Language-Conditioned Mixture-of-Experts Transformers",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15265",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "HapticVLA: Contact-Rich Manipulation via Vision-Language-Action Model without Inference-Time Tactile Sensing",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15257",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "NavGSim: High-Fidelity Gaussian Splatting Simulator for Large-Scale Navigation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15186",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "ForceVLA2: Unleashing Hybrid Force-Position Control with Force Awareness for Contact-Rich Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15169",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Master Micro Residual Correction with Adaptive Tactile Fusion and Force-Mixed Control for Contact-Rich Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15152",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Confusion-Aware In-Context-Learning for Vision-Language Models in Robotic Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15134",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "AnoleVLA: Lightweight Vision-Language-Action Model with Deep State Space Models for Mobile Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.15046",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "ReMAP-DP: Reprojected Multi-view Aligned PointMaps for Diffusion Policy",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14977",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Learning from Mistakes: Post-Training for Driving VLA with Takeover Data",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14972",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Ego to World: Collaborative Spatial Reasoning in Embodied Systems via Reinforcement Learning",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14811",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Tactile Modality Fusion for Vision-Language-Action Models",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14604",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "One-Policy-Fits-All: Geometry-Aware Action Latents for Cross-Embodiment Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14522",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "OCRA: Object-Centric Learning with 3D and Tactile Priors for Human-to-Robot Action Transfer",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14401",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "OxyGen: Unified KV Cache Management for Vision-Language-Action Models under Multi-Task Parallelism",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14371",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "OmniClone: Engineering a Robust, All-Rounder Whole-Body Humanoid Teleoperation System",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14327",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "A Real-Time Neuro-Symbolic Ethical Governor for Safe Decision Control in Autonomous Robotic Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.14221",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "ToMPC: Task-oriented Model Predictive Control via ADMM for Safe Robotic Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13944",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "SmoothVLA: Aligning Vision-Language-Action Models with Physical Constraints via Intrinsic Smoothness Optimization",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13925",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "GraspADMM: Improving Dexterous Grasp Synthesis via ADMM Optimization",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13832",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Building Explicit World Model for Zero-Shot Open-World Object Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13825",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "ST-VLA: Enabling 4D-Aware Spatiotemporal Understanding for General Robot Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13788",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Your Vision-Language-Action Model Already Has Attention Heads For Path Deviation Detection",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13782",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "KoopmanFlow: Spectrally Decoupled Generative Control Policy via Koopman Structural Bias",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13781",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Exploration-assisted Bottleneck Transition Toward Robust and Data-efficient Deformable Object Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13756",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "REFINE-DP: Diffusion Policy Fine-tuning for Humanoid Loco-manipulation via Reinforcement Learning",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13707",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Beyond Binary Success: Sample-Efficient and Statistically Rigorous Robot Policy Comparison",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13616",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Learning Actionable Manipulation Recovery via Counterfactual Failure Synthesis",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13528",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Spatially Grounded Long-Horizon Task Planning in the Wild",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13433",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "Bi-HIL: Bilateral Control-Based Multimodal Hierarchical Imitation Learning via Subtask-Level Progress Rate and Keyframe Memory for Long-Horizon Contact-Rich Robotic Manipulation",
-      "date": "2026-03-17",
-      "url": "https://arxiv.org/abs/2603.13315",
-      "source": "cs.RO",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
-      "title": "From Passive Observer to Active Critic: Reinforcement Learning Elicits Process Reasoning for Robotic Manipulation",
-      "date": "2026-03-17",
-      "url": "https://tldr.takara.ai/p/2603.15600",
-      "source": "hf-papers",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": ""
-    },
-    {
       "title": "Saranga: MilliWatt Ultrasound for Navigation in Visually Degraded Environments on Palm-Sized Aerial Robots",
       "url": "https://arxiv.org/abs/2603.24699",
       "source": "cs.RO",
@@ -18708,5 +18822,5 @@
     }
   ],
   "last_report_date": "2026-02-21",
-  "last_updated": "2026-06-15T10:58:03.739636+08:00"
+  "last_updated": "2026-06-16T09:21:12.561140+08:00"
 }
