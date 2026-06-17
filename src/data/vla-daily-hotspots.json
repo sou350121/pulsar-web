@@ -1,6 +1,102 @@
 {
   "reported_papers": [
     {
+      "title": "LaWAM: Latent World Action Models for Efficient Dynamics-Aware Robot Policies",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.15768",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.15768v1 Announce Type: cross Abstract: Vision-Language-Action models (VLAs) leverage large-scale vision-language pretraining for semantic robot control, but often lack explicit foresight into how robot actions change the scene. World-Action Models (WAMs) address this limitation by conditioning policies on predicted futures, yet existing approaches typically rely on computationally expensive video generation with substantial pixel-level redundancy. We present LaWAM, a Latent World Acti",
+      "rating": "🔧",
+      "reason": "结合潜在世界模型与动作生成，使VLA具备动力学感知能力。通过隐空间预测提升策略效率，是连接世界模型与VLA控制的有效架构尝试。",
+      "affiliation": ""
+    },
+    {
+      "title": "Retrieve, Don't Retrain: Extending Vision Language Action Models to New Tasks at Test Time",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.15631",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.15631v1 Announce Type: cross Abstract: Extending a vision-language-action (VLA) policy to a new task typically requires task-specific teleoperated demonstrations and per-task fine-tuning, making adaptation costly in both data collection and compute. In this paper, we show that this target-side per-task adaptation cost can be replaced by retrieval. Our retrieval-augmented policy is trained once on paired demonstrations from the target embodiment (query) and a cheaper embodiment (pool,",
+      "rating": "🔧",
+      "reason": "提出测试时检索扩展方法，无需微调即可将VLA适配至新任务。显著降低适应成本，通过RAG思路增强VLA零样本泛化能力，具有极高的工程应用价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "MimicIK: Real-Time Generative Inverse Kinematics from Teleoperation with FK Consistency",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.15148",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.15148v1 Announce Type: cross Abstract: Inverse kinematics (IK) remains a critical bottleneck for real-time robot manipulation. Classical numerical solvers achieve high geometric precision but often suffer from discontinuous branch switching and unstable behavior near kinematic singularities during closed-loop deployment. Meanwhile, learned IK approaches frequently struggle to balance spatial accuracy, motion smoothness, and real-time efficiency, particularly when trained on noisy huma",
+      "rating": "📖",
+      "reason": "提出基于遥操作的正向运动学一致性生成逆解方法，解决实时IK瓶颈。虽服务于机器人控制，但属于底层运动学求解器优化，非高层VLA策略网络创新。",
+      "affiliation": ""
+    },
+    {
+      "title": "QPILOTS: Efficient Test-Time Q-Steering for Flow Policies",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.14801",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14801v1 Announce Type: cross Abstract: Flow-matching and diffusion policies are expressive action generators, but optimizing them with temporal-difference reinforcement learning (RL) remains difficult. Effective policy extraction requires exploiting the critic's action gradient, yet directly backpropagating this signal through a multi-step denoising process can be numerically unstable. Existing methods work around this either by discarding gradient information, distilling the policy i",
+      "rating": "🔧",
+      "reason": "提出高效的测试时Q值引导方法，利用 critic 梯度优化流匹配策略的动作采样。无需重新训练即可提升策略性能，是改进现有Flow/Diffusion VLA的实用工具。",
+      "affiliation": ""
+    },
+    {
+      "title": "ScoutVLA: UAV-Centric Active Perception via a Dual-Expert VLA Model for Open-World Embodied Question Answering",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.14772",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14772v1 Announce Type: cross Abstract: Aerial Embodied Question Answering (EQA) requires Unmanned Aerial Vehicles (UAVs) to actively perceive the environment and answer natural language questions. Existing outdoor EQA systems usually stop once the target enters the UAV's field of view, leaving the fine-grained viewpoint adjustment needed for evidence-seeking questions largely unresolved. To address this issue, we introduce FG-EQA, a fine-grained active perception EQA benchmark with mo",
+      "rating": "📖",
+      "reason": "针对无人机空中EQA任务提出双专家VLA模型，侧重主动感知与开放世界问答。应用场景垂直（UAV/EQA），与主流地面操作VLA关联度较低，归为值得了解。",
+      "affiliation": ""
+    },
+    {
+      "title": "X-Tokenizer: A Multimodal Action Tokenizer for Vision-Language-Action Pretraining",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.14752",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.14752v1 Announce Type: cross Abstract: Modern Vision-Language-Action (VLA) models must bridge pretrained vision-language reasoning and precise continuous robot control. Existing action tokenizers discretize actions primarily for reconstruction, producing codes that preserve motion geometry but provide only weak semantic supervision to the backbone. We therefore formulate action tokenization not as mere compression, but as semantic interface learning between multimodal reasoning and ex",
+      "rating": "🔧",
+      "reason": "设计专为VLA预训练优化的多模态动作Tokenize器，保留运动几何特征而非仅重建。该方法可直接替换现有离散化模块，提升VLA对精细动作的编码能力。",
+      "affiliation": ""
+    },
+    {
+      "title": "Kairos: A Native World Model Stack for Physical AI",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.16533",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.16533v1 Announce Type: new Abstract: World models are transitioning from passive visual generators to foundational, operational infrastructure for Physical AI: they must natively acquire world knowledge from heterogeneous experience, maintain persistent states over long horizons, and execute efficiently within real deployment constraints. We introduce Kairos, a native world model stack designed around these requirements. (1) Kairos learns the world by pioneering a Native Pre-training",
+      "rating": "📖",
+      "reason": "提出面向物理AI的原生世界模型栈Kairos，强调异构经验获取与持久状态维护。概念框架性强，但摘要未展示具体VLA应用效果或Benchmark对比，暂归为了解。",
+      "affiliation": ""
+    },
+    {
+      "title": "Towards Next-Generation Healthcare: A Survey of Medical Embodied AI for Perception, Decision-Making, and Action",
+      "date": "2026-06-17",
+      "url": "https://arxiv.org/abs/2606.15647",
+      "source": "cs.AI",
+      "tag": "actionable",
+      "repo_url": "",
+      "abstract_snippet": "arXiv:2606.15647v1 Announce Type: new Abstract: Foundation models have demonstrated impressive performance in enhancing healthcare efficiency across a wide range of medical applications. Nevertheless, their limited ability to perceive, understand, and interact with the physical world significantly constrains their effectiveness in real-world clinical workflows, where safety-critical decision-making and physical execution are tightly coupled. Recently, embodied artificial intelligence (AI) has em",
+      "rating": "📖",
+      "reason": "综述医疗具身智能在感知、决策与行动方面的进展。属于领域综述，虽重要但不包含具体的VLA算法创新或即时可用的技术方案。",
+      "affiliation": ""
+    },
+    {
       "title": "Fast Autoregressive Video Diffusion and World Models with Temporal Cache Compression and Sparse Attention",
       "date": "2026-06-16",
       "url": "https://arxiv.org/abs/2602.01801",
@@ -18343,42 +18439,6 @@
       "affiliation": "[清华]"
     },
     {
-      "title": "Panoramic Affordance Prediction",
-      "date": "2026-03-18",
-      "url": "https://tldr.takara.ai/p/2603.15558",
-      "source": "hf-papers",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": "",
-      "rating": "📖",
-      "reason": "提出全景 affordance 预测新任务，发布 PAP-12K 数据集（1000+12k 全景图像与标注），训练免费粗到细管道。为具身感知提供新基准，但非直接 VLA 动作模型。",
-      "affiliation": ""
-    },
-    {
-      "title": "MA-VLCM: A Vision Language Critic Model for Value Estimation of Policies in Multi-Agent Team Settings",
-      "date": "2026-03-18",
-      "url": "https://tldr.takara.ai/p/2603.15418",
-      "source": "hf-papers",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": "",
-      "rating": "📖",
-      "reason": "用预训练 VLM 替代 MARL 中学习式评论家，提升样本效率与泛化能力。针对多机器人系统价值估计，但核心是 MARL 而非 VLA 动作生成。",
-      "affiliation": ""
-    },
-    {
-      "title": "Look Before Acting: Enhancing Vision Foundation Representations for Vision-Language-Action Models",
-      "date": "2026-03-18",
-      "url": "https://tldr.takara.ai/p/2603.15618",
-      "source": "hf-papers",
-      "tag": "actionable",
-      "repo_url": "",
-      "abstract_snippet": "",
-      "rating": "📖",
-      "reason": "系统分析 VLA 模型发现深层视觉 token 敏感度下降，提出 DeepVision-VLA 增强视觉基础表示。直接改进 VLA 视觉接地，有方法贡献。 [Pass3降级: Core contribution is incremental visual feature enhancement based on common layer-sensitivity analysis, lacking novel paradigm or specific reusable tool compared to crowded 2024 VLA improvement works.]",
-      "affiliation": ""
-    },
-    {
       "title": "Saranga: MilliWatt Ultrasound for Navigation in Visually Degraded Environments on Palm-Sized Aerial Robots",
       "url": "https://arxiv.org/abs/2603.24699",
       "source": "cs.RO",
@@ -18822,5 +18882,5 @@
     }
   ],
   "last_report_date": "2026-02-21",
-  "last_updated": "2026-06-16T09:21:12.561140+08:00"
+  "last_updated": "2026-06-17T09:20:21.462619+08:00"
 }
