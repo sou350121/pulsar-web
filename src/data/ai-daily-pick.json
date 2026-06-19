@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-19",
+      "items": [
+        {
+          "title": "Amazon Bedrock AgentCore Harness GA：两步API生产级Agent",
+          "category": "新发布",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/amazon-bedrock-agentcore-harness-is-now-generally-available-go-from-idea-to-production-grade-agent-in-minutes/",
+          "why_picked": "AWS 正式 GA 的 Agent 编排框架，两步 API 即可部署生产级 Agent，直接对标 LangGraph/CrewAI",
+          "so_what": "如果你在建多步骤 Agent 管线：AgentCore Harness 提供托管态执行 + 状态管理，可替代自建编排层。对比 LangGraph 的节点图模式，Harness 更偏「声明式」——定义输入输出 schema 即可运行，减少样板代码。建议评估是否迁移现有 LangGraph 工作流。"
+        },
+        {
+          "title": "OpenAI 发布 GPT-5.5 Instant：ChatGPT 健康智能大幅升级",
+          "category": "新发布",
+          "source": "OpenAI Blog",
+          "url": "https://openai.com/index/improving-health-intelligence-in-chatgpt",
+          "why_picked": "GPT-5.5 系列新成员，专注健康领域推理能力增强",
+          "so_what": "如果你在构建医疗/健康类 Agent 应用：GPT-5.5 Instant 在健康推理 benchmark 上有显著提升，可作为垂直领域 Agent 的后端模型候选。注意这是领域增强版，通用任务仍用标准 GPT-5.x。"
+        },
+        {
+          "title": "HF 开源 Agent 能力基准测试：Is it agentic enough?",
+          "category": "工具",
+          "source": "HuggingFace Blog",
+          "url": "https://huggingface.co/blog/is-it-agentic-enough",
+          "why_picked": "业界首个系统化的 Agent 能力评估框架，覆盖 tool calling、多步推理、自我修正等维度",
+          "so_what": "如果你在评估/选型 Agent 框架：这个 benchmark 提供了可复现的评分体系，比单纯看 benchmark score 更有工程参考价值。建议纳入你的 Agent 选型评估流程，尤其关注 tool calling 和 error recovery 子项。"
+        },
+        {
+          "title": "MosaicLeaks：研究 Agent 能否保守秘密",
+          "category": "实验",
+          "source": "HuggingFace Blog (ServiceNow)",
+          "url": "https://huggingface.co/blog/ServiceNow/mosaicleaks",
+          "why_picked": "ServiceNow 研究揭示 Agent 在信息保密方面的系统性漏洞——即使被明确要求保密，Agent 仍会通过间接途径泄露敏感信息",
+          "so_what": "如果你在建企业级 Agent 系统：这是必须读的权限控制反面教材。研究证明「你告诉 Agent 不要说」不够——需要在 system prompt 之外加数据层隔离（如 RAG 的 document-level ACL）。建议审查你的 Agent 是否有信息泄露面。"
+        },
+        {
+          "title": "OpenRouter Agent Royale：Claude vs Grok 机器人对战基准",
+          "category": "趋势",
+          "source": "OpenRouter Blog",
+          "url": "https://openrouter.ai/blog/insights/royale-last-agent-standing/",
+          "why_picked": "创新的对抗式 Agent 评估方式——让多个 Agent 在同一任务中竞争，观察谁先完成/谁犯错",
+          "so_what": "如果你在跑 Agent 框架对比：传统 benchmark 是静态打分，Agent Royale 的动态对抗更能暴露真实世界的鲁棒性差异。值得关注这种评估范式的演进，可能成为下一代 Agent 评测标准。"
+        },
+        {
+          "title": "Weaviate 规模化数据导入与向量化最佳实践",
+          "category": "工具",
+          "source": "Weaviate Blog",
+          "url": "https://weaviate.io/blog/data-import-best-practices",
+          "why_picked": "覆盖 server-side batching、重试、blobHash、多模态摄入的完整指南，有代码示例",
+          "so_what": "如果你在建 RAG管线：Weaviate 的批量导入策略直接影响 embedding 吞吐和成本。文中推荐的 server-side batching + 指数退避重试模式可直接复用。多模态 ingestion 部分对图文混合 RAG 特别有用。"
+        },
+        {
+          "title": "Show HN: Are You in the Weights? — 检测你的内容是否被 LLM 记住",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://www.intheweights.com/",
+          "why_picked": "有趣的项目——检测你的网站/内容是否被主流 LLM 训练数据收录，覆盖 frontier 和小型模型",
+          "so_what": "如果你在运营技术博客/文档站：这个工具帮你了解内容是否进入了 LLM 的「知识世界」。如果被收录，你的内容更可能在 LLM 回答中被引用（影响 SEO 2.0）。建议定期检测核心文档的收录状态。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-18",
       "items": [
         {
@@ -1296,59 +1357,6 @@
         ],
         "web_search_fallback": "credit_limit"
       }
-    },
-    {
-      "date": "2026-05-19",
-      "items": [
-        {
-          "title": "Anthropic 收购 Stainless：SDK/MCP 工具链全面内化",
-          "category": "行业",
-          "source": "Anthropic",
-          "url": "https://www.anthropic.com/news/anthropic-acquires-stainless",
-          "why_picked": "Anthropic 收购 Stainless，后者为 Anthropic 生成所有官方 SDK，数百家公司依赖其生成 SDK/CLI/MCP Server。这是 Agent 基础设施层的重要整合。",
-          "so_what": "如果你在用 Claude API 或 MCP 协议构建 Agent，这意味着 Anthropic 将进一步收紧 SDK 和工具链的垂直整合。短期无破坏性变更（Stainless 团队留任），但长期第三方 MCP Server 工具可能需要适配 Anthropic 原生方案。建议关注 Stainless 开源项目的后续维护状态。"
-        },
-        {
-          "title": "IBM Research 发布 Open Agent Leaderboard：首个全 Agent 系统开源评测",
-          "category": "工具",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/ibm-research/open-agent-leaderboard",
-          "why_picked": "不同于传统模型 benchmark，该评测框架评估完整 Agent 系统（含工具调用、规划、记忆、恢复），同时报告质量和成本，填补了 Agent 系统级评测的空白。",
-          "so_what": "如果你在选型 Agent 框架或评估部署方案，这个 Leaderboard 提供了第一个可复现的系统级对比基准。配套 Exgentic 框架可本地复现评测，建议纳入你的 Agent 选型 checklist。"
-        },
-        {
-          "title": "用 Git --author 标志挡住 AI 垃圾 PR：开源仓库反 AI 垃圾新方案",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://archestra.ai/blog/only-responsible-ai",
-          "why_picked": "HN 395分 186评。Archestra 项目遭 AI bot 轰炸（27个未测试 PR、253条垃圾评论），最终用 Git --author 标志过滤 AI 贡献，引发开源社区对 AI 垃圾问题的深度讨论。",
-          "so_what": "如果你在维护开源项目或企业代码库，这个方案值得参考。核心思路是用 Git 元数据（author 签名/标志）做贡献者身份验证，而非依赖人工审核。建议在你的 repo 中配置 branch protection + author allowlist。"
-        },
-        {
-          "title": "Files.md：开源本地优先的 Obsidian 替代，HN 526分",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://github.com/zakirullin/files.md",
-          "why_picked": "HN 526分 273评。纯本地 .md 文件管理，不发送数据到服务器，离线可用，代码极简（LLM 可理解整个项目），支持 Telegram 机器人。5年打磨的 local-first 笔记方案。",
-          "so_what": "如果你在构建 local-first 应用或关注隐私优先工具，这个项目展示了如何用极简架构实现 LLM-friendly 的知识管理。其「代码可被 LLM 完整理解」的设计哲学对 Agent 工具开发有启发。"
-        },
-        {
-          "title": "12-factor-agents：为生产级 LLM 应用立规矩",
-          "category": "观点",
-          "source": "GitHub",
-          "url": "https://github.com/humanlayer/12-factor-agents",
-          "why_picked": "受 12-factor app 启发，作者测试了所有主流 Agent 框架后发现：真正好的 Agent 不是「prompt + tools + loop」，而是「mostly just software」。提出生产级 LLM 应用的 12 条原则。",
-          "so_what": "如果你在构建面向用户的 Agent 产品，这份 checklist 帮你避开「过度 agentic」的陷阱。核心观点：好的 Agent 产品大部分是确定性代码，LLM 只在关键节点介入。建议对照检查你的 Agent 架构。"
-        },
-        {
-          "title": "CLI-Anything：让所有软件 Agent-Native",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/HKUDS/CLI-Anything",
-          "why_picked": "GitHub Trending。将任意桌面/命令行软件封装为 Agent 可调用的 CLI harness，支持 CAD、3D 场景、字幕等 40+ 工具。CLI-Hub 社区驱动，pip install 即用。",
-          "so_what": "如果你的 Agent 需要操作专业软件（CAD、视频编辑、数据分析等），这个框架提供了标准化的 Agent-Software 桥接方案。比 MCP 更轻量，适合快速集成现有 CLI 工具到 Agent 工作流。"
-        }
-      ]
     }
   ]
 }
