@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-20",
+      "items": [
+        {
+          "title": "SpaceX 600亿美元全股票收购Cursor母公司Anysphere",
+          "category": "行业",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3856591177618690",
+          "why_picked": "AI编程工具领域有史以来最大收购；Cursor 18个月从0到40亿ARR，SpaceX IPO仅4天后即行使收购选择权",
+          "so_what": "如果你在用Cursor或类似AI编程工具：需关注收购后Cursor是否仍支持GPT/Claude多模型API，竞争对手是否转向替代工具。SpaceX+Grok+Cursor的垂直整合可能重塑AI编码市场格局。"
+        },
+        {
+          "title": "AlphaFold发明人John Jumper离开Google DeepMind加入Anthropic",
+          "category": "行业",
+          "source": "HN/X",
+          "url": "https://news.ycombinator.com/item?id=48601162",
+          "why_picked": "AI科学领域顶级人才流动；Jumper在DeepMind 9年创造AlphaFold，现加入Anthropic最强IC团队",
+          "so_what": "如果你在做AI for Science或基础模型研究：Anthropic持续吸纳顶级IC人才（此前已有Shazeer），其研究管线可能迎来重大突破。关注Anthropic在科学AI方向的布局。"
+        },
+        {
+          "title": "Sean Lynch：MCP的核心价值是隔离Agent的认证流",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jun/19/sean-lynch/",
+          "why_picked": "HN热评被Simon Willison收录；提出MCP的理想形态可能是纯粹的auth gateway，而非工具协议",
+          "so_what": "如果你在设计Agent工具调用架构：MCP的核心价值可能不在工具描述本身，而在把认证流程移出Agent上下文窗口。考虑将auth层与工具调用层解耦。"
+        },
+        {
+          "title": "BuilderIO/agent-native — Agent原生应用框架",
+          "category": "工具",
+          "source": "GitHub Trending",
+          "url": "https://github.com/BuilderIO/agent-native",
+          "why_picked": "GitHub日榜热门；专为agent-native应用设计的框架，区别于传统LLM wrapper",
+          "so_what": "如果你在构建AI Agent应用：传统框架把LLM当函数调用，agent-native框架把Agent当一等公民。值得评估是否适合你的架构。"
+        },
+        {
+          "title": "DeusData/codebase-memory-mcp — 代码知识图谱MCP服务器",
+          "category": "工具",
+          "source": "GitHub Trending",
+          "url": "https://github.com/DeusData/codebase-memory-mcp",
+          "why_picked": "GitHub日榜#1；毫秒级索引158种语言，99% token减少，单二进制零依赖",
+          "so_what": "如果你在跑代码Agent（Cursor/Claude Code等）：这个MCP服务器把代码库索引为知识图谱，可大幅减少token消耗。相比之前报过的CodeGraph，这是MCP原生实现，部署更简单。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-19",
       "items": [
         {
@@ -1295,68 +1340,6 @@
           "so_what": "如果你在用 Claude Code 或 Codex 处理大型代码库：codegraph 通过预索引减少 token 消耗和 tool call 次数——在大型 monorepo 上可能显著降低 API 成本。"
         }
       ]
-    },
-    {
-      "date": "2026-05-20",
-      "items": [
-        {
-          "title": "Google 发布 Gemini 3.5 Flash：智能体基准超越 GPT-5.5，价格涨3x",
-          "category": "新发布",
-          "source": "Google I/O",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
-          "why_picked": "Google I/O 重磅发布，3.5 Flash 直接 GA（跳过 preview），免费向全球用户开放；智能体基准超越 GPT-5.5；同时推出 Interactions API（beta）对标 OpenAI Responses",
-          "so_what": "如果你在用 Gemini API 做 Agent 管线：3.5 Flash 性能更强但价格涨了3x（$1.5/$9 per M tokens），需要重新评估成本收益比。Interactions API 提供服务端历史管理，可以简化你的多轮对话状态维护逻辑。建议先在非核心链路做 A/B 测试，对比 3 Flash Preview 的推理质量和延迟。"
-        },
-        {
-          "title": "Google Search 25年来最大改版：AI 模式 + 代理助手全面嵌入",
-          "category": "新发布",
-          "source": "Google I/O",
-          "url": "https://readhub.cn/topic/8tGdh1Cswlr",
-          "why_picked": "基于 Gemini 3.5 Flash，AI 模式和 AI 概览嵌入搜索框，引入新一代智能代理 Gemini Spark 可执行任务和完成购买，搜索框25年来最大升级",
-          "so_what": "如果你在做搜索相关的 Agent 或 RAG 产品：Google 正在从「搜索即检索」转向「搜索即执行」，Gemini Spark 能自主完成任务和购物。这意味着传统搜索引擎的流量分发模式可能被 Agent 直接拦截，你的 SEO/搜索策略需要重新设计。"
-        },
-        {
-          "title": "OpenAI 采用 Google SynthID 水印，推进 C2PA 内容溯源标准",
-          "category": "趋势",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/advancing-content-provenance/",
-          "why_picked": "OpenAI 与 Google 跨厂商合作，将 SynthID 水印嵌入 DALL·E/Sora 生成的图像，同时成为 C2PA 合规生成产品，推动内容认证跨平台标准化",
-          "so_what": "如果你在做 AI 生成内容管线或合规系统：C2PA + SynthID 正在成为行业事实标准，你的内容平台需要支持读取和验证 Content Credentials。OpenAI 的加入意味着主流厂商已形成溯源联盟，尽早集成 C2PA 验证可以避免未来合规风险。"
-        },
-        {
-          "title": "Google 推出科研版 Gemini for Science：追踪论文、写实验代码",
-          "category": "新发布",
-          "source": "Google I/O",
-          "url": "https://readhub.cn/topic/8tGgctsy8VS",
-          "why_picked": "Google I/O 发布 Gemini for Science，能追踪最新论文、将研究目标转化为代码、生成新假设，已有多个药物发现项目处于临床前阶段",
-          "so_what": "如果你在做科研辅助 Agent 或文献管线：Gemini for Science 展示了 AI 在科研领域的垂直化方向——从「读论文」到「写代码」到「生成假设」的全链路。可以关注其论文追踪和代码生成能力是否能集成到你的研究 workflow 中。"
-        },
-        {
-          "title": "DeepSeek 回应 .ao 字符触发模型异常：特殊字符引发幻觉",
-          "category": "工具",
-          "source": "IT之家",
-          "url": "https://m.ithome.com/html/952452.htm",
-          "why_picked": "DeepSeek 官方确认 .ao 等特殊字符会触发模型幻觉，返回不可预期内容，不涉及安全问题或隐私泄露，将通过针对性训练修复",
-          "so_what": "如果你在用 DeepSeek 或类似模型构建 Agent：特殊字符注入可能引发模型幻觉/异常输出，这是 prompt injection 的变种。建议在 Agent 的输入预处理层加入特殊字符过滤或转义，并在输出端做异常检测。这是一个通用的 prompt 安全加固点。"
-        },
-        {
-          "title": "AWS：Kiro CLI 通过 MCP 集成 Bedrock AgentCore Memory 实现跨会话记忆",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/extending-conversational-memory-in-kiro-cli-using-amazon-bedrock-agentcore-memory/",
-          "why_picked": "AWS 演示通过自定义 MCP server 将 Bedrock AgentCore Memory 接入 Kiro CLI，实现跨会话的对话历史持久化、语义搜索和记忆管理",
-          "so_what": "如果你在建 Agent 对话系统：跨会话记忆是 Agent 实用化的核心瓶颈。AWS 的方案展示了 MCP + 托管记忆服务的标准架构——两阶段检索（工作记忆+长期记忆）、会话追踪、语义搜索。可以作为你设计 Agent 记忆层的参考模板。"
-        }
-      ],
-      "meta": {
-        "sources_used": [
-          "ai-app-rss",
-          "readhub",
-          "simonwillison.net",
-          "aws"
-        ],
-        "web_search_fallback": "credit_limit"
-      }
     }
   ]
 }
