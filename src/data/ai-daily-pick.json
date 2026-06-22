@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-22",
+      "items": [
+        {
+          "title": "Cloudflare Temporary Accounts for AI agents",
+          "category": "新发布",
+          "source": "Cloudflare Blog",
+          "url": "https://blog.cloudflare.com/temporary-accounts/",
+          "why_picked": "Agent 部署基础设施重大变化：无需注册即可部署 Workers，60 分钟临时账户",
+          "so_what": "如果你在做 Agent 自主部署管线，这意味着 agent 可以完全跳过 OAuth 注册流程，直接 wrangler deploy --temporary 完成部署。60 分钟窗口足够 CI/CD 验证，大幅缩短 write→deploy→verify 循环。"
+        },
+        {
+          "title": "Samsung 全球部署 ChatGPT + Codex",
+          "category": "行业",
+          "source": "OpenAI Blog",
+          "url": "https://openai.com/index/samsung-electronics-chatgpt-codex-deployment",
+          "why_picked": "OpenAI 史上最大规模企业部署之一，覆盖韩国全员 + DX 部门全球员工",
+          "so_what": "如果你在做企业级 AI 部署方案，Samsung 案例证明 Codex 已从纯编码工具扩展为非技术团队的生产力平台。关注 ChatGPT Enterprise 的 data protection + access management 集成模式。"
+        },
+        {
+          "title": "Apertus — 瑞士开源基础模型（EPFL/ETH Zurich）",
+          "category": "新发布",
+          "source": "Swiss AI Initiative",
+          "url": "https://apertvs.ai/",
+          "why_picked": "完全开源基础模型：开放权重、数据、方法；8B/70B 双规格，1000+ 语言，EU AI Act 合规",
+          "so_what": "如果你在评估欧盟合规的开源模型方案，Apertus 提供从训练数据到权重的全链路可复现性，适合主权 AI 场景。与 Qwen/Llama 系列形成直接竞争。"
+        },
+        {
+          "title": "Claude 上线身份验证机制",
+          "category": "趋势",
+          "source": "Anthropic Support",
+          "url": "https://support.claude.com/en/articles/14328960-identity-verification-on-claude",
+          "why_picked": "Anthropic 通过 Persona 对部分功能 rollout 身份验证，涉及政府 ID 核验",
+          "so_what": "如果你在用 Claude API 构建面向消费者的产品，需关注此趋势对用户体验的影响。身份验证可能逐步扩展至 API 层级，提前设计降级策略。"
+        },
+        {
+          "title": "Poolside Laguna — 面向软件 Agent 的基础模型",
+          "category": "新发布",
+          "source": "Product Hunt",
+          "url": "https://www.producthunt.com/products/poolside",
+          "why_picked": "Poolside 发布专注长程软件任务的基础模型，支持多 Agent 编排与 IDE 集成",
+          "so_what": "如果你在构建 coding agent 工作流，Laguna 提供 on-prem 部署选项和 repository connector，适合对数据主权有高要求的企业环境。"
+        },
+        {
+          "title": "sqlite-utils 4.0rc1：内置 migrations 与嵌套事务",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Jun/21/sqlite-utils-40rc1/",
+          "why_picked": "sqlite-utils 首次内置数据库迁移框架和 db.atomic() 嵌套事务 API",
+          "so_what": "如果你在用 SQLite 做 Agent 状态持久化或本地数据管线，4.0 的 migrations 框架可以直接替代 Alembic 等重型方案，嵌套事务简化复杂写入逻辑。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-20",
       "items": [
         {
@@ -1232,112 +1285,6 @@
           "url": "https://www.36kr.com/p/3820220616495492",
           "why_picked": "大华股份在AI+产业大会上分享CV+Agent落地实践：星汉大模型V系列（视觉）+L系列（语言）+M系列（多模态），「基模+行业Know-how」成为新范式。",
           "so_what": "如果你在构建面向物理世界的Agent（安防/工业/物联网），大华的实践表明：纯语言Agent不够，需要视觉认知层。关注多模态Agent在行业场景的落地路径。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-22",
-      "items": [
-        {
-          "title": "Datasette Agent 首发：可插拔 AI 数据助手",
-          "category": "新发布",
-          "source": "Blog",
-          "url": "https://simonwillison.net/2026/May/21/datasette-agent/",
-          "why_picked": "Simon Willison 三年 LLM 库工作的集大成之作，首个可插拔 AI 数据助手，支持本地模型运行",
-          "so_what": "如果你在做数据查询/BI 类 Agent：Datasette Agent 展示了 SQLite NL2SQL 的完整插件架构——Observable Plot 图表、Fly Sprites 沙盒、OpenAI 图像生成，都是可复用模式。本地模型（gemma-4-26b-a4b）也能跑通，说明中等规模开源模型已能胜任工具调用+SQL 生成。"
-        },
-        {
-          "title": "Docker Sandboxes 逆向：MicroVM API 让 Agent 沙箱更安全",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://rivet.dev/blog/2026-02-04-we-reverse-engineered-docker-sandbox-undocumented-microvm-api/",
-          "why_picked": "HN 68 分，逆向 Docker 未公开 MicroVM API，开源 Sandbox Agent SDK，解决 AI coding agent 在容器中执行不可信代码的安全问题",
-          "so_what": "如果你在为 Agent 构建代码执行沙箱：容器共享内核不适合跑不可信代码。Docker Sandboxes 的 MicroVM 方案（独立内核、轻量隔离）可能是行业标准方向，值得关注其 API 稳定性和生产就绪度。"
-        },
-        {
-          "title": "AWS Bedrock AgentCore + MCP 集成 Quick Suite",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/integrating-aws-api-mcp-server-with-amazon-quick-suite-using-amazon-bedrock-agentcore-runtime/",
-          "why_picked": "Bedrock AgentCore Runtime 通过 MCP 将 AWS API 暴露给 AI 助手，自然语言直接转 AWS CLI 命令",
-          "so_what": "如果你在用 MCP 构建基础设施管理 Agent：这是 AWS 官方 MCP Server 集成范例——IAM 权限继承、CloudTrail 审计、跨服务 API 链式调用，可直接参考其架构模式。"
-        },
-        {
-          "title": "Amazon Nova Act 获得 HIPAA 合规资格",
-          "category": "行业",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/amazon-nova-act-is-now-hipaa-eligible/",
-          "why_picked": "AI Agent 首次获得 HIPAA 合规资格，可在受保护健康信息(ePHI)场景部署浏览器自动化 Agent",
-          "so_what": "如果你在为医疗/金融等合规行业构建 Agent：HIPAA 合规正在成为 agentic AI 的准入门槛。AWS BAA 自服务流程 + Nova Act 的合规路径可作为其他行业合规参考。"
-        },
-        {
-          "title": "OpenAI 部署 ChatGPT for Healthcare 覆盖 9 州医院系统",
-          "category": "行业",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/adventhealth",
-          "why_picked": "AdventHealth 在全美 9 州部署 ChatGPT for Healthcare，不是试点而是全系统推广——临床文档自动化、财务/HR 流程",
-          "so_what": "如果你在企业级部署 AI Agent：AdventHealth 的关键教训是「孤立试点无法带来变革」——需要统一平台+明确政策+全员培训。这是 AI Agent 从 pilot 到 production 的典型案例。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-21",
-      "items": [
-        {
-          "title": "OpenAI 模型自主证明 80 年数学猜想：Erdős 平面单位距离问题",
-          "category": "行业",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/model-disproves-discrete-geometry-conjecture/",
-          "why_picked": "首个由 AI 自主解决的数学核心开放问题，证明经外部数学家验证，Fields 奖得主 Gowers 称为 AI 数学里程碑",
-          "so_what": "如果你在做 AI for Science 管线：这表明通用推理模型已能独立产出原创数学发现，而非仅辅助验证。值得重新评估数学/物理论证类任务的自动化边界。"
-        },
-        {
-          "title": "阿里千问发布 Qwen3.7-Max：最强智能体旗舰模型",
-          "category": "新发布",
-          "source": "IT之家",
-          "url": "https://m.ithome.com/html/952670.htm",
-          "why_picked": "SWE-Verified 80.4% 对标 Opus-4.6，1000+ 工具调用长程自主执行验证，跨框架（Claude Code/OpenClaw/Qwen Code）泛化",
-          "so_what": "如果你在选择 Agent 基座模型：Qwen3.7-Max 在编程 Agent 和 MCP 基准上全面逼近 Opus-4.6，且 API 成本显著更低——值得在你的 tool-calling 管线上做 A/B 对比。"
-        },
-        {
-          "title": "Google I/O：Gemini Spark 个人 AI Agent + Antigravity 工具链",
-          "category": "新发布",
-          "source": "Google",
-          "url": "https://simonwillison.net/2026/May/20/google-io/",
-          "why_picked": "Gemini Spark 原生连接 Gmail/Calendar/Drive 等 Google 全家桶，每任务在隔离 VM 运行；Antigravity CLI/SDK 开源",
-          "so_what": "如果你在做企业 Agent 集成：Google 的 ephemeral VM + DLP Agent Gateway 架构提供了企业级 prompt injection 防御参考实现，值得关注其安全模型设计。"
-        },
-        {
-          "title": "百时美施贵宝向 3 万员工全面开放 Claude",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8tHnV9IK1D8",
-          "why_picked": "生命科学领域最大规模企业 Claude 部署，覆盖药物研发、临床开发、代码工具全场景",
-          "so_what": "如果你在评估 AI Agent 的企业落地：3 万用户规模的部署验证了 Claude 在专业领域（药物研发）的生产力价值，Agent 从「尝鲜」进入「生产刚需」阶段。"
-        },
-        {
-          "title": "AWS SageMaker AI 推出 OpenAI 兼容 API",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/announcing-openai-compatible-api-support-for-amazon-sagemaker-ai-endpoints/",
-          "why_picked": "LangChain/Strands Agents/OpenAI SDK 用户只需改 endpoint URL 即可切换至 SageMaker，无需 SigV4 封装",
-          "so_what": "如果你在用 LangChain 或自建 Agent 框架：这意味着你可以将任意 SageMaker 托管模型当作 OpenAI 替代品无缝接入，multi-provider 路由成本大幅降低。"
-        },
-        {
-          "title": "Ramp 工程师用 Codex + GPT-5.5 重构 Code Review",
-          "category": "趋势",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/ramp",
-          "why_picked": "PR 反馈从数小时缩短至数分钟，Codex 成为 Ramp 代码审查「强制环节」，同时用于构建 On-Call Assistant",
-          "so_what": "如果你在搭建 CI/CD Agent 管线：Ramp 案例证明 reasoning model 在 code review 场景已达到「强制环节」级别的质量门槛——值得在你的 pipeline 中加入 Codex/GPT-5.5 作为第二 reviewer。"
-        },
-        {
-          "title": "colbymchenry/codegraph — 代码知识图谱，减少 Agent token 消耗",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/colbymchenry/codegraph",
-          "why_picked": "GitHub Trending #1，为 Claude Code/Codex/Cursor 提供预索引代码知识图谱，100% 本地运行",
-          "so_what": "如果你在用 Claude Code 或 Codex 处理大型代码库：codegraph 通过预索引减少 token 消耗和 tool call 次数——在大型 monorepo 上可能显著降低 API 成本。"
         }
       ]
     }
