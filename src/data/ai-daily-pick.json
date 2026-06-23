@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-23",
+      "items": [
+        {
+          "title": "OpenAI Patch the Planet: AI+专家修复开源漏洞",
+          "category": "行业",
+          "source": "GitHub|Web",
+          "url": "https://openai.com/index/patch-the-planet",
+          "why_picked": "OpenAI Daybreak  initiative，联合 Trail of Bits 对 cURL、Go、Python 等 19 个核心开源项目做 AI 辅助漏洞发现+补丁开发，已合并数十个补丁",
+          "so_what": "如果你在用开源依赖，这是信号：上游安全正在被 AI 加速重构。关注 Trail of Bits 发布的可复用 fuzzing 工作流，考虑将其集成到你的 CI 管线。"
+        },
+        {
+          "title": "Agentic Resource Discovery (ARD) 规范发布：让 Agent 动态搜索工具",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/agentic-resource-discovery-launch",
+          "why_picked": "微软/Google/HF 等联合起草的开放规范，解决 MCP/A2A/Skills 的「安装后使用」瓶颈——Agent 可在运行时通过 REST 搜索发现能力，无需预配置",
+          "so_what": "如果你在建 Agent 系统，ARD 意味着工具注册从静态配置转向动态发现。HF 已实现 ARD registry，可尝试用 POST /search 让 Agent 按需查找 MCP 工具。"
+        },
+        {
+          "title": "OpenEnv 开源 Agentic RL 训练环境，获 Meta/Nvidia/Stanford 等支持",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/openenv-agentic-rl",
+          "why_picked": "OpenEnv 从独立项目转为 HF 托管的委员会治理模式，成员含 PyTorch Foundation、vLLM、Nvidia、Stanford 等，目标是让开源模型也能像 GPT-5.5 一样高效使用 coding harness",
+          "so_what": "如果你在用开源模型做 Agent 训练，OpenEnv 提供标准化的 terminal/browser 执行环境。关注其 protocol layer 设计——它不是 reward framework，而是执行层抽象。"
+        },
+        {
+          "title": "ServiceNow MosaicLeaks：深度研究 Agent 的隐私泄露问题",
+          "category": "观点",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ServiceNow/mosaicleaks",
+          "why_picked": "研究发现：深度研究 Agent 的 web 查询日志可通过「马赛克效应」拼出私有信息。提出 PA-DR 训练方法，将全信息泄露从 34% 降至 9.9%",
+          "so_what": "如果你在构建企业级 research agent，查询日志就是泄露通道。需要在 Agent 设计中加入 query filtering 和 privacy-aware RL 训练，不能只优化 task accuracy。"
+        },
+        {
+          "title": "HuggingFace「Is it agentic enough?」：用 pi coding agent 基准测试开源模型",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/is-it-agentic-enough",
+          "why_picked": "HF 团队提出工具级 benchmark：不只测最终答案，还测 Agent 找到答案的过程效率。用 pi coding agent 在 transformers 库上做全量 sweep",
+          "so_what": "如果你在维护一个开源库，这意味着「Agent 友好度」正在成为可量化的质量指标。API 设计要考虑 Agent 的 discoverability，而不仅是人类开发者。"
+        },
+        {
+          "title": "JetBrains 发布 Mellum AI 编码助手，Product Hunt 新发",
+          "category": "新发布",
+          "source": "ProductHunt",
+          "url": "https://www.producthunt.com/products/jetbrains",
+          "why_picked": "JetBrains 正式推出自家 AI 编码助手 Mellum，直接对标 Cursor/Claude Code/Codex，标志着 IDE 厂商全面进入 AI 编码战场",
+          "so_what": "如果你重度使用 JetBrains IDE，Mellum 可能是最贴近你工作流的 AI 编码工具。关注其与 IntelliJ 生态的深度集成——这比通用 coding agent 在 JetBrains 项目上的体验可能更好。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-22",
       "items": [
         {
@@ -1224,67 +1277,6 @@
           "url": "https://www.ftc.gov/news-events/news/press-releases/2026/05/ftc-require-cox-media-group-two-other-firms-pay-nearly-1-million-settle-charges-they-deceived",
           "why_picked": "FTC 对三家营销公司罚款 $93 万，因其谎称 AI 服务能通过智能设备监听消费者对话来精准投放广告——实际只是转售邮件列表",
           "so_what": "如果你在构建 AI 营销/广告产品：这是监管对「AI 洗白」的明确信号。任何涉及用户数据采集的 AI 产品，必须确保宣传与实际能力一致，否则 FTC 会介入。合规成本正在上升。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-23",
-      "items": [
-        {
-          "title": "微软叫停 Claude Code + Uber 烧光全年 AI 预算",
-          "category": "行业",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3820149069385864",
-          "why_picked": "微软10万工程师6月底前强制下线Claude Code转GitHub Copilot；Uber CTO备忘录：95%工程师用AI、84%进入Agentic Coding，全年预算4个月烧光。Token计费时代首次大规模财务纠偏。",
-          "so_what": "如果你在用外部AI编码工具（Claude Code/Codex/Cursor），这意味着Token成本可能成为团队预算的隐形杀手。建议评估内部核算方案（GitHub Copilot）或建立用量上限策略，避免Uber式的预算失控。"
-        },
-        {
-          "title": "Anthropic Project Glasswing 首月：AI 发现 10,000+ 高危漏洞",
-          "category": "趋势",
-          "source": "Anthropic官方",
-          "url": "https://www.anthropic.com/research/glasswing-initial-update",
-          "why_picked": "Anthropic安全项目首月用Claude Mythos Preview在关键基础设施软件中发现超1万个高/危漏洞，Cloudflare单家找到2000个。瓶颈从「发现漏洞」变成「验证和修补」。",
-          "so_what": "如果你在做Agent安全或代码审计，这意味着AI在漏洞发现上已规模化——瓶颈在披露流程。关注Mythos类模型的能力边界和Coordinated Vulnerability Disclosure的最佳实践。"
-        },
-        {
-          "title": "DeepSeek-V4-Pro API 永久降价至原价 1/4",
-          "category": "新发布",
-          "source": "IT之家",
-          "url": "https://m.ithome.com/html/954188.htm",
-          "why_picked": "DeepSeek确认V4-Pro API 2.5折优惠永久化（原计划6月恢复原价），输入未命中12→3元/百万Tokens，输出24→6元。 frontier模型价格战持续加剧。",
-          "so_what": "如果你在选型API模型，DeepSeek V4-Pro现在以1/4价格提供百万上下文MoE，是性价比极高的备选。建议对非关键路径任务做A/B测试，对比Claude/GPT的cost-quality比。"
-        },
-        {
-          "title": "DeepSeek 首轮融资约500亿，宁德时代/京东/网易洽投",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8tLD1QY3aGP",
-          "why_picked": "DeepSeek融资目标~500亿元，增资后估值或突破3500亿元。宁德时代拟入股并向AI数据中心卖电力配套，京东网易也在洽谈。梁文锋承诺坚持开源而非短期商业化。",
-          "so_what": "如果你在用国产开源模型，DeepSeek的资本加持意味着长期研发投入有保障。关注其后续模型迭代节奏和对开源生态的承诺兑现。"
-        },
-        {
-          "title": "Anthropic 官方 Claude Code Plugin 目录上线",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/anthropics/claude-plugins-official",
-          "why_picked": "Anthropic发布官方管理的Claude Code插件目录，分Internal/External两类，支持/plugin install和/plugin Discover。第三方需通过质量+安全审核。GitHub Trending #1。",
-          "so_what": "如果你在用Claude Code做日常开发，官方插件目录提供了经过审核的MCP server和命令扩展。建议浏览external_plugins分类，按需安装提升工作流效率。"
-        },
-        {
-          "title": "CodeGraph：预索引代码知识图谱，减少 Agent token 消耗",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/colbymchenry/codegraph",
-          "why_picked": "为Claude Code/Codex/Cursor等提供预索引代码知识图谱，100%本地运行，减少token消耗和tool calls。支持一键安装，自动配置主流Agent。",
-          "so_what": "如果你在大型代码库上用Agent编码，CodeGraph可以显著降低token成本——预索引后Agent不再需要反复读取整个代码库。适合monorepo或大项目。"
-        },
-        {
-          "title": "CV × AI Agent 行业实践：大华股份分享",
-          "category": "趋势",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3820220616495492",
-          "why_picked": "大华股份在AI+产业大会上分享CV+Agent落地实践：星汉大模型V系列（视觉）+L系列（语言）+M系列（多模态），「基模+行业Know-how」成为新范式。",
-          "so_what": "如果你在构建面向物理世界的Agent（安防/工业/物联网），大华的实践表明：纯语言Agent不够，需要视觉认知层。关注多模态Agent在行业场景的落地路径。"
         }
       ]
     }
