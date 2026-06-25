@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-25",
+      "items": [
+        {
+          "title": "Claude Tag 发布：@一下Claude即可在Slack派活，Anthropic内部65%代码来自此",
+          "category": "新发布",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3866546956244232",
+          "why_picked": "Karpathy称之为LLM用户界面第三次重构，Claude从命令行agent进化为团队共享身份",
+          "so_what": "如果你在做Agent-聊天工具集成：Claude Tag展示了shared identity模式的落地形态——Agent不再是对话框里的工具，而是带组织上下文、跨工具连贯执行的任务执行者。值得研究其Slack集成架构和权限模型。"
+        },
+        {
+          "title": "Gemini 3.5 Flash 原生内置 Computer Use",
+          "category": "新发布",
+          "source": "Google DeepMind",
+          "url": "https://deepmind.google/blog/introducing-computer-use-in-gemini-3-5-flash/",
+          "why_picked": "Computer Use从独立模型变为Flash原生能力，意味着更低延迟+更便宜+更易集成",
+          "so_what": "如果你在做Computer Use Agent：Gemini 3.5 Flash把computer use内置到主力Flash模型，不再需要单独调用专用模型。这意味着更低的延迟和成本，同时新增对抗训练防prompt injection和企业级safeguard（用户确认+自动停止），值得评估是否迁移。"
+        },
+        {
+          "title": "OpenAI IPO文件曝光：6650亿美元表外承诺+奥特曼利益冲突",
+          "category": "行业",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3867046995694596",
+          "why_picked": "WSJ+The Information同时曝光，OpenAI巨额表外负债和关联交易引发华盛顿调查",
+          "so_what": "如果你在选择AI基础设施供应商：OpenAI的财务透明度问题提醒我们，即使头部AI公司也存在重大治理风险。评估供应商时不仅要看技术指标，还要关注其财务健康和治理结构。"
+        },
+        {
+          "title": "IBM CUGA：开源Agent Harness，24个单文件企业应用示例",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ibm-research/cuga-apps",
+          "why_picked": "区别于框架的harness理念——处理plumbing，开发者只写tool list和prompt",
+          "so_what": "如果你在企业落地Agent：CUGA提供了一种轻量替代方案——不是又一个需要学习的框架，而是处理状态/工具调用/执行循环的harness。24个单文件FastAPI示例可直接复制，适合快速原型验证。"
+        },
+        {
+          "title": "Tom MacWright：LLM生成的简历导致「意外匿名」",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jun/24/tom-macwright/",
+          "why_picked": "LLM生成内容泛滥到求职场景——简历、作品集、GitHub全由LLM生成，反而让人失去个性",
+          "so_what": "如果你在构建AI辅助创作工具：这个观点提醒我们，过度依赖LLM生成内容可能产生反效果——完美但无个性的输出反而让创作者失去辨识度。工具设计应考虑如何保留人的声音。"
+        },
+        {
+          "title": "FFASR Leaderboard：首个开源远场语音识别基准",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ffasr-leaderboard",
+          "why_picked": "远场ASR在真实声学环境下WER比近场高数倍，首个社区驱动基准",
+          "so_what": "如果你在做语音Agent或语音交互产品：FFASR量化了实验室基准和真实部署之间的差距。14个模拟房间+sim-to-real验证，Pareto前沿同时展示WER和RTFx，选型时值得参考。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-24",
       "items": [
         {
@@ -1231,59 +1284,6 @@
           "url": "https://juejin.cn/post/7643306695892140095",
           "why_picked": "一套同时面向 Codex 和 Claude Code 的掘金发文 Skill，底层共用 Node.js CLI。两个 Agent 接入方式不同但执行同一条发布链路，展示了跨 Agent 平台复用工具链的实践。",
           "so_what": "如果你在构建多 Agent 工具链：juejin-skill 展示了「同一 CLI 底层 + 不同 Agent 适配层」的复用模式——避免为每个 Agent 单独开发工具，降低维护成本。对需要跨 Claude Code / Codex / Copilot 部署的场景有参考价值。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-25",
-      "items": [
-        {
-          "title": "DeepSeek Reasonix：DeepSeek 原生编码 Agent，高缓存+低成本",
-          "category": "新发布",
-          "source": "HN",
-          "url": "https://esengine.github.io/DeepSeek-Reasonix/",
-          "why_picked": "HN 402分 191评论。DeepSeek 官方原生 coding agent，利用高缓存机制实现低成本编码体验，与 Claude Code/Cursor 直接竞争",
-          "so_what": "如果你在用 Claude Code 或 Cursor 做日常编码：DeepSeek Reasonix 提供了另一条低成本路径——利用 DeepSeek V4-Pro 的 75% 永久折扣 + 高缓存优化，token 成本可能只有 Claude 的 1/10。值得在次要项目上做 A/B 测试。"
-        },
-        {
-          "title": "Claude 不是你的架构师：AI 的「病态附和」正在毁掉系统设计",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://www.hollandtech.net/claude-is-not-your-architect/",
-          "why_picked": "HN 223分 165评论。核心论点：AI agent 天生 pathologically agreeable——它从不说不，只会给你「听起来很对」的通用架构，但完全忽略你的团队约束和生产环境现实",
-          "so_what": "如果你在用 Claude/Copilot 做架构设计：这篇文章指出了一个被忽视的风险——AI 生成的架构看起来合理但缺少 context-aware 的 trade-off 判断。建议把 AI 当作「初级架构师」而非最终决策者，关键决策必须由有生产经验的人把关。"
-        },
-        {
-          "title": "AI 芯片内存成本占比逼近 2/3，推理经济模型面临重构",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://epoch.ai/research/memory-costs-ai-chips",
-          "why_picked": "HN 270分 296评论。Epoch AI 数据分析：AI 芯片中内存（HBM/SRAM）成本占比从历史 ~30% 飙升至近 66%，成为芯片最大单一成本组件，直接影响推理成本和模型架构选择",
-          "so_what": "如果你在规划 LLM 推理部署：内存成本占比飙升意味着「更大上下文=更贵推理」的经济模型正在加速。MoE 架构（只激活部分参数）和 KV cache 优化（如 PagedAttention）的经济价值进一步提升——减少内存占用的技术路线将获得双重收益。"
-        },
-        {
-          "title": "Armin Ronacher：AI 生成的 issue 正在污染开源项目",
-          "category": "观点",
-          "source": "Blog",
-          "url": "https://simonwillison.net/2026/May/24/armin-ronacher/",
-          "why_picked": "Flask/Sentry 作者 Armin Ronacher 公开吐槽：AI 生成的 issue report 充满「自信的错误结论、虚假最小复现、错误的代码类比」，要求用户只提交「人类观察到的事实」",
-          "so_what": "如果你维护开源项目或用 AI 辅助开发：这反映了 AI 编码工具普及后的副作用——开发者把问题丢给 LLM 生成 issue，但 LLM 的推理错误导致维护者负担加重。建议在 CONTRIBUTING.md 中明确要求「人类验证过的复现步骤」，过滤 AI 生成的噪声。"
-        },
-        {
-          "title": "Constraint Decay：LLM Agent 在后端代码生成中的脆弱性",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://arxiv.org/abs/2605.06445",
-          "why_picked": "HN 161分 81评论。系统研究发现：随着结构约束累积，Agent 性能平均下降 30 个百分点；Flask 等轻量框架表现好，FastAPI/Django 等重约定框架表现差；数据层缺陷是首要错误来源",
-          "so_what": "如果你在用 Agent 生成后端代码：这篇论文给出了定量证据——Agent 在「功能正确」和「结构合规」之间存在巨大鸿沟。实际建议：(1) 用轻量框架时 Agent 效果最佳；(2) 复杂 ORM/数据库约束需要人工 review；(3) 考虑在 prompt 中显式指定结构约束。"
-        },
-        {
-          "title": "Greg Brockman 深度访谈：OpenAI 72 小时生死危机内幕",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://fs.blog/knowledge-project-podcast-transcripts/greg-brockman/",
-          "why_picked": "HN 166分 159评论。OpenAI 联合创始人 Brockman 首次详细讲述 OpenAI 创立初期几乎失败的 72 小时",
-          "so_what": "如果你对 AI 行业格局感兴趣：Brockman 是 OpenAI 从非营利到商业化核心决策者之一。这次访谈提供了对 OpenAI 战略转向的第一手视角，有助于理解当前 AI 竞争的底层逻辑。"
         }
       ]
     }
