@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-26",
+      "items": [
+        {
+          "title": "OpenAI 发布首款推理芯片 Jalapeño，九个月完成设计到流片",
+          "category": "新发布",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3867748076655618",
+          "why_picked": "OpenAI 史上首颗 Intelligence Processor，AI 模型参与设计自身运行硬件，形成 AI→芯片→AI 闭环。博通实现+Celestica 组装，2026 年底部署",
+          "so_what": "如果你在做 LLM 推理基础设施选型：Jalapeño 标志着头部模型厂从纯软件向全栈硬件延伸。每瓦性能「大幅优于」业界最强，意味着未来 ChatGPT/Codex API 的延迟和成本可能进一步下降。关注其技术报告（几个月后发布）以评估对自研推理架构的参考价值。"
+        },
+        {
+          "title": "美国政府要求 OpenAI 分阶段发布 GPT-5.6",
+          "category": "行业",
+          "source": "readhub",
+          "url": "https://readhub.cn/topic/8uGJdxVIShI",
+          "why_picked": "特朗普政府要求 GPT-5.6 先向少数合作伙伴有限预览，白宫逐个客户审批。Altman 称非长期偏好模式",
+          "so_what": "如果你在企业规划 AI 模型采购：GPT-5.6 的分阶段发布意味着先进模型的可及性将进一步分层。企业用户需提前准备审批流程，同时关注替代方案（Claude/Gemini/Qwen）的可用性窗口。模型发布从「全量开放」转向「分级授权」可能是新常态。"
+        },
+        {
+          "title": "Anthropic 致信参议院：阿里巴巴实施「最大规模蒸馏攻击」",
+          "category": "行业",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/968388.htm",
+          "why_picked": "Anthropic 指控阿里 2.5 万欺诈账户进行 2880 万次对话提取 Claude 能力，已上升至国会层面。批评者指出 Anthropic 自身也有训练数据争议",
+          "so_what": "如果你在用 API 调用商业模型做数据标注/蒸馏：此事件标志着模型蒸馏从灰色地带走向法律战场。企业级用户需审查自身数据使用合规性，避免使用欺诈账户批量调用。开源模型（Qwen/Llama）的合规蒸馏替代方案价值上升。"
+        },
+        {
+          "title": "Claude 写 80% 代码，Anthropic 工程师却越来越孤独",
+          "category": "观点",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3867737936548872",
+          "why_picked": "Anthropic 工程负责人 Fiona Fung 披露：工程师代码产出 8 倍增长，但协作变成「平行游戏」，知识传递和工作意义感下降",
+          "so_what": "如果你在团队中推行 AI 编码工具：Anthropic 的亲身体验证明，效率提升的代价是知识流失和工程师孤独感。需要主动设计知识共享机制（结对编程、code review 文化、黑客松），否则团队能力会随 AI 依赖加深而空心化。"
+        },
+        {
+          "title": "Weaviate 1.38：HFresh 磁盘向量索引 + MCP Server 正式可用",
+          "category": "工具",
+          "source": "Weaviate Blog",
+          "url": "https://weaviate.io/blog/weaviate-1-38-release",
+          "why_picked": "HFresh 磁盘向量索引 GA（SPFresh 派生，十亿级向量低内存），内置 MCP Server GA（4 个工具直接让 Agent 查询/写入向量库）",
+          "so_what": "如果你在建 RAG 系统：HFresh 让十亿级向量检索不再需要海量内存，适合流式更新场景。MCP Server GA 意味着 Agent 可通过标准 MCP 协议直接操作 Weaviate，无需胶水代码——值得在你的 Agent 工具链中集成。"
+        },
+        {
+          "title": "HuggingFace Jobs 一键部署 vLLM 服务",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/vllm-jobs",
+          "why_picked": "一条命令在 HF 基础设施上启动 vLLM OpenAI 兼容端点，按秒计费，无需 Kubernetes",
+          "so_what": "如果你需要快速部署开源模型做测试/评估：HF Jobs + vLLM 是目前最短路径。hf jobs run 一行命令搞定，OpenAI API 兼容，适合 CI 中的模型评估管线或 coding agent 的后端推理服务。"
+        },
+        {
+          "title": "OpenKnowledge：AI 原生 Markdown 编辑器，集成 Claude/Codex",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/inkeep/open-knowledge",
+          "why_picked": "WYSIWYG Markdown 编辑器，原生集成 Claude/Codex/Cursor，支持 MCP/Agentic Search，Git 驱动团队协作",
+          "so_what": "如果你在管理 AI Agent 的知识库/Spec：OpenKnowledge 把 LLM 直接嵌入文档编辑流程——不是插件而是原生集成。MCP 支持意味着 Agent 可以读写你的知识库，适合做 Agent 的「第二大脑」。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-25",
       "items": [
         {
@@ -1239,51 +1300,6 @@
           "url": "https://www.producthunt.com/products/pi-coding-agent-3",
           "why_picked": "Product Hunt 新发布。定位为「你可以自定义的 coding-agent harness」，强调可定制性而非开箱即用——用户可按团队规范调整 agent 行为、工具链和输出格式。",
           "so_what": "如果你在评估 coding agent 工具：Pi Coding Agent 代表了一个趋势——从「通用 coding agent」转向「可定制 agent harness」。如果你的团队已有编码规范和 CI 流程，选择一个可深度定制的 harness 比选开箱即用产品更可持续。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-26",
-      "items": [
-        {
-          "title": "Claude Memory Files + Dreams + Conway：Anthropic 记忆架构大翻新",
-          "category": "新发布",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3824047027458182",
-          "why_picked": "Anthropic 为 Claude 测试「双模记忆系统」：经典记忆 + Memory Files（结构化持久记忆）+ Dreams（异步后台记忆整合，灵感来自 REM 睡眠）+ Conway（7x24h 永不下线 Agent 平台）。这是 Claude 记忆能力上线以来最大规模重构。",
-          "so_what": "如果你在设计 Agent 长期记忆系统：Claude 的 Memory Files 展示了从「滚动摘要」到「文件系统」的范式转换——按需检索、用户可控、无限扩展。Dreams 机制（合并重复、替换过时、解决矛盾）为异步记忆维护提供了可参考模式。Conway 对标 OpenClaw 但跑在 Anthropic 托管云上，安全底线更高。值得关注其对 Agent 持久化架构的影响。"
-        },
-        {
-          "title": "ECC（Everything Claude Code）开源爆 15 万星：38 Agent + 156 技能的 Claude Code 工作系统",
-          "category": "工具",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3823966768943239",
-          "why_picked": "旧金山开发者 Affaan Mustafa 将 Claude Code 打磨成 38 个专业 Agent、156 项技能、1282 项安全测试的超级系统，MIT 协议开源后冲上 GitHub 15 万星。核心亮点：按需加载避免上下文爆炸、mgrep 降 50% token、AgentShield 安全防御管道、红蓝队审计三权分立。",
-          "so_what": "如果你在用 Claude Code 做日常开发：ECC 提供了一套经过实战验证的 Agent harness 框架——把开发直觉和约束注入骨架系统，而非手写代码。按需加载机制（写 TS 时只激活 TS Review Agent）对避免上下文膨胀有直接参考价值。AgentShield 的安全扫描思路也值得借鉴。"
-        },
-        {
-          "title": "DeepSeek V4-Pro API 永久降价 75%：缓存命中价仅 0.025 元/百万 Token",
-          "category": "行业",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3823859036672386",
-          "why_picked": "DeepSeek 将促销价焊死成正价：输入缓存未命中 3 元/百万 Token，输出 6 元/百万 Token，全部原价 1/4。背后是 KV Cache 压缩优势（V4 仅 5.48GB HBM vs 竞品 60GB），同时推进 700 亿元融资（估值 450 亿美元）。",
-          "so_what": "如果你在评估 LLM 推理成本：DeepSeek 永久降价 75% 意味着成本敏感型 Agent 应用（如大规模 RAG、批量工具调用）有了更具竞争力的选项。缓存命中价 0.025 元/百万 Token 不到 Claude Sonnet 4.6 的 3%，对高缓存命中率场景（如固定知识库问答）极具吸引力。"
-        },
-        {
-          "title": "OpenAI 首个巴西媒体合作：Folha de S.Paulo + UOL 内容接入 ChatGPT",
-          "category": "行业",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/grupo-folha-grupo-uol-partnership",
-          "why_picked": "OpenAI 在巴西的首个媒体合作，Folha de S.Paulo 和 UOL 的新闻报道将出现在 ChatGPT 中（9 亿+ 周活用户可见），带 attribution 和原文链接。延续 OpenAI 在英美法德等地的内容合作策略。",
-          "so_what": "如果你在构建 RAG管线或内容聚合系统：OpenAI 持续与新闻机构合作的模式表明——高质量一手信源 + 明确 attribution 是 AI 内容分发的合规方向。自建知识库时，优先获取有授权的一手数据源，而非依赖二次聚合。"
-        },
-        {
-          "title": "juejin-skill：Claude Code + Codex 跨平台掘金发文 Skill",
-          "category": "工具",
-          "source": "Juejin",
-          "url": "https://juejin.cn/post/7643306695892140095",
-          "why_picked": "一套同时面向 Codex 和 Claude Code 的掘金发文 Skill，底层共用 Node.js CLI。两个 Agent 接入方式不同但执行同一条发布链路，展示了跨 Agent 平台复用工具链的实践。",
-          "so_what": "如果你在构建多 Agent 工具链：juejin-skill 展示了「同一 CLI 底层 + 不同 Agent 适配层」的复用模式——避免为每个 Agent 单独开发工具，降低维护成本。对需要跨 Claude Code / Codex / Copilot 部署的场景有参考价值。"
         }
       ]
     }
