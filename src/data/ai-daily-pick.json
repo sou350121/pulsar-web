@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-27",
+      "items": [
+        {
+          "title": "GPT-5.6 限量预览启动，被迫「一客一审」",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3869452702373128",
+          "why_picked": "OpenAI GPT-5.6 分三型号(Sol/Terra/Luna)启动有限预览，150万token上下文，但因政府安全审查首次实施逐一审批访问权限，六月三大旗舰模型集体延期",
+          "so_what": "如果你在做基于GPT的Agent系统，这意味着短期内无法通过API直接接入GPT-5.6。建议关注Sol旗舰的benchmark数据以评估升级收益，同时准备1.5M context window的prompt重构方案。审批流程可能持续数周，需维持GPT-5.5管线。"
+        },
+        {
+          "title": "OpenAI联合博通发布首款定制AI芯片Jalapeño",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3869243269387269",
+          "why_picked": "OpenAI正式入局AI芯片赛道，首款ASIC专为LLM推理设计，适配各类大模型，是多代计算平台首款加速器",
+          "so_what": "如果你在做LLM推理部署，OpenAI自研芯片意味着未来API推理成本可能下降。长期看，垂直整合(模型+芯片)可能改变云AI定价格局，值得评估多供应商策略。"
+        },
+        {
+          "title": "2000人尝试Hack AI助手，6000次攻击无人成功",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Jun/26/hack-my-ai-assistant/",
+          "why_picked": "开发者用OpenClaw+Opus 4.6跑prompt injection挑战，6000次邮件攻击无人能泄露secret，印证前沿模型防注入能力显著提升",
+          "so_what": "如果你在设计Agent权限系统，这说明前沿模型的注入防护已大幅进步，但仍不应依赖单一防护层。建议保持defense-in-depth：prompt规则+权限隔离+外部审计三重保障。"
+        },
+        {
+          "title": "HuggingFace Jobs 一键部署vLLM服务",
+          "category": "工具",
+          "source": "HF",
+          "url": "https://huggingface.co/blog/vllm-jobs",
+          "why_picked": "HF Jobs新增vLLM一键部署：单命令启动OpenAI兼容端点，pay-per-second计费，无需K8s，支持SSH和Pi coding agent后端",
+          "so_what": "如果你在做模型评测或快速原型，HF Jobs vLLM消除了自建推理服务的运维成本。一条命令即可起A10G上的vLLM，适合CI/CD中的模型测试管线。"
+        },
+        {
+          "title": "Dean W. Ball：前沿模型经济学的困境",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Jun/26/dean-w-ball/",
+          "why_picked": "Hyperdimensional作者指出：前沿模型训练成本巨大，但宽泛可用窗口仅数月即被压缩，每延迟一周都在侵蚀盈利窗口；而千亿美元AI基建假设的是全球市场",
+          "so_what": "如果你在评估AI创业方向，这个分析提示：前沿模型的窗口期越来越短，跟随策略风险极高。真正的机会在垂直应用层——用已有模型解决特定行业问题，而非重复训练。"
+        },
+        {
+          "title": "六月三大旗舰模型集体卡壳：GPT-5.6/Fable 5/Gemini 3.5 Pro",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3869452702373128",
+          "why_picked": "OpenAI GPT-5.6被政府审批卡住、Anthropic Fable 5/Mythos 5因出口管制下架、Google Gemini 3.5 Pro延期至七月——六月成模型发布史上首个「零旗舰月」",
+          "so_what": "如果你在做模型选型，这意味着短期内GPT-5.5/Claude Opus 4/Gemini 3.0仍是生产主力。建议在此窗口期优化现有模型管线，而非等待下一代。七月可能是真正的「超级发布月」。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-26",
       "items": [
         {
@@ -1247,59 +1300,6 @@
           "url": "https://github.com/Chachamaru127/claude-code-harness",
           "why_picked": "GitHub Trending #12。专为 Claude Code 设计的开发 harness，实现自主 Plan→Work→Review 循环，目标是高质量自主开发。",
           "so_what": "如果你在用 Claude Code 做项目：这个 harness 提供了结构化的自主开发流程——plan→work→review 循环可以减少 agent 的「跑偏」问题。适合需要高质量输出的场景，但要注意 review 环节仍然需要人工参与。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-27",
-      "items": [
-        {
-          "title": "Microsoft Copilot Cowork 被曝数据泄露：Agent 系统安全再敲警钟",
-          "category": "新发布",
-          "source": "Simon Willison Blog",
-          "url": "https://www.promptarmor.com/resources/microsoft-copilot-cowork-exfiltrates-files",
-          "why_picked": "Copilot Cowork 允许 agent 未经审批向用户收件箱发邮件，攻击者可通过 prompt injection + 外部图片渲染实现数据外泄，包括 OneDrive 预认证下载链接。这是 agentic 系统数据防泄露（DLP）的经典反面教材。",
-          "so_what": "如果你在设计 Agent 数据权限模型：Copilot Cowork 的案例说明「agent 可以自主发送的消息」必须经过审批管道——任何 agent 生成的外发内容都应经过 DLP 扫描和渲染沙箱。OneDrive 预认证链接泄露表明，即使数据不出域，URL 本身也是 exfiltration 通道。建议在 Agent 输出层加入 URL 重写和外部资源拦截。"
-        },
-        {
-          "title": "curl 维护者 Daniel Stenberg：AI 安全报告洪流压力是 2024 年的 4-5 倍",
-          "category": "趋势",
-          "source": "Simon Willison Blog",
-          "url": "https://daniel.haxx.se/blog/2026/05/26/the-pressure/",
-          "why_picked": "curl 作者坦言 AI 辅助安全报告数量暴增（每天超 1 条，质量也更高），团队面临前所未有的工作压力。所有漏洞均为 LOW/MEDIUM 级别，但处理量已超出人类维护者的承受极限。",
-          "so_what": "如果你在维护开源项目或企业代码库：AI 辅助安全扫描正在改变漏洞披露的经济模型——发现成本趋近于零，但 triage 成本不变。建议在 CI 中加入 AI 报告自动去重 + 严重性预分类管道，避免维护者被低优先级报告淹没。"
-        },
-        {
-          "title": "LLM「睡眠记忆巩固」机制：模拟 REM 睡眠优化上下文管理（HN 180分）",
-          "category": "观点",
-          "source": "HN/arXiv",
-          "url": "https://arxiv.org/abs/2605.26099",
-          "why_picked": "HN 180分 127评论。研究探索让 LLM 模拟人类睡眠中的记忆巩固——将近期上下文写入 fast-weight 状态，在 context eviction 时优先保留重要信息。与 Anthropic Dreams 机制形成有趣对照。",
-          "so_what": "如果你在构建需要长期记忆的 Agent 系统：这篇论文提供了不同于「滚动摘要」或「文件系统」的第三条路径——通过模型内部状态（fast weights / SSM state）实现记忆巩固。虽然目前仅适用于 Mamba 架构，但思路可借鉴：在 agent 空闲期做后台记忆整理，而非实时压缩。"
-        },
-        {
-          "title": "Paul Graham：AI 代写的创始人邮件正在被投资人无视",
-          "category": "观点",
-          "source": "Twitter/Simon Willison",
-          "url": "https://simonwillison.net/2026/May/26/paul-graham/",
-          "why_picked": "PG 公开表示已无法读完任何 AI 代写的邮件——「它让我觉得被欺骗，也意味着作者无法独立写好」。引发关于 AI 生成内容「 authenticity 折损」的广泛讨论。",
-          "so_what": "如果你在用 AI 辅助写邮件/文档/提案：PG 的观点提醒我们——AI 生成的「完美文本」可能产生反效果。建议在 AI 草稿后加入个人化修改，保留不完美但真实的声音。对 Agent 生成的对外通信，考虑加入「人类审阅」闸门。"
-        },
-        {
-          "title": "Minicor (YC P26)：为 AI 公司打造可扩展桌面 RPA，Launch HN",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://www.minicor.com/",
-          "why_picked": "YC P26 项目，解决 AI 公司接入无 API 遗留桌面系统（EHR/ERP/DMS）的痛点。核心创新：确定性代码 + reflection agent 恢复的混合架构，生产准确率 93-96%，支持 Windows VM/浏览器/Citrix 部署。",
-          "so_what": "如果你的 Agent 需要操作遗留桌面系统：Minicor 展示了「纯 computer-use agent 不够用」——需要在确定性脚本之上加 agent 做异常恢复。reflection agent 实时验证屏幕内容再 self-correct 的架构，比纯 LLM 驱动的 RPA 可靠得多。值得参考其架构模式。"
-        },
-        {
-          "title": "Pi Coding Agent：可定制的 coding-agent harness，Product Hunt 新发",
-          "category": "工具",
-          "source": "Product Hunt",
-          "url": "https://www.producthunt.com/products/pi-coding-agent-3",
-          "why_picked": "Product Hunt 新发布。定位为「你可以自定义的 coding-agent harness」，强调可定制性而非开箱即用——用户可按团队规范调整 agent 行为、工具链和输出格式。",
-          "so_what": "如果你在评估 coding agent 工具：Pi Coding Agent 代表了一个趋势——从「通用 coding agent」转向「可定制 agent harness」。如果你的团队已有编码规范和 CI 流程，选择一个可深度定制的 harness 比选开箱即用产品更可持续。"
         }
       ]
     }
