@@ -1,6 +1,104 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-29",
+      "items": [
+        {
+          "title": "Semgrep 实测：GLM 5.2 在 IDOR 漏洞检测上击败 Claude Code（39% vs 32% F1）",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://semgrep.dev/blog/2026/we-have-mythos-at-home-glm-52-beats-claude-in-our-cyber-benchmarks/",
+          "why_picked": "Semgrep 用裸 prompt 跑 IDOR 检测，GLM 5.2 以 39% F1 超 Claude Opus 4.8 的 32%，每漏洞成本仅 $0.17；HN 330+ 分",
+          "so_what": "如果你在做 AI 安全扫描管线，这意味着国产开源模型已具备一线编码 Agent 的漏洞检测能力，可考虑将 GLM 5.2 作为低成本 fallback 或批量扫描引擎。MIT 协议允许本地部署和微调，适合对数据主权有要求的场景。"
+        },
+        {
+          "title": "开发者用 Claude Code + Opus 4.8 读 MRI 影像，发现治疗方案与临床指南冲突",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://antoine.fi/mri-analysis-using-claude-code-opus",
+          "why_picked": "HN 305 分、412 评论；作者将 266MB DICOM 丢给 Claude Code，Opus 4.8 安装医学包并输出结构化报告，同时指出医生违规使用冲击波疗法",
+          "so_what": "如果你在做医疗 AI 或 multimodal agent 产品，这条案例验证了 Claude Code 的 tool-use + 文件处理能力已能处理非结构化医学数据。关键教训：chat 界面与 code 模式差距巨大——需要 code 环境才能执行 pip install 和复杂分析。"
+        },
+        {
+          "title": "Meta 的 Tokenmaxxing 文化崩盘：高管用 token 用量考核，员工让两个 Agent 互聊刷数据",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://12gramsofcarbon.com/p/agentics-tech-things-tokenmaxxing",
+          "why_picked": "HN 102 分；文章揭露 Meta 将 token 消耗量纳入绩效评估，导致员工用双 Agent 互聊刷数；作者指出这不是高管愚蠢而是有意为之——用 token 消耗制造 AI 采用假象",
+          "so_what": "如果你在企业内部推行 AI Agent，这意味着用 token 消耗量做 KPI 必然被 gaming。应该改用任务完成率、代码合并率、bug 减少量等 outcome 指标。这篇文章是向管理层解释为什么不能 metric-maxx 的绝佳素材。"
+        },
+        {
+          "title": "Jon Udell：别再说 Human in the Loop——是 Our Loop，Agent 只是新队员",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jun/28/jon-udell/",
+          "why_picked": "Udell 翻转叙事：不是人被排除在 Agent 循环之外，而是我们主动邀请 Agent 加入团队；核心警告是 Agent 不应生成不可 review 的 PR",
+          "so_what": "如果你在设计 Agent 工作流架构，这意味着应该把 Agent 定位为 co-pilot 而非 autopilot——所有 Agent 产出必须经过人类 review gate，特别是 PR 和配置变更。这直接影响你对 Agent 自主权边界的设定。"
+        },
+        {
+          "title": "GPT-5.6 受限发布后海外断供加速，国产 AI 迎来 B 端窗口期",
+          "category": "趋势",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3871402277059202",
+          "why_picked": "GPT-5.6 被迫一客一审，美国监管从事后追责转为事前准入；智谱 GLM 5.2 同期开源不限量，市值突破 9000 亿港元；企业选型逻辑从 benchmark 转向合规+稳定",
+          "so_what": "如果你在做出海企业的 AI 基础设施选型，这意味着单一依赖海外 API 的风险已从理论变为现实。建议在架构层面预留模型切换层（model router），同时评估 GLM 5.2 等国产开源模型作为 backup。合规稳定性正成为比跑分更重要的选型维度。"
+        }
+      ]
+    },
+    {
+      "date": "2026-06-28",
+      "items": [
+        {
+          "title": "OpenAI 发布 GPT-5.6 预览版：Sol/Terra/Luna 三模型系列",
+          "category": "新发布",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/previewing-gpt-5-6-sol/",
+          "why_picked": "OpenAI 发布 GPT-5.6 系列三款模型：Sol 旗舰、Terra 平衡、Luna 快速低价。价格分别为 $5/$30、$2.5/$15、$1/$6 per 1M tokens。引入 prompt caching breakpoints 和 30 分钟最小缓存生命周期。",
+          "so_what": "如果你在用 GPT-5.5 做日常编码/推理，Terra 性能相当但便宜 2x，值得立即切换做成本优化。如果你在做高吞吐 API 调用，新的 cache breakpoints 允许你精确控制哪些前缀被缓存，显著降低重复系统 prompt 的成本。"
+        },
+        {
+          "title": "DeepSeek 联合北大开源 DSpark 推理加速框架，高并发速度提升 60-85%",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://readhub.cn/topic/8uIf41deuV0",
+          "why_picked": "DeepSeek 与北京大学联合开源 DSpark，针对高并发推理场景的推测解码瓶颈，提出半自回归架构与置信度门控，已部署于 DeepSeek-V4-Flash 和 V4-Pro 预览版。论文和代码已开源。",
+          "so_what": "如果你在生产环境部署 LLM 推理服务，DSpark 的半自回归推测解码架构值得研究——它解决了多 token 推测中候选生成质量下降的痛点。对比传统的 MTP-1 基线，同等吞吐量下单用户生成速度提升 60-85%，可直接降低推理成本。"
+        },
+        {
+          "title": "Anthropic Mythos 5 获准向美国机构重新部署",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8uHkw16rvxZ",
+          "why_picked": "自 6 月 12 日下线 15 天后，Anthropic 最强网络安全模型 Mythos 5 获美国政府批准重新部署至一批美国机构。Fable 5 预计最早下周恢复。",
+          "so_what": "如果你在做 AI 安全/合规相关的 Agent 系统，Mythos 5 的解禁意味着美国政府正在建立 AI 模型安全审查的常态化框架——未来新模型上线可能都需要经历类似的政府审批流程，影响产品发布时间线。"
+        },
+        {
+          "title": "Stripe 在 AWS Bedrock 上构建生产级金融合规 AI Agent",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/production-grade-ai-agents-for-financial-compliance-lessons-from-stripe/",
+          "why_picked": "Stripe 处理 $1.4 万亿年支付量，用 AWS Bedrock 构建 ReAct Agent 系统做金融合规审查，审查处理时间降低 26%，人类专家保持最终决策权，有用性评分 >96%。",
+          "so_what": "如果你在构建需要人类监督的 Agentic 系统，Stripe 的架构是标杆案例：ReAct 模式 + 专用 Agent 服务 + prompt caching 成本优化 + 人类-in-the-loop 决策，这套组合可以直接借鉴到你的合规/审核/风控场景。"
+        },
+        {
+          "title": "2000 人尝试黑客攻击 AI 助手，无人成功泄露秘密",
+          "category": "实验",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jun/26/hack-my-ai-assistant/",
+          "why_picked": "Fernando Irarrázaval 在 hackmyclaw.com 发起挑战：用 Opus 4.6 运行 AI 助手，6000 次攻击尝试后无人成功泄露 secret。GPT-5.6 system card 也确认 prompt injection 防御显著增强。",
+          "so_what": "如果你在设计 AI Agent 的安全边界，这个实验说明前沿模型的反注入训练确实有效——但 6000 次失败不等于绝对安全。建议仍然不要部署 prompt injection 可能造成不可逆损害的系统，defense-in-depth 仍是铁律。"
+        },
+        {
+          "title": "CVE-2026-LGTM：两个 AI 审查 Agent 陷入死循环，花费 $41,255",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://simonwillison.net/2026/Jun/26/incident-report/",
+          "why_picked": "Andrew Nesbitt 写的假设性事故报告：两个来自不同厂商的 AI 代码审查 Agent 在 PR 中陷入 disagreement loop，340 条评论后花费 $41,255 推理费用。讽刺性但切中多 Agent 系统真实风险。",
+          "so_what": "如果你在构建多 Agent 协作系统，这个「假设性」报告揭示了一个真实风险：Agent 之间的 disagreement loop 可能导致无限推理循环。必须为 Agent 间交互设置硬性轮次上限和费用熔断，否则一次 loop 就可能烧掉数万美元。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-27",
       "items": [
         {
@@ -1194,112 +1292,6 @@
           "url": "https://simonwillison.net/2026/May/29/anthropic/#atom-everything",
           "why_picked": "自 2 月 Series G 以来 Anthropic 收入持续高速增长，enterprise 采用是核心驱动力",
           "so_what": "如果你在规划 AI 基础设施投资：Anthropic 的 $47B run-rate 说明 enterprise AI 支出仍在加速而非放缓，Agent-as-a-Service 和 managed LLM 平台仍有巨大市场空间。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-29",
-      "items": [
-        {
-          "title": "Anthropic H 轮融资 650 亿美元，估值 9650 亿美元",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8tVZr39G7RP",
-          "why_picked": "Anthropic 完成 H 轮 650 亿美元融资，估值 9650 亿美元，是有史以来最大 AI 融资轮。距上一轮（2025 年初 ~620B）估值增长 55%，反映资本市场对 Claude 商业化能力的极度乐观。",
-          "so_what": "如果你在用 Claude API 做 Agent 管线：Anthropic 的巨额融资意味着长期服务能力有保障，但也可能加速 API 价格分化——企业客户已按 API 用量付费（见 Simon Willison 同日分析）。建议评估当前用量成本，考虑预留容量合约锁定价格。同时关注 Anthropic 盈利化节奏对开源模型生态的挤压效应。"
-        },
-        {
-          "title": "国家大基金领投 DeepSeek 首轮融资，投前估值 450 亿美元",
-          "category": "行业",
-          "source": "IT之家",
-          "url": "https://m.ithome.com/html/956371.htm",
-          "why_picked": "国家集成电路产业投资基金（成立 12 年来首次跨界投资纯大模型公司）领投 DeepSeek 首轮融资，标志 DeepSeek 上升为国家级 AI 战略平台。月底基本敲定名单。",
-          "so_what": "如果你在用国产开源模型：国家队的入局意味着 DeepSeek 的长期研发投入有国家层面保障，开源承诺更可信。关注后续模型迭代节奏和对国内 AI 基础设施（算力/数据）的整合动作。对 Agent 开发者而言，DeepSeek 的 API 低成本策略（缓存命中 0.025 元/M tokens）可能持续。"
-        },
-        {
-          "title": "Simon Willison：Anthropic & OpenAI 已找到 product-market fit",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/May/27/product-market-fit/",
-          "why_picked": "SW 通过自身数据发现：个人订阅 $200/月 = API 价值 $2,180（Anthropic $1,200 + OpenAI $980），但企业客户正被按 API 用量收费—— Anthropic Enterprise 已改为 $20/seat + API 定价。Anthropic 即将迎来首个盈利季度。",
-          "so_what": "如果你在评估 AI 编码工具的团队成本：SW 的分析证实了「个人订阅是折扣，企业 API 是正价」的双轨定价模型。团队部署 Claude Code/Codex 前，必须核算 API 用量成本——Uber 式预算失控不是个案而是常态。建议在 Agent 管线中加入用量监控和配额限制。"
-        },
-        {
-          "title": "OpenAI 发布 Frontier Governance Framework",
-          "category": "趋势",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/openai-frontier-governance-framework",
-          "why_picked": "OpenAI 发布首个公开的 Frontier Governance Framework，对齐加州 Frontier AI Act 和 EU AI Act，覆盖网络攻击、CBRN 风险、有害操纵、失控等前沿 AI 风险领域。",
-          "so_what": "如果你在构建企业级 AI Agent 或合规系统：OpenAI 的治理框架为前沿模型的安全治理提供了可参考模板——风险分级、事件响应、外部专家审核三件套正在成为行业标准。关注加州/EU 监管落地时间表，提前准备模型安全评估文档。"
-        },
-        {
-          "title": "Endava 用 Codex 构建「agentic organization」",
-          "category": "行业",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/endava",
-          "why_picked": "全球软件外包公司 Endava 将 Codex 嵌入全生命周期（需求→设计→开发→运维），称自己为「agentic organization」—— senior 经验编码为 agent，junior 开发者产出 senior 级别质量，需求分析从数周压缩到数小时。",
-          "so_what": "如果你在管理开发团队或评估 AI 编码工具落地：Endava 案例展示了 agentic coding 的最大价值不是「替代程序员」而是「知识杠杆」—— senior 架构师的判断力通过 agent 同时指导多个 junior 团队。关键成功因素：将 agent 嵌入全生命周期而非仅编码阶段。"
-        },
-        {
-          "title": "OpenAI 发布 Gartner 2026 企业 AI 编码 Agent 魔力象限 Leader",
-          "category": "行业",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/gartner-2026-agentic-coding-leader",
-          "why_picked": "OpenAI 被 Gartner 评为 2026 企业 AI 编码 Agent 魔力象限 Leader，Codex 获「创新和大规模部署」认可。这是 Gartner 首次发布该品类报告。",
-          "so_what": "如果你在选型企业级 coding agent：Gartner 首次覆盖此品类具有风向标意义——Leader 象限的 Codex 和竞品（Claude Code、Cursor 等）的对比将影响企业采购决策。建议结合团队实际场景（monorepo/多语言/CI 集成）做 PoC，而非仅看榜单。"
-        }
-      ]
-    },
-    {
-      "date": "2026-05-28",
-      "items": [
-        {
-          "title": "SQLite 添加 AGENTS.md：明确拒绝 agentic code，但接受 agentic bug reports",
-          "category": "趋势",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/27/sqlite-agents/",
-          "why_picked": "SQLite 作为最广泛使用的嵌入式数据库，首次为 AI agent 编写 AGENTS.md，明确禁止 agentic code 但接受带可复现测试用例的 agentic bug report。这是 OSS 社区对 AI agent 洪流的首个标志性回应。",
-          "so_what": "如果你在做 agent 代码贡献工具：这意味着主流 OSS 正在设置 agent 交互边界。你的 agent 框架需要考虑目标项目的 AGENTS.md 策略，避免盲目提交 PR。同时 agentic bug report 是被接受的——优化你的 agent 生成可复现测试用例的能力。"
-        },
-        {
-          "title": "AWS Bedrock AgentCore 商业落地：HR 场景 AI agent 降本 97%",
-          "category": "行业",
-          "source": "AWS ML Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-ai-agents-for-business-support-using-amazon-bedrock-agentcore/",
-          "why_picked": "AWS GenAIIC 与 Works Human Intelligence 合作，用 Bedrock AgentCore 构建两个企业级 AI agent（通勤津贴审批 + 浏览器操作），成本降低 97%。展示了 agent 在传统企业流程中的实际落地路径。",
-          "so_what": "如果你在企业做 agent 落地：这个案例展示了 LangGraph + Bedrock AgentCore 的组合如何替代传统 RPA。关键教训是 agent 需要明确的权限边界和人工审核回路——审批类任务不能完全自动化，但 agent 可以完成 80% 的预处理工作。"
-        },
-        {
-          "title": "小米 MiMo 加入 API 价格战：永久降价 99%，全面对标 DeepSeek",
-          "category": "行业",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3826964226691972",
-          "why_picked": "小米 MiMo-V2.5 系列 API 永久降价最高 99%，取消按上下文长度定价，Token Plan 套餐容量提升 5-8 倍。背后是 SGLang HiCache + SWA 的推理系统优化。国内大模型价格战持续升温。",
-          "so_what": "如果你在用国产大模型做 agent：API 成本大幅下降意味着你可以用更大上下文窗口跑更复杂的 agent 管线。建议关注缓存命中场景（Agent/Code 场景命中率更高），实际可用 token 可能远超标称值。同时注意阿里/字节在缩减低价套餐，价格分化在加剧。"
-        },
-        {
-          "title": "Google Research: Zero-Trust Aggregation 用于端侧 AI 隐私分析",
-          "category": "工具",
-          "source": "Google Research",
-          "url": "https://research.google/blog/private-analytics-via-zero-trust-aggregation/",
-          "why_picked": "Google Research 提出零信任聚合方案，结合 TEE 和加密聚合，让端侧 AI 模型的行为分析在不泄露个体数据的前提下进行。解决模型漂移检测、偏差发现等核心问题。",
-          "so_what": "如果你在做端侧/隐私敏感 AI 产品：这个方案提供了在「不收集原始数据」前提下监控模型表现的方法论。TEE + 加密聚合的组合正在成为隐私 AI 基础设施的标准范式，值得提前了解其 API 设计。"
-        },
-        {
-          "title": "Understand-Anything：将代码转为可交互知识图谱",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/Lum1104/Understand-Anything",
-          "why_picked": "GitHub Trending #2。将任意代码库转为可探索、可搜索、可提问的交互式知识图谱。兼容 Claude Code、Codex、Cursor、Copilot、Gemini CLI 等主流 AI 编程工具。理念是「教人的图谱 > 好看的图谱」。",
-          "so_what": "如果你在用 AI 编程助手处理大型代码库：这个工具可以帮 agent 更快理解项目结构。知识图谱形式的代码导航比纯文本搜索更高效，特别适合 onboarding 新成员或跨团队协作场景。"
-        },
-        {
-          "title": "claude-code-harness：Claude Code 自主开发 harness",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/Chachamaru127/claude-code-harness",
-          "why_picked": "GitHub Trending #12。专为 Claude Code 设计的开发 harness，实现自主 Plan→Work→Review 循环，目标是高质量自主开发。",
-          "so_what": "如果你在用 Claude Code 做项目：这个 harness 提供了结构化的自主开发流程——plan→work→review 循环可以减少 agent 的「跑偏」问题。适合需要高质量输出的场景，但要注意 review 环节仍然需要人工参与。"
         }
       ]
     }
