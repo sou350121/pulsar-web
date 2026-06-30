@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-06-30",
+      "items": [
+        {
+          "title": "Meta 因担心模型蒸馏风险 对 Claude 和 Codex 使用施加限制",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8uMLOeR9ZGf",
+          "why_picked": "头部厂商对竞品模型使用施加限制，反映模型蒸馏成为行业级安全焦虑",
+          "so_what": "如果你在设计多模型路由策略，这意味着需要关注上游厂商的使用条款变化——Meta 的限制信号表明，未来更多大厂可能在 ToS 中禁止竞品模型蒸馏。建议在 agent 架构中抽象模型调用层，避免对单一供应商产生合规依赖。"
+        },
+        {
+          "title": "DeepSeek V4 正式版官宣 7 月中旬上线，高峰时段 API 价格翻倍",
+          "category": "新发布",
+          "source": "ITHome",
+          "url": "https://m.ithome.com/html/970123.htm",
+          "why_picked": "DeepSeek V4 从预览版转正，引入峰谷定价——百万字上下文 + Agent 能力开源领先",
+          "so_what": "如果你在用 DeepSeek 做 Agent 后端，这意味着 7 月中旬前需要评估成本模型：高峰时段（9-12点、14-18点）价格翻倍，建议把非实时推理任务调度到谷时段。同时关注正式版是否更新 API 接口。"
+        },
+        {
+          "title": "Ornith-1.0: Self-Scaffolding LLMs for Agentic Coding",
+          "category": "新发布",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jun/29/ornith/",
+          "why_picked": "DeepReinforce 首发模型，MIT 许可，基于 Gemma 4 + Qwen 3.5 微调，9B-397B 四档尺寸，开源编码 benchmark SOTA",
+          "so_what": "如果你在本地部署编码 Agent，这意味着 35B MoE 版本（~20GB GGUF）可以用 LM Studio + Pi 跑起来，工具调用表现良好。比同尺寸纯开源模型在编码任务上更强，适合边缘部署场景。"
+        },
+        {
+          "title": "AWS: Nova 2 Lite + Claude Sonnet 4.6 双模型管线降本 2/3",
+          "category": "工具",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/pair-nova-2-lite-with-claude-for-cost-optimized-document-processing/",
+          "why_picked": "实战案例：轻量视觉模型做 OCR 提取 + 强推理模型做空间匹配，336 页年鉴 93% 置信度",
+          "so_what": "如果你在构建文档处理管线，这意味着「轻量提取 + 重量推理」的两阶段架构可以显著降本。Nova 2 Lite 负责 native multimodal 提取（~1000 tokens/页），Claude Sonnet 4.6 负责空间推理匹配——比单一 VLM 全包便宜 2/3。"
+        },
+        {
+          "title": "OpenAI 报告：Mapping Europe AI Workforce Opportunity",
+          "category": "趋势",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/mapping-ai-jobs-transition-eu",
+          "why_picked": "OpenAI 首次系统 mapping AI 对欧盟各职业的影响——自动化风险 vs 增长机会",
+          "so_what": "如果你在规划 AI 产品的欧洲市场进入策略，这份报告揭示了哪些职业类别最容易被 Agent 替代、哪些会因 AI 增长。可作为 B2B Agent 产品定位的参考数据。"
+        },
+        {
+          "title": "AWS: Multi-tenant LLM analytics with row-level security",
+          "category": "工具",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/multi-tenant-llm-analytics-with-row-level-security-how-we-built-a-secure-agent-on-aws/",
+          "why_picked": "生产级多租户 LLM 分析系统：AWS SigV4 加密签名 + 语义验证 + 三层架构实现行级安全",
+          "so_what": "如果你在构建多租户 Agent 平台，这意味着行级安全不能只靠 prompt 隔离——需要密码学签名（SigV4）+ 语义层验证的双重保障。架构设计值得参考。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-29",
       "items": [
         {
@@ -1241,59 +1294,6 @@
         }
       ],
       "source_file": "ai-daily-pick-sources-2026-06-01.json"
-    },
-    {
-      "date": "2026-05-30",
-      "items": [
-        {
-          "title": "Anthropic 完成 $650 亿 Series H 融资，估值 $9650 亿首次反超 OpenAI",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/May/29/anthropic/#atom-everything",
-          "why_picked": "Anthropic 单轮 $650B 融资，估值 $965B 首次超越 OpenAI；run-rate revenue 已达 $47B",
-          "so_what": "如果你在做 AI 供应商选型：Anthropic 的财务实力已不再只是 challenger，而是与 OpenAI 平起平坐。企业客户可重新评估 Claude vs GPT 的长期绑定风险——Anthropic 的独立融资地位意味着更强的定价谈判空间。"
-        },
-        {
-          "title": "Claude Opus 4.8 正式发布：两个「史上首次」能力",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3829499738465408",
-          "why_picked": "Anthropic 旗舰模型 Opus 线重大升级，36kr 报道称有两个首次能力",
-          "so_what": "如果你在用 Claude API 做 agent 开发：Opus 4.8 可能带来显著的能力跃升，建议先在非关键路径做 A/B 测试。注意 identity 行为变化可能影响需要稳定系统提示的场景。"
-        },
-        {
-          "title": "OpenAI Codex + GPT-5.5：Braintrust 实战案例",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://openai.com/index/braintrust",
-          "why_picked": "OpenAI 官方博客发布 Braintrust 使用 Codex + GPT-5.5 跑实验和写代码的实战案例",
-          "so_what": "如果你在构建 coding agent 管线：GPT-5.5 + Codex 的组合已获真实团队验证，可参考 Braintrust 的 experiment-driven 工作流，将 codex 集成到 CI/CD 做自动化实验验证。"
-        },
-        {
-          "title": "Tiny-vLLM：C++/CUDA 高性能 LLM 推理引擎，HN 67 分",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/jmaczan/tiny-vllm",
-          "why_picked": "HN 热门开源项目，纯 C++/CUDA 实现轻量级 LLM 推理，适合边缘部署和低延迟场景",
-          "so_what": "如果你在部署 LLM 到资源受限环境：Tiny-vLLM 提供了一条不依赖 Python 生态的推理路径，C++ 实现意味着更小的二进制和更快的冷启动，适合 agent 边缘节点。"
-        },
-        {
-          "title": "OpenAI 推出 Rosalind 生物防御计划，免费开放 GPT-Rosalind",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/strengthening-societal-resilience-with-rosalind-biodefense",
-          "why_picked": "OpenAI 正式发布生物防御专项计划，向可信开发者和美国政府免费开放 GPT-Rosalind",
-          "so_what": "如果你在构建垂直领域 AI 应用：Rosalind 展示了前沿模型向特定领域深度定制的趋势，未来可能更多领域专用模型出现，值得留意 OpenAI 是否会开放更多垂直 API。"
-        },
-        {
-          "title": "Anthropic run-rate revenue 达 $470 亿：enterprise adoption 持续加速",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/May/29/anthropic/#atom-everything",
-          "why_picked": "自 2 月 Series G 以来 Anthropic 收入持续高速增长，enterprise 采用是核心驱动力",
-          "so_what": "如果你在规划 AI 基础设施投资：Anthropic 的 $47B run-rate 说明 enterprise AI 支出仍在加速而非放缓，Agent-as-a-Service 和 managed LLM 平台仍有巨大市场空间。"
-        }
-      ]
     }
   ]
 }
