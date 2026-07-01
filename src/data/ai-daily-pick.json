@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-01",
+      "items": [
+        {
+          "title": "Claude Sonnet 5 发布：性能接近 Opus 4.8，新 tokenizer 有效涨价 30%",
+          "category": "新发布",
+          "source": "Anthropic",
+          "url": "https://www.anthropic.com/news/claude-sonnet-5",
+          "why_picked": "Anthropic 新一代 Sonnet，性能逼近 Opus 4.8 但定价更低；1M context、128K output；新 tokenizer 使英文 token 数增加 42%（中文持平），实际是变相涨价；temperature/top_p/top_k 采样参数不再支持",
+          "so_what": "如果你在用 Sonnet 4.6 做生产部署，升级前必须做两件事：(1) 用 Simon Willison 的 Token Counter 工具评估新 tokenizer 对你的输入文本的 token 膨胀率；(2) 检查代码中是否使用了 temperature/top_p/top_k 参数——Sonnet 5 已移除这些参数，会直接报错。中文场景 token 膨胀仅 1%，影响极小。"
+        },
+        {
+          "title": "Google 发布 Gemini 3.1 Flash Lite Image（Nano Banana 2 Lite）——最快最便宜的 Gemini 图像模型",
+          "category": "新发布",
+          "source": "Google DeepMind",
+          "url": "https://deepmind.google/models/gemini-image/flash-lite/",
+          "why_picked": "Google 推出定位「速度和规模」的轻量级图像生成模型，AI Studio 和 API 均可用，是 Nano Banana 2 系列的 Lite 版本",
+          "so_what": "如果你在构建需要低成本批量图像生成的 Agent 管线（如电商商品图、A/B 测试素材），Flash Lite 是比 Pro 版更经济的选择；注意其拼写精度仍有瑕疵，不适合对文字渲染要求高的场景。"
+        },
+        {
+          "title": "Google TabFM：零样本表格数据基础模型，sklearn 兼容",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/google-research/tabfm",
+          "why_picked": "Google Research 将 TimesFM 的零样本思路扩展到表格数据——无需训练/调参/特征工程，直接把训练数据当 context 喂入即可做分类和回归；PyTorch/JAX 双后端，HuggingFace 可下载权重",
+          "so_what": "如果你在做结构化数据的预测任务（用户流失、欺诈检测等），TabFM 可以替代 XGBoost 的调参流程——零样本直接推理，适合快速原型验证；但生产环境仍需对比传统 tree-based 方法的精度差距。"
+        },
+        {
+          "title": "AWS 推出 AG-UI 协议支持：Agent 生成式 UI 的开放标准",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://docs.ag-ui.com/introduction",
+          "why_picked": "AG-UI 是 Agent↔User 交互的开放协议，与 MCP（Agent↔工具）和 A2A（Agent↔Agent）并列三大 agentic 协议；支持 LangGraph/CrewAI/Strands 后端 + React/Vue/Angular 前端解耦",
+          "so_what": "如果你在构建需要实时流式 UI 的 Agent 应用（如交互式图表、共享画布、人工审批流），AG-UI 让你把 agent 框架和前端库解耦——后端选最适合的 agent 框架，前端选最适合的 UI 库，通过 AG-UI 桥接。"
+        },
+        {
+          "title": "Vercel Agent 扩展至 Public Beta：支持生产问题调查 + 审批式操作",
+          "category": "工具",
+          "source": "Vercel",
+          "url": "https://vercel.com/changelog/an-expanded-vercel-agent-chat-investigations-and-approved-actions-now-in-public-beta",
+          "why_picked": "Vercel Agent 从 PR 代码审查扩展到完整平台 Agent：Dashboard 聊天、生产故障调查、审批式 remediation（开 PR/回滚/改配置），默认只读 + sandbox 验证",
+          "so_what": "如果你在 Vercel 上部署前端/全栈应用，Vercel Agent 现在可以自动诊断部署失败和运行时错误并给出修复建议——但需要人工审批才执行变更，安全模型值得参考。"
+        },
+        {
+          "title": "OpenAI 核心转储流行病学：用大规模 core dump 分析修复 18 年老 bug",
+          "category": "观点",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/core-dump-epidemiology-data-infrastructure-bug",
+          "why_picked": "OpenAI 工程师用大规模 core dump 分析定位罕见基础设施崩溃，发现了一个硬件故障和一个 18 年历史的软件 bug——展示了 LLM 公司底层工程的硬核一面",
+          "so_what": "如果你在运营大规模 AI 推理服务，OpenAI 的 core dump 分析方法论值得借鉴：将偶发崩溃从「个案调试」升级为「流行病学统计」，用数据驱动定位根因。"
+        }
+      ]
+    },
+    {
       "date": "2026-06-30",
       "items": [
         {
