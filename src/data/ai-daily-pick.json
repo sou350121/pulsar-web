@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-02",
+      "items": [
+        {
+          "title": "Anthropic 回应 Claude Code 检测中国用户：将回滚隐藏代码",
+          "category": "行业",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/971118.htm",
+          "why_picked": "Claude Code 内置隐蔽检测机制（时区+域名清单+Unicode 编码），引发开发者社区信任危机，Anthropic 承诺 7/2 新版本删除",
+          "so_what": "如果你在用 Claude Code 做开发，这意味着你需要关注 AI 编码工具的隐私边界。逆向工程可能揭示模型供应商的合规策略——建议关注开源替代方案或本地化部署选项。"
+        },
+        {
+          "title": "Vercel 发布 konsistent：统一 Agent 与人类的代码规范",
+          "category": "工具",
+          "source": "Vercel",
+          "url": "https://vercel.com/changelog/enforce-consistent-code-for-agents-and-humans-with-konsistent",
+          "why_picked": "Vercel 推出专用 lint 工具，解决 AI agent 生成代码与人类代码风格不一致的工程痛点",
+          "so_what": "如果你在做 Agent 代码生成管线，这意味着你需要在 CI/CD 中加入 agent-aware 的 lint 层。konsistent 展示了将 harness 契约、bridge 协议纳入静态检查的方向——值得评估是否适配你的框架。"
+        },
+        {
+          "title": "AWS 发布 Serverless A2A Gateway：Agent 发现、路由与访问控制",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/building-a-serverless-a2a-gateway-for-agent-discovery-routing-and-access-control/",
+          "why_picked": "20 个 agent 需 190 条点对点连接，AWS 用单入口 A2A Gateway 解决企业级 agent 通信爆炸问题",
+          "so_what": "如果你在多 agent 架构中挣扎，这意味着 A2A 协议 + 中心化网关可能是你的下一步。AWS 方案用 JWT scope + Lambda 做细粒度权限控制，支持 SSE 流式——适合评估你的 multi-agent 部署。"
+        },
+        {
+          "title": "AWS AgentCore Memory 元数据过滤：QA 准确率 40%→64%",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/structured-memory-filtering-with-metadata-in-agentcore-memory/",
+          "why_picked": "纯语义搜索在 agent 记忆积累后遇到精度瓶颈，元数据过滤在时间/优先级/部门维度上大幅提升检索精度",
+          "so_what": "如果你在做 RAG 或 agent 记忆系统，这意味着纯向量检索已不够——需要在 ingestion 阶段就设计 metadata schema。AWS 实测显示上下文边界类查询准确率从 16% 跳到 69%。"
+        },
+        {
+          "title": "年轻人用 Agent 找工作：AI 辅助面试席卷职场",
+          "category": "趋势",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3876467286293384",
+          "why_picked": "AI 实时面试辅助已形成完整技术链（语音识别→语义分析→答案生成→口语化改写），Google/字节/Amazon 同步部署 AI 招聘筛选",
+          "so_what": "如果你在做 AI 应用产品，这意味着「AI 对抗 AI」正在成为新范式。招聘场景的攻防升级预示了更多领域将出现 agent 互搏——值得思考你的产品如何在这种不对称竞争中定位。"
+        },
+        {
+          "title": "Claude Fable 5 在 Vercel AI Gateway 恢复访问",
+          "category": "新发布",
+          "source": "Vercel",
+          "url": "https://vercel.com/changelog/claude-fable-5-access-restored-on-ai-gateway",
+          "why_picked": "美国解除出口管制后 Fable 5 重新上线，但 safety classifier 更严格，Vercel 建议搭配 model fallback 使用",
+          "so_what": "如果你在生产环境用 Fable 系列，这意味着你需要配置 fallback chain（Fable 5 → Opus 4.8 → Sonnet 5）来应对 safety classifier 触发。同时注意 ZDR 不再支持——30 天数据保留。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-01",
       "items": [
         {
@@ -1301,52 +1354,6 @@
           "so_what": "如果你在用 Claude 做文档处理或代码审查：大段粘贴不再撑爆上下文窗口，自动转文件附件后 Claude 会以文件编辑器模式处理，适合一次性提交多文件/长文档场景。"
         }
       ]
-    },
-    {
-      "date": "2026-06-01",
-      "items": [
-        {
-          "title": "AI 订阅疲劳：「我本来不想建这 16 个项目的」",
-          "category": "观点",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/31/the-solution-might-be-cancelling-my-ai-subscription/",
-          "why_picked": "David Wilson 详述 AI 编码工具如何让他 1 小时内从模糊想法变成 16+ 个可运行项目，最终得出结论：唯一可持续的方案是取消订阅。HN 热帖引发 ADHD 群体正反激烈讨论",
-          "so_what": "如果你在用 Claude Code / Codex 等 coding agent：这篇文章揭示了一个被忽视的风险——agent 的「产出速度」远超「维护能力」。建议建立项目筛选纪律：每个 agent 生成的项目必须有明确 owner 和生命周期策略，否则就是在制造技术债。对团队而言，需要定义「agent 产出准入标准」而非放任自由生成。"
-        },
-        {
-          "title": "Anthropic 年化收入达 470 亿美元",
-          "category": "行业",
-          "source": "Reuters/Simon Willison",
-          "url": "https://simonwillison.net/2026/May/31/anthropic-run-rate/",
-          "why_picked": "Reuters Breakingviews 引用 Anthropic CFO Karen Kwok 的话披露：Anthropic 的 run-rate revenue 已突破 470 亿美元。计算方式：消费类收入（最近 28 天 × 13）+ 订阅收入（月 × 12）。在 Series H 650 亿估值背景下，这是 AI 商业化的里程碑信号",
-          "so_what": "如果你在评估 AI 供应商的长期稳定性：Anthropic 的 47B run-rate 意味着它已从「烧钱研究实验室」转变为「自我造血的商业公司」。对 Agent 开发者来说，Claude API 的供应商风险显著降低。但消费端账单激增也是趋势——建议监控你的 token 用量曲线，提前做成本优化。"
-        },
-        {
-          "title": "Anthropic 首次公开 Claude 全产品线沙箱架构",
-          "category": "工具",
-          "source": "Anthropic Engineering/Simon Willison",
-          "url": "https://simonwillison.net/2026/May/30/how-we-contain-claude/",
-          "why_picked": "Anthropic Engineering 博客详细披露 Claude.ai（gVisor）、Claude Code（macOS Seatbelt / Linux Bubblewrap）、Claude Cowork（完整 VM）三层沙箱方案，包括此前遗漏的 api.anthropic.com/v1/files 数据外泄漏洞修复。这是最详细的 AI Agent 沙箱公开文档",
-          "so_what": "如果你在构建需要沙箱隔离的 Agent 系统：Anthropic 的三层架构是现成的参考设计。关键教训——凭证永远不要进入沙箱（即使模型也无法外泄）。开源项目 srt (Sandbox Runtime) 已可用于自建沙箱。建议在你的 Agent 框架中加入「权限最小化 + 凭证隔离」原则。"
-        },
-        {
-          "title": "ChatGPT for Google Sheets 发现严重数据外泄漏洞",
-          "category": "安全",
-          "source": "PromptArmor/HN",
-          "url": "https://www.promptarmor.com/resources/gpt-for-google-sheets-data-exfiltration",
-          "why_picked": "PromptArmor 发现：通过隐藏的白色文本注入，攻击者可以利用 ChatGPT for Google Sheets（已 18.5 万下载）外泄整个 Google Drive 工作簿、执行钓鱼弹窗、覆盖 GPT 侧边栏——且即使用户关闭了「自动编辑」选项也无法防御。已负责任披露但 OpenAI 未回应",
-          "so_what": "如果你在企业环境中部署 AI 插件/扩展：这是 indirect prompt injection 攻击的经典案例。任何 AI 工具如果有文件读写权限 + 外部数据接入能力，就存在被注入攻击的风险。建议在 CI/CD 中加入 prompt injection 扫描，限制 AI 扩展的权限范围，并审计所有已安装的 AI 浏览器插件/插件权限。"
-        },
-        {
-          "title": "Chad Whitacre（Stripe 联合创始人）宣布退出科技界",
-          "category": "观点",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/May/30/retiring-from-tech-to-live-offline/",
-          "why_picked": "Stripe 联合创始人 Chad Whitacre 发布打字机手写信宣布「退出科技界，过离线生活」。他描述了自己用 Claude Code + Opus 4.5 连续 3 天 12+ 小时编码后的感受：「像是另一个『人』住进了我的脑海，但这个『人』属于一家新兴巨头公司」。开源可持续性危机 + AI 冲击是两大推手",
-          "so_what": "如果你在思考 AI 对开发者心理的影响：Chad 的经历不是个例——它揭示了 agent 工具如何改变人与技术的关系。好的 Agent 设计应该让用户感到「我在驾驶」而非「AI 在驾驶」。对你的团队：关注 agent 使用后的心理疲劳信号，建立「数字排毒」文化比追求效率更重要。"
-        }
-      ],
-      "source_file": "ai-daily-pick-sources-2026-06-01.json"
     }
   ]
 }
