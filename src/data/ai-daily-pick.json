@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-03",
+      "items": [
+        {
+          "title": "Anthropic Fable 5 全球上线 + Claude 登陆 Microsoft Foundry",
+          "category": "新发布",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3877746956611847",
+          "why_picked": "Fable 5 7月1日美国时间全球上线；Claude 模型正式登陆 Azure AI Foundry，企业可直接在 Azure 环境调用 Claude Opus 4.8 / Haiku 4.5",
+          "so_what": "如果你在用 Azure 部署 AI 应用，这意味着 Claude 现在原生支持 Azure 身份认证、计费和治理体系——无需再绕道 Anthropic 直接 API。Fable 5 的 Pro/Max/Team 用户每周 50% 用量限额持续到 7/7，可以尽早体验。"
+        },
+        {
+          "title": "Simon Willison 发布 llm-coding-agent：基于 llm 库的 Claude Code 风格编程 Agent",
+          "category": "新发布",
+          "source": "GitHub/PyPI",
+          "url": "https://simonwillison.net/2026/Jul/2/llm-coding-agent/",
+          "why_picked": "Willison 用 Fable 5 自动生成并发布的 Python 编程 Agent，支持文件编辑、命令执行、搜索等 6 个工具，Python API 友好",
+          "so_what": "如果你在做 Agent 工具链评估，这是一个轻量级参考实现——6 个核心工具覆盖了文件读写/编辑/搜索/命令执行，Python API (CodingAgent.run()) 可直接嵌入你的管线。uvx 一行命令即可试用。"
+        },
+        {
+          "title": "OpenAI 系统优化使推理成本降低 50%+",
+          "category": "趋势",
+          "source": "界面新闻",
+          "url": "https://www.36kr.com/p/3877746956611847",
+          "why_picked": "OpenAI 工程师内部透露底层优化使模型推理成本减半，直接影响 API 定价和运营策略",
+          "so_what": "如果你在运营高并发 LLM 服务，这意味着 OpenAI API 成本可能进一步下降——建议关注后续定价更新，并重新评估多模型路由策略中 OpenAI 模型的性价比权重。"
+        },
+        {
+          "title": "DSPy 实战：用 DSPy 优化 Datasette Agent 的 SQL 系统 Prompt",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Jul/2/dspy-datasette-agent-prompts/",
+          "why_picked": "Willison 用 DSPy 自动评估并改进 Datasette Agent 的 SQL 系统提示，发现 schema 列名缺失导致错误重试循环",
+          "so_what": "如果你在用 LLM 做 Text-to-SQL 或数据库 Agent，这个案例证明：在 system prompt 中直接包含列名而非让模型 guess，能显著减少错误重试。DSPy 的自动 prompt 优化框架值得引入你的 eval pipeline。"
+        },
+        {
+          "title": "Geoffrey Litt (Anthropic)：「理解才能参与」——与编程 Agent 协作的心智模型",
+          "category": "观点",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Jul/2/understand-to-participate/",
+          "why_picked": "Anthropic 研究员在 AIE 大会提出核心观点：开发者必须理解 Agent 生成的代码才能保持创造性参与，否则认知债务会累积",
+          "so_what": "如果你团队正在规模化使用 Claude Code / Copilot，这意味着需要建立 code review 流程——不是形式审查，而是确保人类开发者真正理解 Agent 的修改逻辑，否则项目可维护性会快速恶化。"
+        },
+        {
+          "title": "Claude Code AskUserQuestion 60s 超时后自动继续——安全机制争议",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/anthropics/claude-code/issues/73125",
+          "why_picked": "Claude Code 的 AskUserQuestion 工具 60 秒无响应后自动返回「按最佳判断继续」，用户质疑这是安全绕过",
+          "so_what": "如果你在构建需要用户确认的 Agent 系统，这个 case 提醒：超时默认行为可能是安全漏洞。确保你的 confirm-before-execute 机制有明确的 fail-close（而非 fail-open）策略。"
+        },
+        {
+          "title": "Anthropic 回应 Claude Code 暗藏检测中国用户代码：将在更新中删除",
+          "category": "行业",
+          "source": "36Kr / IT之家",
+          "url": "https://www.36kr.com/p/3877746956611847",
+          "why_picked": "Claude Code 自 4 月起内置中国时区和 147 个域名检测，Anthropic 称是防账户转售实验，将删除",
+          "so_what": "如果你在为中国团队选型 AI 编码工具，这意味着 Claude Code 的地理限制策略可能反复——建议同时评估 Copilot 和 Cursor 作为备选，避免单一供应商锁定风险。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-02",
       "items": [
         {
