@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-04",
+      "items": [
+        {
+          "title": "阿里全面禁用Claude：7月10日起卸载所有Anthropic产品",
+          "category": "行业",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3879721635361032",
+          "why_picked": "阿里巴巴内部通知全面禁用Sonnet/Opus/Fable/Claude Code，原因是Claude Code被曝内置隐蔽用户检测机制（时区+域名检测+Unicode暗标），已列入高风险软件名单，推荐自研Qoder替代",
+          "so_what": "如果你在用Claude Code做企业开发：这意味着你需要评估供应链安全风险——Claude Code从4月起内置了加密混淆的环境指纹检测，会向Anthropic服务器发送用户环境信息。建议审查代码库中是否包含敏感域名/公司名，并在企业环境中考虑多模型冗余或转向自研工具。"
+        },
+        {
+          "title": "Claude Fable 5回归但限时限额：7天后纯按量付费",
+          "category": "新发布",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3878491529163012",
+          "why_picked": "Fable 5 解封回归（下架19天），但每周仅50%额度可用，同等任务token消耗约为Opus 4.8的2倍，7月7日后彻底转为按量付费；风控升级导致正常需求也被误拦截",
+          "so_what": "如果你在用Fable 5做复杂编码任务：这意味着高阶模型正在从订阅制转向按量付费——Fable 5 单次简单问答可消耗2%周额度，一个3D游戏demo耗$173。建议7天窗口期内集中体验核心能力，长期预算需单独规划usage credits。"
+        },
+        {
+          "title": "腾讯云DeepSeek-V4正式版7月中「原厂直供」上线",
+          "category": "新发布",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8uSrTTnpELs",
+          "why_picked": "腾讯云宣布DeepSeek-V4正式版将通过TokenHub和智能体开发平台上线，跟随原厂同步定价，引入峰谷定价机制",
+          "so_what": "如果你在做国内AI基础设施选型：这意味着DeepSeek-V4正式进入国内主流云厂商体系，峰谷定价可能带来成本优化空间。建议对比阿里云百炼、华为云ModelArts的DeepSeek接入方案，关注API兼容性和延迟指标。"
+        },
+        {
+          "title": "Open Source AI Gap Map v0.1：421个开源AI产品全景",
+          "category": "趋势",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jul/3/open-source-ai-gap-map/",
+          "why_picked": "Current AI（非营利组织，已获$4亿承诺）发布Gap Map v0.1，覆盖266个软件工具+85个模型+50个数据集+20个硬件项目，数据MIT协议开源在GitHub",
+          "so_what": "如果你在做开源AI工具选型或竞品分析：这意味着有一个结构化的、可查询的开源AI全景图可用。421个产品分14个类别三层架构，MIT协议数据可直接用Datasette Lite探索。比零散搜索高效得多。"
+        },
+        {
+          "title": "Simon Willison：让Fable用judgement委派子agent，省token又高效",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jul/3/judgement/",
+          "why_picked": "AIE大会Claude Code团队fireside chat核心建议：不要dictate Fable的工作方式，让它自行判断何时用子agent+低配模型（Sonnet/Haiku）处理编码任务，主循环保留judgment/review/synthesis",
+          "so_what": "如果你在用Claude Code做日常开发：这意味着你可以配置memory文件让Fable自动委派编码任务给Sonnet/Haiku子agent——Simon实测Fable额度消耗速度明显降低。核心原则：judgment-heavy任务留主循环，implementation delegation给subagent。"
+        },
+        {
+          "title": "HN热帖：Agent记忆session transcripts其实没用",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts",
+          "why_picked": "175分/151评。作者公司原本围绕「session transcript是新的石油」构建产品，但实测发现：当agent有其他context来源时，transcript搜索对SWE任务零收益，甚至可能让模型变差",
+          "so_what": "如果你在建企业级Agent记忆系统：这意味着投入大量资源做transcript向量搜索可能是伪需求——agent已经在PR/commit/docs中沉淀了有价值的信息，transcript搜索反而引入噪声。优先投资结构化artifact（commit message、PR描述、文档）而非原始对话回放。"
+        },
+        {
+          "title": "开发者因被禁止在技术演讲中使用ChatGPT起诉前公司",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://inpreparation.substack.com/p/opinion-i-was-not-allowed-to-type",
+          "why_picked": "133分/69评。开发者声称在公司技术演讲（chalk talk）中使用ChatGPT被禁止构成歧视，引发关于AI工具使用政策的广泛讨论",
+          "so_what": "如果你在制定团队AI使用政策：这意味着「是否允许在正式场合使用AI辅助」正在成为新的劳动权益议题。建议提前制定明确的AI工具使用规范，区分辅助编码/辅助演示/辅助决策等不同场景，避免模糊地带引发争议。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-03",
       "items": [
         {
@@ -1360,59 +1421,6 @@
           "url": "https://www.tumblr.com/dreaminginthedeepsouth/817865966907228160/",
           "why_picked": "HN 104 分 100 评，回顾 2020 年 Gebru 被 Google 解雇前发出的 LLM 风险警告，如今逐一成为现实",
           "so_what": "如果你在企业部署 LLM：这篇文章提醒——模型滥用、幻觉、环境影响等风险不是理论问题而是已发生的工程事实。建议在 Agent 系统中加入输出审计层和 usage guardrail，而非仅依赖模型自身对齐。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-03",
-      "items": [
-        {
-          "title": "Anthropic 秘密递交 S-1 IPO 申请，估值逼近 $1 万亿",
-          "category": "行业",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3835377534497926",
-          "why_picked": "AI 史上最大 IPO 即将开启，年化收入半年从 90 亿飙至 470 亿",
-          "so_what": "如果你在做 AI 行业投资或企业选型：Anthropic 上市将重塑 AI 赛道估值体系，Claude Code 驱动的增长模式验证了「单点突破」战略的有效性。关注其 10 月上市窗口对 OpenAI 竞争格局的影响。"
-        },
-        {
-          "title": "微软 Build 发布 MAI-Thinking-1 + MAI-Code-1-Flash",
-          "category": "新发布",
-          "source": "Microsoft AI",
-          "url": "https://microsoft.ai/news/introducing-mai-thinking-1/",
-          "why_picked": "MAI-Thinking-1 (35B) 盲测优于 Sonnet 4.6；MAI-Code-1-Flash (5B) 集成 GitHub Copilot；全量企业授权数据训练",
-          "so_what": "如果你在选择代码模型或推理模型：35B 参数达到 Sonnet 4.6 水平意味着本地部署性价比大幅提升。MAI-Code-1-Flash 已集成 Copilot，值得关注其对编码 Agent 成本结构的影响。"
-        },
-        {
-          "title": "OpenAI × Travelers 全国部署 AI 理赔助手",
-          "category": "行业",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/travelers",
-          "why_picked": "ChatGPT 进入保险理赔核心业务，24/7 支持 + 高峰弹性扩容",
-          "so_what": "如果你在做企业级 Agent 落地：这是 ChatGPT 从客服工具升级为业务流程核心组件的标杆案例。Claim Assistant 架构可作为保险/金融领域 Agent 设计的参考模板。"
-        },
-        {
-          "title": "Baz 用 Bedrock AgentCore 构建 Spec Review Agent",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/how-baz-improved-its-ai-agent-code-review-accuracy-using-amazon-bedrock-agentcore/",
-          "why_picked": "多阶段验证管线：Figma MCP + Jira API + 子代理运行时验证（DOM/视觉测试）",
-          "so_what": "如果你在做代码审查自动化或 QA 管线：Baz 的 Spec Review Agent 展示了从「diff-only review」到「spec-to-implementation 全链路验证」的架构范式。MCP 集成 Figma + AgentCore Browser Tool 的组合值得借鉴。"
-        },
-        {
-          "title": "DeepSeek-V4-Flash on AMD MI300X 部署实录",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://fergusfinn.com/blog/deepseek-v4-flash-mi300x/",
-          "why_picked": "HN 72 分；vLLM 在 MI300X 上 FP8 兼容性问题全记录，AMD 推理软件生态现状",
-          "so_what": "如果你在做多 GPU 推理部署或成本控制：MI300X 价格约为 H100 一半但软件障碍仍多。本文详细记录了 FP8 dialect 不兼容、vLLM 无法直接运行等实战坑，对 AMD 推理选型有重要参考价值。"
-        },
-        {
-          "title": "Claude 大文本粘贴自动转文件附件",
-          "category": "工具",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/Jun/2/pasted-file-editor/",
-          "why_picked": "Claude 新增大文本粘贴检测，自动转为文件附件而非内联文本",
-          "so_what": "如果你在用 Claude 做文档处理或代码审查：大段粘贴不再撑爆上下文窗口，自动转文件附件后 Claude 会以文件编辑器模式处理，适合一次性提交多文件/长文档场景。"
         }
       ]
     }

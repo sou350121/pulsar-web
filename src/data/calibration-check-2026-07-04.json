@@ -1,0 +1,409 @@
+{
+  "ok": true,
+  "date": "2026-07-04",
+  "generated_at": "2026-07-04T03:06:56.599250+00:00",
+  "summary": {
+    "date": "2026-07-04",
+    "total_assumptions": 20,
+    "status_breakdown": {
+      "stable": 16,
+      "strengthened": 0,
+      "at_risk": 0,
+      "unverified": 4
+    },
+    "domain_breakdown": {
+      "vla": {
+        "count": 10,
+        "avg_confidence": 0.66
+      },
+      "ai_agent": {
+        "count": 6,
+        "avg_confidence": 0.72
+      },
+      "system": {
+        "count": 4,
+        "avg_confidence": 0.73
+      }
+    },
+    "total_signals": 95,
+    "total_counter_signals": 0,
+    "mechanical_context": {
+      "field_state_date": "2026-07-04",
+      "saturated_benchmarks": [
+        "CALVIN/ABC-D (4.8%)",
+        "CALVIN/ABCD-D (4.8%)",
+        "CALVIN/D-D (4.3%)",
+        "LIBERO/non-standard (99.2%)",
+        "LIBERO/standard-closed (99.8%)",
+        "LIBERO/standard-opensource (99.8%)"
+      ],
+      "low_confidence_flags": false,
+      "method_trends_summary": "3d_representation: stable, cross_embodiment: stable, dexterous_hand: stable, diffusion_policy: declining, flow_matching: stable, human_robot: stable, instruction_tuning: stable, language_grounding: stable, long_horizon: stable, mobile_manipulation: declining, multi_task: stable, rl_finetuning: stable, sim_to_real: stable, tactile: stable, world_model: stable"
+    }
+  },
+  "assumptions": [
+    {
+      "id": "V-001",
+      "domain": "vla",
+      "hypothesis_summary": "Diffusion-class action generation (Diffusion Policy, flow matching / pi0, ACT-style chunking) remains the dominant VLA a...",
+      "current_confidence": 0.76,
+      "new_confidence": 0.76,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 6,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [
+        "Neuro-Symbolic Safety Guidance for Vision-Language-Action Models via Constrained Flow Matching",
+        "Generative Modeling of Quantum Distribution with Functional Flow Matching",
+        "Enhancing Flow Matching with A Unified Guidance Framework for Efficient and Robust Speech Synthesis",
+        "ModaFlow: Modality-Aware Flow Matching for High-Fidelity Virtual Try-On",
+        "MPFlow: Multi-modal Posterior-Guided Flow Matching for Zero-Shot MRI Reconstruction"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-002",
+      "domain": "vla",
+      "hypothesis_summary": "Tactile/force sensing will transition from research accessory to necessary modality in high-precision VLA manipulation p...",
+      "current_confidence": 0.64,
+      "new_confidence": 0.64,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 6,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [
+        "Imagining the Sense of Touch: Touch-Informed Manipulation via Imagined Tactile Representations",
+        "Wake up for Touch! Mask-isolated Tactile Alignment Learning in MLLMs",
+        "Human-Centric Transferable Tactile Pre-Training for Dexterous Robotic Manipulation",
+        "RoboTacDex: A Dexterous Visual-Tactile-Action Dataset for Humanoid Manipulation",
+        "UniTacVLA: Unified Tactile Understanding and Prediction in Vision Language Action Models"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-003",
+      "domain": "vla",
+      "hypothesis_summary": "GPU-parallel simulation (Isaac Lab / Genesis) + domain randomization remains the primary scalable data source for VLA co...",
+      "current_confidence": 0.72,
+      "new_confidence": 0.72,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 7,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [
+        "Actuator Reality Shaping for Zero-Shot Sim-to-Real Robot Learning",
+        "Release: google-deepmind/mujoco @ 3.10.0",
+        "Physics Models for Sim-to-Real Transfer in Professional-Level Robot Table Tennis",
+        "Efficient Sim-to-Real Transfer of World-Action Models from Synthetic Priors",
+        "ConCent: Contact-Centric Real-to-Sim-to-Real Learning from One Demonstration"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-004",
+      "domain": "vla",
+      "hypothesis_summary": "Humanoid robots (Unitree G1/H1, Figure 02, 1X NEO, Agility Digit, Fourier GR-1) will achieve production-quality VLA cont...",
+      "current_confidence": 0.53,
+      "new_confidence": 0.54,
+      "confidence_delta": 0.01,
+      "status": "stable",
+      "signal_count": 10,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [
+        "Humanoid Everyday: A Comprehensive Robotic Dataset for Open-World Humanoid Manipulation",
+        "摩根士丹利 (Morgan Stanley)",
+        "全球数字经济大会组委会 / 具身智能企业",
+        "RoboTacDex: A Dexterous Visual-Tactile-Action Dataset for Humanoid Manipulation",
+        "Fourier Features Let Agents Learn High Precision Policies with Imitation Learning"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-005",
+      "domain": "vla",
+      "hypothesis_summary": "Online RL fine-tuning of VLA policies (DPPO, GRPO-style, or equivalent) will become the dominant post-training paradigm ...",
+      "current_confidence": 0.67,
+      "new_confidence": 0.65,
+      "confidence_delta": -0.02,
+      "status": "unverified",
+      "signal_count": 0,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-006",
+      "domain": "vla",
+      "hypothesis_summary": "World models (UniSim, GR-1, SuSIE, DreamerV3-based) will graduate from auxiliary imagination tools to first-class planni...",
+      "current_confidence": 0.58,
+      "new_confidence": 0.57,
+      "confidence_delta": -0.01,
+      "status": "stable",
+      "signal_count": 3,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [
+        "全球数字经济大会组委会 / 具身智能企业",
+        "Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model",
+        "[0.29] _biweekly_reflection_2026-05-20.md"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-007",
+      "domain": "vla",
+      "hypothesis_summary": "Human teleoperation (ALOHA 2, UMI, Mobile ALOHA, AgiBot) will remain the irreplaceable primary data collection method fo...",
+      "current_confidence": 0.75,
+      "new_confidence": 0.75,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 5,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Learning Dexterous Manipulation Using Contact Wrench Guidance From Human Demonstration",
+        "Generating Robot Hands from Human Demonstrations",
+        "CoLI: A Reproducible Platform for Continuum Robot Learning via Monolithic 3D Printing and Isomorphic Teleoperation",
+        "MimicIK: Real-Time Generative Inverse Kinematics from Teleoperation with FK Consistency",
+        "Dexterous Point Policy: Learning Point-based Dexterous Hand Policies from Human Demonstrations"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-008",
+      "domain": "vla",
+      "hypothesis_summary": "Open-source VLA weights (OpenVLA, Octo 2, lerobot-based, pi0 variants) will maintain competitive capability within 6-mon...",
+      "current_confidence": 0.66,
+      "new_confidence": 0.66,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 5,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Release: huggingface/lerobot @ v0.5.1",
+        "Release: octo-models/octo @ v1.5",
+        "CableRobotGraphSim: A Graph Neural Network for Modeling Partially Observable Cable-Driven Robot Dynamics",
+        "Octopus Protocol: One-Shot Hardware Discovery and Control for AI Agents via Infrastructure-as-Prompts",
+        "[0.20] _vla_social_2026-06-23.md"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-009",
+      "domain": "vla",
+      "hypothesis_summary": "Cross-embodiment zero-shot transfer of VLA policies remains hard: a model trained on one morphology (single-arm 6-DOF) w...",
+      "current_confidence": 0.77,
+      "new_confidence": 0.77,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 6,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Motion-Focused Latent Action Enables Cross-Embodiment VLA Training from Human EgoVideos",
+        "LAMP: Long-Horizon Adaptive Manipulation Planning for Multi-Robot Collaboration in Cluttered Space",
+        "Keypose Exploration: Efficient Automatic Trajectory Labelling and Cross-Embodiment Policy Transfer",
+        "When Multi-Robot Systems Meet Agentic AI:Towards Embodied Collective Intelligence",
+        "Learning Action Priors for Cross-embodiment Robot Manipulation"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "V-010",
+      "domain": "vla",
+      "hypothesis_summary": "3D spatial understanding (depth, point clouds, NeRF/Gaussian Splat representations) will become necessary components for...",
+      "current_confidence": 0.59,
+      "new_confidence": 0.57,
+      "confidence_delta": -0.02,
+      "status": "unverified",
+      "signal_count": 0,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [],
+      "top_counter_signals": []
+    },
+    {
+      "id": "A-001",
+      "domain": "ai_agent",
+      "hypothesis_summary": "MCP and interoperable tool protocols become de facto standard for AI agent tool integration, with major IDEs/platforms p...",
+      "current_confidence": 0.77,
+      "new_confidence": 0.77,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 6,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "[0.42] upstream-signals.json",
+        "[0.39] upstream-signals.json",
+        "PieterPost MCP",
+        "Adding MCP Tools to Reachy Mini",
+        "Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "A-002",
+      "domain": "ai_agent",
+      "hypothesis_summary": "Agentic coding (AI autonomously writes, tests, and ships code) will reach 80% success rate on junior-level programming t...",
+      "current_confidence": 0.67,
+      "new_confidence": 0.67,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 1,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Ornith-1.0: Self-Scaffolding LLMs for Agentic Coding"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "A-003",
+      "domain": "ai_agent",
+      "hypothesis_summary": "Multi-agent collaboration frameworks will mature from lab tools to engineering practice, with production-grade framework...",
+      "current_confidence": 0.61,
+      "new_confidence": 0.61,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 6,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Investing in multi-agent AI safety research",
+        "Co-Scientist: A multi-agent AI partner to accelerate research",
+        "HULAT2 at MER-TRANS 2026: Governed Multi-Agent Simplification for Spanish Easy-to-Read Generation",
+        "BOUNDARY_SYNC: Measuring Communication-Induced Representational Coupling in Multi-Agent LLM Systems",
+        "What LLM Agents Say When No One Is Watching: Social Structure and Latent Objective Emergence in Multi-Agent Debates"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "A-004",
+      "domain": "ai_agent",
+      "hypothesis_summary": "Reasoning models (extended thinking, chain-of-thought) will show persistent advantages in AI agent tasks, becoming stand...",
+      "current_confidence": 0.82,
+      "new_confidence": 0.83,
+      "confidence_delta": 0.01,
+      "status": "stable",
+      "signal_count": 14,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Holo3.1: Fast & Local Computer Use Agents",
+        "腾讯云DeepSeek-V4正式版7月中「原厂直供」上线",
+        "Inside VAKRA: Reasoning, Tool Use, and Failure Modes of Agents",
+        "DeepSeek-V4: a million-token context that agents can actually use",
+        "Gemini Robotics-ER 1.6: Powering real-world robotics tasks through enhanced embodied reasoning"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "A-005",
+      "domain": "ai_agent",
+      "hypothesis_summary": "AI workflow automation becomes the fastest-growing enterprise AI deployment scenario in 2026, surpassing pure chat/QA ap...",
+      "current_confidence": 0.72,
+      "new_confidence": 0.72,
+      "confidence_delta": 0.0,
+      "status": "unverified",
+      "signal_count": 0,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [],
+      "top_counter_signals": []
+    },
+    {
+      "id": "A-006",
+      "domain": "ai_agent",
+      "hypothesis_summary": "Frontier AI labs (OpenAI, Anthropic, Google) face increasing geopolitical and regulatory pressure in 2026: government co...",
+      "current_confidence": 0.73,
+      "new_confidence": 0.74,
+      "confidence_delta": 0.01,
+      "status": "stable",
+      "signal_count": 11,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 3,
+      "top_signals": [
+        "[0.28] _ai_daily_pick_2026-05-29.md",
+        "[0.15] _ai_social_2026-06-14.md",
+        "阿里巴巴全面禁用 Claude：7月10日生效，全员卸载 Anthropic 全系产品",
+        "阿里全面禁用Claude：7月10日起卸载所有Anthropic产品",
+        "Google Earth AI: Unlocking geospatial insights with foundation models and cross-modal reasoning"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "S-001",
+      "domain": "system",
+      "hypothesis_summary": "Open-weight models (Qwen, LLaMA, Gemma) will match 80% of closed-source model capabilities on AI agent tasks by end of 2...",
+      "current_confidence": 0.71,
+      "new_confidence": 0.71,
+      "confidence_delta": 0.0,
+      "status": "stable",
+      "signal_count": 6,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Introducing Gemma 4 12B: a unified, encoder-free multimodal model",
+        "Gemma 4: Byte for byte, the most capable open models",
+        "Gemma Scope 2: helping the AI safety community deepen understanding of complex language model behavior",
+        "VaultGemma: The world's most capable differentially private LLM",
+        "TUDUM: A Turkish-Thinking Reasoning Pipeline for Qwen3.5-27B"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "S-002",
+      "domain": "system",
+      "hypothesis_summary": "This automation pipeline maintains stable daily output; Watchdog re-run mechanism covers >90% of single-point failures w...",
+      "current_confidence": 0.81,
+      "new_confidence": 0.79,
+      "confidence_delta": -0.02,
+      "status": "stable",
+      "signal_count": 1,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "Tabstack Browser Automation"
+      ],
+      "top_counter_signals": []
+    },
+    {
+      "id": "T-003",
+      "domain": "system",
+      "hypothesis_summary": "Daily reports should remain freshness-first: prioritize last 72h, allow up to 7d with explicit labeling.",
+      "current_confidence": 0.71,
+      "new_confidence": 0.71,
+      "confidence_delta": 0.0,
+      "status": "unverified",
+      "signal_count": 0,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [],
+      "top_counter_signals": []
+    },
+    {
+      "id": "T-004",
+      "domain": "system",
+      "hypothesis_summary": "Key claims in daily outputs should be grounded in primary sources (official blog / GitHub release / docs).",
+      "current_confidence": 0.71,
+      "new_confidence": 0.72,
+      "confidence_delta": 0.01,
+      "status": "stable",
+      "signal_count": 2,
+      "counter_signal_count": 0,
+      "invalidation_conditions_count": 2,
+      "top_signals": [
+        "MPFlow: Multi-modal Posterior-Guided Flow Matching for Zero-Shot MRI Reconstruction",
+        "Grounded Optimization: A Layered Engineering Framework for Reducing LLM Hallucination in Automated Personal Document Rewriting"
+      ],
+      "top_counter_signals": []
+    }
+  ]
+}
