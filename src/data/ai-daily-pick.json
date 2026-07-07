@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-07",
+      "items": [
+        {
+          "title": "Deep Code 开源 AI 编程助手上线，专为 DeepSeek-V4 适配",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/lessweb/deepcode-cli",
+          "why_picked": "DeepSeek 官方 API 文档收录的开源终端/VS Code 编码助手，支持深度思考、推理强度控制、Agent Skills 和 MCP 集成",
+          "so_what": "如果你在做编码 Agent 选型：Deep Code 提供了类似 Cursor/Claude Code 的终端体验但深度绑定 DeepSeek-V4。它的 Skills 体系（.deepcode/skills/ + .agents/skills/ 双路径扫描）和细粒度权限控制值得参考。如果你团队已用 DeepSeek API，迁移成本极低。"
+        },
+        {
+          "title": "Amazon Nova 自动图片 PII 脱敏管线",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/automatically-redact-pii-in-images-with-amazon-nova/",
+          "why_picked": "AWS 发布基于 Nova 2 Lite + SAM 3 + Textract 的多步 PII 脱敏管线，处理指纹、车牌、证件等复杂边缘场景",
+          "so_what": "如果你在做 Agent 数据管线：图片中的 PII 识别是合规痛点。这个架构展示了用多模态 LLM 做「协调器」调度专用视觉模型的模式——Nova 理解上下文语义，SAM 3 做像素级分割，Textract 做 OCR。可作为 Agent 编排多工具调用的参考实现。"
+        },
+        {
+          "title": "Pulpie：20 分之一成本的网页正文提取模型",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://usefeyn.com/blog/pulpie-pareto-optimal-models-for-cleaning-the-web/",
+          "why_picked": "Pulpie-orange-small（210M 参数）在 WebMainBench 上达到 0.862 ROUGE，匹敌 SOTA Dripper（600M），但推理速度快 20 倍，十亿页清洗成本从 $159K 降至 $7.9K",
+          "so_what": "如果你在做 RAG管线或预训练数据清洗：网页噪声占 70%，提取质量直接影响模型效果。Pulpie 单前向pass标注 HTML block 的架构适合大规模批处理，且已在 HF 开源。替代 Dripper 可大幅降低数据管线成本。"
+        },
+        {
+          "title": "sqlite-utils 4.0rc3：compound foreign key 支持",
+          "category": "工具",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jul/6/sqlite-utils/",
+          "why_picked": "Simon Willison 发布 sqlite-utils 4.0 候选版，新增复合外键 introspection/创建，跟随 SQLite 大小写不敏感列名约定——用 Claude Fable 5 + GPT-5.5 协同开发",
+          "so_what": "如果你在用 SQLite 做 Agent 状态存储：4.0 的复合外键支持让关系型数据建模更完整。注意 foreign_keys API 有 breaking change，升级需检查。此外，这个项目展示了用多个 coding agent 协同开发高质量开源库的工作流。"
+        },
+        {
+          "title": "HF Jobs 一键启动 vLLM 服务",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/vllm-jobs",
+          "why_picked": "HF 推出 hf jobs run 命令，一条命令在 HF 基础设施上启动 OpenAI-compatible vLLM endpoint，按秒计费，无需 K8s",
+          "so_what": "如果你在做 Agent 本地推理部署：HF Jobs 提供了介于本地 GPU 和托管 Inference Endpoints 之间的中间方案。适合快速搭建测试/评估环境或临时 coding-agent 后端。注意这是 per-minute 计费，生产级 SLA 仍需用 Inference Endpoints。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-05",
       "items": [
         {
@@ -1437,51 +1482,6 @@
           "url": "https://human-in-the-loop.bearblog.dev/llms-are-eroding-my-software-engineering-career-and-i-dont-know-what-to-do/",
           "why_picked": "740 条评论形成两大阵营——「AI 消灭入门级岗位」vs「AI 提高生产力创造新需求」，反映行业深层焦虑",
           "so_what": "如果你在做 AI 教育/培训产品：这意味着市场对「AI 时代如何成为工程师」的内容需求巨大。传统的「从基础语法学起」路径正在被质疑，「AI 辅助工程实践」可能成为新的学习范式。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-05",
-      "items": [
-        {
-          "title": "Anthropic 研究所发布「递归自我改进」研究",
-          "category": "观点",
-          "source": "Anthropic Institute",
-          "url": "https://www.anthropic.com/institute/recursive-self-improvement",
-          "why_picked": "Anthropic 官方研究所发文探讨 AI 递归自我改进路径，HN 273 分 365 评，引发社区激烈讨论",
-          "so_what": "如果你在设计 Agent 系统的长期自主能力：这篇文章暗示 Anthropic 正在将「自我改进」从研究概念推向工程实践——关注其沙箱隔离架构和人类反馈回路设计，可能影响未来 Claude 平台的 Agent 行为模式。"
-        },
-        {
-          "title": "NSA 使用 Anthropic Mythos 开展网络攻防",
-          "category": "行业",
-          "source": "HN / FT",
-          "url": "https://www.ft.com/content/d02d91b3-2636-454e-9442-dc7e69f51815",
-          "why_picked": "美国国安局正式采用 Anthropic Mythos 模型用于网络攻击，HN 66 分，标志 LLM 进入国家级网络作战",
-          "so_what": "如果你在做 AI 安全或合规：这是首个公开确认的国家级 AI 网络作战部署——意味着 Mythos 的安全沙箱和审计能力经过了 NSA 级别验证，同时也提示 AI 安全工具可能面临出口管制风险。"
-        },
-        {
-          "title": "收费才是 DeepSeek 的「成人礼」",
-          "category": "趋势",
-          "source": "36kr",
-          "url": "https://www.36kr.com/p/3838491912440326",
-          "why_picked": "DeepSeek 正式开启收费模式，标志中国 AI 从免费补贴战转向商业化运营",
-          "so_what": "如果你在选择模型 API 供应商：DeepSeek 收费意味着其定价策略将更稳定但也更高——建议对比 GPT-5.5/Claude Opus 4.8 的性价比，同时关注其 V4-Pro 缓存命中价是否随收费上调。"
-        },
-        {
-          "title": "高盛：SpaceX 至 2030 年累计现金消耗 3500 亿美元，八成投向 AI",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8thAoZu7nn2",
-          "why_picked": "SpaceX 2030 年 AI 资本开支预计达 2800 亿美元，主要投向 Anthropic（Colossus 数据中心合作），重塑 AI 基础设施格局",
-          "so_what": "如果你在做 AI 基础设施规划：SpaceX 的算力投资规模意味着 xAI Colossus 数据中心将成为全球最大的 AI 算力集群之一——关注其对外算力供给节奏，可能影响 Anthropic 的 API 产能和定价。"
-        },
-        {
-          "title": "Timnit Gebru 当年对 Google 的 LLM 警告已全部应验",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://www.tumblr.com/dreaminginthedeepsouth/817865966907228160/",
-          "why_picked": "HN 104 分 100 评，回顾 2020 年 Gebru 被 Google 解雇前发出的 LLM 风险警告，如今逐一成为现实",
-          "so_what": "如果你在企业部署 LLM：这篇文章提醒——模型滥用、幻觉、环境影响等风险不是理论问题而是已发生的工程事实。建议在 Agent 系统中加入输出审计层和 usage guardrail，而非仅依赖模型自身对齐。"
         }
       ]
     }
