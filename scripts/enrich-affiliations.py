@@ -11,7 +11,7 @@ Why:
 How:
   1. Walk every evidence URL in src/data/vla-daily-rating-out-*.json AND
      ai-daily-pick-*.json, extract arxiv IDs.
-  2. For each unique arxiv ID, query OpenAlex /works/arXiv:{id} for the
+  2. For each unique arxiv ID, query OpenAlex /works/doi:10.48550/arXiv.{id} for the
      full authorship array (author OpenAlex IDs + position + raw affiliations).
   3. For each unique OpenAlex author ID seen as a first-author byline,
      query /authors/{id} for last_known_institutions (canonical current
@@ -247,7 +247,7 @@ def fetch_paper_authorships(arxiv_id: str, cache: dict, verbose: bool = False) -
     """Return list of {author_id, name, position, raw_affiliations[]} for an arxiv paper."""
     if arxiv_id in cache:
         return cache[arxiv_id]
-    url = f"{OPENALEX_BASE}/works/https://doi.org/10.48550/arXiv.{arxiv_id}?select=authorships"
+    url = f"{OPENALEX_BASE}/works/doi:10.48550/arXiv.{arxiv_id}?select=authorships"  # doi: prefix (the /works/https://doi.org/... form 404s)
     j = http_get(url, verbose=verbose)
     if j is None or "authorships" not in j:
         cache[arxiv_id] = []
