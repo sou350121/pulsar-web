@@ -1,0 +1,609 @@
+{
+  "ok": true,
+  "model": "qwen3.5-plus",
+  "total": 36,
+  "counts": {
+    "⚡": 1,
+    "🔧": 11,
+    "📖": 18,
+    "❌": 6
+  },
+  "parse_error": "",
+  "papers": [
+    {
+      "title": "GeoProp: Grounding Robot State in Vision for Generalist Manipulation",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2607.07101",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "diffusion policy",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Proprioception is fundamental to robotic manipulation, yet standard fusion methods often treat it as an isolated vector lacking explicit alignment with visual tokens. Without a direct correspondence between 3D kinematics and 2D feature maps, manipulation policies struggle to ground the robot's state within the scene, frequently underperforming even vision-only baselines. To address this, we introduce GeoProp, a lightweight, plug-and-play adapter that aligns proprioception with vision through exp",
+      "pub_date": "2026-07-08",
+      "rating": "🔧",
+      "reason": "提出将本体感知（Proprioception）与视觉Token显式对齐的方法，解决3D运动学与2D特征图缺乏对应的问题。可直接用于改进现有VLA的状态融合模块，提升泛化能力。",
+      "affiliation": ""
+    },
+    {
+      "title": "Pelican-VLA 0.5: Attending Before Acting Benefits Generalization",
+      "authors": "Zeyuan Ding, Wenhai Liu, Yang Xu, Jiayu Hu, Yinda Chen, Yi Zhang",
+      "url": "https://arxiv.org/abs/2607.06655",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06655v1 Announce Type: new Abstract: In this report, we present Pelican-VLA 0.5, a unified VLA model that integrates vision-language understanding, future-frame generation, and action prediction within a single architecture. Pelican-VLA 0.5 achieves attention-level generalization: without object annotations, segmentation masks, attention supervision, or task-specific fine-tuning, its action pathway already focuses on the instruction-relevant object and contact region. This behavior pe",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "报告了集成视觉语言理解、未来帧生成和动作预测的VLA模型。虽声称注意力级泛化，但摘要未提供具体架构创新细节或Benchmark对比数据，需阅读全文确认贡献。",
+      "affiliation": ""
+    },
+    {
+      "title": "NativeMEM: Native Memory Compression for Long-Horizon Robotic Manipulation",
+      "authors": "Ziye Wang, Modi Shi, Chaojun Ni, Jiazhi Yang, Mengdi Li, Zhizhong Su",
+      "url": "https://arxiv.org/abs/2607.06678",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06678v1 Announce Type: new Abstract: How can pretrained Vision-Language-Action (VLA) models retain long-horizon visual histories with high-frequency updates without sacrificing efficiency? Existing approaches rely on external memory management, which restrains either the memory horizon or the reactiveness of pretrained policies. To this end, we present NativeMEM, a VLA policy that features long-term and real-time updated memory. At its core is an efficient memory encoding scheme, Nati",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "针对长视界任务，提出原生内存压缩机制以在保持高频更新的同时保留历史视觉信息。解决了外部记忆管理的效率瓶颈，为VLA处理长序列提供了可复用的工程方案。",
+      "affiliation": ""
+    },
+    {
+      "title": "RoboSnap: One-Shot Real-to-Sim Scene Generation for Generalizable Robot Learning and Evaluation",
+      "authors": "Shujie Zhang, Jingkun Yi, Weipeng Zhong, Zirui Zhou, Yangkun Zhu, Hanqing Wang",
+      "url": "https://arxiv.org/abs/2607.06699",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06699v1 Announce Type: new Abstract: Recovering real-world scenes as interactive simulation environments can enable generalizable robot learning and reproducible policy evaluation. However, constructing scenes that are both physically stable and visually faithful remains slow and expensive. In this work, we present RoboSnap, a real-to-sim framework that turns a single RGB image into a simulation-ready scene. The key idea is a layered design that separates the physics-critical interact",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "提出从真实场景一键生成物理稳定且视觉保真的仿真环境的方法。虽对数据生成有价值，但属于仿真工具链而非核心VLA算法，且缺乏明确的VLA训练/推理直接应用路径。",
+      "affiliation": ""
+    },
+    {
+      "title": "Vision Language Action (VLA) Models for Unmanned Aerial Robotics and Bimanual Manipulation: A Review",
+      "authors": "Inkyu Sa, Chanoh Park, Hea-Min Lee, Donghee Noh, Ho Seok Ahn",
+      "url": "https://arxiv.org/abs/2607.06706",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision language action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06706v1 Announce Type: new Abstract: Vision Language Action (VLA) models unify visual perception, natural-language understanding, and action generation within a single foundation model, allowing a robot to follow instructions such as fold the towel or fly to the red building directly from camera images. Because VLAs inherit world knowledge from internet-scale pre-training, they have become the dominant framework for learning-based manipulation, with bimanual coordination serving as th",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "综述无人机双臂操作中的VLA模型应用。作为综述类文章，有助于了解领域现状，但不包含新的算法突破或即时可用的技术贡献。",
+      "affiliation": ""
+    },
+    {
+      "title": "A Continual Learning Framework for Adaptive Control of Modular Soft Robots",
+      "authors": "Nilay Kushawaha, Muhammad Sunny Nazeer, Baljinder Singh Bal, Cecilia Laschi, Egidio Falotico",
+      "url": "https://arxiv.org/abs/2607.06740",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06740v1 Announce Type: new Abstract: Soft robots have attracted significant attention in applications such as medical intervention, rehabilitation, and robotic manipulation due to their inherent compliance, flexibility, and high degrees of freedom. Modular soft robots (MSRs), composed of multiple interconnected segments, represent an emerging class of robotic systems with highly deformable and reconfigurable structures capable of performing complex tasks. However, designing controller",
+      "pub_date": "2026-07-09",
+      "rating": "❌",
+      "reason": "聚焦模块化软体机器人的自适应控制，属于特定形态机器人控制领域，未涉及VLA架构或多模态对齐，与当前主流VLA研究方向无实质关联。",
+      "affiliation": ""
+    },
+    {
+      "title": "A Closed-Loop Multi-Agent Framework for Robust Multi-Robot Manipulation",
+      "authors": "Yi-Xiang He, Lan Wei, Haoming Cen, Jian-Jian Jiang, Zhuohao Li, Guanxing Lu",
+      "url": "https://arxiv.org/abs/2607.06990",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06990v1 Announce Type: new Abstract: Multi-robot systems provide the parallelism and redundancy necessary for long-horizon tasks, while Large Language Models (LLMs) offer the reasoning capabilities to decompose these objectives into actionable plans. However, effectively grounding this high-level reasoning in physical multi-robot execution remains an open challenge. Existing LLM-based approaches fall mainly into two categories: Single-robot methods achieve robust contact-rich manipula",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "结合LLM推理与多机器人协作框架，解决长视界任务分解。虽涉及具身智能，但重点在于多智能体规划而非单臂VLA策略学习，与核心VLA研究距离较远。",
+      "affiliation": ""
+    },
+    {
+      "title": "PriGo: Test-Time Primitive Guidance to Diffusion and Flow Policies for Adaptive Robotic Manipulation",
+      "authors": "Zezeng Li, Enda Xiang, Thuy Tran, Di Huang, Momath Thiam, Liming Chen",
+      "url": "https://arxiv.org/abs/2607.07076",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation",
+        "visuomotor"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07076v1 Announce Type: new Abstract: Imitation learning has enabled remarkable progress in robotic manipulation, especially with diffusion and flow-based policies that generate complex visuomotor behaviors directly from demonstrations. Yet, despite their strong performance, these policies often fail to generalize across tasks and environments. A key reason is that existing policies tend to imitate superficial action correlations rather than the underlying intent. Inspired by the compo",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "提出测试时基元引导方法，增强扩散流策略的适应性。无需重新训练即可提升现有Diffusion Policy性能，具有明确的即插即用价值和实验支撑。",
+      "affiliation": ""
+    },
+    {
+      "title": "Compositional Motion Generation from Demonstration with Object-Centric Neural Fields",
+      "authors": "Ahmet Ercan Tekden, Yasemin Bekiroglu",
+      "url": "https://arxiv.org/abs/2607.07129",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07129v1 Announce Type: new Abstract: Compositionality, by organizing complex behavior as combinations of simpler elements, enables robot learning that is scalable and data efficient. Leveraging this principle, we propose a generative learning-from-demonstration framework that enables compositional modeling of robotic behavior by connecting perception and motion through shared object-level representations. We render scenes from object-centric neural representations that integrate canon",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "利用对象中心神经场实现组合性运动生成。方法新颖但侧重于表示学习和演示学习，未明确展示其在通用VLA架构中的应用或跨平台迁移能力。",
+      "affiliation": ""
+    },
+    {
+      "title": "TouchWorld: A Predictive and Reactive Tactile Foundation Model for Dexterous Manipulation",
+      "authors": "Jianyi Zhou, Feiyang Hong, Yunhao Li, Yicheng Zhao, Yongjue Cen, Zirui Liu",
+      "url": "https://arxiv.org/abs/2607.07287",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07287v1 Announce Type: new Abstract: Dexterous manipulation in everyday environments requires both anticipation and reaction: a robot must predict how contact should evolve while rapidly correcting local errors caused by slip, misalignment, unstable grasping, or force mismatch. Vision and language provide semantic and geometric guidance, but they cannot reliably reveal hidden contact states such as force, slip, and contact stability. Although tactile sensing exposes these physical cue",
+      "pub_date": "2026-07-09",
+      "rating": "⚡",
+      "reason": "填补触觉VLA方向空白，提出兼具预测与反应能力的触觉基础模型，解决灵巧操作中滑移和对齐问题。若能在LIBERO等基准上验证其超越纯视觉VLA的性能，具备战略级意义。",
+      "affiliation": ""
+    },
+    {
+      "title": "Initiation Safety: A Missing Dimension in Generalist-Robot Safety",
+      "authors": "Zhijin Meng, Francisco Cruz",
+      "url": "https://arxiv.org/abs/2607.07420",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07420v1 Announce Type: new Abstract: Safety for generalist robots is usually discussed in terms of motion or dialogue. We argue a third question is missing: should the robot take its first hard-to-undo social action at all, such as a greeting, an uninvited grasp, or stepping into someone's space? We call this initiation authorization. Current frameworks rarely treat it as a separate safety layer. Today's stacks often skip this step: a high engagement score or a confident VLA rollout i",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "探讨通用机器人首次社交动作的安全性问题。属于伦理与安全范畴的理论探讨，缺乏具体的技术实现或算法改进，对VLA工程实践指导有限。",
+      "affiliation": ""
+    },
+    {
+      "title": "EmbodiedGen V2: An Agentic, Simulation-Ready 3D World Engine for Embodied AI",
+      "authors": "Xinjie Wang, Liu Liu, Taojun Ding, Andrew Choi, Chaodong Huang, Mengao Zhao",
+      "url": "https://arxiv.org/abs/2607.07459",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "embodied AI"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07459v1 Announce Type: new Abstract: We present EmbodiedGen V2, a generative 3D world engine for building executable sim-ready environments for embodied intelligence. Sim-ready 3D asset generation has advanced rapidly, yet assembling such assets into policy-ready task environments remains largely manual, limiting scalable closed-loop learning. EmbodiedGen V2 addresses this gap through a unified sim-ready representation that connects cross-simulator assets, interaction affordances, tas",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "发布新一代具身AI仿真引擎，支持生成可执行环境。作为基础设施工具有价值，但非核心算法论文，且主要服务于仿真数据生成而非VLA模型本身。",
+      "affiliation": ""
+    },
+    {
+      "title": "Smooth Operator: A Real-Time Sampling-Based Algorithm for Kinematic Hand Retargeting",
+      "authors": "Robert Jomar Malate, Erik Bauer, Norica Bacuieti, Stefanos Charalambous, Elvis Nava, Robert K. Katzschmann",
+      "url": "https://arxiv.org/abs/2607.07491",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07491v1 Announce Type: new Abstract: Advances in learning-based robotic manipulation, such as Vision-Language-Action (VLA) models and Video Action Models (VAMs), heavily rely on high-quality teleoperation data. Their capabilities are strictly upper-bounded by the quality of the underlying human demonstrations. Current gradient-based retargeting algorithms often converge to different local minima, resulting in jitter that affects data quality and teleoperation experience. To address th",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "提出实时基于采样的手部运动重定向算法，解决VLA/VAM高质量遥操作数据获取瓶颈。代码/算法可直接用于改善数据采集流程，具有明确的工程复用价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "Dual Latent Memory in Vision-Language-Action Models for Robotic Manipulation",
+      "authors": "Hongyu Qu, Jianzhe Gao, Xiaobin Hu, Shaohuan Yang, Xinlei Yu, Rui Yan",
+      "url": "https://arxiv.org/abs/2607.07608",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07608v1 Announce Type: new Abstract: Mainstream Vision-Language-Action (VLA) models predict actions primarily from the current observation under a Markovian assumption, thus struggling with long-horizon, temporally dependent tasks. Existing memory-augmented VLAs either expand the observation window or retrieve history from the memory bank as auxiliary policy-side context. However, they leave memory outside the native latent embedding space of VLA reasoning, preventing historical exper",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "引入双潜在记忆机制克服马尔可夫假设局限，提升长视界任务表现。针对VLA时间依赖性痛点提出具体架构改进，有潜力成为标准记忆模块。",
+      "affiliation": ""
+    },
+    {
+      "title": "SPEAR: A Simulator for Photorealistic Embodied AI Research",
+      "authors": "Mike Roberts, Renhan Wang, Rushikesh Zawar, Rachith Dey-Prakash, Quentin Leboutet, Stephan R. Richter",
+      "url": "https://arxiv.org/abs/2607.06701",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "embodied AI"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06701v1 Announce Type: cross Abstract: Interactive simulators have become powerful tools for training embodied agents and generating synthetic visual data, but existing photorealistic simulators suffer from limited generality, programmability, and rendering speed. We address these limitations by introducing SPEAR: A Simulator for Photorealistic Embodied AI Research. At its core, SPEAR is a Python library that can connect to, and programmatically control, any Unreal Engine (UE) applica",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "介绍高保真具身AI模拟器SPEAR。虽有助于评估，但属于仿真平台建设，非VLA核心算法进展，且通常此类工作需等待实际VLA训练结果验证其有效性。",
+      "affiliation": ""
+    },
+    {
+      "title": "Multi-Agent Robotic Control with Onboard Vision-Language Models",
+      "authors": "Kajetan Rachwał, Maciej Majek, Bartłomiej Boczek, Jakub Matejczyk, Dominik Matejkowski, Adam Dąbrowski",
+      "url": "https://arxiv.org/abs/2607.07403",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision language action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07403v1 Announce Type: cross Abstract: Vision Language Models (VLMs) and Vision Language Action (VLA) models have shown promise in robotic control. Yet, they face significant challenges regarding explainability, generalization, and compute requirements. This paper presents a Multi-Agent System (MAS) architecture that addresses these limitations by deploying specialized agents on onboard hardware - eliminating dependence on external compute. The system controls a multi-purpose autonomo",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "探索机载VLM在多机器人控制中的应用。侧重部署与多智能体协调，未深入VLA模型本身的架构或训练范式创新，对核心VLA研究者参考价值有限。",
+      "affiliation": ""
+    },
+    {
+      "title": "Rapidly Learning Soft Robot Control via Implicit Time-Stepping",
+      "authors": "Andrew Choi, Dezhong Tong, Xiaonan Huang",
+      "url": "https://arxiv.org/abs/2511.06667",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2511.06667v2 Announce Type: replace Abstract: With the explosive growth of rigid-body simulators, policy learning in simulation has become the de facto standard for most rigid morphologies. In contrast, soft robotic simulation frameworks remain scarce and are seldom adopted by the soft robotics community. This gap stems partly from the lack of easy-to-use, general-purpose frameworks and partly from the high computational cost of accurately simulating continuum mechanics, which often render",
+      "pub_date": "2026-07-09",
+      "rating": "❌",
+      "reason": "专注于软体机器人控制的快速学习算法，属于特定形态机器人动力学与控制领域，与主流刚性体VLA研究无直接关联。",
+      "affiliation": ""
+    },
+    {
+      "title": "HiMoE-VLA: Hierarchical Mixture-of-Experts for Generalist Vision-Language-Action Policies",
+      "authors": "Zhiying Du, Bei Liu, Yaobo Liang, Yichao Shen, Haidong Cao, Xiangyu Zheng",
+      "url": "https://arxiv.org/abs/2512.05693",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2512.05693v2 Announce Type: replace Abstract: Generalist vision--language--action (VLA) policies are typically trained on heterogeneous mixtures of robot demonstrations spanning diverse embodiments, action spaces, and observation configurations. Modeling such heterogeneity with a shared dense action module can induce negative transfer, particularly when action spaces or visual observations differ across data sources. We address this issue with HiMoE-VLA, a VLA framework built around a Hier",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "提出分层混合专家架构以处理异构机器人演示数据。有效解决多 embodiemnt 下的异质性问题，为VLA扩展性提供可复用的架构设计思路。",
+      "affiliation": ""
+    },
+    {
+      "title": "RoboLight: A Dataset with Linearly Composable Illumination for Robotic Manipulation",
+      "authors": "Shutong Jin, Jin Yang, Muhammad Zahid, Florian T. Pokorny",
+      "url": "https://arxiv.org/abs/2603.04249",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2603.04249v2 Announce Type: replace Abstract: In this paper, we introduce RoboLight, the first real-world robotic manipulation dataset capturing synchronized episodes under systematically varied lighting conditions. RoboLight consists of two components. (a) RoboLight-Real contains 2,800 real-world episodes collected in our custom Light Cube setup, a calibrated system equipped with eight programmable RGB LED lights. It includes structured illumination variation along three independently con",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "发布首个系统变化光照条件的真实机器人操作数据集。重要数据资源，有助于提升VLA鲁棒性研究，但本身不包含新算法，归类为值得了解的数据集。",
+      "affiliation": ""
+    },
+    {
+      "title": "RhinoVLA Technical Report",
+      "authors": "Huixi Technology,  :, Chen Zhang, Chenyang Zhou, Guanglei Ding, Guanghui He",
+      "url": "https://arxiv.org/abs/2606.07383",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation",
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2606.07383v3 Announce Type: replace Abstract: Vision-Language-Action (VLA) models have shown strong potential for robotic manipulation, but real-time deployment on edge hardware remains challenging. In this work, we identify VLM visual and context tokens as a major source of deployment latency: for GEMM-dominated projection operators, computation grows linearly with the number of input tokens when model dimensions are fixed. Motivated by this observation, we propose RhinoVLA, a deployment-",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "识别视觉和上下文Token为边缘部署延迟主因，并提出优化方案。针对VLA落地痛点提供具体工程洞见和优化路径，对部署团队具有高复用价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "LAMP: Long-Horizon Adaptive Manipulation Planning for Multi-Robot Collaboration in Cluttered Space",
+      "authors": "Shuai Zhou, Yorai Shaoul, Jiaoyang Li",
+      "url": "https://arxiv.org/abs/2606.29358",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2606.29358v2 Announce Type: replace Abstract: Multi-robot manipulation requires jointly reasoning about contact formations, robot motions under coupled dynamics, and collision avoidance. Systematically searching over this large space is difficult and becomes increasingly intractable as the number of robots grows, the task horizon lengthens, or the scene becomes more densely cluttered. Existing approaches therefore either learn to solve the problem end-to-end via reinforcement learning or r",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "解决拥挤空间中多机器人协作的长视界规划问题。侧重传统规划与接触力学，未体现VLA端到端学习的优势，与VLA核心研究方向偏离。",
+      "affiliation": ""
+    },
+    {
+      "title": "RoboDojo: A Unified Sim-and-Real Benchmark for Comprehensive Evaluation of Generalist Robot Manipulation Policies",
+      "authors": "Tianxing Chen, Yue Chen, Zixuan Li, Junyuan Tang, Kailun Su, Haoran Lu",
+      "url": "https://arxiv.org/abs/2607.04434",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2607.04434v3 Announce Type: replace Abstract: Generalist robot manipulation policies have advanced rapidly, yet existing benchmarks remain limited in systematically evaluating their capabilities. Many rely on simple, short-horizon, or skill-narrow tasks with limited capability coverage, and are often conducted only in simulation or only in the real world. Simulation enables scalable feedback but misses physical deployment challenges, while real-world evaluation is costly, time-consuming, a",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "提出统一仿真与真实的基准评测平台。虽对评估体系有贡献，但属于评测工具而非算法创新，且需观察其是否被社区广泛采纳。",
+      "affiliation": ""
+    },
+    {
+      "title": "VOTE: Vision-Language-Action Optimization with Trajectory Ensemble Voting",
+      "authors": "Juyi Lin, Amir Taherin, Arash Akbari, Arman Akbari, Lei Lu, Guangyu Chen",
+      "url": "https://arxiv.org/abs/2507.05116",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "vision language action",
+        "OpenVLA",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2507.05116v5 Announce Type: replace-cross Abstract: Recent large-scale Vision Language Action (VLA) models have shown superior performance in robotic manipulation tasks guided by natural language. However, current VLA models suffer from two drawbacks: (i) generation of massive tokens leading to high inference latency and increased training cost, and (ii) insufficient utilization of generated actions resulting in potential performance loss. To address these issues, we develop a training fra",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "提出轨迹集成投票机制优化VLA生成，减少Token冗余并提升稳定性。作为一种后处理或推理阶段优化方法，易于集成到现有VLA系统中。",
+      "affiliation": ""
+    },
+    {
+      "title": "Ego-Human Motion Prediction with 3D-Aware LLM",
+      "authors": "Yujin Bae, Jaewoo Jeong, Hyeonseong Kim, Kuk-Jin Yoon",
+      "url": "https://arxiv.org/abs/2607.07001",
+      "source": "cs.CV",
+      "match_level": "A",
+      "keywords_matched": [
+        "embodied AI"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07001v1 Announce Type: new Abstract: Anticipating human motion from an egocentric perspective is fundamental for proactive assistance in AR/VR, human-robot collaboration, and embodied AI. While recent works incorporate language as a semantic prior to reduce the ill-posed nature of egocentric forecasting, they largely neglect the 3D spatial and semantic context that governs how motion unfolds, and treat pose and language prediction as separate inference streams. We introduce Ego3DLM, b",
+      "pub_date": "2026-07-09",
+      "rating": "❌",
+      "reason": "聚焦第一人称视角的人类运动预测，主要用于AR/VR和人机协作预判，非机器人自主操作策略生成，不属于VLA核心任务。",
+      "affiliation": ""
+    },
+    {
+      "title": "X-Foresight: A Joint Vision-Action Causal Forecasting Network via Predictive World Modeling",
+      "authors": "Baolu Li, Jingyu Qian, Rui Guo, Yilun Chen, Hanpeng Liu, Yuan Lin | Victor",
+      "url": "https://arxiv.org/abs/2605.24892",
+      "source": "cs.CV",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2605.24892v4 Announce Type: replace Abstract: Physical world knowledge resides mainly in videos. Equipping Vision-Language-Action (VLA) models with such knowledge is fundamental for safe and generalizable planning. Predictive world modeling enables VLA to internalize physical dynamics and long-term causality by predicting future video from past observations. However, naive next-frame prediction faces two challenges: 1) unlike semantically distinct text tokens, video tokens are low-entropy",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "通过预测世界模型赋予VLA物理动力学知识，提升安全规划能力。将世界模型与VLA结合，为解决幻觉和提升泛化提供具体技术路径。",
+      "affiliation": ""
+    },
+    {
+      "title": "Transforming static interfaces into tactile channels with steerable transdermal foci",
+      "authors": "Qiutong Liu et al.",
+      "url": "https://www.science.org/doi/abs/10.1126/sciadv.aef2372?af=R",
+      "source": "Science-Advances",
+      "match_level": "B",
+      "keywords_matched": [
+        "tactile"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Science Advances, Volume 12, Issue 28, July 2026.",
+      "pub_date": "2026-07-08",
+      "rating": "❌",
+      "reason": "关于透皮焦点的可控触觉界面硬件研究，属于人机交互硬件领域，与VLA算法或软件架构无直接关联。",
+      "affiliation": ""
+    },
+    {
+      "title": "Flow-ERD: Agent-type Aware Flow Matching with Entropy-Regularized Distillation for Diverse Traffic Simulation",
+      "authors": "Seulbin Hwang, Kiyoung Om, Daejung Kim, Jinhan Lee",
+      "url": "https://arxiv.org/abs/2607.06957",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06957v1 Announce Type: new Abstract: Realistic and diverse traffic simulation is essential to autonomous driving development. Yet prevailing benchmarks predominantly reward realism, and recent methods have optimized accordingly, leaving diversity underexplored. We introduce \\textbf{Flow-ERD}, a multi-agent simulator that pursues realism and diversity jointly. Its backbone, \\textbf{Agent-Type Aware Flow Matching} (AFM), couples flow matching's multi-modal expressiveness with type-speci",
+      "pub_date": "2026-07-09",
+      "rating": "❌",
+      "reason": "专注于交通仿真中的多样性生成，属于自动驾驶领域，与机器人操作具身智能无实质关联。",
+      "affiliation": ""
+    },
+    {
+      "title": "Let the Dynamics Flow: Stable Flow Matching Dynamical Systems",
+      "authors": "Rodrigo Pérez-Dattari, Francisco Leiva, Andrea Testa, Leonel Rozo, Javier Ruiz del Solar, Noémie Jaquier",
+      "url": "https://arxiv.org/abs/2606.03834",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2606.03834v2 Announce Type: replace Abstract: Flow matching has recently emerged as a powerful approach for imitation learning, enabling scalable, expressive, and multimodal motion policies. However, when modeling these policies as dynamical systems, incorporating formal stability guarantees into these generative models is a prerequisite to ensure safe and generalizable robot behaviors, which remains a significant challenge. This paper introduces Stable Flow Matching Dynamical Systems (SFM",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "研究流匹配动力学系统的稳定性保证。理论性强，但未明确展示在VLA或具体机器人任务中的应用效果，暂归为相邻理论研究。",
+      "affiliation": ""
+    },
+    {
+      "title": "Event-Centric World Modeling with Memory-Augmented Retrieval for Embodied Decision-Making",
+      "authors": "Zhaowen Fan, Rongchao Zhang, Yunxiang Han",
+      "url": "https://arxiv.org/abs/2604.07392",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2604.07392v3 Announce Type: replace-cross Abstract: Autonomous agents operating in dynamic environments increasingly demand decision-making systems that are both efficient and interpretable. Hence we propose the Event-Retrieve-Action (ERA) framework, an alternative formulation for embodied decision-making that bridges the gap between black-box imitation and interpretable memory retrieval while enabling online refinement without retraining. The environment is represented as structured seman",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "提出事件中心的世界模型框架。虽涉及具身决策，但更偏向于认知架构和检索增强，与主流VLA端到端策略学习有一定距离。",
+      "affiliation": ""
+    },
+    {
+      "title": "Grounding Spatial Relations in a Compact World Model: Instruction Leakage and a Goal-Free Dynamics Fix",
+      "authors": "Yufeng Wang, Lu Wei, Haibin Ling",
+      "url": "https://arxiv.org/abs/2607.06925",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06925v1 Announce Type: new Abstract: Compact world models that condition on a language goal promise to ground relations such as ``put the red block left of the blue block'' using a sparse set of explicit \\emph{reference anchors}. We ask when such references actually ground a relation, and identify a trap: a goal-conditioned predictor reaches a striking $0.90$ relation-readout accuracy, yet this is \\emph{instruction transcription}, not perception. Withholding the goal collapses it to c",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "分析紧凑世界模型中空间关系 grounding 的问题，提出指令泄漏修复方案。为VLA中的世界模型构建提供关键错误分析和修正方法，具有较高参考价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "The Rank-One Corner: How Much Value Equivalence Does a Task Need from a World Model?",
+      "authors": "Donna Vakalis",
+      "url": "https://arxiv.org/abs/2607.06640",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.06640v1 Announce Type: cross Abstract: A learned world model is usually judged by how faithfully it reconstructs its observations or predicts reward, as though quality were something the model simply has or lacks. But what a task actually needs from a model is narrower: the few predictive coordinates its queries depend on, which we call the closure. We show that how much of that closure a latent comes to represent is set not by the model's capacity or its observations but by the dimen",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "探讨世界模型所需的价值等价性程度。属于理论分析，虽深刻但缺乏直接的VLA架构改进或实验验证，适合深入阅读原理。",
+      "affiliation": ""
+    },
+    {
+      "title": "Thinking Ahead: Foresight Intelligence in MLLMs and World Model",
+      "authors": "Zhantao Gong, Liaoyuan Fan, Qing Guo, Xun Xu, Xulei Yang, Shijie Li",
+      "url": "https://arxiv.org/abs/2511.18735",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2511.18735v3 Announce Type: replace-cross Abstract: In this work, we define Foresight Intelligence as the capability to anticipate and interpret future events-an ability essential for applications such as autonomous driving, yet largely overlooked by existing research. To bridge this gap, we introduce FSU-QA, a new Visual Question-Answering (VQA) dataset specifically designed to elicit and evaluate Foresight Intelligence. Using FSU-QA, we conduct the first comprehensive study of state-of-t",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "定义并探讨MLLM和世界模型中的预见智能。概念性工作，旨在建立评估框架，暂无具体VLA算法贡献。",
+      "affiliation": ""
+    },
+    {
+      "title": "ColorFM: An Optimization-to-Learning Framework for Color Transfer via Flow Matching",
+      "authors": "Yuhang He, Kai Zhang, Xiaoming Li, Du Chen, Jian Yang",
+      "url": "https://arxiv.org/abs/2607.07119",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07119v1 Announce Type: new Abstract: Color transfer aims to align the color distribution of a source image with that of a reference image while preserving structural and semantic consistency. However, existing methods often suffer from inaccurate global mapping, semantic misalignment, and visual artifacts. To address these issues, we propose ColorFM, an optimization-to-learning framework. ColorFM connects online optimization to offline inference by reformulating color transfer as the",
+      "pub_date": "2026-07-09",
+      "rating": "❌",
+      "reason": "基于流匹配的图像颜色迁移方法，属于计算机视觉图像处理任务，与机器人操作无关。",
+      "affiliation": ""
+    },
+    {
+      "title": "Scaling Mixture-of-Experts Video Pretraining for Embodied Intelligence",
+      "authors": "Shuailei Ma, Jiaqi Liao, Xinyang Wang, Jingjing Wang, Chaoran Feng, Zijing Hu",
+      "url": "https://arxiv.org/abs/2607.07675",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "embodied intelligence"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.07675v1 Announce Type: new Abstract: Despite the recent promise in robot control, video generative models suffer from a domain mismatch due to their primary focus on content creation. For example, their design inherently prioritizes visual fidelity and creativity over computational efficiency and physical realism. In this work, we present LingBot-Video, a DiT-based video pretraining paradigm specifically tailored for embodied intelligence. From the architecture perspective, we adopt t",
+      "pub_date": "2026-07-09",
+      "rating": "🔧",
+      "reason": "针对具身智能缩放MoE视频预训练，解决内容创作与计算效率的域差异。为VLA提供更高效的视觉编码器预训练策略，具有直接应用价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "What if? Emulative Simulation with World Models for Situated Reasoning",
+      "authors": "Ruiping Liu, Yufan Chen, Yuheng Zhang, Junwei Zheng, Kunyu Peng, Chengzhi Wu",
+      "url": "https://arxiv.org/abs/2603.06445",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2603.06445v3 Announce Type: replace Abstract: Situated reasoning often relies on active exploration, yet in many real-world scenarios such exploration is infeasible due to physical constraints of robots or safety concerns of visually impaired users. Given only a limited observation, can an agent mentally simulate a future trajectory toward a target situation and answer spatial what-if questions? We introduce WanderDream, the first large-scale dataset designed for the emulative simulation o",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "利用世界模型进行情境推理的模拟仿真。侧重推理能力而非动作执行，与VLA的核心目标（动作生成）存在偏差。",
+      "affiliation": ""
+    },
+    {
+      "title": "Provably Efficient Off-Policy Adversarial Imitation Learning with Convergence Guarantees",
+      "authors": "Yilei Chen, Vittorio Giammarino, James Queeney, Ioannis Ch. Paschalidis",
+      "url": "https://arxiv.org/abs/2405.16668",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "imitation learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2405.16668v2 Announce Type: replace Abstract: Adversarial Imitation Learning (AIL) faces challenges with sample inefficiency because of its reliance on sufficient on-policy data to evaluate the performance of the current policy during reward function updates. In this work, we study the convergence properties and sample complexity of off-policy AIL algorithms. We show that, even in the absence of importance sampling correction, reusing samples generated by the $o(\\sqrt{K})$ most recent poli",
+      "pub_date": "2026-07-09",
+      "rating": "📖",
+      "reason": "提供离线策略对抗模仿学习的收敛保证。理论贡献显著，但未结合VLA架构或大规模视觉数据进行验证，属于相邻强化学习理论。",
+      "affiliation": ""
+    }
+  ]
+}
