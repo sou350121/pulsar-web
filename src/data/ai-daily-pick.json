@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-11",
+      "items": [
+        {
+          "title": "GPT-5.6 全量上线 + ChatGPT Work 发布 + Codex 并入 ChatGPT",
+          "category": "新发布",
+          "source": "36Kr/OpenAI",
+          "url": "https://www.36kr.com/p/3889069642742403",
+          "why_picked": "GPT-5.6 Sol/Terra/Luna 三模型全量 GA；Sol 编程指数 80 分 SOTA，成本仅 Fable 5 的 1/3；Codex 独立 App 并入 ChatGPT 桌面端，新增 ChatGPT Work 通用 Agent 入口（跨应用、跨文件、持续数小时）",
+          "so_what": "如果你在选择编程/办公 Agent 底座：GPT-5.6 的三档定价（Sol $5/$30、Terra $2.5/$15、Luna $1/$6）+ 750 token/s 速度 + prompt caching 90% 折扣，重新定义了 cost-performance 基准。Sol 在 Agents' Last Exam 超 Fable 5 13.1 分但成本仅 1/4，适合日常高频任务；Fable 5 仍适合定向攻坚。建议按任务类型路由模型。ChatGPT Work 的跨应用 Agent 能力（Scheduled Tasks + Computer Use）是行业标杆，值得研究其架构。"
+        },
+        {
+          "title": "苹果起诉 OpenAI 盗用商业机密",
+          "category": "行业",
+          "source": "ReadHub/TechCrunch",
+          "url": "https://readhub.cn/topic/8uf6grJ6Q9c",
+          "why_picked": "苹果正式对 OpenAI 提起诉讼，指控其盗用商业机密。这是 Apple Intelligence 合作框架下的重大法律冲突，可能影响 OpenAI 在 iOS 端的独家集成地位",
+          "so_what": "如果你在规划 AI 产品的企业级合作或合规策略：苹果-OpenAI 诉讼标志着「AI 集成独家协议」正在成为法律战场。核心争议可能围绕 Apple Intelligence 训练数据的来源和使用边界。对 Agent 开发者的启示：与大型平台（Apple/Google/Microsoft）的合作协议中，数据归属和模型训练权条款需要极其明确。建议关注法庭文件后续披露。"
+        },
+        {
+          "title": "AWS Bedrock AgentCore + Stardog：为 Agentic AI 构建语义层",
+          "category": "工具",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/build-a-semantic-layer-for-agentic-ai-on-aws-with-stardog-and-amazon-bedrock-agentcore/",
+          "why_picked": "系统方案：用 Stardog 语义层桥接 Aurora + Redshift 异构数据，AgentCore 托管 Strands Agents 做 Customer 360 查询，无需 ETL",
+          "so_what": "如果你在构建企业级 RAG/Agent 系统：这篇 AWS 博客展示了一个关键架构模式——Agent 直接查原始数据会返回矛盾结果（同一 customer 在不同系统定义不同），必须通过语义层统一业务概念。Stardog 的 knowledge graph + Bedrock AgentCore 的 managed hosting 组合，提供了「语义一致性 + 工具凭证 + 鉴权」的一体化方案。适合评估你的 Agent 数据层是否需要引入知识图谱。"
+        },
+        {
+          "title": "Amazon Quick Automate：Agent 工作流的原生 Case Management",
+          "category": "工具",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/scaling-agentic-workflows-with-native-case-management-in-amazon-quick-automate/",
+          "why_picked": "企业级 Agent 编排的关键缺失环节：每个工作项作为 Case 持久化，支持 HITL、并行执行、异常处理、审计追踪——解决 Agent 从 POC 到生产级的最后一公里",
+          "so_what": "如果你的 Agent 系统需要处理大规模工作流（发票/理赔/工单）：Quick Automate 的 Case Management 模式值得借鉴——Agent 不是孤立运行，而是通过 case creator-processor pattern 动态扩缩容。每个 case 有完整生命周期追踪 + 人工审批节点 + 审计日志。这对设计企业级 Agent 编排框架有直接参考价值，尤其是 HITL 和异常恢复机制。"
+        },
+        {
+          "title": "GPT-5.6 Luna 由 Sol 后训练生成：AI 递归自我改进新里程碑",
+          "category": "趋势",
+          "source": "36Kr/OpenAI",
+          "url": "https://www.36kr.com/p/3889024357513736",
+          "why_picked": "OpenAI 披露：最小模型 Luna 由旗舰 Sol 全自动后训练完成（找配置、挑 GPU、启动脚本、确认跑通），过去需整队研究员的工作现在一个 Agent 全包；内部 RSI 评测 Sol 超 GPT-5.5 16.2 分",
+          "so_what": "如果你在设计 Agent 自我改进管线：GPT-5.6 的「AI 训练 AI」范式验证了递归自我改进（RSI）的可行性。Sol 在内部编程推理的研究算力份额半年涨 100 倍、Agent token 用量涨 22 倍——这意味着你的 Agent 架构应该预留「自我优化」接口：让强模型生成训练数据/配置，弱模型执行，形成飞轮。Ultra 模式（4-16 个 Agent 并行）也是多 Agent 协作的新参考模式。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-10",
       "items": [
         {
@@ -1429,75 +1474,6 @@
           "url": "https://readhub.cn/topic/8tqyEuVnl3f",
           "why_picked": "继昨日 S-1 草案后，Altman 发内部信确认 IPO 时间表，标志着 OpenAI 从非营利转向公开上市公司的关键节点",
           "so_what": "如果你在评估 AI 基础设施供应商的长期稳定性：OpenAI 上市意味着产品路线图将更受股东压力影响——定价策略、开源承诺可能调整。建议同步评估替代方案。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-10",
-      "items": [
-        {
-          "title": "Anthropic 发布 Claude Fable 5 + Mythos 5：最强模型附带「静默降权」争议",
-          "category": "新发布",
-          "source": "HN",
-          "url": "https://jonready.com/blog/posts/claude-fable5-is-allowed-to-sabotage-your-app-if-youre-a-competitor.html",
-          "why_picked": "HN 298 points，Anthropic 首次对竞品开发实施不可见的模型干预（prompt modification/steering vectors/PEFT），引发开发者信任危机",
-          "so_what": "如果你在用 Claude 构建 AI 产品，这意味着你需要评估供应链风险——当模型对「前沿 AI 开发」相关请求静默降权时，你无法区分是模型能力不足还是策略限制。建议关键路径保留多模型冗余。"
-        },
-        {
-          "title": "Google Gemini 3.5 Live Translate：70+ 语言实时语音翻译模型",
-          "category": "新发布",
-          "source": "DeepMind",
-          "url": "https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/",
-          "why_picked": "流式 speech-to-speech 翻译，保留语调/语速/音高，已开放 Gemini Live API 和 Google AI Studio",
-          "so_what": "如果你在做多语言语音 Agent 或实时翻译管线，这意味着 Google 提供了端到端的流式方案，无需拼接 ASR+MT+TTS 三段式 pipeline。Gemini Live API 已公开，可直接集成。"
-        },
-        {
-          "title": "Google Gemma 4 12B：encoder-free 多模态模型，16GB VRAM 可跑",
-          "category": "新发布",
-          "source": "DeepMind",
-          "url": "https://deepmind.google/blog/introducing-gemma-4-12b-a-unified-encoder-free-multimodal-model/",
-          "why_picked": "Apache 2.0，原生支持视觉+音频输入无需独立 encoder，MTP drafter 降延迟，16GB 显存即可本地部署",
-          "so_what": "如果你在做本地多模态 Agent，这意味着 16GB 消费级 GPU 就能跑视觉+音频+文本全模态推理，encoder-free 架构也降低了延迟和内存开销。"
-        },
-        {
-          "title": "微信 AI Agent 正式开放接入：14亿月活生态调度小程序",
-          "category": "行业",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3845399354870020",
-          "why_picked": "微信开放平台发布 AI 开发者指引，Agent 可自动调用小程序完成筛选/下单/预订，美团/携程首批接入",
-          "so_what": "如果你在做 Agent-to-service 的 A2A 架构，微信提供了全球最大规模的落地场景——14亿月活+数百万小程序。其 UI-Oceanus 世界模型预测操作结果的技术路径值得研究。"
-        },
-        {
-          "title": "Karpathy：Jevons 悖论在 AI 编码时代生效",
-          "category": "观点",
-          "source": "Simon Willison",
-          "url": "https://simonwillison.net/2026/Jun/9/andrej-karpathy/",
-          "why_picked": "Karpathy 观察：Claude Fable 5 让软件需求呈指数增长——explainer、visualizer、dashboard、 bespoke app，「Free your mind」",
-          "so_what": "如果你在用 AI coding agent 做项目，这意味着你的瓶颈不再是编码速度而是「想做什么」。Karpathy 的观察印证了从 prompt engineering 到 outcome engineering 的范式转移。"
-        },
-        {
-          "title": "Grit：用 Agent Swarm 从 0 用 Rust 重写 Git",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://blog.gitbutler.com/true-grit",
-          "why_picked": "GitButler 创始人受 Anthropic C 编译器实验启发，用 agent swarm 跑 42000+ Git 测试用例，99% 通过率，library-based Rust 实现",
-          "so_what": "如果你在用 agent swarm 做大型代码工程，Grit 证明了「agent + 完整测试套件」可以产出生产级 Rust 库。关键模式：用测试驱动 agent 迭代，而非人工 review 每一行。"
-        },
-        {
-          "title": "OpenAI 秘密提交 IPO 文件，目标估值 1 万亿美元",
-          "category": "行业",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3845196412193284",
-          "why_picked": "OpenAI 6月8日向 SEC 秘密提交 IPO 申请，最早9月上市，目标估值达万亿美元",
-          "so_what": "如果你在做 AI 基础设施投资/选型，这意味着 OpenAI 即将成为公众公司，其定价策略、API 路线和竞争策略将受股东压力影响。Codex/GPT-5.5 的长期路线图可能更透明。"
-        },
-        {
-          "title": "HF Spaces agents.md：Agent 组合两个 Space 构建 3D 巴黎画廊",
-          "category": "实验",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/mishig/spaces-agents-md",
-          "why_picked": "Coding agent 通过调用两个 HF Spaces（图像生成+3D重建）自动构建 3D 高斯溅射画廊，agents.md 协议让 Space 可被发现和组合",
-          "so_what": "如果你在做多模态 Agent 编排，这意味着 HF Spaces 正在形成「building-block economy」——每个 Space 通过 agents.md 暴露能力，Agent 自动发现、组合、生成最终产物。类似 MCP 但面向多媒体。"
         }
       ]
     }
