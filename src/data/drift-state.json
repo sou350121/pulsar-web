@@ -1,50 +1,50 @@
 {
-  "last_check": "2026-07-11",
+  "last_check": "2026-07-13",
   "metrics": {
     "vla_papers_scanned": {
-      "streak": 0,
+      "streak": 1,
       "alerted_at_streak": 0,
-      "last_value": 1017,
-      "baseline": 1181.43,
-      "ratio": 0.861
+      "last_value": 314,
+      "baseline": 1158.14,
+      "ratio": 0.271
     },
     "vla_final_in_report": {
-      "streak": 0,
-      "alerted_at_streak": 0,
-      "last_value": 38,
-      "baseline": 25.71,
-      "ratio": 1.478,
+      "streak": 2,
+      "alerted_at_streak": 2,
+      "last_value": 1,
+      "baseline": 25.0,
+      "ratio": 0.04,
       "sustained_degradation": true
     },
     "vla_sources_active": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 14,
+      "last_value": 10,
       "baseline": 14.29,
-      "ratio": 0.98
+      "ratio": 0.7
     },
     "vla_tg_msg_len": {
-      "streak": 0,
-      "alerted_at_streak": 0,
-      "last_value": 4742,
-      "baseline": 2696.0,
-      "ratio": 1.759,
+      "streak": 1,
+      "alerted_at_streak": 1,
+      "last_value": 103,
+      "baseline": 2764.0,
+      "ratio": 0.037,
       "sustained_degradation": true
     },
     "aiapp_items_scanned": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 350,
-      "baseline": 308.71,
-      "ratio": 1.134,
+      "last_value": 252,
+      "baseline": 294.86,
+      "ratio": 0.855,
       "sustained_degradation": true
     },
     "aiapp_items_report": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 7,
-      "baseline": 5.57,
-      "ratio": 1.256
+      "last_value": 5,
+      "baseline": 5.29,
+      "ratio": 0.946
     },
     "vla_upstream_count": {
       "streak": 2,
@@ -56,20 +56,12 @@
     }
   },
   "last_remediation": {
-    "vla_final_in_report": "2026-07-07",
+    "vla_final_in_report": "2026-07-12",
     "vla_papers_scanned": "2026-06-23",
     "aiapp_items_report": "2026-04-20",
     "aiapp_items_scanned": "2026-06-25"
   },
   "remediation_log": [
-    {
-      "date": "2026-06-04",
-      "key": "aiapp_items_scanned",
-      "label": "AI RSS 重跑",
-      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
-      "ok": true,
-      "detail": "[progress] ai-app-rss-collect start: 2026-06-04\n[progress] already collected, skip"
-    },
     {
       "date": "2026-06-05",
       "key": "aiapp_items_scanned",
@@ -296,6 +288,14 @@
     },
     {
       "date": "2026-07-07",
+      "key": "vla_final_in_report",
+      "label": "VLA 評級重跑",
+      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
+      "ok": false,
+      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
+    },
+    {
+      "date": "2026-07-12",
       "key": "vla_final_in_report",
       "label": "VLA 評級重跑",
       "script": "/home/admin/clawd/scripts/rate-vla-daily.py",

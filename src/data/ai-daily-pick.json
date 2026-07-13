@@ -1,6 +1,112 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-13",
+      "items": [
+        {
+          "title": "geohot: I love LLMs, I hate hype",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://geohot.github.io/blog/jekyll/update/2026/07/12/i-love-llms.html",
+          "why_picked": "HN 289分/171评。George Hotz 长文：肯定 coding agent 进步（OpenCode+GLM-5.2 on Linux），痛批 FOMO 炒作和末日叙事",
+          "so_what": "如果你在做 AI 创业或投资：这篇代表了一线技术人对行业叙事的清醒反思。关注实际产品力而非估值故事，是更稳健的策略。"
+        },
+        {
+          "title": "Anthropic 再次延长 Fable 可用期至 7月19日",
+          "category": "新发布",
+          "source": "HN",
+          "url": "https://twitter.com/claudeai/status/2076351399999557669",
+          "why_picked": "Claude 官方宣布 Fable 再延长一周。GPT-5.6 Sol 被归为 Fable/Mythos 级别后，Anthropic 持续调整 Fable 的 Max 计划可用性",
+          "so_what": "如果你在用 Claude Fable 做生产：窗口期不稳定，建议尽快评估替代方案或锁定长期可用模型（如 Sonnet 5），避免依赖限时模型构建核心工作流。"
+        },
+        {
+          "title": "Claude Code vs OpenCode Token 开销实测：33k vs 7k 基线",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://systima.ai/blog/claude-code-vs-opencode-token-overhead",
+          "why_picked": "首次量化对比两大 coding agent harness 的 token 开销：Claude Code 基线 33k tokens，OpenCode 仅 7k；cache 效率差 54x",
+          "so_what": "如果你在生产环境跑 coding agent：harness 选择的 token 开销差异可达 4-5x。OpenCode 的 byte-identical prefix 策略实现高效缓存，而 Claude Code 频繁重写 cache tokens 导致额外成本。生产部署前务必测量 harness overhead。"
+        },
+        {
+          "title": "Ploy 生产 Agent 迁移 GPT-5.6 Sol：快 2.2x、便宜 27%",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://ploy.ai/blog/migrating-a-production-ai-agent-to-gpt-5-6",
+          "why_picked": "首个公开的生产级 Agent 迁移 GPT-5.6 实战报告。1/3 的 eval 失败源于 harness 对 incumbent 模型的隐性适配",
+          "so_what": "如果你在做跨模型迁移：不要只测模型质量——你的 eval harness、tool schema 处理、prompt cache 策略可能都已对当前模型过拟合。先修 harness 再信数据。"
+        },
+        {
+          "title": "NVIDIA 发布 Open Data for Agents：合成数据驱动 Agent 训练",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/nvidia/open-data-for-agents",
+          "why_picked": "NVIDIA 阐述为何 Agent 需要开放数据而非仅开放权重，Nemotron 系列合成数据集在 ICML 获 145 篇论文引用",
+          "so_what": "如果你在做 Agent 训练或 fine-tuning：合成数据是扩展 agent 行为多样性的关键路径。NVIDIA 的 Nemotron 数据集可直接用于训练更鲁棒的 agent。"
+        },
+        {
+          "title": "sqlite-utils 4.1.1 发布",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/simonw/sqlite-utils",
+          "why_picked": "Simon Willison 的 sqlite-utils 小版本更新：table.transform() 在外键约束下开启事务时现在会抛出 TransactionError",
+          "so_what": "如果你在用 sqlite-utils 做数据管线：升级到 4.1.1 可避免外键约束下的静默数据损坏。注意事务内调用 transform() 现在会报错，需调整异常处理逻辑。"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-12",
+      "items": [
+        {
+          "title": "腾讯考虑入股 Manus，不会控股",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8ufvngyIzY4",
+          "why_picked": "中方资本以约20亿美元估值从Meta手中回购Manus股权，腾讯牵头但不控股——中国资本在AI Agent领域的最大布局之一",
+          "so_what": "如果你在做Agent产品商业化：Manus的融资路径说明通用Agent赛道估值逻辑正在从硅谷主导转向多极化。关注其后续产品节奏是否因股东变化而调整。"
+        },
+        {
+          "title": "OpenAI COO 因病离职，高管层再震荡",
+          "category": "行业",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3890553690192384",
+          "why_picked": "GPT-5.6刚全量发布，OpenAI高层再次变动——COO因病离职，反映高压扩张期的组织代价",
+          "so_what": "如果你在用OpenAI API或依赖其生态：高管频繁更替可能影响产品路线图节奏。建议关注接替者信号及企业客户合同条款变化。"
+        },
+        {
+          "title": "Stop Telling Me to Ask An LLM",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://blog.yaelwrites.com/stop-telling-me-to-ask-an-llm/",
+          "why_picked": "HN 108分热文——当\"去问Claude\"成为新的\"去搜一下\"，人们开始拒绝用模型回答替代人类经验判断",
+          "so_what": "如果你在设计Agent交互界面：过度依赖LLM会让用户失去对人类判断的信任。设计agent推荐系统时，保留人类专家回退路径比纯自动化更重要。"
+        },
+        {
+          "title": "三星发布AI PC加速芯片GAIA，4nm+NPU+存算一体",
+          "category": "新发布",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3890553690192384",
+          "why_picked": "三星自研AI PC芯片GAIA已向联想、惠普送样，2027年量产——端侧AI推理硬件竞争白热化",
+          "so_what": "如果你在做端侧Agent或本地LLM应用：GAIA的存算一体架构意味着2027年起PC端NPU算力将跃升。现在就该为端侧推理优化agent pipeline。"
+        },
+        {
+          "title": "google-labs-code/stitch-skills",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/google-labs-code/stitch-skills",
+          "why_picked": "Google Labs出品的Agent Skills库，兼容Stitch MCP server，支持Claude Code/Cursor/Gemini CLI等主流编码agent",
+          "so_what": "如果你在用多个编码agent工具：stitch-skills提供标准化Agent Skills规范，让同一套skill在Antigravity/Gemini CLI/Claude Code之间跨平台复用。"
+        },
+        {
+          "title": "davila7/claude-code-templates",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/davila7/claude-code-templates",
+          "why_picked": "Claude Code配置与监控CLI工具——解决如何规模化使用Claude Code的工程管理问题",
+          "so_what": "如果你在用Claude Code做团队开发：通过模板统一prompt配置、监控token消耗和执行状态。团队级LLM coding工具的治理是Q3刚需。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-11",
       "items": [
         {
@@ -1384,96 +1490,6 @@
           "url": "https://aws.amazon.com/blogs/machine-learning/building-supercharger-how-rocket-close-optimized-title-operations-with-agentic-ai/",
           "why_picked": "展示 AWS Strands Agents + Bedrock + MCP 工具链的实际落地案例——优化产权操作效率",
           "so_what": "如果你在用 AWS 构建 agent 应用，这个案例展示了 Strands Agents 与 MCP 工具集成的完整模式。特别是多工具编排和知识库检索的结合方式，可直接复用到你的 RAG + tool-calling agent 管线中。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-12",
-      "items": [
-        {
-          "title": "Endor Labs 评测：Claude Fable 5 编码任务仅中等水平",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.endorlabs.com/learn/claude-fable-5-mythos-grade-hype",
-          "why_picked": "Endor Labs 用 200 个真实漏洞修复任务评测 Fable 5：FuncPass 59.8%、SecPass 19.0%，中位表现；但 4 个案例是任何模型从未解出的首次解决。超时率创纪录，cheating 率最高（38/200 靠训练数据记忆）",
-          "so_what": "如果你在用 Claude Fable 5 做安全敏感代码修复：这意味着模型在「写安全代码」上并未显著超越前代，Anthropic 发布稿的进攻性 benchmark（漏洞复现/PoC）与防御性场景（安全代码生成）存在 gap。建议关键安全路径保留人工 review，不要完全信任 SecPass 指标。"
-        },
-        {
-          "title": "Simon Willison：Claude Fable 5「 relentless proactive」——自己写浏览器截图工具",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/",
-          "why_picked": "Simon Willison 实测：Fable 5 在调试 UI bug 时，自行用 Python + Quartz 框架写了浏览器窗口截图脚本，还创建了临时 HTML 页面复现问题——完全没被要求这么做",
-          "so_what": "如果你在用 Claude Code 做调试：这意味着 Fable 5 的「主动探索」能力是一把双刃剑——它能发现你没想到要问的路径，但也可能做出一堆你没要求的操作（甚至打开浏览器窗口）。建议对 agent 的自主行为设边界，特别是涉及系统级操作时。"
-        },
-        {
-          "title": "36Kr：全网爆火的 Claude Fable 5 神级案例，可能是纯手搓",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3848453944808453",
-          "why_picked": "中文社区开始质疑 Anthropic 发布的 Fable 5 demo 是否经过人工精调——与 Endor Labs 的「cheating 率最高」发现形成交叉验证",
-          "so_what": "如果你在评估 AI coding agent 的真实能力：这意味着 vendor demo 和独立评测之间可能存在巨大落差。建议以独立 benchmark（如 SWE-bench、Agent Security League）为准，而非发布会视频。"
-        },
-        {
-          "title": "Vercel Plugin 上线 Grok Build",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/vercel-plugin-is-now-available-in-grok-build",
-          "why_picked": "Vercel 官方插件正式接入 xAI Grok Build，实时注入 Vercel 平台 API 知识和推荐模式，支持 /marketplace 安装",
-          "so_what": "如果你在用 Grok Build 做前端部署：这意味着 coding agent 现在可以直接获取 Vercel 最新的 API 文档和最佳实践，减少「用旧 API 生成代码」的问题。类似的 agent plugin 模式（context injection）值得你关注——你的工具链可能也需要适配。"
-        },
-        {
-          "title": "BBVA 将 ChatGPT Enterprise 扩展到 10 万员工",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/bbva",
-          "why_picked": "OpenAI 官方博客：BBVA 与 OpenAI 形成战略合作，ChatGPT Enterprise 覆盖 10 万员工，涵盖客户体验、风险管理、软件开发全链路",
-          "so_what": "如果你在做企业 AI 部署：BBVA 的案例证明 10 万级员工的 AI 落地是可行的，但关键是「战略联盟」而非单纯 API 采购——OpenAI 团队深度嵌入银行各部门。如果你在做 B2B AI 产品，这种 co-build 模式可能是大客户标配。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-11",
-      "items": [
-        {
-          "title": "Anthropic 模型命名规律被网友逆向工程",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://samwilkinson.io/posts/2026-06-09-anthropics-model-naming-extrapolated",
-          "why_picked": "HN 263 pts，拆解 Anthropic 从 Haiku/Sonnet/Opus/Claude 的命名矩阵，揭示 Fable/Mythos 定位逻辑",
-          "so_what": "如果你在选择 Anthropic 模型：理解命名矩阵能帮你预判新模型定位——Fable=消费级/创意，Mythos=企业级/推理。别盲目追新，按场景选。"
-        },
-        {
-          "title": "Google DiffusionGemma：857 tokens/s 的轻量扩散模型",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Jun/10/diffusiongemma/",
-          "why_picked": "Google 实验性扩散模型，推理速度达 857 tokens/s，比传统自回归快一个数量级，可能改变边缘部署范式",
-          "so_what": "如果你在做低延迟推理或边缘部署：扩散模型路线值得跟踪。857 tokens/s 意味着在手机/树莓派上跑 LLM 不再是梦，但生成质量 vs 速度的 tradeoff 仍需评估。"
-        },
-        {
-          "title": "piFS：HN 451 分的新型文件系统",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://github.com/philipl/pifs",
-          "why_picked": "HN 451 pts / 115 comments，Philipps 用 Rust 实现的极简文件系统，聚焦 AI agent 的文件操作场景",
-          "so_what": "如果你在建 AI agent 的文件操作层：piFS 提供了一种新思路——把文件系统本身设计成 agent-native 的接口，而非事后适配。值得 watch 仓库。"
-        },
-        {
-          "title": "OpenAI 披露 PRC 影响力行动 targeting AI 政策辩论",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/prc-linked-influence-operations-ai-debates",
-          "why_picked": "OpenAI 官方博客首次公开披露国家级 AI 影响力行动，涉及数据中心叙事、关税、ChatGPT 虚假信息",
-          "so_what": "如果你在构建面向企业的 AI 安全方案：这份报告揭示了 AI 被武器化的具体手法——prompt injection 已升级为国家级叙事操纵。安全团队需要关注信息战层面的威胁建模。"
-        },
-        {
-          "title": "Altman 内部信：OpenAI 预计一年内 IPO",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8tqyEuVnl3f",
-          "why_picked": "继昨日 S-1 草案后，Altman 发内部信确认 IPO 时间表，标志着 OpenAI 从非营利转向公开上市公司的关键节点",
-          "so_what": "如果你在评估 AI 基础设施供应商的长期稳定性：OpenAI 上市意味着产品路线图将更受股东压力影响——定价策略、开源承诺可能调整。建议同步评估替代方案。"
         }
       ]
     }
