@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-14",
+      "items": [
+        {
+          "title": "Apple SpeechAnalyzer API 实测：击败所有 Whisper 模型，速度快 3x",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://get-inscribe.com/blog/apple-speech-api-benchmark.html",
+          "why_picked": "HN 411 分高热，首个第三方基准测试显示 Apple 新 SpeechAnalyzer 在 LibriSpeech 上 WER 2.12% 击败 Whisper Small 的 3.74%，且速度快 3 倍",
+          "so_what": "如果你在做 iOS/macOS 语音管线：立即迁移 SFSpeechRecognizer→SpeechAnalyzer，WER 降低 4 倍且无需额外模型文件。Whisper 在 Apple 平台上不再是默认首选——除非你需要多语言覆盖或跨平台一致性。"
+        },
+        {
+          "title": "GPT-5.6 Sol/Terra/Luna 全量上线 Amazon Bedrock",
+          "category": "新发布",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/openai-gpt-5-6-sol-terra-and-luna-are-now-generally-available-on-amazon-bedrock/",
+          "why_picked": "GPT-5.6 三模型系列正式 GA 于 AWS Bedrock，定价匹配 OpenAI 官方，计入 AWS 承诺额度。Sol 在 Coding Agent Index 达 80 分，ExploitBench 73.5%",
+          "so_what": "如果你在企业用 AWS 构建 Agent 管线：现在可以直接在 Bedrock 上调用 GPT-5.6 Sol 做复杂推理任务，无需额外 OpenAI 账号。Terra 替代 GPT-5.5 做日常生产工作，Luna 做高吞吐分类/路由。注意 Sol 的 max reasoning effort 选项适合深度多步任务。"
+        },
+        {
+          "title": "xAI Grok Build CLI 被曝上传完整 Git 仓库到 Google Cloud",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.internationalcyberdigest.com/xais-grok-build-cli-uploads-entire-git-repositories-to-a-google-cloud-bucket/",
+          "why_picked": "安全研究员 cereblab 发现 Grok Build CLI 0.2.93 将完整 Git 仓库（含历史、.env 密钥）上传至 grok-code-session-traces GCS bucket，12GB 仓库上传了 5.1GB。xAI 已悄悄修复但未公开说明",
+          "so_what": "如果你在用 Grok Build 或考虑引入团队：暂停使用，确认数据已删除。这个事件再次提醒——编码 Agent 的代码上传行为需要审计。选择 Agent 工具时，把「数据外传范围」纳入安全审查清单。"
+        },
+        {
+          "title": "Claude Code 插件 Mr. Meeseeks：等待你时播放瑞克和莫蒂音效",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://github.com/thephw/claude-meseeks",
+          "why_picked": "HN 85 分，Claude Code 社区插件，利用 Notification 事件在 Claude 等待用户输入或需要审批时播放 Mr. Meeseeks 语音片段，精准区分自主工作和等待状态",
+          "so_what": "如果你在用 Claude Code 做长时间开发：这个插件提供了一种非侵入式通知机制。更重要的是它展示了 Claude Code 插件系统的 Notification hook 能力——你可以基于此构建自定义的 Agent 状态监控/通知管线。"
+        },
+        {
+          "title": "DOOMQL：用 SQLite 做游戏引擎，GPT-5.6 Sol 生成",
+          "category": "实验",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jul/13/doomql/",
+          "why_picked": "Peter Gostev 用 GPT-5.6 Sol 生成了一个 Doom-like 游戏，所有逻辑（移动、碰撞、敌人、战斗、渲染）全部用 SQL 实现，包括一个递归 CTE 实现的完整光线追踪器",
+          "so_what": "如果你在评估 GPT-5.6 Sol 的创意编程能力：这个项目的 SQL 复杂度（递归 CTE 做光线追踪）展示了 Sol 在非常规问题上的推理深度。但不只是玩具——它验证了 LLM 生成复杂 SQL 逻辑的能力，对你的数据管线 Agent 有参考价值。"
+        },
+        {
+          "title": "Simon Willison 数据集：Coding Agent 让开源贡献量出现巨大峰值",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Jul/13/datasette-code-frequency/",
+          "why_picked": "Simon 通过 GitHub code-frequency 图表发现 Datasette 项目代码提交量在 Opus 4.8/GPT-5.5/Fable 5/GPT-5.6 Sol 发布后出现巨大 spike，直观展示 coding agent 对开源产出的放大效应",
+          "so_what": "如果你在管理开源项目或评估 coding agent ROI：这个数据点证明顶级 coding agent 可以让个人开发者产出翻倍。但也要关注代码质量——Simon 本人 review 所有 PR，你的团队是否有同等 review 能力？"
+        },
+        {
+          "title": "Nobie：AI-first 本地 Excel 运行时，支持 Claude/Codex 直接操作",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://nobie.com",
+          "why_picked": "HN Show 项目，Mac 本地 Excel 兼容运行时，主打 AI-first——Claude/Codex/Gemini 可直接通过 computer-use agent 操作电子表格，数据不离开本机",
+          "so_what": "如果你在做 Agent 工具链集成：Nobie 展示了一个新的 Agent 交互模式——让 AI 直接操作本地桌面应用而非通过 API。对需要处理复杂表格数据的 Agent 场景（财务分析、数据清洗），这是一个值得关注的原生集成路径。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-13",
       "items": [
         {
@@ -1429,67 +1490,6 @@
           "url": "https://desfontain.es/blog/banning-noise.html",
           "why_picked": "HN 692分，美国人口普查局禁止在统计产品中使用噪声注入（差分隐私核心技术），对隐私计算领域影响深远",
           "so_what": "如果你的 agent 处理敏感用户数据并依赖差分隐私做合规，这个政策转向意味着需要重新评估隐私方案。关注后续更多政府机构是否跟进。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-13",
-      "items": [
-        {
-          "title": "World of ClaudeCraft：用 Fable 5 vibe coding 打造的 MMORPG 世界",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://worldofclaudecraft.com/",
-          "why_picked": "HN 80 pts，展示 Fable 5 的 vibe coding 能力——从 0 构建一个完整的 MMORPG 世界",
-          "so_what": "如果你在做游戏 AI 或交互式内容生成，这说明 vibe coding 已能支撑复杂多系统项目的原型搭建。考虑将 Fable 5 的自主浏览器操作能力引入你的 agent 工作流，用截图+反馈循环替代传统 API 调用。"
-        },
-        {
-          "title": "「Don't You Just Upload It to ChatGPT?」—— HN 279 分热议",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://correresmidestino.com/dont-you-just-upload-it-to-chatgpt/",
-          "why_picked": "HN 279 pts / 235 评论，探讨一个尖锐问题：当所有人都用 ChatGPT 处理信息，人类独特的分析价值还剩什么",
-          "so_what": "如果你在做 RAG 或知识管理管线，这篇文章提醒你：单纯的信息聚合已不再构成竞争壁垒。你的系统需要提供 ChatGPT 无法复制的结构化推理或领域深度，否则用户没有理由离开免费工具。"
-        },
-        {
-          "title": "OpenAI Academy 三门新课程：将 AI 技能带入日常工作",
-          "category": "新发布",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/academy-courses-applying-ai-at-work",
-          "why_picked": "OpenAI 正式推出 Academy 课程，覆盖实用 AI 技能、可复用工作流和 Agent 应用——标志着 AI 教育从「尝鲜」进入「体系化」阶段",
-          "so_what": "如果你在企业部署 AI Agent，OpenAI 的课程框架可作为内部培训参考。关注其「repeatable workflows」方法论——把一次性 prompt 变成可复用的 agent 模板，是规模化落地的关键。"
-        },
-        {
-          "title": "Allen AI 发布 olmo-eval：模型开发循环的评估工作台",
-          "category": "工具",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/allenai/olmo-eval",
-          "why_picked": "Allen AI 开源 olmo-eval，为模型开发全生命周期提供标准化评估——从预训练到后训练，覆盖多任务 benchmark",
-          "so_what": "如果你在做模型微调或 agent 评测管线，olmo-eval 提供了一套开箱即用的评估框架。相比自建评测集，它能帮你标准化 benchmark 对比，减少评估偏差。特别适合作为 agent 能力迭代的回归测试基线。"
-        },
-        {
-          "title": "How to Setup a Local Coding Agent on macOS",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://ikyle.me/blog/2026/how-to-setup-a-local-coding-agent-on-macos",
-          "why_picked": "本地 coding agent 部署指南——在 macOS 上搭建完全离线的 AI 编程环境，隐私优先",
-          "so_what": "如果你在为团队搭建本地编码 agent 环境，这篇指南覆盖了从模型选择到工具链配置的完整流程。对关注数据隐私的企业（金融/医疗）尤其有价值——本地部署 + 开源模型 = 零数据外泄风险。"
-        },
-        {
-          "title": "Preply 用 AI + 人类导师个性化语言学习",
-          "category": "行业",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/preply",
-          "why_picked": "Preply 用 OpenAI 构建 AI 生成的课程摘要和个性化练习，展示 AI 在 EdTech 中的「人机协作」范式——AI 做个性化，人类做情感连接",
-          "so_what": "如果你在做教育类 AI 产品，Preply 的案例表明：最好的模式不是 AI 替代人类，而是 AI 负责大规模个性化（练习生成、进度追踪），人类导师专注深度互动和动机激发。这种分工在 agent 架构中值得借鉴。"
-        },
-        {
-          "title": "Rocket Close 用 Strands Agents + MCP 构建 Supercharger",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-supercharger-how-rocket-close-optimized-title-operations-with-agentic-ai/",
-          "why_picked": "展示 AWS Strands Agents + Bedrock + MCP 工具链的实际落地案例——优化产权操作效率",
-          "so_what": "如果你在用 AWS 构建 agent 应用，这个案例展示了 Strands Agents 与 MCP 工具集成的完整模式。特别是多工具编排和知识库检索的结合方式，可直接复用到你的 RAG + tool-calling agent 管线中。"
         }
       ]
     }
