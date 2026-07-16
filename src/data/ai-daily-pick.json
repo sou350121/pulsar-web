@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-16",
+      "items": [
+        {
+          "title": "Inkling: Thinking Machines Lab 发布开源 MoE 模型（975B/41B active）",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://thinkingmachines.ai/news/introducing-inkling/",
+          "why_picked": "前 ChatGPT/Character.ai/Mistral 团队发布首个自研开源模型，975B 总参数/41B active，多模态（文本+图像+音频），1M 上下文，支持在 Tinker 平台上微调",
+          "so_what": "如果你在做定制化 Agent 管线，Inkling 提供了又一个可微调的开源基座——41B active 的 MoE 架构在推理成本上比稠密模型低一个数量级，且原生支持音频输入，适合构建多模态 Agent。"
+        },
+        {
+          "title": "xAI 开源 Grok Build 编码 Agent（Rust 实现，支持 ACP 协议）",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/xai-org/grok-build",
+          "why_picked": "xAI 将 Grok Build CLI/TUI 编码 Agent 完整开源（Rust），支持 fullscreen TUI、headless CI、ACP 嵌入编辑器",
+          "so_what": "如果你在选择 Coding Agent 方案，Grok Build 的 ACP（Agent Client Protocol）支持意味着它可以嵌入 VS Code/Cursor 等编辑器，与 Claude Code/Codex 形成直接竞争——值得评估其 Rust 实现的稳定性和性能。"
+        },
+        {
+          "title": "Freestyle.sh：为 AI Agent 设计 API 的最佳实践",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://freestyle.sh",
+          "why_picked": "Freestyle CEO（YC S24）从工程角度总结 Agent API 设计模式，HN 40+ 讨论",
+          "so_what": "如果你在设计 Agent 可调用的 API，这篇文章总结了 API 版本控制、错误处理、上下文传递等工程细节——Agent 消费 API 的方式与人类不同，需要更结构化的响应格式。"
+        },
+        {
+          "title": "Brainless：仿 Claude Code/Codex/Grok 风格的 Shadcn UI 组件库",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://swerdlow.dev",
+          "why_picked": "Freestyle CEO 开源一套 Shadcn 组件，一键还原三大 Coding Agent 的终端 UI 风格，HN 77 分",
+          "so_what": "如果你在建 Agent UI 产品，Brainless 提供了现成的终端风格组件——省去大量 CSS 调试，直接复用 Claude Code/Codex/Grok 的视觉语言。"
+        },
+        {
+          "title": "Stripe + Advent 联合报价收购 PayPal",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://reuters.com",
+          "why_picked": "HN 323 分/197 评论，AI 基础设施巨头切入支付领域，可能重塑 AI Agent 的支付能力生态",
+          "so_what": "如果你在建需要支付能力的 Agent 应用，这笔收购若完成可能改变 Stripe/ PayPal 的 API 定价和集成策略——关注后续反垄断审批和 API 兼容性变化。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-15",
       "items": [
         {
@@ -1443,55 +1488,6 @@
           "so_what": "如果你在生产环境跑 Agent，这意味着可以用 Strands Evals 做自动化失败诊断——不需要人工逐条看日志，结构化输出可直接接入告警和重试管线。"
         }
       ]
-    },
-    {
-      "date": "2026-06-15",
-      "items": [
-        {
-          "title": "Rio3.5 被揭实为 Nex-N2 + Qwen 模型 merge，非自研",
-          "category": "趋势",
-          "source": "GitHub Issue",
-          "url": "https://github.com/nex-agi/Nex-N2/issues/4",
-          "why_picked": "HN 260 分热议：里约热内卢市政府宣称的「自研 397B 模型」被 Nex-AGI 团队用权重分析证明是 0.6*Nex + 0.4*Qwen 的逐元素合并，移掉 system prompt 后模型自报家门 79% 是 Nex",
-          "so_what": "如果你在做模型选型或 benchmark 追踪：这提醒你对「小城小镇自研大模型」保持 skepticism。权重 merge 冒充训练已成新套路，验证方法包括移除 system prompt 测试身份、检查权重分布是否可被线性插值解释。"
-        },
-        {
-          "title": "Bram Cohen：为什么 Claude 变得越来越难用",
-          "category": "观点",
-          "source": "HN Blog",
-          "url": "https://bramcohen.com/p/why-is-claude-turning-into-an-asshole",
-          "why_picked": "BitTorrent 作者发文，HN 89 分 146 条评论。批评 Fable 5 从 Opus 4.7 开始逐步退化为「好辩模式」——默认假设用户想搞坏事、每句话都要抬杠。用 Opus 4.6 对比实验证实不是主观感受",
-          "so_what": "如果你在用 Claude API 做产品：alignment guardrails 过度触发会导致用户体验退化。注意 Fable 5 的 refusal 率和 confrontational 倾向，考虑在 system prompt 中显式压制辩论行为，或回退到 Opus 4.6 做生产环境。"
-        },
-        {
-          "title": "Simon Willison：AI 为何没有、也不会取代软件工程师",
-          "category": "观点",
-          "source": "Blog",
-          "url": "https://simonwillison.net/2026/Jun/14/why-ai-hasnt-replaced-software-engineers/",
-          "why_picked": "引用 Narayanan & Kapoor 论文 + WARN Act 数据（纽约州 160+ 公司申报，零 AI 相关裁员）。核心论点：写代码不是瓶颈，真正的瓶颈是需求定义、责任归属和深度上下文理解",
-          "so_what": "如果你在构建 AI coding 工具或评估 Agent 能力：理解 AI 的瓶颈不在代码生成而在「决定做什么」和「为结果负责」。产品机会在需求分解、验证和 human-in-the-loop 环节，而非纯代码补全。"
-        },
-        {
-          "title": "OpenAI Partner Network 上线：$150M 推动全球企业 AI 部署",
-          "category": "行业",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/introducing-openai-partner-network",
-          "why_picked": "OpenAI 官方博客宣布合作伙伴网络，投资 1.5 亿美元，目标 2026 年底培训 30 万认证顾问。三级体系（Select/Advanced/Elite），Codex/安全/Agent 三大 specialization 方向",
-          "so_what": "如果你在做企业 AI 集成或 ISV：OpenAI 正在复制 AWS/Azure 的 partner ecosystem 模式。关注 Codex specialization 方向——这可能是 OpenAI 把 coding agent 能力商业化落地的关键通道。"
-        },
-        {
-          "title": "小米 MiMo Code 开源：终端编程 Agent，长程自动化设计",
-          "category": "工具",
-          "source": "稀土掘金",
-          "url": "https://juejin.cn/post/7650451521307770923",
-          "why_picked": "小米 MiMo 团队开源终端编程 Agent，围绕计算/记忆/进化三大核心，针对长程自动化编程任务设计。国内大厂跟进 coding agent 开源赛道",
-          "so_what": "如果你在做 coding agent 或终端工具链：MiMo Code 的「计算-记忆-进化」三核心架构值得关注，特别是长程任务中的记忆管理和自我进化机制，与 Claude Code / Cursor 形成差异化竞争。"
-        }
-      ],
-      "meta": {
-        "total_web_searches": 0,
-        "notes": "Web search credits exhausted; used RSS + web_fetch only"
-      }
     }
   ]
 }
