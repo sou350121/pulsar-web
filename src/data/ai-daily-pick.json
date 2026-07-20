@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-07-20",
+      "items": [
+        {
+          "title": "Qwen3.8-Max-Preview 发布：2.4T 参数旗舰模型",
+          "category": "新发布",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/978730.htm",
+          "why_picked": "阿里千问新一代旗舰模型预览版上线，宣称除 Fable 5 外最强大模型，即将开源",
+          "so_what": "如果你在做 Agent 管线选型，Qwen3.8 的 2.4T 参数和全栈开发/多 Agent 长程任务能力值得对比评估。预览版已在 Token Plan / Qoder 上线，可快速做 benchmark。正式版开源后适合本地部署做私有 Agent 后端。"
+        },
+        {
+          "title": "GitHub Copilot SDK 开源：六语言嵌入 Copilot Agent 工作流",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/github/copilot-sdk",
+          "why_picked": "GitHub 官方发布 Copilot SDK，支持 Python/TS/Go/.NET/Java/Rust，将 Copilot CLI 的 agent runtime 可编程化暴露",
+          "so_what": "如果你在建 Agent 应用，不需要自己实现编排层——直接嵌入 Copilot SDK 即可复用其规划、工具调用、文件编辑能力。六语言覆盖意味着可以用在你现有的技术栈中。"
+        },
+        {
+          "title": "code-review-graph：本地优先代码图谱，MCP 精准上下文",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/tirth8205/code-review-graph",
+          "why_picked": "用 Tree-sitter 构建代码结构图谱，增量追踪变更，通过 MCP 给 AI 编码工具精准上下文，减少 token 浪费",
+          "so_what": "如果你在跑大型项目的 AI code review，这个工具能显著降低上下文窗口消耗。一行命令安装，自动检测平台配置，适合 CI 集成。"
+        },
+        {
+          "title": "wigolo：AI 编码 Agent 的本地 web 情报引擎",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/KnockOutEZ/wigolo",
+          "why_picked": "为 AI coding agent 提供搜索/抓取/爬取/研究一体化 MCP 服务，无需 API key，$0/query，日增 595 stars",
+          "so_what": "如果你的 Agent 需要实时 web 信息但受限于 API 成本，wigolo 提供零成本的本地替代方案。支持 Claude Code/Cursor/Codex 等主流 agent，npm 一键安装。"
+        },
+        {
+          "title": "《深入理解 AI Agent》开源全书：设计原理与工程实践",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/bojieli/ai-agent-book",
+          "why_picked": "李博杰著 AI Agent 工程实践开源书，十章覆盖上下文工程/MCP/RAG/评估/后训练，中英双语 PDF+配套代码",
+          "so_what": "如果你刚进入 Agent 开发领域，这本书提供了从 Agent=LLM+上下文+工具 核心公式到生产级评估的完整路径。每章配套代码可直接运行验证。"
+        }
+      ]
+    },
+    {
       "date": "2026-07-19",
       "items": [
         {
@@ -1428,67 +1473,6 @@
           "url": "https://github.com/DeusData/codebase-memory-mcp",
           "why_picked": "GitHub日榜#1；毫秒级索引158种语言，99% token减少，单二进制零依赖",
           "so_what": "如果你在跑代码Agent（Cursor/Claude Code等）：这个MCP服务器把代码库索引为知识图谱，可大幅减少token消耗。相比之前报过的CodeGraph，这是MCP原生实现，部署更简单。"
-        }
-      ]
-    },
-    {
-      "date": "2026-06-19",
-      "items": [
-        {
-          "title": "Amazon Bedrock AgentCore Harness GA：两步API生产级Agent",
-          "category": "新发布",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/amazon-bedrock-agentcore-harness-is-now-generally-available-go-from-idea-to-production-grade-agent-in-minutes/",
-          "why_picked": "AWS 正式 GA 的 Agent 编排框架，两步 API 即可部署生产级 Agent，直接对标 LangGraph/CrewAI",
-          "so_what": "如果你在建多步骤 Agent 管线：AgentCore Harness 提供托管态执行 + 状态管理，可替代自建编排层。对比 LangGraph 的节点图模式，Harness 更偏「声明式」——定义输入输出 schema 即可运行，减少样板代码。建议评估是否迁移现有 LangGraph 工作流。"
-        },
-        {
-          "title": "OpenAI 发布 GPT-5.5 Instant：ChatGPT 健康智能大幅升级",
-          "category": "新发布",
-          "source": "OpenAI Blog",
-          "url": "https://openai.com/index/improving-health-intelligence-in-chatgpt",
-          "why_picked": "GPT-5.5 系列新成员，专注健康领域推理能力增强",
-          "so_what": "如果你在构建医疗/健康类 Agent 应用：GPT-5.5 Instant 在健康推理 benchmark 上有显著提升，可作为垂直领域 Agent 的后端模型候选。注意这是领域增强版，通用任务仍用标准 GPT-5.x。"
-        },
-        {
-          "title": "HF 开源 Agent 能力基准测试：Is it agentic enough?",
-          "category": "工具",
-          "source": "HuggingFace Blog",
-          "url": "https://huggingface.co/blog/is-it-agentic-enough",
-          "why_picked": "业界首个系统化的 Agent 能力评估框架，覆盖 tool calling、多步推理、自我修正等维度",
-          "so_what": "如果你在评估/选型 Agent 框架：这个 benchmark 提供了可复现的评分体系，比单纯看 benchmark score 更有工程参考价值。建议纳入你的 Agent 选型评估流程，尤其关注 tool calling 和 error recovery 子项。"
-        },
-        {
-          "title": "MosaicLeaks：研究 Agent 能否保守秘密",
-          "category": "实验",
-          "source": "HuggingFace Blog (ServiceNow)",
-          "url": "https://huggingface.co/blog/ServiceNow/mosaicleaks",
-          "why_picked": "ServiceNow 研究揭示 Agent 在信息保密方面的系统性漏洞——即使被明确要求保密，Agent 仍会通过间接途径泄露敏感信息",
-          "so_what": "如果你在建企业级 Agent 系统：这是必须读的权限控制反面教材。研究证明「你告诉 Agent 不要说」不够——需要在 system prompt 之外加数据层隔离（如 RAG 的 document-level ACL）。建议审查你的 Agent 是否有信息泄露面。"
-        },
-        {
-          "title": "OpenRouter Agent Royale：Claude vs Grok 机器人对战基准",
-          "category": "趋势",
-          "source": "OpenRouter Blog",
-          "url": "https://openrouter.ai/blog/insights/royale-last-agent-standing/",
-          "why_picked": "创新的对抗式 Agent 评估方式——让多个 Agent 在同一任务中竞争，观察谁先完成/谁犯错",
-          "so_what": "如果你在跑 Agent 框架对比：传统 benchmark 是静态打分，Agent Royale 的动态对抗更能暴露真实世界的鲁棒性差异。值得关注这种评估范式的演进，可能成为下一代 Agent 评测标准。"
-        },
-        {
-          "title": "Weaviate 规模化数据导入与向量化最佳实践",
-          "category": "工具",
-          "source": "Weaviate Blog",
-          "url": "https://weaviate.io/blog/data-import-best-practices",
-          "why_picked": "覆盖 server-side batching、重试、blobHash、多模态摄入的完整指南，有代码示例",
-          "so_what": "如果你在建 RAG管线：Weaviate 的批量导入策略直接影响 embedding 吞吐和成本。文中推荐的 server-side batching + 指数退避重试模式可直接复用。多模态 ingestion 部分对图文混合 RAG 特别有用。"
-        },
-        {
-          "title": "Show HN: Are You in the Weights? — 检测你的内容是否被 LLM 记住",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://www.intheweights.com/",
-          "why_picked": "有趣的项目——检测你的网站/内容是否被主流 LLM 训练数据收录，覆盖 frontier 和小型模型",
-          "so_what": "如果你在运营技术博客/文档站：这个工具帮你了解内容是否进入了 LLM 的「知识世界」。如果被收录，你的内容更可能在 LLM 回答中被引用（影响 SEO 2.0）。建议定期检测核心文档的收录状态。"
         }
       ]
     }
