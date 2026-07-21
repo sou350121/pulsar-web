@@ -171,7 +171,11 @@ def http_get(url: str, retries: int = 3, verbose: bool = False) -> dict | None:
                     print(f"  {e.code} retry in {wait}s: {url}", file=sys.stderr)
                 time.sleep(wait)
                 continue
-            raise
+            # Other 4xx (e.g. 400 for a renamed select field): return None instead
+            # of raising, so one bad request can't crash the whole run and discard
+            # ~100 fetches of cache progress (audit 2026-07-21).
+            print(f"  http {e.code}: {url}", file=sys.stderr)
+            return None
         except (urllib.error.URLError, TimeoutError) as e:
             wait = 5 * (attempt + 1)
             if verbose:
