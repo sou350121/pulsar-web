@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-02",
+      "items": [
+        {
+          "title": "DeepSeek-V4-Flash 正式版 API 上线：智能指数逼近 Luna，成本低 60%",
+          "category": "新发布",
+          "source": "ProductHunt+IT之家",
+          "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731",
+          "why_picked": "DeepSeek V4 家族最新成员，304B 参数，Artificial Analysis 智能指数 50 分（仅低于 Luna 1 分），前端代码 Arena 排名第 7/开放第 3，单任务成本比 Luna 低约 60%",
+          "so_what": "如果你在做高并发 Agent 管线：V4-Flash 的 $0.14/M input + $0.27/M output 定价（含 ~98% 缓存折扣）让它成为当前性价比最高的 agentic 模型。Frontend Code Arena 第 3 的排名意味着它在前端自动化场景可以替代 Luna。建议用 high reasoning effort 模式获得最佳效果。"
+        },
+        {
+          "title": "MCP 2.0 无状态协议发布：单请求替代双请求，大幅降低实现复杂度",
+          "category": "工具",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Jul/31/stateless-mcp/",
+          "why_picked": "MCP 自 2024 年 11 月发布以来最大规格变更，移除 session 状态管理，单次 HTTP 请求即可完成工具调用。Simon Willison 一周内基于新协议构建了 mcp-explorer、datasette-mcp 等 3 个工具",
+          "so_what": "如果你在用 MCP 集成 Agent 工具：无状态协议意味着不再需要维护服务端 session 状态或处理 session 路由，部署复杂度大幅下降。小模型也能更好地驱动 MCP 工具。建议评估现有 MCP server 是否需要迁移到 2026-07-28 规范。"
+        },
+        {
+          "title": "smevals：面向模型/提示词/harness 的小型 eval 框架",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/prime-radiant-inc/smevals",
+          "why_picked": "Prime Radiant 实验室发布的新 eval 工具，支持多模型对比运行、自定义 grader/checker、本地 Web UI 可视化结果。Simon Willison 称其为多年 eval 探索的第三迭代",
+          "so_what": "如果你需要对比多个模型在特定任务上的表现：smevals 提供 YAML 驱动的 eval 定义 + 多 grader 支持（从简单字符串匹配到 LLM 评判），比手写脚本更结构化。uvx smevals serve 可直接启动结果浏览器。"
+        },
+        {
+          "title": "Greg Brockman：ChatGPT 接入 Slack 的「社交摩擦」",
+          "category": "观点",
+          "source": "Simon Willison Blog",
+          "url": "https://simonwillison.net/2026/Aug/1/greg-brockman/",
+          "why_picked": "OpenAI 总裁分享内部观察：员工不喜欢同事的 ChatGPT 代替同事主动联系自己，即使任务本身没问题。强调 AI 应「归还时间」而非「成为人与人之间的隔层」",
+          "so_what": "如果你在构建 Agent 社交集成（Slack/Teams/Discord）：Brockman 的观察是产品设计的重要信号——Agent 不应直接代替人类发起社交互动。建议设计「人类确认→Agent 执行」模式，而非全自动代理。这是 Agent UX 从 demo 到生产的关键分水岭。"
+        },
+        {
+          "title": "AWS Quick 推出 Agentic Catalog：打通企业语义层与 AI 分析",
+          "category": "行业",
+          "source": "AWS Blog",
+          "url": "https://aws.amazon.com/blogs/machine-learning/announcing-the-agentic-catalog-experience-in-amazon-quick/",
+          "why_picked": "企业 AI 分析工具开始原生消费上游数据目录（Glue/Databricks Unity Catalog/Snowflake Horizon）的元数据和治理策略，解决 Text2SQL 的「最后一英里」语义漂移问题",
+          "so_what": "如果你在企业做 RAG/Text2SQL 管线：这个趋势表明语义层（semantic layer）正在从 BI 工具向 AI 产品原生集成。关注 AWS Glue/Databricks Unity Catalog 的 metadata-as-prompt 模式，可能是企业级 RAG 的标准化方向。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-01",
       "items": [
         {
@@ -1298,59 +1343,6 @@
           "url": "https://www.36kr.com/p/3877746956611847",
           "why_picked": "Claude Code 自 4 月起内置中国时区和 147 个域名检测，Anthropic 称是防账户转售实验，将删除",
           "so_what": "如果你在为中国团队选型 AI 编码工具，这意味着 Claude Code 的地理限制策略可能反复——建议同时评估 Copilot 和 Cursor 作为备选，避免单一供应商锁定风险。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-02",
-      "items": [
-        {
-          "title": "Anthropic 回应 Claude Code 检测中国用户：将回滚隐藏代码",
-          "category": "行业",
-          "source": "IT之家",
-          "url": "https://m.ithome.com/html/971118.htm",
-          "why_picked": "Claude Code 内置隐蔽检测机制（时区+域名清单+Unicode 编码），引发开发者社区信任危机，Anthropic 承诺 7/2 新版本删除",
-          "so_what": "如果你在用 Claude Code 做开发，这意味着你需要关注 AI 编码工具的隐私边界。逆向工程可能揭示模型供应商的合规策略——建议关注开源替代方案或本地化部署选项。"
-        },
-        {
-          "title": "Vercel 发布 konsistent：统一 Agent 与人类的代码规范",
-          "category": "工具",
-          "source": "Vercel",
-          "url": "https://vercel.com/changelog/enforce-consistent-code-for-agents-and-humans-with-konsistent",
-          "why_picked": "Vercel 推出专用 lint 工具，解决 AI agent 生成代码与人类代码风格不一致的工程痛点",
-          "so_what": "如果你在做 Agent 代码生成管线，这意味着你需要在 CI/CD 中加入 agent-aware 的 lint 层。konsistent 展示了将 harness 契约、bridge 协议纳入静态检查的方向——值得评估是否适配你的框架。"
-        },
-        {
-          "title": "AWS 发布 Serverless A2A Gateway：Agent 发现、路由与访问控制",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-a-serverless-a2a-gateway-for-agent-discovery-routing-and-access-control/",
-          "why_picked": "20 个 agent 需 190 条点对点连接，AWS 用单入口 A2A Gateway 解决企业级 agent 通信爆炸问题",
-          "so_what": "如果你在多 agent 架构中挣扎，这意味着 A2A 协议 + 中心化网关可能是你的下一步。AWS 方案用 JWT scope + Lambda 做细粒度权限控制，支持 SSE 流式——适合评估你的 multi-agent 部署。"
-        },
-        {
-          "title": "AWS AgentCore Memory 元数据过滤：QA 准确率 40%→64%",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/structured-memory-filtering-with-metadata-in-agentcore-memory/",
-          "why_picked": "纯语义搜索在 agent 记忆积累后遇到精度瓶颈，元数据过滤在时间/优先级/部门维度上大幅提升检索精度",
-          "so_what": "如果你在做 RAG 或 agent 记忆系统，这意味着纯向量检索已不够——需要在 ingestion 阶段就设计 metadata schema。AWS 实测显示上下文边界类查询准确率从 16% 跳到 69%。"
-        },
-        {
-          "title": "年轻人用 Agent 找工作：AI 辅助面试席卷职场",
-          "category": "趋势",
-          "source": "36氪",
-          "url": "https://www.36kr.com/p/3876467286293384",
-          "why_picked": "AI 实时面试辅助已形成完整技术链（语音识别→语义分析→答案生成→口语化改写），Google/字节/Amazon 同步部署 AI 招聘筛选",
-          "so_what": "如果你在做 AI 应用产品，这意味着「AI 对抗 AI」正在成为新范式。招聘场景的攻防升级预示了更多领域将出现 agent 互搏——值得思考你的产品如何在这种不对称竞争中定位。"
-        },
-        {
-          "title": "Claude Fable 5 在 Vercel AI Gateway 恢复访问",
-          "category": "新发布",
-          "source": "Vercel",
-          "url": "https://vercel.com/changelog/claude-fable-5-access-restored-on-ai-gateway",
-          "why_picked": "美国解除出口管制后 Fable 5 重新上线，但 safety classifier 更严格，Vercel 建议搭配 model fallback 使用",
-          "so_what": "如果你在生产环境用 Fable 系列，这意味着你需要配置 fallback chain（Fable 5 → Opus 4.8 → Sonnet 5）来应对 safety classifier 触发。同时注意 ZDR 不再支持——30 天数据保留。"
         }
       ]
     }
