@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-03",
+      "items": [
+        {
+          "title": "OpenAI Astra 攻克10项菲尔兹奖级数学难题",
+          "category": "新发布",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/ten-advances-in-mathematics",
+          "why_picked": "OpenAI下一代内部模型Astra在10个长期未解的数学难题上取得突破，包括Gromov非sofic群(27年)、高维球堆积(46年)、Connes刚性猜想，全部经Lean 4形式化验证，总成本仅~$2000",
+          "so_what": "如果你在做AI辅助科研或形式化验证，这意味着LLM已从'辅助工具'升级为'发现引擎'。Lean 4证书验证流程值得研究——你的Agent管线可以集成形式化验证作为结果可信度闸门。同时关注Astra模型的API开放节奏。"
+        },
+        {
+          "title": "DeepSeek-V4-Flash 正式版 API 上线国家超算互联网",
+          "category": "行业",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/984747.htm",
+          "why_picked": "DeepSeek-V4-Flash-0731 模型正式入驻国家超算互联网AI社区，面向企业和开发者开放API调用，超算互联网已汇集1700+款热门开源大模型",
+          "so_what": "如果你在做国内AI基础设施选型，这意味着DeepSeek通过国家级渠道分发，企业接入门槛大幅降低。对比此前仅通过readhub/第三方平台，这是正式商业化的信号——值得评估其Agent能力是否可替代现有闭源方案。"
+        },
+        {
+          "title": "Simon Willison: 近期AI开放信全景梳理",
+          "category": "观点",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/Aug/2/open-letters",
+          "why_picked": "汇总三封关键开放信：微软/英伟达/亚马逊牵头的开放权重信(235家公司联署)、Anthropic的独立回应、'Pacing the Frontier'减速倡议，揭示行业阵营分化",
+          "so_what": "如果你在做AI合规或企业AI治理策略，这揭示了开放权重vs封闭模型的政策博弈格局。蒸馏被明确定义为'合法技术'而非'盗用'——这对你的模型训练策略有直接影响。"
+        },
+        {
+          "title": "condense-json 1.0 正式发布",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/simonw/condense-json",
+          "why_picked": "Simon Willison发布1.0版本，通过字符串去重替换机制压缩JSON，已集成到Datasette的SQLite日志中节省LLM token开销",
+          "so_what": "如果你在做LLM应用的token成本控制，这个工具可以直接减少重复字符串的token消耗。特别适合日志聚合、多轮对话缓存等场景，1.0版本意味着API稳定可用。"
+        },
+        {
+          "title": "datasette-apps 0.2a0: Agent可自我调试的Web应用框架",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://simonwillison.net/2026/Aug/1/datasette-apps",
+          "why_picked": "新增app_debug()工具，Agent可在不可见iframe中执行JS进行冒烟测试和元素尺寸测量，基于新的context.browser_task()机制",
+          "so_what": "如果你在建Agent驱动的Web应用生成管线，这个'Agent自测'模式值得借鉴——让Agent在交付前自动验证应用功能，比纯文本生成可靠得多。browser_task机制是可复用的设计模式。"
+        },
+        {
+          "title": "OpenAI Astra数学突破：非sofic群构造终结27年猜想",
+          "category": "观点",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3921682068172419",
+          "why_picked": "36氪深度解读Astra最突出的成果——构造无限有限呈现的非sofic群，否定'所有可数群都是sofic'猜想，Claude Fable 5评价'按菲尔兹奖标准任何一项都足以获奖'",
+          "so_what": "如果你关注AI在基础科学中的角色转变，这篇中文深度报道提供了数学界的第一手反应。注意Noam Brown的表态：Astra已尝试千禧年难题但尚未成功——AGI的数学能力边界仍在探索中。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-02",
       "items": [
         {
@@ -1282,67 +1335,6 @@
           "url": "https://inpreparation.substack.com/p/opinion-i-was-not-allowed-to-type",
           "why_picked": "133分/69评。开发者声称在公司技术演讲（chalk talk）中使用ChatGPT被禁止构成歧视，引发关于AI工具使用政策的广泛讨论",
           "so_what": "如果你在制定团队AI使用政策：这意味着「是否允许在正式场合使用AI辅助」正在成为新的劳动权益议题。建议提前制定明确的AI工具使用规范，区分辅助编码/辅助演示/辅助决策等不同场景，避免模糊地带引发争议。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-03",
-      "items": [
-        {
-          "title": "Anthropic Fable 5 全球上线 + Claude 登陆 Microsoft Foundry",
-          "category": "新发布",
-          "source": "36Kr",
-          "url": "https://www.36kr.com/p/3877746956611847",
-          "why_picked": "Fable 5 7月1日美国时间全球上线；Claude 模型正式登陆 Azure AI Foundry，企业可直接在 Azure 环境调用 Claude Opus 4.8 / Haiku 4.5",
-          "so_what": "如果你在用 Azure 部署 AI 应用，这意味着 Claude 现在原生支持 Azure 身份认证、计费和治理体系——无需再绕道 Anthropic 直接 API。Fable 5 的 Pro/Max/Team 用户每周 50% 用量限额持续到 7/7，可以尽早体验。"
-        },
-        {
-          "title": "Simon Willison 发布 llm-coding-agent：基于 llm 库的 Claude Code 风格编程 Agent",
-          "category": "新发布",
-          "source": "GitHub/PyPI",
-          "url": "https://simonwillison.net/2026/Jul/2/llm-coding-agent/",
-          "why_picked": "Willison 用 Fable 5 自动生成并发布的 Python 编程 Agent，支持文件编辑、命令执行、搜索等 6 个工具，Python API 友好",
-          "so_what": "如果你在做 Agent 工具链评估，这是一个轻量级参考实现——6 个核心工具覆盖了文件读写/编辑/搜索/命令执行，Python API (CodingAgent.run()) 可直接嵌入你的管线。uvx 一行命令即可试用。"
-        },
-        {
-          "title": "OpenAI 系统优化使推理成本降低 50%+",
-          "category": "趋势",
-          "source": "界面新闻",
-          "url": "https://www.36kr.com/p/3877746956611847",
-          "why_picked": "OpenAI 工程师内部透露底层优化使模型推理成本减半，直接影响 API 定价和运营策略",
-          "so_what": "如果你在运营高并发 LLM 服务，这意味着 OpenAI API 成本可能进一步下降——建议关注后续定价更新，并重新评估多模型路由策略中 OpenAI 模型的性价比权重。"
-        },
-        {
-          "title": "DSPy 实战：用 DSPy 优化 Datasette Agent 的 SQL 系统 Prompt",
-          "category": "工具",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Jul/2/dspy-datasette-agent-prompts/",
-          "why_picked": "Willison 用 DSPy 自动评估并改进 Datasette Agent 的 SQL 系统提示，发现 schema 列名缺失导致错误重试循环",
-          "so_what": "如果你在用 LLM 做 Text-to-SQL 或数据库 Agent，这个案例证明：在 system prompt 中直接包含列名而非让模型 guess，能显著减少错误重试。DSPy 的自动 prompt 优化框架值得引入你的 eval pipeline。"
-        },
-        {
-          "title": "Geoffrey Litt (Anthropic)：「理解才能参与」——与编程 Agent 协作的心智模型",
-          "category": "观点",
-          "source": "Simon Willison Blog",
-          "url": "https://simonwillison.net/2026/Jul/2/understand-to-participate/",
-          "why_picked": "Anthropic 研究员在 AIE 大会提出核心观点：开发者必须理解 Agent 生成的代码才能保持创造性参与，否则认知债务会累积",
-          "so_what": "如果你团队正在规模化使用 Claude Code / Copilot，这意味着需要建立 code review 流程——不是形式审查，而是确保人类开发者真正理解 Agent 的修改逻辑，否则项目可维护性会快速恶化。"
-        },
-        {
-          "title": "Claude Code AskUserQuestion 60s 超时后自动继续——安全机制争议",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/anthropics/claude-code/issues/73125",
-          "why_picked": "Claude Code 的 AskUserQuestion 工具 60 秒无响应后自动返回「按最佳判断继续」，用户质疑这是安全绕过",
-          "so_what": "如果你在构建需要用户确认的 Agent 系统，这个 case 提醒：超时默认行为可能是安全漏洞。确保你的 confirm-before-execute 机制有明确的 fail-close（而非 fail-open）策略。"
-        },
-        {
-          "title": "Anthropic 回应 Claude Code 暗藏检测中国用户代码：将在更新中删除",
-          "category": "行业",
-          "source": "36Kr / IT之家",
-          "url": "https://www.36kr.com/p/3877746956611847",
-          "why_picked": "Claude Code 自 4 月起内置中国时区和 147 个域名检测，Anthropic 称是防账户转售实验，将删除",
-          "so_what": "如果你在为中国团队选型 AI 编码工具，这意味着 Claude Code 的地理限制策略可能反复——建议同时评估 Copilot 和 Cursor 作为备选，避免单一供应商锁定风险。"
         }
       ]
     }
