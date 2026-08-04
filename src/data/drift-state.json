@@ -1,57 +1,57 @@
 {
-  "last_check": "2026-08-03",
+  "last_check": "2026-08-04",
   "metrics": {
     "vla_papers_scanned": {
-      "streak": 2,
+      "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 332,
-      "baseline": 905.0,
-      "ratio": 0.367
+      "last_value": 1132,
+      "baseline": 908.14,
+      "ratio": 1.246
     },
     "vla_final_in_report": {
-      "streak": 4,
-      "alerted_at_streak": 4,
-      "last_value": 0,
+      "streak": 0,
+      "alerted_at_streak": 0,
+      "last_value": 28,
       "baseline": 23.29,
-      "ratio": 0.0,
+      "ratio": 1.202,
       "sustained_degradation": true
     },
     "vla_sources_active": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 10,
+      "last_value": 16,
       "baseline": 12.86,
-      "ratio": 0.778
+      "ratio": 1.244
     },
     "vla_tg_msg_len": {
-      "streak": 1,
-      "alerted_at_streak": 1,
-      "last_value": 549,
-      "baseline": 3007.14,
-      "ratio": 0.183,
+      "streak": 0,
+      "alerted_at_streak": 0,
+      "last_value": 2316,
+      "baseline": 2719.86,
+      "ratio": 0.852,
       "sustained_degradation": true
     },
     "aiapp_items_scanned": {
-      "streak": 8,
-      "alerted_at_streak": 8,
-      "last_value": 6,
-      "baseline": 1025.29,
-      "ratio": 0.006,
+      "streak": 10,
+      "alerted_at_streak": 10,
+      "last_value": 350,
+      "baseline": 990.0,
+      "ratio": 0.354,
       "sustained_degradation": true
     },
     "aiapp_items_report": {
-      "streak": 2,
-      "alerted_at_streak": 2,
-      "last_value": 1,
-      "baseline": 6.43,
-      "ratio": 0.156
+      "streak": 0,
+      "alerted_at_streak": 0,
+      "last_value": 6,
+      "baseline": 5.86,
+      "ratio": 1.024
     },
     "vla_upstream_count": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 34,
-      "baseline": 36.29,
-      "ratio": 0.937,
+      "last_value": 31,
+      "baseline": 38.43,
+      "ratio": 0.807,
       "sustained_degradation": true
     }
   },
@@ -59,17 +59,9 @@
     "vla_final_in_report": "2026-08-03",
     "vla_papers_scanned": "2026-06-23",
     "aiapp_items_report": "2026-08-03",
-    "aiapp_items_scanned": "2026-08-03"
+    "aiapp_items_scanned": "2026-08-04"
   },
   "remediation_log": [
-    {
-      "date": "2026-06-15",
-      "key": "vla_final_in_report",
-      "label": "VLA 評級重跑",
-      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
-      "ok": false,
-      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
-    },
     {
       "date": "2026-06-15",
       "key": "aiapp_items_scanned",
@@ -301,6 +293,14 @@
       "script": "/home/admin/clawd/scripts/prep-ai-app-rss-filtered.py",
       "ok": true,
       "detail": "{\"ok\": true, \"date\": \"2026-08-03\", \"output\": \"/home/admin/clawd/memory/ai-app-rss-filtered-2026-08-03.json\", \"total_before\": 253, \"after\": 6, \"too_old\": 247, \"no_date_capped\": 0, \"jaccard_dedup\": 0, \""
+    },
+    {
+      "date": "2026-08-04",
+      "key": "aiapp_items_scanned",
+      "label": "AI RSS 重跑",
+      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
+      "ok": true,
+      "detail": "[progress] ai-app-rss-collect start: 2026-08-04\n[progress] already collected, skip"
     }
   ]
 }
