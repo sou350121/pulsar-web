@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-05",
+      "items": [
+        {
+          "title": "DeepSeek 升至全球调用量第一",
+          "category": "趋势",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3924467692927369",
+          "why_picked": "DeepSeek API 调用量超越 OpenAI 等对手，成为全球第一，标志中国大模型商业化里程碑",
+          "so_what": "如果你在做模型选型或成本优化：DeepSeek 的性价比优势正在转化为实际市场份额，建议评估 DeepSeek V4/V4-Flash 作为备选 provider。多模型路由架构此时尤为重要——不要把所有流量绑在单一供应商上。"
+        },
+        {
+          "title": "Amazon Bedrock AgentCore Browser：自动化网页情报提取",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/automated-web-insight-extraction-with-amazon-bedrock-agentcore/",
+          "why_picked": "AWS 推出基于 Bedrock AgentCore 的自动化网页信息提取方案，解决批量网站数据抓取的手动痛点",
+          "so_what": "如果你在做 RAG管线或数据收集 Agent：AgentCore Browser 提供托管式浏览器自动化能力，无需自建 Puppeteer/Playwright 集群。结合 Bedrock 模型路由可快速搭建端到端网页情报提取流水线。"
+        },
+        {
+          "title": "OpenAI 教育插件上线 ChatGPT Work + Codex",
+          "category": "新发布",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/learn-teach-chatgpt-work-codex",
+          "why_picked": "OpenAI 为 ChatGPT Work 和 Codex 推出 K-12 及高等教育专用插件，扩展 Agent 在教育场景落地",
+          "so_what": "如果你在做教育 AI 产品：OpenAI 正在构建教育垂直生态，关注其插件 API 和 Work 平台的扩展能力。Codex 教育场景增强意味着代码辅助 Agent 在学术环境渗透加速。"
+        },
+        {
+          "title": "OpenAI 第三方网络安全评估新规",
+          "category": "行业",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/third-party-cyber-evaluations-involving-openai-models",
+          "why_picked": "OpenAI 就第三方安全评估事件发布新防护机制，影响整个 AI 安全测试生态",
+          "so_what": "如果你在做 AI 安全评估或合规：OpenAI 新 safeguards 意味着第三方 red team 测试将面临更严格的准入和流程约束。建议关注 Trusted Access Cyber 计划的硬件 passkey 要求和评估范围限制。"
+        },
+        {
+          "title": "AMAP-ML/LongHorizon-Harness",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/AMAP-ML/LongHorizon-Harness",
+          "why_picked": "高德开源长周期 Agent 执行框架，解决 Claude Code/Codex 在复杂任务中的状态持久化和进度验证",
+          "so_what": "如果你在用 Claude Code 或 Codex 做复杂多步骤任务：LongHorizon-Harness 的 Manager/Executor/Auditor 三分离架构提供状态持久化，每轮 fresh context 执行 + 独立审计验证，避免上下文膨胀导致的任务漂移。支持桌面 GUI + CLI 双模式。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-04",
       "items": [
         {
@@ -1274,67 +1319,6 @@
           "url": "https://huggingface.co/blog/vllm-jobs",
           "why_picked": "HF 推出 hf jobs run 命令，一条命令在 HF 基础设施上启动 OpenAI-compatible vLLM endpoint，按秒计费，无需 K8s",
           "so_what": "如果你在做 Agent 本地推理部署：HF Jobs 提供了介于本地 GPU 和托管 Inference Endpoints 之间的中间方案。适合快速搭建测试/评估环境或临时 coding-agent 后端。注意这是 per-minute 计费，生产级 SLA 仍需用 Inference Endpoints。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-05",
-      "items": [
-        {
-          "title": "GPT-5.6 三大子模型全曝：Sol/Terra/Luna + 速度拨盘，定档 7月7日",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3880971920584962",
-          "why_picked": "Codex 代码中泄露 Sol/Terra/Luna 三模型标识 + Sol Ultra 猜想 + 全新速度拨盘功能；精准卡点 Claude Fable 5 限额失效日；内测对比显示 GPT-5.6-terra 效率显著优于 Fable 5",
-          "so_what": "如果你在选择编程 Agent 底层模型：GPT-5.6 的速度拨盘允许在质量和响应速度间自由调节，可能改变 Codex 的工作流体验。建议关注 7月7日实际发布后的 token 效率和限额策略，再决定是否迁移工作负载。"
-        },
-        {
-          "title": "阿里 7月10日起全面禁用 Claude Code，推荐 Qoder 替代",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3880629882679301",
-          "why_picked": "因 Claude Code 被曝后门安全风险，阿里将 Anthropic 全线产品列入高风险名单；与 Anthropic 封禁地下通道形成双向挤压，国产替代窗口加速",
-          "so_what": "如果你在企业环境部署编码 Agent：阿里的决定信号明确——安全合规正成为选型硬指标。建议评估 Qoder/国产模型的 agent 能力差距，同时审查现有 Claude Code 工作流的数据出境风险。"
-        },
-        {
-          "title": "Anthropic 全面封禁地下通道：时区检测 + 子公司全覆盖",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3881112560005381",
-          "why_picked": "FT 报道 Anthropic 动用系统底层反侦察技术（读取 OS 时区等）封锁所有绕过地理限制的途径，包括海外子公司和 Azure 中转通道",
-          "so_what": "如果你依赖海外 API 中转站：Anthropic 的封杀力度远超行业惯例，时区+IP+支付多维度交叉验证。建议尽早规划合规替代方案，避免突然断供影响开发管线。"
-        },
-        {
-          "title": "Simon Willison：Better Models, Worse Tools — 新 Claude 模型反而更不守 schema",
-          "category": "观点",
-          "source": "GitHub",
-          "url": "https://simonwillison.net/2026/Jul/4/better-models-worse-tools/",
-          "why_picked": "Armin 发现 Opus 4.8 和 Sonnet 5 在第三方编辑工具中频繁发明 schema 外的字段，旧模型反而不会；推测是 RL 训练过度偏向 Claude Code 内置编辑工具",
-          "so_what": "如果你在用第三方 coding harness（Pi/Datasette Agent 等）：SOTA 模型不一定在你的工具链上表现更好。考虑为不同模型适配不同编辑工具，或在 tool definition 中增加更严格的 schema validation。"
-        },
-        {
-          "title": "Claude Fable 5 推理过程泄露：GRRR/DATA DATA DATA 背后的状态机",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3880806277754883",
-          "why_picked": "Fable 5 在 Codeforces 竞赛题中暴露密集推理速记（GRRR/GAAAH/PHEW），并非情绪表达而是推理状态标记；引发 AI 内部语言演化讨论",
-          "so_what": "如果你在调试 agent 的推理管线：Fable 5 的「内心戏」揭示了长推理链中模型自我状态管理的模式。可借鉴其状态标记思路设计 agent 的中间检查点，提升复杂任务的可观测性。"
-        },
-        {
-          "title": "GitHub Copilot 首个开源模型接入：Kimi K2.7",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3880629882679301",
-          "why_picked": "月之暗面宣布 Kimi K2.7 成为首个接入 GitHub Copilot 的开源模型，打破 Copilot 仅支持闭源模型的格局",
-          "so_what": "如果你在评估 Copilot 替代方案：开源模型接入 Copilot 意味着企业可在合规框架内使用本地化模型。Kimi K2.7 的代码能力值得 benchmark 对比，尤其对数据敏感场景。"
-        },
-        {
-          "title": "微软成立 Microsoft Frontier Company：25亿美元 + 6000人专攻企业 AI 部署",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3880629882679301",
-          "why_picked": "微软整合 FDE 团队成立独立运营实体，投入 25 亿美元打造最大企业 AI 部署工程团队，涵盖自有及外部模型",
-          "so_what": "如果你在规划企业 AI 战略：微软的重金投入验证了 AI 部署从 POC 到生产级的 gap 正在成为主战场。关注其是否推出标准化 agent 部署框架，可能影响企业级 agent 平台的选型。"
         }
       ]
     }

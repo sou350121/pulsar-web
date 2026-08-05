@@ -1,87 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-07-05",
-      "config_version": 12,
-      "items": [
-        {
-          "title": "Claude Code 企业级 session/cache 泄漏：ZDR workspace 出现 Minecraft 提示词",
-          "url": "https://github.com/anthropics/claude-code/issues/74066",
-          "source": "GitHub anthropics/claude-code",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "anthropics",
-          "labels": [
-            "claude-code",
-            "security",
-            "enterprise"
-          ],
-          "direction_note_prefix": "",
-          "why": "企业 ZDR workspace 出现跨用户 session 泄漏，威胁敏感数据安全"
-        },
-        {
-          "title": "GPT-5.5 Codex reasoning-token 聚类异常：516 阈值导致复杂任务性能下降",
-          "url": "https://github.com/openai/codex/issues/30364",
-          "source": "GitHub openai/codex",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "openai",
-          "labels": [
-            "gpt-5.5",
-            "codex",
-            "reasoning"
-          ],
-          "direction_note_prefix": "",
-          "why": "39万条数据证实 GPT-5.5 在 Codex 中 44% 响应卡在 516 token 阈值，推理深度骤降"
-        },
-        {
-          "title": "🎯 新 Claude 模型工具调用反而更差：Opus 4.8/Sonnet 5 捏造字段",
-          "url": "https://simonwillison.net/2026/Jul/4/better-models-worse-tools/",
-          "source": "Simon Willison's Blog",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "anthropic",
-          "labels": [
-            "tool-calling",
-            "claude",
-            "agent-ui"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "RL 训练适配 Claude Code 编辑工具导致第三方 harness（如 Pi）工具调用 schema 不匹配"
-        },
-        {
-          "title": "Anthropic 全面封杀绕过限制的地下通道：时区检测+API中转站全禁",
-          "url": "https://www.36kr.com/p/3881112560005381",
-          "source": "36氪/FT",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "anthropic",
-          "labels": [
-            "anthropic",
-            "geo-restriction",
-            "compliance"
-          ],
-          "direction_note_prefix": "",
-          "why": "FT 独家：7月3日起封堵境外子公司跳板、Azure 隐秘通道、API 中转站，封号不退款"
-        },
-        {
-          "title": "OASIS Ring：语音输入智能戒指走红，Vibe Coding 硬件新赛道",
-          "url": "https://www.36kr.com/p/3880964231707525",
-          "source": "36氪/雷科技",
-          "category": "UI/UX 工具",
-          "importance": "read-only",
-          "developer": "OASIS",
-          "labels": [
-            "vibe-coding",
-            "hardware",
-            "input-device"
-          ],
-          "direction_note_prefix": "",
-          "why": "戒指形态麦克风+手势传感器，试图争夺 Vibe Coding 下一代 AI 入口定义权"
-        }
-      ]
-    },
-    {
       "date": "2026-07-06",
       "config_version": 12,
       "items": [
@@ -2866,6 +2785,132 @@
           ],
           "direction_note_prefix": "",
           "why": "极简 nightly cron agent：fetch upstream + rebase + 验证，展示 agent 自动化日常维护的实用范式"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-05",
+      "config_version": 13,
+      "items": [
+        {
+          "title": "黑石集团为 Anthropic 芯片交易推销 360 亿美元债务融资",
+          "url": "https://readhub.cn/topic/8vKBCgn7Cp8",
+          "source": "readhub",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "anthropic",
+            "infrastructure",
+            "funding"
+          ],
+          "direction_note_prefix": "",
+          "why": "Anthropic 正秘密提交 IPO 申请并大规模融资芯片基础设施，抢在 OpenAI 之前登陆公开市场"
+        },
+        {
+          "title": "苹果请求法官即刻禁止 OpenAI 使用其商业秘密",
+          "url": "https://readhub.cn/topic/8vJcwlZLmL2",
+          "source": "readhub",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "Apple/OpenAI",
+          "labels": [
+            "openai",
+            "legal",
+            "apple"
+          ],
+          "direction_note_prefix": "",
+          "why": "苹果诉 OpenAI 窃取商业秘密案升级，要求立即停止使用并归还机密信息，影响 AI 公司数据采集边界"
+        },
+        {
+          "title": "LiquidAI LFM2.5-2.6B：专为本地 Agent 部署设计的小模型",
+          "url": "https://huggingface.co/blog/LiquidAI/lfm2-5-2-6b",
+          "source": "hf-blog",
+          "category": "模型发布",
+          "importance": "actionable",
+          "developer": "LiquidAI",
+          "labels": [
+            "agent",
+            "small-model",
+            "on-device"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "2.6B 参数模型专为本地 agent 部署优化，支持边缘设备上的低延迟推理"
+        },
+        {
+          "title": "Amazon Bedrock Web Search GA：原生网页搜索 grounding 能力",
+          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-web-search-on-amazon-bedrock-for-foundation-model-grounding/",
+          "source": "blog-aws-ai",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "bedrock",
+            "rag",
+            "grounding"
+          ],
+          "direction_note_prefix": "[RAG]",
+          "why": "Bedrock 原生集成 Web Search 作为 server-side grounding 工具，简化 RAG pipeline 架构"
+        },
+        {
+          "title": "OpenRouter: DeepSeek-V4-Flash 单周调用超 7.22 万亿 Token 登顶",
+          "url": "https://m.ithome.com/html/985307.htm",
+          "source": "tophub-ithome",
+          "category": "模型发布",
+          "importance": "read-only",
+          "developer": "DeepSeek",
+          "labels": [
+            "deepseek",
+            "usage-stats",
+            "gateway"
+          ],
+          "direction_note_prefix": "",
+          "why": "DeepSeek-V4-Flash 在 OpenRouter 单周 Token 消耗登顶，显示其性价比优势驱动大规模采用"
+        },
+        {
+          "title": "Steve Yegge: Opus 4.7 让 Gas Town 工作流崩塌 — 模型回退警示",
+          "url": "https://simonwillison.net/2026/Aug/4/steve-yegge/#atom-everything",
+          "source": "blog-simonwillison",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "Steve Yegge",
+          "labels": [
+            "agent",
+            "reliability",
+            "model-eval"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "Yegge 分享 Opus 4.6→4.7 升级导致复杂 Agent 工作流失效的真实案例，揭示 Agent 对模型版本敏感性"
+        },
+        {
+          "title": "MiniMax-H3-mlx: MiniMax omni-modal 模型的 MLX 移植",
+          "url": "https://simonwillison.net/2026/Aug/4/minimax-h3-mlx/#atom-everything",
+          "source": "blog-simonwillison",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "PipeNetwork",
+          "labels": [
+            "multimodal",
+            "mlx",
+            "on-device"
+          ],
+          "direction_note_prefix": "",
+          "why": "MiniMax-H3（文本/图像/音频/视频）移植到 Apple MLX，使 omni-modal 模型可在 Mac/iOS 本地运行"
+        },
+        {
+          "title": "Kimi K3 与 DeepSeek V4 之间，隔着原生多模态的时间差",
+          "url": "https://www.36kr.com/p/3924826666301831",
+          "source": "tophub-36kr",
+          "category": "模型发布",
+          "importance": "read-only",
+          "developer": "Moonshot/DeepSeek",
+          "labels": [
+            "kimi",
+            "deepseek",
+            "multimodal"
+          ],
+          "direction_note_prefix": "",
+          "why": "分析 Kimi K3 开放权重优势与 DeepSeek V4 原生多模态能力的竞争格局"
         }
       ]
     }
