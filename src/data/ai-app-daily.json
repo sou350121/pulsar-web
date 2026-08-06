@@ -1,57 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-07-06",
-      "config_version": 12,
-      "items": [
-        {
-          "title": "Zuckerberg 内部坦言：AI Agent 进展不及预期",
-          "url": "https://techcrunch.com/2026/07/02/mark-zuckerberg-tells-staff-that-ai-agents-havent-progressed-as-quickly-as-hed-hoped/",
-          "source": "TechCrunch",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "Meta",
-          "labels": [
-            "agent",
-            "industry",
-            "reality-check"
-          ],
-          "direction_note_prefix": "",
-          "why": "Meta 裁 8000 人转 AI 后，CEO 承认 Agent 替代人工的速度远低于预期，3-6 个月后才见改善"
-        },
-        {
-          "title": "sqlite-utils 4.0rc2 主要由 Claude Fable 编写，花费 $149.25",
-          "url": "https://simonwillison.net/2026/Jul/5/sqlite-utils-fable/",
-          "source": "Simon Willison Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Simon Willison",
-          "labels": [
-            "coding-agent",
-            "claude-fable",
-            "agentic-coding"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "37 次 prompt、34 次 commit、修改 30 个文件；Fable 发现 delete_where 数据丢失 bug，证明 coding agent 可胜任真实项目"
-        },
-        {
-          "title": "Agent 任务实测：主流模型谁能稳定跑完 Agent 工作流",
-          "url": "https://juejin.cn/post/7657865700394090530",
-          "source": "掘金",
-          "category": "Agent 框架",
-          "importance": "read-only",
-          "developer": "—",
-          "labels": [
-            "agent",
-            "evaluation",
-            "benchmark"
-          ],
-          "direction_note_prefix": "",
-          "why": "对比各模型在真实工作流中的 Agent 稳定性，揭示发布会数据与实际表现的差距"
-        }
-      ]
-    },
-    {
       "date": "2026-07-07",
       "config_version": 12,
       "items": [
@@ -2911,6 +2860,102 @@
           ],
           "direction_note_prefix": "",
           "why": "分析 Kimi K3 开放权重优势与 DeepSeek V4 原生多模态能力的竞争格局"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-06",
+      "config_version": 13,
+      "items": [
+        {
+          "title": "Meta 发布首款编程智能体 Muse Code，挑战 Anthropic/OpenAI",
+          "url": "https://readhub.cn/topic/8vMBYOUgElO",
+          "source": "ReadHub（援引 Meta 官方）",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "Meta",
+          "labels": [
+            "coding-agent",
+            "agent-ui",
+            "model-release"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "Meta 首款编程智能体，单一界面开发+管理 AI Agent，API 定价 $1.25M/$4.25M tokens，直接对标 Claude Code/Codex"
+        },
+        {
+          "title": "谷歌首席科学家 Jeff Dean 离职创办 Discovery Loop，聚焦 AI 科学研究",
+          "url": "https://readhub.cn/topic/8vMDhFmZNdr",
+          "source": "ReadHub（援引 Alphabet 官方公告）",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "Discovery Loop (Alphabet spin-off)",
+          "labels": [
+            "人才流动",
+            "scientific-ai",
+            "research-infrastructure"
+          ],
+          "direction_note_prefix": "",
+          "why": "Google 第30号员工、Gemini 核心架构师离职创业，公益性企业，首轮融资由 Radical Ventures + Khosla Ventures 领投"
+        },
+        {
+          "title": "LendingTree 在 Amazon Bedrock 构建多 Agent 房贷助手",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-lendingtree-built-a-multi-agent-mortgage-assistant-on-amazon-bedrock/",
+          "source": "AWS Machine Learning Blog",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "LendingTree + AWS",
+          "labels": [
+            "multi-agent",
+            "langgraph",
+            "mcp"
+          ],
+          "direction_note_prefix": "",
+          "why": "生产级多 Agent 案例：3 个协调 Agent 用 LangGraph + MCP + Nova 模型，24/7 个性化房贷服务"
+        },
+        {
+          "title": "AWS 构建 MCP Bridge：让云端 AgentCore Agent 访问本地 MCP 工具",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-we-built-an-mcp-bridge-to-give-our-agentcore-hosted-ai-agent-access-to-local-mcp-tools/",
+          "source": "AWS Machine Learning Blog",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "mcp",
+            "agent-infrastructure",
+            "cloud-edge"
+          ],
+          "direction_note_prefix": "",
+          "why": "云端 Agent 通过隧道传输签名消息调用本地 MCP 服务器，解决云-端工具桥接的关键基础设施问题"
+        },
+        {
+          "title": "Claude Fable 5 一键生成游戏：vibe coding 范式再进化",
+          "url": "https://simonwillison.net/2026/Aug/5/raccoon-heist/#atom-everything",
+          "source": "Simon Willison Blog",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "Anthropic",
+          "labels": [
+            "vibe-coding",
+            "agent-ui",
+            "software-3.0"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "四年前 GPT-3 生成的游戏概念，如今用 Claude Fable 5 在 web 端一键实现——intent-driven dev 的直观展示"
+        },
+        {
+          "title": "MobileBYE 用 Bedrock AgentCore 改造客户支持运营",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-mobileye-transformed-support-operations-using-amazon-bedrock-agentcore/",
+          "source": "AWS Machine Learning Blog",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "MobileBYE + AWS",
+          "labels": [
+            "agent-core",
+            "support-automation",
+            "production"
+          ],
+          "direction_note_prefix": "",
+          "why": "AgentCore 在自动驾驶支持场景的落地：从 PoC 到混合架构的生产部署，展示 Agent 在垂直行业的实际价值"
         }
       ]
     }
