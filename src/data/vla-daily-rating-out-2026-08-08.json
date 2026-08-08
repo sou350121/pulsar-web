@@ -1,0 +1,771 @@
+{
+  "ok": true,
+  "model": "qwen3.5-plus",
+  "total": 46,
+  "counts": {
+    "⚡": 1,
+    "🔧": 19,
+    "📖": 18,
+    "❌": 8
+  },
+  "parse_error": "",
+  "papers": [
+    {
+      "title": "VLAff: Vision-Language-Affordance Model for Unified Actionable Affordances",
+      "authors": "Jihoon Oh et al.",
+      "url": "https://arxiv.org/abs/2608.05215",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05215v1 Announce Type: new Abstract: Learning manipulation skills from human videos is promising for scalable robot learning. However, the embodiment mismatch between humans and robots makes this challenging. One promising solution is to learn object-centric actionable affordances that are embodiment-agnostic. In this work, we propose a framework that leverages egocentric human videos with state-of-the-art 3D Structure-from-Motion and hand mesh reconstruction to extract actionable aff",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出通过物体中心的可操作供能（affordances）解决人-机器人具身差异，从人类视频中学习操作技能。为跨具身迁移提供了新的中间表示思路，适合研究模仿学习中的人机对齐问题。",
+      "affiliation": "[University of Tokyo]"
+    },
+    {
+      "title": "World-to-Wrist: Task-Conditioned Future Wrist Modeling for Fine-Grained Robot Manipulation",
+      "authors": "Yuhao Pan et al.",
+      "url": "https://arxiv.org/abs/2608.05369",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05369v1 Announce Type: new Abstract: Vision-language-action (VLA) models often treat main-view and wrist-view observations as parallel visual inputs, overlooking their distinct roles in robot manipulation. Fine-grained manipulation, however, benefits from anticipating how wrist-local interactions may evolve under the global task context. To address this limitation, we present World-to-Wrist VLA (W2-VLA), a VLA model for fine-grained robot manipulation with task-conditioned future wris",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "针对细粒度操作，提出预测手腕局部未来状态以弥补主视图与腕部视图的角色差异。该方法增强了VLA对局部接触和精细动作的感知能力，可直接集成到现有双视角VLA架构中提升精度。",
+      "affiliation": "[The Hong Kong University of Science and Technology]"
+    },
+    {
+      "title": "ARGUS: Aligning Robot Scene Geometry Under Shifting Views with Large 3D Vision Models",
+      "authors": "Rishik Sathua et al.",
+      "url": "https://arxiv.org/abs/2608.05579",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation",
+        "visuomotor"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05579v1 Announce Type: new Abstract: Large-scale visuomotor policies have demonstrated impressive performance across a wide range of robot manipulation tasks. However, despite this success, manipulation polices often entangle scene geometry with the corresponding viewpoint, learning where objects lie in an image rather than where it lies in the task space. This entanglement inherently limits the corresponding policy's ability to learn from viewpoint-diverse datasets (ex. DROID, Bridge",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "利用大型3D视觉模型对齐不同视角下的场景几何，解决视点变化导致的策略纠缠问题。提升了VLA在视角变换下的鲁棒性，为多视角融合提供了基于3D几何的新解法。",
+      "affiliation": "[University of Illinois at Urbana-Champaign]"
+    },
+    {
+      "title": "JoyAI-RA 0.5: Scaling Robot Manipulation Learning via Dual Action Alignment",
+      "authors": "RA Team",
+      "url": "https://arxiv.org/abs/2608.05674",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05674v1 Announce Type: new Abstract: Robot data is scarce, so generalist policies need to learn from heterogeneous sources, including human egocentric video, simulation, and real robots, which differ in supervision and embodiment, with action labels missing or mutually incompatible. Human egocentric data scale best but sit farthest from robot data, and naive pooling causes negative transfer rather than knowledge sharing. We propose JoyAI-RA 0.5, a generalist Vision-Language-World-Acti",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "通过双重动作对齐处理异构数据源（人类视频、仿真、真机）中的标签缺失和不兼容问题。虽涉及数据扩展，但缺乏具体的架构创新或SOTA对比，更多是工程层面的数据清洗策略。",
+      "affiliation": "[Joy Future Academy, JD]"
+    },
+    {
+      "title": "In-Context VLA: Endowing Vision-Language-Action Models with Language via In-Context Post-Training and Agentic Tool Use",
+      "authors": "Jiarui Yang et al.",
+      "url": "https://arxiv.org/abs/2608.05738",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05738v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models have become the dominant recipe for generalist manipulation, yet they are almost universally trained by behavior cloning: a policy imitates expert action chunks conditioned on a static image and a fixed instruction. A natural remedy is to inject explicit reasoning through textual chain-of-thought (CoT). We show, both empirically and analytically, that free-form textual CoT degrades low-level control: the reasonin",
+      "pub_date": "2026-08-07",
+      "rating": "⚡",
+      "reason": "突破传统行为克隆限制，引入上下文后训练和代理工具使用，赋予VLA动态语言理解和任务分解能力。显著提升了长程任务的泛化性和适应性，解决了静态指令无法应对复杂交互的核心瓶颈。",
+      "affiliation": ""
+    },
+    {
+      "title": "XEWorld: Can Action-Conditioned World Models Generalize to Unseen Robot Embodiments?",
+      "authors": "Yixiang Chen et al.",
+      "url": "https://arxiv.org/abs/2608.05799",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05799v1 Announce Type: new Abstract: Action-conditioned world models are promising learned simulators for robotic manipulation, yet evaluating them exclusively on training robots fails to reveal whether they capture physical dynamics or merely memorize visual patterns. To answer whether a model can faithfully render a robot it has never seen, we introduce XEWorld, a controlled cross-embodiment testbed for world models that isolates embodiments by evaluating held-out robots within phys",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "评估动作条件世界模型在未见识具身上的泛化能力，区分物理动力学学习与视觉模式记忆。作为基准测试和分析论文，有助于理解世界模型的边界，但本身未提出新算法。",
+      "affiliation": ""
+    },
+    {
+      "title": "SkillMemo: Expert-guided Skill Memory Framework for Compositional Embodied Manipulation",
+      "authors": "Changyuan Wang et al.",
+      "url": "https://arxiv.org/abs/2608.05970",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "diffusion policy",
+        "robotic manipulation",
+        "visuomotor"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05970v1 Announce Type: new Abstract: Embodied visuomotor models, including Diffusion Policy (DP) and Vision-Language-Action (VLA) models, have demonstrated promising performance on robotic manipulation benchmarks. However, their potential remains fundamentally constrained by the scarcity of large-scale embodied trajectory datasets, leading to insufficient compositional generalization in out-of-distribution (OOD) scenarios with limited capability to capture reusable skill structures. T",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "构建专家引导的技能记忆框架，支持组合式具身操作。通过检索和复用已有技能模块，缓解数据稀缺问题，为VLA的模块化学习和长尾任务处理提供了可复用的架构组件。",
+      "affiliation": "[Shenzhen International Graduate School, Tsinghua University]"
+    },
+    {
+      "title": "Beyond Flat Policies: Hierarchical Post-Training for Embodied Agents in Robotic Manipulation",
+      "authors": "He Kong et al.",
+      "url": "https://arxiv.org/abs/2608.05999",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05999v1 Announce Type: new Abstract: Vision-language-action (VLA) models have demonstrated remarkable capabilities in robotic manipulation by leveraging pretrained vision-language models. However, existing post-training methods predominantly optimize VLA models as flat policies, making it difficult to explicitly model task progression and perform robust long-horizon manipulation. Although hierarchical approaches introduce task decomposition, they mainly rely on supervised learning fro",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出分层后训练方法，将扁平VLA策略升级为层次化代理，以处理长视界任务。解决了单一策略在复杂任务中的规划局限，为现有VLA模型的低成本升级提供了具体路径。",
+      "affiliation": ""
+    },
+    {
+      "title": "IcFuzz: Fuzzing Isaac Sim with Semantic Stage Guidance and Multi-level Mutation",
+      "authors": "Zhixiang Chen et al.",
+      "url": "https://arxiv.org/abs/2608.06088",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "embodied AI"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06088v1 Announce Type: new Abstract: Robotics simulators serve as a foundational infrastructure for embodied AI, facilitating safe and scalable robotic system development. NVIDIA Isaac Sim has emerged as one of the most popular simulators, distinguished by its GPU-accelerated physics engine and photorealistic rendering, which enable high-fidelity modeling of complex environments. However, its inherent complexity inevitably introduces software bugs that can compromise simulation reliab",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "一种针对Isaac Sim仿真器的模糊测试工具，用于发现物理引擎缺陷。虽服务于Embodied AI基础设施，但属于软件测试领域，与VLA核心算法无直接关联。",
+      "affiliation": "[NVIDIA]"
+    },
+    {
+      "title": "VIDP: Variable Impedance Diffusion Policy for Compliant Robot Manipulation from Diverse Demonstrations",
+      "authors": "Hisham Khalil et al.",
+      "url": "https://arxiv.org/abs/2608.06210",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "diffusion policy",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06210v1 Announce Type: new Abstract: Contact-rich manipulation requires precise tracking and mechanical compliance, where variable impedance control can improve robustness in task success, whereas static compliance cannot adapt to varying contact constraints. Variable impedance skills can be learned from demonstrations, avoiding complex modeling, but compliance is a hidden variable in force-agnostic kinematic data. While existing methods infer compliance from trajectory variations, th",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "结合可变阻抗控制与扩散策略，提升接触丰富操作中的鲁棒性。允许策略根据任务需求动态调整刚度，为需要柔顺控制的精密装配任务提供了有效的改进方案。",
+      "affiliation": ""
+    },
+    {
+      "title": "Robot Learning from Human Demonstrations: Handwritten Alphabet Trajectories and Human-Likeness Evaluation",
+      "authors": "Alperen Kenan et al.",
+      "url": "https://arxiv.org/abs/2608.06221",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06221v1 Announce Type: new Abstract: Learning from demonstration (LfD) provides a developmental framework through which robots can develop motor skills by observing and imitating human dynamics, reducing reliance on explicit programming to teach a skill to a robot. The resulting human-like robot motion is recognised as a key factor in building trust and enabling natural collaboration in human-robot interaction. This paper presents a framework for learning human-like robot motion from",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "通过手写轨迹学习人类动力学并评估类人程度。实验局限于简单2D轨迹，缺乏通用操作场景验证，属于基础LfD研究，对当前主流VLA架构参考价值有限。",
+      "affiliation": "[Bristol Robotics Laboratory, University of the West of England]"
+    },
+    {
+      "title": "GeniWorld: A Generalizable Interactive World Model for Robotic Manipulation via Visual Actions",
+      "authors": "Chenghao Gu et al.",
+      "url": "https://arxiv.org/abs/2608.06332",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation",
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06332v1 Announce Type: new Abstract: Generalist robot policies exhibit strong capabilities, but their robustness in complex and unseen environments remains limited. Scaling robot learning and evaluation in diverse real-world environments remains costly and challenging. Action-conditioned world models offer a promising alternative, but they often suffer from limited action controllability and poor generalization to out-of-distribution (OOD) scenarios. To this end, we present GeniWorld,",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出基于视觉动作的可泛化交互式世界模型，增强未见环境下的鲁棒性。通过模拟物理交互提升世界模型的预测准确性，为低成本评估和训练提供了新的仿真替代方案。",
+      "affiliation": "[Shenzhen International Graduate School, Tsinghua University]"
+    },
+    {
+      "title": "DyPES-VLA: Learning Shared Dynamics Priors and Embodiment-Specific Control for Cross-Embodiment Manipulation",
+      "authors": "Junfeng Li et al.",
+      "url": "https://arxiv.org/abs/2608.06374",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06374v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models have become a powerful paradigm for robot manipulation, but training a single generalist policy for heterogeneous robot embodiments remains an open problem. Existing methods have two main limitations. First, they underuse dynamics priors shared across diverse visual and interaction data, limiting cross-embodiment transfer. Second, they require extensive manual preprocessing to convert embodiment-specific actions",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "分离共享动力学先验与具身特定控制，解决异构机器人间的迁移难题。通过解耦表示学习，提升了单一大模型在多平台部署的效率，是跨具身VLA的重要进展。",
+      "affiliation": "[The Hong Kong University of Science and Technology (Guangzhou)]"
+    },
+    {
+      "title": "$\\omega$-0: A Latent Predictive World Action Model for Concurrent Humanoid Loco-Manipulation",
+      "authors": "Zhe Li et al.",
+      "url": "https://arxiv.org/abs/2608.06375",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06375v1 Announce Type: new Abstract: Humanoid household tasks often require concurrent loco-manipulation, where the robot must move, adjust posture, maintain balance, and manipulate objects as a single coordinated behavior. Yet existing humanoid policies typically decompose locomotion and manipulation, while recent world-action models remain either arm-centric or video-centered. We present $\\omega$-0, a latent predictive whole-body world-action model for real-world humanoid concurrent",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "针对人形机器人，提出潜空间预测世界动作模型，实现移动与操作的并发协调。突破了传统解耦控制的局限，为全身协同操作提供了端到端的解决方案。",
+      "affiliation": "[MARS Lab, NTU]"
+    },
+    {
+      "title": "Reinforcing Action Policies by Prophesying",
+      "authors": "Jiahui Zhang et al.",
+      "url": "https://arxiv.org/abs/2511.20633",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2511.20633v2 Announce Type: replace Abstract: Vision-Language-Action (VLA) policies excel in aligning language, perception, and robot control. However, most VLAs are trained purely by imitation, which overfits to demonstrations, and is brittle under distribution shift. Reinforcement learning (RL) directly optimizes task reward and thus addresses this misalignment, but real-robot interaction is expensive and conventional simulators are hard to engineer and transfer. We address both data eff",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "引入强化学习通过“预言”机制修正纯模仿学习的过拟合问题，提升分布外鲁棒性。为VLA的后训练阶段提供了结合RL的有效范式，有助于解决长尾失败案例。",
+      "affiliation": ""
+    },
+    {
+      "title": "MMaDA-VLA: Large Diffusion Vision-Language-Action Model with Unified Multi-Modal Instruction and Generation",
+      "authors": "Yang Liu et al.",
+      "url": "https://arxiv.org/abs/2603.25406",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2603.25406v3 Announce Type: replace Abstract: Vision-Language-Action (VLA) models map visual observations and natural-language instructions to robot actions; however, hierarchical and autoregressive paradigms often incur architectural overhead, accumulate long-horizon errors, and require auxiliary modules to capture environment dynamics. To this end, we present MMaDA-VLA, a fully native, pretrained discrete diffusion VLA that unifies multi-modal understanding and generation. Specifically,",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "提出统一多模态指令和生成的扩散VLA模型，旨在减少层级开销。虽架构新颖，但摘要未展示显著的SOTA超越证据，且类似多模态生成工作较多，需进一步验证实效。",
+      "affiliation": "[Westlake University]"
+    },
+    {
+      "title": "DFM-VLA: Iterative Action Refinement for Robot Manipulation via Discrete Flow Matching",
+      "authors": "Jiayi Chen et al.",
+      "url": "https://arxiv.org/abs/2603.26320",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2603.26320v4 Announce Type: replace Abstract: Vision-Language-Action (VLA) models that encode actions using a discrete tokenization scheme have been widely adopted for robotic manipulation, but existing decoding paradigms remain fundamentally limited. Whether actions are decoded sequentially by autoregressive VLAs or in parallel by discrete diffusion VLAs, once a token is generated, it is typically fixed and cannot be revised in subsequent iterations. Consequently, early token errors canno",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "利用离散流匹配进行迭代动作细化，解决现有解码范式的局限性。提升了动作生成的精度和收敛速度，为基于Token化的VLA模型提供了更高效的推理优化方法。",
+      "affiliation": "[The Hong Kong University of Science and Technology (Guangzhou)]"
+    },
+    {
+      "title": "TRACT: Temporally Routed Action Chunks with Chronological Phase Authority for Contact-Rich Manipulation",
+      "authors": "Jiahao Liu et al.",
+      "url": "https://arxiv.org/abs/2607.29285",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "action chunking"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2607.29285v2 Announce Type: replace Abstract: Action chunking shortens the effective decision horizon of robot imitation learning by predicting multiple future actions, while conventional phase conditioning describes the current control instant. When a predicted horizon crosses a procedural boundary, assigning the current phase to the entire chunk creates a structural temporal mismatch. We present TRACT, which factorizes phase-structured action chunking into an accepted current phase and a",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出时间路由动作块和时序相位权威机制，优化接触丰富操作中的决策 horizon。有效处理程序边界跨越问题，提升了长视界任务中动作序列的逻辑一致性。",
+      "affiliation": ""
+    },
+    {
+      "title": "iARCS: Iterative Agentic RL for Controllable 3D Scene Generation",
+      "authors": "Saugat Adhikari et al.",
+      "url": "https://arxiv.org/abs/2608.06161",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "embodied AI"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06161v1 Announce Type: new Abstract: Synthetic 3D scene generation is increasingly used as a data source for computer vision and embodied AI, but existing generators often optimize perceptual realism without reliably satisfying task-critical functional constraints. This mismatch limits the usefulness of synthetic data for downstream training, where accessibility, traversability, and spatial rule compliance are often essential. We present iARCS, an iterative agentic reinforcement learn",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "专注于可控3D场景生成的代理RL，属于计算机图形学和生成式AI范畴，未涉及机器人操作或具身智能核心问题。",
+      "affiliation": "[Pulchowk Campus, IOE, Tribhuvan University]"
+    },
+    {
+      "title": "From Passive Mirrors to Active Agents: Holonic Digital Twins for Physical AI over Networks",
+      "authors": "Christo Kurisummoottil Thomas et al.",
+      "url": "https://arxiv.org/abs/2608.06227",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "physical intelligence"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06227v1 Announce Type: cross Abstract: Despite advances in artificial intelligence (AI) across multiple sectors, today's AI tools, including deep learning and generative AI, still fail when embedded into physical systems, such as robots and vehicles operating under real-world physical laws. This stems from their inability to maintain reliable world models for long-horizon planning under uncertainty and generalize to unseen scenarios. In this context, wireless networks, through pervasi",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "探讨全息数字孪生在物理AI网络中的应用，偏向系统架构和概念框架。缺乏具体的VLA算法贡献或实验验证，属于宏观系统设计讨论。",
+      "affiliation": "[Department of Electrical and Computer Engineering, Worcester Polytechnic Institute]"
+    },
+    {
+      "title": "The Geometry of Flow-Matching Uncertainty: A Cost-free Uncertainty Proxy and Its Application in Flow-based VLA Failure Detection",
+      "authors": "Ziyang Rao et al.",
+      "url": "https://arxiv.org/abs/2607.27933",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.27933v3 Announce Type: replace Abstract: Flow matching (FM) has become a popular action head paradigm for modern embodied models. However, as a conditional generative model, it does not explicitly expose its inherent uncertainty, producing faulty action chunks even when it misinterprets the scene or encounters out-of-distribution (OOD) inputs. Therefore, determining when an FM-generated action can be trusted is essential for safe deployment, yet existing uncertainty estimation methods",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出基于流匹配几何的无成本不确定性代理，用于检测VLA失败。为基于流的VLA模型提供了内置的安全监控机制，无需额外计算开销即可提升部署安全性。",
+      "affiliation": ""
+    },
+    {
+      "title": "PhaseCoder: Microphone Geometry-Agnostic Spatial Audio Understanding for Multimodal LLMs",
+      "authors": "Artem Dementyev et al.",
+      "url": "https://arxiv.org/abs/2601.21124",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "embodied AI"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2601.21124v2 Announce Type: replace-cross Abstract: Current multimodal LLMs process audio as a mono stream, ignoring the rich spatial information essential for embodied AI. Existing spatial audio models, conversely, are constrained to fixed microphone geometries, preventing deployment across diverse devices. We present PhaseCoder, a transformer-only spatial audio encoder that is agnostic to microphone geometry. PhaseCoder takes raw multichannel audio and microphone coordinates as inputs to",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "专注于多模态LLM的空间音频理解，虽提及具身AI背景，但核心贡献在于音频处理和麦克风几何无关性，非机器人操作核心。",
+      "affiliation": ""
+    },
+    {
+      "title": "MobileWAM: Bridging World Action Models to Mobile Manipulation with Chain-of-Foresight",
+      "authors": "Zehua Fan et al.",
+      "url": "https://arxiv.org/abs/2608.04657",
+      "source": "cs.CV",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot learning"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2608.04657v2 Announce Type: replace Abstract: World action models (WAMs) built on video generation backbones are a rising recipe for robot learning, yet remain confined to tabletop manipulation. Mobile manipulation demands simultaneous locomotion and whole-body manipulation amid scene-scale dynamics, yet is still dominated by dynamics-blind visual encoders with hand-crafted coordination. We bridge this gap with MobileWAM, a mixture-of-transformers architecture that fuses a pretrained video",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "将世界动作模型扩展到移动操作，引入预见链处理场景级动态。填补了WAM在移动机器人领域的空白，为全自主移动操作提供了新的建模视角。",
+      "affiliation": "[Institute for AI Industry Research (AIR), Tsinghua University]"
+    },
+    {
+      "title": "Near-sensor Computing for Rapid Visuotactile Perception",
+      "authors": "Zhengying Zhu et al.",
+      "url": "https://arxiv.org/abs/2608.05725",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "tactile"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05725v1 Announce Type: new Abstract: Visuotactile sensors reconstruct dense contact geometry from measured surface gradients, but host-based processing increases power consumption and introduces data-transfer delays and variable scheduling latency, limiting the sensing and response speed of robotic systems. To address these limitations, we implement a near-sensor computing framework that includes a spectral Poisson solver as a fully streaming hardware pipeline. The computational core",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "关注近传感器计算以降低触觉感知延迟，属于硬件/边缘计算优化。虽对触觉VLA有潜在价值，但未涉及算法层面的VLA集成或性能提升。",
+      "affiliation": "[School of Information Science and Technology ShanghaiTech University]"
+    },
+    {
+      "title": "GAUGE: A Measurement-Grounded Benchmark for Physical Fidelity in Simulation Engines and Video World Models",
+      "authors": "Shuai Wang et al.",
+      "url": "https://arxiv.org/abs/2608.05948",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05948v1 Announce Type: cross Abstract: Physics engines facilitate large-scale training and evaluation for embodied intelligence, while generative video world models are emerging as implicit simulators of future states and interactions. However, existing evaluations of physical fidelity are often conducted in isolation and rely heavily on perceptual similarity or human judgments, providing limited insight into which physical principles or parameters are violated. We introduce GAUGE, a",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "提出用于评估仿真引擎和视频世界模型物理保真度的基准。重要但非紧急，为后续研究提供评估标准，本身不贡献新算法。",
+      "affiliation": ""
+    },
+    {
+      "title": "Tactile-WAM: Touch-Aware World Action Model with Tactile Asymmetric Attention",
+      "authors": "Siyu Wu et al.",
+      "url": "https://arxiv.org/abs/2606.26663",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "tactile"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2606.26663v2 Announce Type: replace Abstract: World Action Models (WAMs) jointly predict future visual observations and actions, but visual futures alone often miss slip, jamming, contact-direction changes, and subtle misalign- ment in contact-rich manipulation. Tactile signals reveal these hidden physical states, yet naive tactile-token injection can disrupt visual dynamics modeling due to the limited scale of tactile data, a phenomenon we term tactile pollution. We in- troduce Tactile-WA",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "在WAM中引入触觉不对称注意力，捕捉滑动和卡滞等细微接触信号。填补了视觉主导WAM在触觉信息利用上的空白，显著提升接触丰富操作的性能。",
+      "affiliation": ""
+    },
+    {
+      "title": "Enfold: Folding World Model Imagination into Predictive Representations for Ultra-Efficient Embodied Control",
+      "authors": "Weili Zeng et al.",
+      "url": "https://arxiv.org/abs/2607.26657",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.26657v3 Announce Type: replace Abstract: World generative models are typically used through what they produce: a rendered future, a video-conditioned action, or latent context computed by a costly generative branch. We argue that their more reusable asset is the computation that constructs a future. As a generator transforms a corrupted future into a coherent trajectory, its intermediate states organize appearance, spatial layout, and interaction across levels of abstraction. Can this",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "将世界模型的想象折叠进预测表示，避免昂贵的生成分支，实现超高效具身控制。大幅降低计算成本，为资源受限设备上的实时VLA部署提供了可行方案。",
+      "affiliation": "[Shanghai Jiao Tong University]"
+    },
+    {
+      "title": "Bridging the Sim-to-Real Gap in Parallel-Link Leg Mechanisms via Simulator-Side Dynamics Normalization",
+      "authors": "Jinsong Hong et al.",
+      "url": "https://arxiv.org/abs/2608.01697",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "sim-to-real"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.01697v2 Announce Type: replace Abstract: This paper addresses the sim-to-real gap in dynamics arising when a parallel-link mechanism is represented by a serial-tree surrogate in simulation. Conventional Jacobian-based state and torque mappings preserve consistency with the kinematic and virtual-work relations but do not account for the coordinate-induced redistribution of actuator inertia and damping and the linkage inertia omitted during serial-tree reduction. To address this gap, Si",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "通过仿真侧动力学归一化解决并联腿机构的Sim-to-Real差距。针对特定机械结构，通用性较低，且未涉及VLA高层策略。",
+      "affiliation": "[DGIST]"
+    },
+    {
+      "title": "DreamGuard: Efficient Runtime Guardrail for LLM Agents via Risk-Aware World Model",
+      "authors": "Wenhao Lin et al.",
+      "url": "https://arxiv.org/abs/2608.05695",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05695v1 Announce Type: new Abstract: As large language model (LLM) agents increasingly invoke external tools and interact with real-world systems, unsafe actions may cause irreversible consequences on external states, user data, and downstream services. Recent runtime guardrails mitigate such risks by checking proposed actions before execution, but many remain reactive: they primarily assess the apparent safety of the current action, lacking an explicit model of how risk evolves acros",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "为LLM代理提供基于风险感知世界模型的高效运行时护栏。侧重软件安全和LLM代理，而非物理机器人的具身操作安全。",
+      "affiliation": ""
+    },
+    {
+      "title": "AppDeltaWorld: Transition-Grounded Delta Code World Model for Mobile GUI Agents",
+      "authors": "Weikai Xu et al.",
+      "url": "https://arxiv.org/abs/2608.05891",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05891v1 Announce Type: new Abstract: Mobile GUI agents can operate apps through pixel perception and touch actions, making them a promising interface for collecting and improving long-horizon mobile interaction policies. However, real trajectories are difficult to obtain for sensitive apps and privacy-critical operations. At the same time, existing simulated environments are costly to scale up, and GUI world models still suffer from unstable generation, limited modality coverage, and",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "专注于移动GUI代理的世界模型，属于软件自动化领域，与物理机器人操作无关。",
+      "affiliation": ""
+    },
+    {
+      "title": "From Economic Agents to Agentic Economies: A Systems Blueprint for Economic World Models",
+      "authors": "Jiale Han et al.",
+      "url": "https://arxiv.org/abs/2608.06020",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06020v1 Announce Type: new Abstract: Economic World Models (EWMs) are generative economic models that simulate how economies evolve from within by modeling heterogeneous agents, their beliefs and actions, and the market and institutional mechanisms through which their interactions produce aggregate outcomes. This paper develops an implementation roadmap for building economic world models as generative engines in which heterogeneous agents act, interact, adapt, and co-evolve with marke",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "探讨经济世界模型和代理经济体，属于社会科学模拟，与具身智能和机器人操作无实质关联。",
+      "affiliation": "[Shenzhen Loop Area Institute]"
+    },
+    {
+      "title": "Task-Conditional Flow Matching for Balanced Multilingual Text Embedding Adaptation",
+      "authors": "Tirth Bhatt et al.",
+      "url": "https://arxiv.org/abs/2608.05785",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05785v1 Announce Type: cross Abstract: Multilingual text embedding models are commonly adapted using a single training objective across diverse tasks, despite different tasks requiring fundamentally different optimization strategies. We introduce Task-Conditional Flow Matching (TCFM), a multilingual embedding adaptation framework that selectively applies Flow Matching to translation tasks while optimizing retrieval, classification, and pair-classification tasks with objectives better",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "多语言文本嵌入适配，纯NLP任务，无机器人操作场景。",
+      "affiliation": "[Indian Institute of Technology Gandhinagar]"
+    },
+    {
+      "title": "PRISM: Distribution-Gated Flow Matching for Controllable Unpaired Image Translation",
+      "authors": "Elad Yoshai et al.",
+      "url": "https://arxiv.org/abs/2608.06240",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06240v1 Announce Type: cross Abstract: Unpaired image-to-image translation must decide, per image, what to change and what to preserve without paired supervision. Many diffusion-based unpaired translators control preservation through a single global noise or guidance value applied across the image, which cannot separate content to keep from appearance to change. We present PRISM, a GAN-free flow-matching framework that replaces this global control with a learned per-feature gate. The",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "无配对图像翻译，纯计算机视觉生成任务，无机器人操作应用。",
+      "affiliation": ""
+    },
+    {
+      "title": "TRW: TRACE-RealWorld---An Auditable Consistency Contract for World Models as Materialized Views",
+      "authors": "Edward Y. Chang",
+      "url": "https://arxiv.org/abs/2607.21910",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2607.21910v2 Announce Type: replace Abstract: World models let agents plan against predicted physical state, but that state drifts; re-observation is costly and delayed, and repair can fail. We present TRACE-RealWorld (TRW), to our knowledge the first commitment-level consistency contract for world models. TRW treats predicted state as a materialized view and a physical commitment as a read whose authorization can expire. Typed, calibrated claims specify consequence-conditioned freshness a",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "提出世界模型的一致性契约，侧重形式化验证和系统可靠性。理论性强，但缺乏直接的VLA算法应用路径。",
+      "affiliation": "[Stanford University]"
+    },
+    {
+      "title": "HERA: Historical Evidence Routing Adapter for Physical Prediction in Latent World Models",
+      "authors": "Yuanruyi et al.",
+      "url": "https://arxiv.org/abs/2608.05523",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05523v1 Announce Type: new Abstract: Predictive video models have emerged as promising world models by learning latent visual dynamics from large-scale video. Yet these models remain challenged by physical events under occlusion, where later predictions may depend on object evidence that is no longer available in the current view. Addressing this challenge requires historical evidence not only to be preserved but also to remain accessible when it becomes relevant to a subsequent predi",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出历史证据路由适配器，解决遮挡下的物理预测问题。增强了潜空间世界模型在部分可观测环境下的推理能力，适用于复杂场景的VLA规划。",
+      "affiliation": ""
+    },
+    {
+      "title": "Hierarchical Flow Matching for 3D Point Cloud Generation",
+      "authors": "Linhao Wang et al.",
+      "url": "https://arxiv.org/abs/2608.05557",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05557v1 Announce Type: new Abstract: Generating high-quality 3D point clouds requires capturing both global shape topology and local geometric details. Existing flow-based methods rely on continuous normalizing flows (CNFs) that demand expensive ODE solving and trace estimation during training, while diffusion models require hundreds of iterative denoising steps. Moreover, most approaches adopt single-level generation directly in point space, disregarding the hierarchical structure na",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "3D点云生成，纯生成式AI任务，无机器人操作场景。",
+      "affiliation": "[Shandong Normal University]"
+    },
+    {
+      "title": "Uncertainty-Aware World Model for Aerial Image-Goal Navigation",
+      "authors": "Deyi Zhu et al.",
+      "url": "https://arxiv.org/abs/2608.05597",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05597v1 Announce Type: new Abstract: Aerial image-goal navigation requires an unmanned aerial vehicle (UAV) to reach a target location specified by a goal image. Existing world-model-based methods rank candidate trajectories using predicted futures, but typically rely on only one or a few point predictions, which is inadequate for large-scale outdoor environments with substantial future-state uncertainty. To address this limitation, we propose the Uncertainty-Aware Navigation World Mo",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "无人机图像目标导航的不确定性感知世界模型。侧重空中导航，与地面机器人操作场景差异较大，且未涉及操作任务。",
+      "affiliation": "[Tsinghua Shenzhen International Graduate School, Tsinghua University]"
+    },
+    {
+      "title": "Dual-Attention and Adversarial Transfer Networks for Sim-to-Real Cross-Orientation Wireless Sensing",
+      "authors": "Linfeng Du et al.",
+      "url": "https://arxiv.org/abs/2608.05664",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "sim-to-real"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05664v1 Announce Type: new Abstract: Millimeter-wave human activity recognition suffers significant performance degradation when the user's orientation changes relative to the sensing system, yet collecting labeled multi-orientation data is labor-intensive and costly. To eliminate the need for exhaustive multi-orientation measured data, we develop a physics-guided simulator that synthesizes orientation-diverse wireless training data from single-orientation motion. Specifically, to sup",
+      "pub_date": "2026-08-07",
+      "rating": "❌",
+      "reason": "无线传感和人类活动识别，非机器人操作或具身智能核心领域。",
+      "affiliation": "[Southern University of Science and Technology]"
+    },
+    {
+      "title": "LAWM-3D: Learning 3D-Aware Latent Actions from Human Videos for Generalizable Robot World Models",
+      "authors": "Jiarui Yang et al.",
+      "url": "https://arxiv.org/abs/2608.05706",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05706v1 Announce Type: new Abstract: World models enable agents to perform forward rollout and planning without real-world interaction. However, their application in open-world embodied intelligence remains limited by the high cost of action annotations and the heterogeneity of action spaces across platforms. Recently, latent action models (LAMs) have alleviated this bottleneck by learning action representations directly from unlabeled human videos in a self-supervised manner. Neverth",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "从人类视频中学习3D感知潜动作，构建可泛化的机器人世界模型。解决了动作标注稀缺问题，为利用大规模人类视频数据训练VLA提供了新途径。",
+      "affiliation": ""
+    },
+    {
+      "title": "PhyLatent: Learning Dynamics-Relevant Representations for JEPA World Models",
+      "authors": "Xi Zeng et al.",
+      "url": "https://arxiv.org/abs/2608.05720",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05720v1 Announce Type: new Abstract: We propose PhyLatent, a dynamics-relevant training objective for JointEmbedding Predictive Architecture (JEPA) world models. Our key observation is that preventing global latent collapse does not ensure that a representation preserves physical states and action consequences. We identify three failure modes in JEPA world models: physical invariance collapse, physical identifiability collapse, and counterfactual dynamics collapse. PhyLatent addresses",
+      "pub_date": "2026-08-07",
+      "rating": "🔧",
+      "reason": "提出JEPA世界模型的动力学相关表示学习目标，防止全局潜空间崩溃。提升了世界模型对物理状态的保留能力，为基于对比学习的VLA预训练提供了理论支撑。",
+      "affiliation": "[School of Mechanical and Aerospace Engineering, Nanyang Technological University]"
+    },
+    {
+      "title": "Energy-Guided Flow Matching",
+      "authors": "Haoyang Tong (MAIS & NLPR et al.",
+      "url": "https://arxiv.org/abs/2608.05811",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05811v1 Announce Type: new Abstract: Pixel-space generative models bypass lossy latent compression, yet necessitate joint learning of global structure and fine-grained details in a high-dimensional space. Standard flow matching interpolates noise toward a fixed clean-image endpoint, leaving the spectral evolution to be learned implicitly. In this paper, we introduce Energy-Guided Flow Matching(EG-FM) that explicitly models a coarse-to-fine generative trajectory by moving endpoint. Spe",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "像素空间生成模型的能耗引导流匹配，侧重生成质量。虽可用于数据增强，但非VLA核心控制算法，应用路径间接。",
+      "affiliation": ""
+    },
+    {
+      "title": "MASS: Multiplayer World Models with Authoritative Shared State",
+      "authors": "Ziqi Cai et al.",
+      "url": "https://arxiv.org/abs/2608.06257",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.06257v1 Announce Type: new Abstract: Current video world models struggle in multiplayer environments because they entangle world state with view-dependent visual latents, leading to redundant compute, view inconsistencies, and poor scalability. We propose MAS (Multiplayer world models with Authoritative Shared State) to resolve this limitation. Inspired by multiplayer game architectures, MAS disentangles world dynamics and view rendering. A learned Logic Engine advances a global, auth",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "多人环境下的世界模型，解决视图纠缠和冗余计算。虽涉及多智能体，但主要贡献在视频生成效率，对单机器人VLA的直接复用性有限。",
+      "affiliation": "[Alaya Lab]"
+    },
+    {
+      "title": "Deterministic World Models for Closed-loop Reachability Analysis of End-to-End Vision-based Control",
+      "authors": "Yuang Geng et al.",
+      "url": "https://arxiv.org/abs/2512.08991",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2512.08991v3 Announce Type: replace Abstract: End-to-end image controllers that map raw camera frames directly to control actions are increasingly deployed in safety-critical systems. However, formally verifying their closed-loop behavior remains an open challenge because cameras produce high-dimensional images whose generation cannot easily be described in a closed mathematical form. We propose a Deterministic World Model (DWM), a latent-free neural decoder that maps physical states (e.g.",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "端到端视觉控制的形式化验证，侧重安全性分析。理论重要，但非算法性能提升，属于验证与安全范畴。",
+      "affiliation": ""
+    },
+    {
+      "title": "Faster and Better Alignment for Flow Matching Models via Step-aware Advantages",
+      "authors": "Zhixiong Yue et al.",
+      "url": "https://arxiv.org/abs/2602.01591",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2602.01591v2 Announce Type: replace Abstract: Recent advances in flow matching models, particularly with reinforcement learning (RL), have significantly enhanced human preference alignment in few-step text-to-image generators. However, existing RL-based approaches for flow matching models typically rely on numerous denoising steps, while suffering from sparse and imprecise reward signals that often lead to suboptimal alignment. To address these limitations, we propose Temperature-Annealed",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "流匹配模型的RL对齐优化，侧重文本到图像生成。虽技术通用，但摘要未明确其在机器人控制中的应用，暂归为相邻领域。",
+      "affiliation": ""
+    },
+    {
+      "title": "VISA: VLM-Guided Instance Semantic Auditing for 3D Occupancy World Models",
+      "authors": "Ruiqi Xian et al.",
+      "url": "https://arxiv.org/abs/2606.13460",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2606.13460v3 Announce Type: replace Abstract: Semantic 3D occupancy provides a voxelized world state for autonomous driving and robot decision making, but object and rare-class errors can affect free-space interpretation, collision checking, and temporal state propagation. We show that a common VLM strategy, aligning 3D voxel or object features with crop-caption embeddings, improves text-space similarity without reliably improving closed-set occupancy mIoU. Motivated by this mismatch, we p",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "",
+      "affiliation": "[University of Maryland College Park]"
+    },
+    {
+      "title": "Quantum-Structured World Models (QSWMs) for Predictive Latent Dynamics",
+      "authors": "Hailong Jiang et al.",
+      "url": "https://arxiv.org/abs/2608.05371",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.05371v1 Announce Type: new Abstract: World models learn latent states that summarize interaction histories, evolve over time, and support prediction, simulation, or planning. Most existing world models represent these states using classical vectors, probability distributions, recurrent hidden states, or transformer activations. In this paper, we introduce Quantum-Structured World Models (QSWMs), a quantum-inspired framework for predictive world modeling with structured latent states,",
+      "pub_date": "2026-08-07",
+      "rating": "📖",
+      "reason": "",
+      "affiliation": "[Youngstown State University]"
+    }
+  ]
+}
