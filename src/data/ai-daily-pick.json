@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-11",
+      "items": [
+        {
+          "title": "Meta 发布 Muse Glimmer 30B：Apache 2.0 本地多模态 Agent 模型",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/muse-glimmer",
+          "why_picked": "Meta 回归开源，30B 蒸馏模型专为本地 Agent 场景设计，Apache 2.0 许可。MCP Atlas 75.5 / SWE-Bench Verified 76.0，超越 Gemma4-31B 和 Qwen3.6-27B。",
+          "so_what": "如果你在做本地 Agent 部署（隐私敏感或离线场景），Muse Glimmer 提供了当前最强的 Apache 2.0 多模态选项。28B 文本 + 2B ViT 架构可在 24-32GB 显存运行，day-0 支持 transformers/llama.cpp/vLLM。建议对比 Qwen3.6-27B 做你的工具调用 benchmark。"
+        },
+        {
+          "title": "OpenAI 推出 GPT-5.6-Cyber：面向网络安全专家的特化模型",
+          "category": "新发布",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8vULULnvgvi",
+          "why_picked": "GPT-5.6 家族新增 Cyber 变体，Daybreak 计划分两级开放访问。宣称可响应 95% 高级安全任务，高风险能力仅向获批准用户开放。",
+          "so_what": "如果你在做安全类 Agent 产品或安全运营自动化，GPT-5.6-Cyber 代表 OpenAI 将前沿能力垂直化的策略。关注其能力审批流程是否可集成到你的 Agent 权限体系中，以及 Daybreak 计划的开放节奏。"
+        },
+        {
+          "title": "OpenAI 8520 亿美元估值回购 70 亿美元员工股份",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8vUYi0nO1pf",
+          "why_picked": "未引入外部投资者，纯内部回购为 IPO 铺路。8520 亿估值较上一轮再上一个台阶，反映资本市场对 OpenAI 商业化前景的持续看好。",
+          "so_what": "如果你在选择 AI 基础设施供应商，OpenAI 的 IPO 临近意味着其产品策略可能从增长优先转向盈利优先——API 定价、速率限制、功能分级都可能调整。建议评估多供应商策略降低锁定风险。"
+        },
+        {
+          "title": "Codex vs Claude Code 负责人公开对喷：Harness 之争浮出水面",
+          "category": "观点",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3933059944775041",
+          "why_picked": "OpenAI Codex 负责人 Tibo 公开教用户把 GPT-5.6 Sol 接入 Claude Code，一个月后 Anthropic 封了照做的开发者账号。核心问题：Coding Agent 的竞争到底是模型还是 Harness？",
+          "so_what": "如果你在选择 Coding Agent 工具链，这个事件揭示了一个关键架构决策——模型和 Harness 正在解耦。CLIProxyAPI 等中间层让你可以在 Claude Code 里跑 GPT-5.6 Sol（反之亦然）。建议关注 Harness 层的工具集成质量，它可能比模型本身更影响实际开发体验。"
+        },
+        {
+          "title": "NVIDIA 开源 Magpie TTS 多语言版：12 语言低延迟语音 Agent",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/nvidia/magpie-tts-multilingual-voice-agents",
+          "why_picked": "364M 参数开源 TTS 模型，支持 12 语言（含新增阿拉伯语/韩语/巴西葡萄牙语），NIM 生产部署就绪，专为级联语音架构设计。",
+          "so_what": "如果你在做多语言语音 Agent（客服/医疗/企业助手），Magpie 提供了可自部署的开源 TTS 替代方案。级联架构（ASR+LLM+TTS 独立组件）比端到端模型更易调优延迟和音质，364M 参数也适合边缘部署。"
+        },
+        {
+          "title": "nOps 用 Bedrock AgentCore 替代 LangGraph：FinOps Agent 交付提速 75%",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-nops-shipped-finops-agents-75-faster-with-amazon-bedrock-agentcore/",
+          "why_picked": "nOps 将 Clara FinOps Agent 从自管 EKS + LangChain/LangGraph 迁移到 Bedrock AgentCore，交付周期从 10-12 个月缩短到 4 个月，解决多租户隔离和响应延迟问题。",
+          "so_what": "如果你在评估 Agent 基础设施，nOps 案例验证了 Bedrock AgentCore 相比自建 LangGraph 栈的交付效率优势。核心收益来自托管的会话状态、工具注册和观测能力——如果你的团队规模 <50 人，托管方案可能比自建更划算。"
+        },
+        {
+          "title": "OpenAI GPT Image 新检查点 mona-lisa-1 泄露：塑料感显著减少",
+          "category": "新发布",
+          "source": "36氪",
+          "url": "https://www.36kr.com/p/3933115490368647",
+          "why_picked": "代号 mona-lisa-1 在 LM Arena 盲测中超越 GPT Image 2，SynthID 水印确认 OpenAI 出品。真实感和细节大幅提升，可能是同代地基上的新 checkpoint。",
+          "so_what": "如果你的产品管线依赖 AI 生图（营销/设计/内容生成），mona-lisa-1 暗示 GPT Image 3 即将正式推出。建议提前测试 Image 2 API 的迁移路径，新模型上线后 prompt 兼容性可能有变化。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-10",
       "items": [
         {
@@ -1274,51 +1335,6 @@
           "url": "https://github.com/davila7/claude-code-templates",
           "why_picked": "Claude Code配置与监控CLI工具——解决如何规模化使用Claude Code的工程管理问题",
           "so_what": "如果你在用Claude Code做团队开发：通过模板统一prompt配置、监控token消耗和执行状态。团队级LLM coding工具的治理是Q3刚需。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-11",
-      "items": [
-        {
-          "title": "GPT-5.6 全量上线 + ChatGPT Work 发布 + Codex 并入 ChatGPT",
-          "category": "新发布",
-          "source": "36Kr/OpenAI",
-          "url": "https://www.36kr.com/p/3889069642742403",
-          "why_picked": "GPT-5.6 Sol/Terra/Luna 三模型全量 GA；Sol 编程指数 80 分 SOTA，成本仅 Fable 5 的 1/3；Codex 独立 App 并入 ChatGPT 桌面端，新增 ChatGPT Work 通用 Agent 入口（跨应用、跨文件、持续数小时）",
-          "so_what": "如果你在选择编程/办公 Agent 底座：GPT-5.6 的三档定价（Sol $5/$30、Terra $2.5/$15、Luna $1/$6）+ 750 token/s 速度 + prompt caching 90% 折扣，重新定义了 cost-performance 基准。Sol 在 Agents' Last Exam 超 Fable 5 13.1 分但成本仅 1/4，适合日常高频任务；Fable 5 仍适合定向攻坚。建议按任务类型路由模型。ChatGPT Work 的跨应用 Agent 能力（Scheduled Tasks + Computer Use）是行业标杆，值得研究其架构。"
-        },
-        {
-          "title": "苹果起诉 OpenAI 盗用商业机密",
-          "category": "行业",
-          "source": "ReadHub/TechCrunch",
-          "url": "https://readhub.cn/topic/8uf6grJ6Q9c",
-          "why_picked": "苹果正式对 OpenAI 提起诉讼，指控其盗用商业机密。这是 Apple Intelligence 合作框架下的重大法律冲突，可能影响 OpenAI 在 iOS 端的独家集成地位",
-          "so_what": "如果你在规划 AI 产品的企业级合作或合规策略：苹果-OpenAI 诉讼标志着「AI 集成独家协议」正在成为法律战场。核心争议可能围绕 Apple Intelligence 训练数据的来源和使用边界。对 Agent 开发者的启示：与大型平台（Apple/Google/Microsoft）的合作协议中，数据归属和模型训练权条款需要极其明确。建议关注法庭文件后续披露。"
-        },
-        {
-          "title": "AWS Bedrock AgentCore + Stardog：为 Agentic AI 构建语义层",
-          "category": "工具",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/build-a-semantic-layer-for-agentic-ai-on-aws-with-stardog-and-amazon-bedrock-agentcore/",
-          "why_picked": "系统方案：用 Stardog 语义层桥接 Aurora + Redshift 异构数据，AgentCore 托管 Strands Agents 做 Customer 360 查询，无需 ETL",
-          "so_what": "如果你在构建企业级 RAG/Agent 系统：这篇 AWS 博客展示了一个关键架构模式——Agent 直接查原始数据会返回矛盾结果（同一 customer 在不同系统定义不同），必须通过语义层统一业务概念。Stardog 的 knowledge graph + Bedrock AgentCore 的 managed hosting 组合，提供了「语义一致性 + 工具凭证 + 鉴权」的一体化方案。适合评估你的 Agent 数据层是否需要引入知识图谱。"
-        },
-        {
-          "title": "Amazon Quick Automate：Agent 工作流的原生 Case Management",
-          "category": "工具",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/scaling-agentic-workflows-with-native-case-management-in-amazon-quick-automate/",
-          "why_picked": "企业级 Agent 编排的关键缺失环节：每个工作项作为 Case 持久化，支持 HITL、并行执行、异常处理、审计追踪——解决 Agent 从 POC 到生产级的最后一公里",
-          "so_what": "如果你的 Agent 系统需要处理大规模工作流（发票/理赔/工单）：Quick Automate 的 Case Management 模式值得借鉴——Agent 不是孤立运行，而是通过 case creator-processor pattern 动态扩缩容。每个 case 有完整生命周期追踪 + 人工审批节点 + 审计日志。这对设计企业级 Agent 编排框架有直接参考价值，尤其是 HITL 和异常恢复机制。"
-        },
-        {
-          "title": "GPT-5.6 Luna 由 Sol 后训练生成：AI 递归自我改进新里程碑",
-          "category": "趋势",
-          "source": "36Kr/OpenAI",
-          "url": "https://www.36kr.com/p/3889024357513736",
-          "why_picked": "OpenAI 披露：最小模型 Luna 由旗舰 Sol 全自动后训练完成（找配置、挑 GPU、启动脚本、确认跑通），过去需整队研究员的工作现在一个 Agent 全包；内部 RSI 评测 Sol 超 GPT-5.5 16.2 分",
-          "so_what": "如果你在设计 Agent 自我改进管线：GPT-5.6 的「AI 训练 AI」范式验证了递归自我改进（RSI）的可行性。Sol 在内部编程推理的研究算力份额半年涨 100 倍、Agent token 用量涨 22 倍——这意味着你的 Agent 架构应该预留「自我优化」接口：让强模型生成训练数据/配置，弱模型执行，形成飞轮。Ultra 模式（4-16 个 Agent 并行）也是多 Agent 协作的新参考模式。"
         }
       ]
     }
