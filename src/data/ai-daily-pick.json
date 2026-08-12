@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-12",
+      "items": [
+        {
+          "title": "Claude 挑战黎曼猜想：从 41.6% 推进到 67.2% 临界线下界",
+          "category": "观点",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3934339801759106",
+          "why_picked": "Anthropic 未发布科研版 Claude 用 60 个子 Agent 协调攻关，3100 万 token 输出，将黎曼猜想相关下界从 41.6% 提升到 67.2%——这是 AI 辅助数学研究迄今最震撼的案例",
+          "so_what": "如果你在做多 Agent 编排：Claude 用 60 个子 Agent 分工（2 个核心推理 + 13 个启发 + 30 个探索 + 13 个验证 + 2 个写作），展示了大规模协作推理的可行架构。值得参考其角色分工和验证机制。"
+        },
+        {
+          "title": "OpenAI Daybreak Red/Blue 登陆 Amazon Bedrock",
+          "category": "新发布",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/daybreak-models-are-now-available-on-aws",
+          "why_picked": "OpenAI 网络安全特化模型 Daybreak Red & Blue 正式通过 AWS Bedrock 向企业开放，支持漏洞研究、入侵检测等防御工作流",
+          "so_what": "如果你在做安全 Agent 或企业 AI 集成：Daybreak 现在可通过 Bedrock API 直接调用，无需自建基础设施。结合 GPT-5.6 Sol + 专用安全护栏，适合构建自动化安全响应管线。"
+        },
+        {
+          "title": "Stealing Reasoning Traces：加密推理链可被跨模型提取",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://stolen-thoughts.com/",
+          "why_picked": "研究发现 Anthropic/OpenAI/Google 的加密推理块可在同族弱模型上重放并解密，暴露了 frontier model 的 reasoning 输出安全隐患",
+          "so_what": "如果你在用 API 的 reasoning/encrypted_content 功能：同族模型共享加密密钥意味着推理链可能被降级攻击提取。建议审查日志策略，避免在生产环境中存储或转发加密 reasoning 块。"
+        },
+        {
+          "title": "DeepSeek 被曝推理过程中「偷偷给用户取外号」",
+          "category": "行业",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/988136.htm",
+          "why_picked": "DeepSeek 在深度思考模式下会在推理中临时给用户打标签（如「墨墨」「喜欢刨根问底」），引发隐私讨论——冲上热搜",
+          "so_what": "如果你在做 Agent 记忆系统：这暴露了推理态上下文占位符的隐私边界问题。用户数据在推理过程中被「内化」为标签，虽不持久存储但仍需透明化告知。"
+        },
+        {
+          "title": "梁文锋一年财富暴涨 3850%，登顶全球亿万富豪增速榜",
+          "category": "行业",
+          "source": "IT之家",
+          "url": "https://m.ithome.com/html/988396.htm",
+          "why_picked": "DeepSeek 创始人梁文锋净资产从 $10B 飙升至 $395B，一年 3850% 增速登顶全球，AI 赛道造富速度继续刷新认知",
+          "so_what": "如果你在做 AI 创业或投资判断：DeepSeek 的估值飙升反映市场对国产推理模型的商业化信心。但需警惕估值泡沫——参考甲骨文 CEO 同期缩水 $1387B 的反例。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-11",
       "items": [
         {
@@ -1282,59 +1327,6 @@
           "url": "https://github.com/simonw/sqlite-utils",
           "why_picked": "Simon Willison 的 sqlite-utils 小版本更新：table.transform() 在外键约束下开启事务时现在会抛出 TransactionError",
           "so_what": "如果你在用 sqlite-utils 做数据管线：升级到 4.1.1 可避免外键约束下的静默数据损坏。注意事务内调用 transform() 现在会报错，需调整异常处理逻辑。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-12",
-      "items": [
-        {
-          "title": "腾讯考虑入股 Manus，不会控股",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8ufvngyIzY4",
-          "why_picked": "中方资本以约20亿美元估值从Meta手中回购Manus股权，腾讯牵头但不控股——中国资本在AI Agent领域的最大布局之一",
-          "so_what": "如果你在做Agent产品商业化：Manus的融资路径说明通用Agent赛道估值逻辑正在从硅谷主导转向多极化。关注其后续产品节奏是否因股东变化而调整。"
-        },
-        {
-          "title": "OpenAI COO 因病离职，高管层再震荡",
-          "category": "行业",
-          "source": "36氪",
-          "url": "https://www.36kr.com/p/3890553690192384",
-          "why_picked": "GPT-5.6刚全量发布，OpenAI高层再次变动——COO因病离职，反映高压扩张期的组织代价",
-          "so_what": "如果你在用OpenAI API或依赖其生态：高管频繁更替可能影响产品路线图节奏。建议关注接替者信号及企业客户合同条款变化。"
-        },
-        {
-          "title": "Stop Telling Me to Ask An LLM",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://blog.yaelwrites.com/stop-telling-me-to-ask-an-llm/",
-          "why_picked": "HN 108分热文——当\"去问Claude\"成为新的\"去搜一下\"，人们开始拒绝用模型回答替代人类经验判断",
-          "so_what": "如果你在设计Agent交互界面：过度依赖LLM会让用户失去对人类判断的信任。设计agent推荐系统时，保留人类专家回退路径比纯自动化更重要。"
-        },
-        {
-          "title": "三星发布AI PC加速芯片GAIA，4nm+NPU+存算一体",
-          "category": "新发布",
-          "source": "36氪",
-          "url": "https://www.36kr.com/p/3890553690192384",
-          "why_picked": "三星自研AI PC芯片GAIA已向联想、惠普送样，2027年量产——端侧AI推理硬件竞争白热化",
-          "so_what": "如果你在做端侧Agent或本地LLM应用：GAIA的存算一体架构意味着2027年起PC端NPU算力将跃升。现在就该为端侧推理优化agent pipeline。"
-        },
-        {
-          "title": "google-labs-code/stitch-skills",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/google-labs-code/stitch-skills",
-          "why_picked": "Google Labs出品的Agent Skills库，兼容Stitch MCP server，支持Claude Code/Cursor/Gemini CLI等主流编码agent",
-          "so_what": "如果你在用多个编码agent工具：stitch-skills提供标准化Agent Skills规范，让同一套skill在Antigravity/Gemini CLI/Claude Code之间跨平台复用。"
-        },
-        {
-          "title": "davila7/claude-code-templates",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/davila7/claude-code-templates",
-          "why_picked": "Claude Code配置与监控CLI工具——解决如何规模化使用Claude Code的工程管理问题",
-          "so_what": "如果你在用Claude Code做团队开发：通过模板统一prompt配置、监控token消耗和执行状态。团队级LLM coding工具的治理是Q3刚需。"
         }
       ]
     }
