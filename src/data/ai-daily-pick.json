@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-16",
+      "items": [
+        {
+          "title": "Anthropic Risk Report 曝光内部最强模型 Model 2，AI 研发速度逼近人类研究员",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.anthropic.com/research/responsible-deployment-2026",
+          "why_picked": "Anthropic 第二份 Risk Report 首次承认内部运行代号 Model 2 的模型，AECI 得分 162.79 超越 Mythos 5 的 161.29，CoBench 62.8%（人类研究员 85%）。报告披露 Claude 已写下 Anthropic 合并进生产代码库的绝大多数代码，同时误对齐风险从极低上调至低，Mythos 5 在真实网络安全测试中黑了 3 家公司。",
+          "so_what": "如果你在做 AI 安全评估或 Agent 权限控制：Anthropic 主动上调风险等级说明前沿模型的能力已超越评测饱和点。建议关注误对齐场景的防御设计，尤其在 Agent 具备工具调用权限时，增加审批层和沙箱隔离。"
+        },
+        {
+          "title": "DeepSeek V4 Pro 正式版发布：Agent 能力增强，性能对标 Claude Fable 5",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://m.ithome.com/html/990002.htm",
+          "why_picked": "DeepSeek-V4-Pro-0813 正式版上线国家超算互联网，原生支持 OpenAI Responses API，针对性适配 Codex，整体性能与 Claude Fable 5 / Opus-4.8 对标。同日开源 DeepSeek Harness v0.1（MIT 协议）智能体框架。",
+          "so_what": "如果你在用 OpenAI Responses API 构建 Agent 管线：DeepSeek V4 Pro 提供了国内可用的替代方案，且专门适配了 Codex 工作流。Harness 框架的 MIT 开源许可也值得评估是否可复用其 Agent 编排能力。"
+        },
+        {
+          "title": "Anthropic 详解 Claude 文本水印技术：采用 SynthID-Text 路线",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.anthropic.com/blog/text-watermarking",
+          "why_picked": "Anthropic 官方发文解释 Claude 文本水印实现细节：通过替换选词随机数来源嵌入水印，对输出质量无统计学显著差异，不增加 token 消耗，不携带身份信息。受欧盟 AI 法案驱动，8 月 2 日起生效。但研究显示 AI 释义工具可移除 98.3% 水印（成本约 4 美分）。",
+          "so_what": "如果你在做 AI 内容检测或合规管线：Claude 水印基于 SynthID-Text，需要密钥才能检测，官方检测 API 尚未上线。同时注意水印可被低成本绕过（4 美分），不要将其作为唯一的内容来源验证手段。"
+        },
+        {
+          "title": "Anthropic 发布 Claude Code 六大省钱技巧：缓存是核心",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.anthropic.com/blog/coding-costs",
+          "why_picked": "Anthropic 官方博客分享 Claude Code 降本六策：任务完成用 /clear 清理对话、开局锁定模型和推理强度避免缓存失效、用 @ 引用文件、大输出任务加静默参数、休息前用 /compact 压缩对话、大任务交给子 Agent。核心逻辑：输出 token 比输入贵 5 倍，缓存是省钱利器。",
+          "so_what": "如果你在用 Claude Code 或类似 AI 编码工具：缓存命中是降本的关键。避免中途切换模型/推理强度，长对话用 /compact 压缩，大任务拆给子 Agent 避免上下文膨胀。这些技巧同样适用于其他 LLM 编码场景。"
+        },
+        {
+          "title": "以色列 PR 团队试图影响 ChatGPT 答案（HN 52 points）",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.politico.com/newsletters/politico-influence/2026/08/14/israeli-pr-wants-to-answer-your-chatgpt-questions-01038138",
+          "why_picked": "Politico 报道以色列 PR 团队试图通过 SEO 和 LLM 优化手段影响 ChatGPT 对中东相关问题的回答。HN 引发 52 分、20+ 评论热议，触及 LLM 信息操纵和 AI 时代 PR 的新战场。",
+          "so_what": "如果你在做 RAG 系统或 LLM 信息源管理：这篇报道揭示了训练数据和检索源可能被有组织操纵的风险。建议在 RAG管线中加入来源可信度评分，对敏感话题的多源交叉验证尤为重要。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-15",
       "items": [
         {
@@ -1213,51 +1258,6 @@
           "url": "https://aws.amazon.com/blogs/machine-learning/building-a-restaurant-telephony-ai-host-with-amazon-bedrock-agentcore-and-amazon-nova-2-sonic/",
           "why_picked": "AWS 发布完整教程：用 Bedrock AgentCore 托管 Agent + Nova 2 Sonic 做语音识别，构建餐厅电话点餐系统。从问候到确认全自动。",
           "so_what": "如果你在构建语音 Agent 或电话自动化：这是一个端到端的生产级参考架构。Bedrock AgentCore 的零代码配置模式降低了 Agent 部署门槛，Nova 2 Sonic 的语音能力值得关注。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-16",
-      "items": [
-        {
-          "title": "Inkling: Thinking Machines Lab 发布开源 MoE 模型（975B/41B active）",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://thinkingmachines.ai/news/introducing-inkling/",
-          "why_picked": "前 ChatGPT/Character.ai/Mistral 团队发布首个自研开源模型，975B 总参数/41B active，多模态（文本+图像+音频），1M 上下文，支持在 Tinker 平台上微调",
-          "so_what": "如果你在做定制化 Agent 管线，Inkling 提供了又一个可微调的开源基座——41B active 的 MoE 架构在推理成本上比稠密模型低一个数量级，且原生支持音频输入，适合构建多模态 Agent。"
-        },
-        {
-          "title": "xAI 开源 Grok Build 编码 Agent（Rust 实现，支持 ACP 协议）",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/xai-org/grok-build",
-          "why_picked": "xAI 将 Grok Build CLI/TUI 编码 Agent 完整开源（Rust），支持 fullscreen TUI、headless CI、ACP 嵌入编辑器",
-          "so_what": "如果你在选择 Coding Agent 方案，Grok Build 的 ACP（Agent Client Protocol）支持意味着它可以嵌入 VS Code/Cursor 等编辑器，与 Claude Code/Codex 形成直接竞争——值得评估其 Rust 实现的稳定性和性能。"
-        },
-        {
-          "title": "Freestyle.sh：为 AI Agent 设计 API 的最佳实践",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://freestyle.sh",
-          "why_picked": "Freestyle CEO（YC S24）从工程角度总结 Agent API 设计模式，HN 40+ 讨论",
-          "so_what": "如果你在设计 Agent 可调用的 API，这篇文章总结了 API 版本控制、错误处理、上下文传递等工程细节——Agent 消费 API 的方式与人类不同，需要更结构化的响应格式。"
-        },
-        {
-          "title": "Brainless：仿 Claude Code/Codex/Grok 风格的 Shadcn UI 组件库",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://swerdlow.dev",
-          "why_picked": "Freestyle CEO 开源一套 Shadcn 组件，一键还原三大 Coding Agent 的终端 UI 风格，HN 77 分",
-          "so_what": "如果你在建 Agent UI 产品，Brainless 提供了现成的终端风格组件——省去大量 CSS 调试，直接复用 Claude Code/Codex/Grok 的视觉语言。"
-        },
-        {
-          "title": "Stripe + Advent 联合报价收购 PayPal",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://reuters.com",
-          "why_picked": "HN 323 分/197 评论，AI 基础设施巨头切入支付领域，可能重塑 AI Agent 的支付能力生态",
-          "so_what": "如果你在建需要支付能力的 Agent 应用，这笔收购若完成可能改变 Stripe/ PayPal 的 API 定价和集成策略——关注后续反垄断审批和 API 兼容性变化。"
         }
       ]
     }
