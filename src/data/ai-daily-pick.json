@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-17",
+      "items": [
+        {
+          "title": "OpenAI IPO前大换血：12位高管离职，安全团队撤编",
+          "category": "行业",
+          "source": "36kr",
+          "url": "https://www.36kr.com/p/3941902971993225",
+          "why_picked": "IPO前两个月内，COO Lightcap、CRO Dresser、首席产品官等12位高管离职；安全团队Preparedness撤编，安全从独立建制变为研发环节",
+          "so_what": "如果你在做企业级AI采购：OpenAI正从研究机构转型为企业销售公司，高管换血意味着产品路线可能更激进。安全团队撤编值得警惕——选择供应商时，安全治理是否独立是重要指标。"
+        },
+        {
+          "title": "英伟达洽谈30亿美元投资SB Energy，为OpenAI数据中心供能",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8vcmZY6DUzO",
+          "why_picked": "NVIDIA向太阳能公司SB Energy投资30亿美元，专门支撑OpenAI数据中心的能源需求——算力竞争的尽头是能源",
+          "so_what": "如果你在做AI基础设施规划：AI数据中心的能源约束正在显性化。NVIDIA亲自下场投资能源公司，说明GPU集群的电力瓶颈比芯片本身更紧迫。关注AI+能源交叉领域的投资机会。"
+        },
+        {
+          "title": "Qwen 3.8 27B 默认推理过深：本地部署的隐藏成本",
+          "category": "工具",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Aug/16/qwen-38-27b/",
+          "why_picked": "Simon Willison实测Qwen 3.8 27B，发现默认xhigh推理强度会耗尽上下文窗口；降低到medium后效果显著改善，17GB GGUF在M5 Max上运行良好",
+          "so_what": "如果你在做本地LLM部署：新模型默认推理强度可能不适合生产环境。Qwen 3.8 27B的xhigh默认值导致消费硬件上21分钟生成简单SVG。部署时务必显式设置reasoning_effort=medium，可节省5-10倍推理token。"
+        },
+        {
+          "title": "CORS Chat：浏览器直连OpenAI兼容API的调试工具",
+          "category": "工具",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Aug/15/cors-chat/",
+          "why_picked": "Simon Willison新工具，直接在浏览器中对话任何支持CORS的OpenAI Responses API端点（LM Studio、OpenRouter等），支持多会话、流式SVG渲染",
+          "so_what": "如果你在做本地模型调试：CORS Chat提供了一个零后端的调试方案——LM Studio开--cors即可在浏览器直连测试，无需写任何后端代码。适合快速验证本地模型的Responses API兼容性。"
+        },
+        {
+          "title": "Dario Amodei：AI信任危机不是公关问题，是交付问题",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Aug/16/dario-amodei/",
+          "why_picked": "Anthropic CEO在X上回应AI负面舆论：根本原因是行业尚未兑现重大承诺（如真正治愈癌症），而非领袖警告造成的公关危机",
+          "so_what": "如果你在做AI产品定位：Amodei的观点暗示——用户不信任AI不是因为害怕风险，而是因为AI还没做出足够有价值的东西。产品策略上，解决一个真实的大问题比任何品牌营销都有效。"
+        },
+        {
+          "title": "unsloth：本地LLM训练与推理的统一UI，GitHub Trending",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/unslothai/unsloth",
+          "why_picked": "GitHub日榜第一，支持Qwen3.8、Kimi K3、DeepSeek-V4等主流模型的本地训练和推理统一界面",
+          "so_what": "如果你在做模型微调：unsloth将训练和推理统一到单一UI中，降低了从微调到部署的摩擦。相比传统的LoRA+vLLM分离方案，一体化方案适合中小团队的快速迭代。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-16",
       "items": [
         {
@@ -1205,59 +1258,6 @@
           "url": "https://huggingface.co/blog/security-incident-july-2026",
           "why_picked": "HuggingFace 官方披露 7 月份发生的安全事件，涉及 Hub 平台。这是 ML 基础设施安全透明化的重要案例。",
           "so_what": "如果你在 HF 上托管模型或数据集：安全事件提醒你需要审查访问控制策略，启用 2FA、限制 API Token 权限范围，并定期检查 Hub 上的仓库权限设置。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-17",
-      "items": [
-        {
-          "title": "Kimi K3 发布：Moonshot AI 推出 2.8T 参数模型，即将开源",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.kimi.com/blog/kimi-k3",
-          "why_picked": "中国 AI 实验室 Moonshot AI 发布 Kimi K3，2.8T 参数（自称 3T 级），自报 benchmark 超越 Claude Opus 4.8 / GPT-5.5 high，定价 $3/$15 per M tokens，7/27 前开源权重。Artificial Analysis 评测显示其在长程知识任务上仅次于 Claude Fable 5，前端代码 Arena 超越 Fable 5。",
-          "so_what": "如果你在选择中国大模型作为 Agent 后端：Kimi K3 的定价与 Claude Sonnet 同级但参数规模远超，且 7/27 开源后可本地部署。值得在开源后第一时间评估其 tool calling 能力和上下文窗口是否适合你的 Agent 管线。"
-        },
-        {
-          "title": "DeepSeek 筹备 IPO：ARR 达 $4-5 亿，估值 $740 亿",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8umEKbDyAHP",
-          "why_picked": "DeepSeek 同步推进科创板上市与 74 亿美元融资（估值 $740 亿），毛利率超 50%，PS 约 148 倍。5 月已完成 $74 亿 A 轮（估值 $570 亿），半年估值增长 30%。",
-          "so_what": "如果你在用 DeepSeek API 做 Agent 后端：IPO 进程意味着定价策略可能变化。建议关注其 API 价格波动，并评估多模型冗余策略以对冲风险。"
-        },
-        {
-          "title": "HuggingFace 遭 AI 自主 Agent 全链路攻击",
-          "category": "行业",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/security-incident-july-2026",
-          "why_picked": "HF 披露遭自主 AI Agent 攻击生产环境——首个被 AI 驱动的完整入侵事件。攻击者通过恶意数据集触发 RCE，横向移动到内部集群，执行数千次独立操作。HF 用 AI 检测并处置。已修复漏洞并建议用户轮换 token。",
-          "so_what": "如果你在 HF 上部署模型或数据集：立即轮换 access tokens，审查近期活动。这个事件验证了 agentic attacker 场景的真实性——你的 Agent 管线如果接入外部数据源，也需要加强沙箱隔离。"
-        },
-        {
-          "title": "GPT-5.6 Codex 被曝文件删除 Bug",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Jul/16/bad-codex-bug/",
-          "why_picked": "Anthropic 工程师 Thibault Sottiaux 确认 GPT-5.6 在 Codex 中会意外删除文件——当 Full access mode 开启、无沙箱保护、且模型尝试覆盖 $HOME 环境变量时发生。",
-          "so_what": "如果你在用 GPT-5.6 + Codex：确保开启 auto review，不要在 Full access mode 下关闭沙箱保护。这个 bug 直接影响开发安全——在 sandbox 中运行 Codex 是底线。"
-        },
-        {
-          "title": "Puter 将 Firefox 编译到 WebAssembly",
-          "category": "实验",
-          "source": "Web",
-          "url": "https://github.com/HeyPuter/firefox-wasm",
-          "why_picked": "Puter 团队用 Claude Opus/Fable 辅助，将 Firefox/Gecko 编译为 WASM，整个浏览器在另一个浏览器中运行。耗资约 $25K token 费用。支持 E2E 加密，通过 WebSocket 代理网络流量。",
-          "so_what": "如果你在探索浏览器端 AI 应用：WASM 能力的边界在快速扩展。Firefox-in-WASM 展示了客户端可承载的计算复杂度——未来 Agent 可能在浏览器内运行完整工具链。"
-        },
-        {
-          "title": "AWS 实战：用 Bedrock AgentCore + Nova 2 Sonic 构建语音 Agent",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-a-restaurant-telephony-ai-host-with-amazon-bedrock-agentcore-and-amazon-nova-2-sonic/",
-          "why_picked": "AWS 发布完整教程：用 Bedrock AgentCore 托管 Agent + Nova 2 Sonic 做语音识别，构建餐厅电话点餐系统。从问候到确认全自动。",
-          "so_what": "如果你在构建语音 Agent 或电话自动化：这是一个端到端的生产级参考架构。Bedrock AgentCore 的零代码配置模式降低了 Agent 部署门槛，Nova 2 Sonic 的语音能力值得关注。"
         }
       ]
     }
