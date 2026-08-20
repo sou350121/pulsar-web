@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-20",
+      "items": [
+        {
+          "title": "Claude 自主设计蛋白质：15 靶标命中 14 个，成功率超人类专家 2-3 倍",
+          "category": "行业",
+          "source": "Anthropic",
+          "url": "https://www.anthropic.com/research/Claude-accelerates-protein-design",
+          "why_picked": "Anthropic 官方公布 Claude (Mythos Preview + Opus 4.8) 在蛋白质设计湿实验中的结果：15 个靶标 14 个命中，22-35% 设计成功率 vs 行业 10-15%，部分设计结合力超越已发表最优结果",
+          "so_what": "如果你在做 AI for Science 管线：这是 LLM 从辅助工具走向独立研究者的里程碑信号。关注 Anthropic 即将开放的科学家访问计划，评估 Claude 在药物发现早期阶段（靶标筛选、分子设计）的集成可行性。Opus 5 的 NMR/LC-MS 数据分析能力也值得纳入化学分析工作流。"
+        },
+        {
+          "title": "Replit 上线 Free Mode：GPT-5.6 Luna 驱动，30 倍产出",
+          "category": "新发布",
+          "source": "Replit",
+          "url": "https://replit.com/blog/replit-introduces-free-mode",
+          "why_picked": "Replit 推出由 GPT-5.6 Luna 驱动的 Free Mode，日常任务不再消耗 credits，Core 用户月费 $20 可创建 30 倍内容，同时推出全新 UI 整合聊天/构建/发布",
+          "so_what": "如果你在用 AI 编码 Agent：Replit 的 Free Mode 标志着 AI 编码工具从 token 计费向订阅制 + 无限使用的范式转变。关注 GPT-5.6 Luna 的成本优化能力——如果你的 Agent 管线主要跑日常编码任务，Luna 可能是性价比最优选择。"
+        },
+        {
+          "title": "Jeremy Morrell：LLM 时代的可扩展软件（Extensible Software）",
+          "category": "观点",
+          "source": "Simon Willison",
+          "url": "https://jeremymorrell.dev/blog/extensible-software-in-the-age-of-llms/",
+          "why_picked": "提出 LLM 大幅降低了编写扩展的成本，现代沙箱原语降低了部署成本和安全边界，Web 软件应该走向「用户用 LLM 自己扩展」的模式",
+          "so_what": "如果你在设计 Agent 产品架构：\"可扩展软件\" 模式值得借鉴——构建坚固的核心 + 允许用户通过 LLM 安全扩展。Cloudflare Dynamic Workers 是沙箱扩展的好参考实现。你的产品是否应该从「功能堆叠」转向「可插拔核心」？"
+        },
+        {
+          "title": "AWS Bedrock AgentCore 异步调用模式：解决 Agent 等待的算力浪费",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/asynchronous-patterns-for-calling-amazon-bedrock-agentcore-agents-in-serverless-pipelines/",
+          "why_picked": "详解三种 serverless 异步模式（task-token callback、direct service integration、durable function）来调用 Bedrock AgentCore Agent，解决同步阻塞导致的 Lambda 算力浪费",
+          "so_what": "如果你在用 serverless 编排 Agent 管线：Agent 的推理延迟会导致同步调用方白白付费。Task-token callback 或 durable function 模式可释放等待期间的 compute 成本，尤其适合文档验证、多步骤推理等场景。"
+        },
+        {
+          "title": "OpenViking：面向 AI Agent 的自进化上下文数据库",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/volcengine/OpenViking",
+          "why_picked": "火山引擎开源的 Agent 上下文数据库，统一 Memory/RAG/Skills 为 viking:// 虚拟文件系统，三级分层加载（L0/L1/L2）减少 token 消耗，检索轨迹可观测",
+          "so_what": "如果你在构建需要长期记忆的 Agent：OpenViking 提供了一种替代向量数据库的方案——用文件系统语义管理上下文。三级分层加载直接解决 token 预算问题，检索轨迹可观测性对调试 Agent 决策很有价值。"
+        },
+        {
+          "title": "munder-difflin：本地多 Agent 编排，把你的 CLI Agent 变成「办公室」",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/chaitanyagiri/munder-difflin",
+          "why_picked": "开源多 Agent harness，将 Claude Code/Codex/Grok 等 CLI 包装为本地克隆 Agent，支持消息路由、记忆和可视化协作，BYOK + 本地 LLM",
+          "so_what": "如果你在做多 Agent 协作实验：这个工具让你用已有的订阅（Claude/GPT 等）在本地跑多个 Agent 协同工作，无需额外 API 费用。适合快速验证 multi-agent 编排模式，但注意目前是原型阶段。"
+        },
+        {
+          "title": "Fanatics 用多 Agent 系统重构体育赛事客服",
+          "category": "行业",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-fanatics-betting-and-gaming-built-a-multi-agent-customer-support-system/",
+          "why_picked": "Fanatics 在 AWS 上构建多 Agent 客服系统，应对州级法规差异、实时负责任游戏检测、超级碗等赛事流量峰值，从决策树 chatbot 升级到 Agent 架构",
+          "so_what": "如果你在构建企业级多 Agent 系统：Fanatics 案例展示了 Agent 在合规敏感场景（州法规差异、问题赌博识别）中的实际落地——关键设计是「知道何时升级给人工」。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-19",
       "items": [
         {
@@ -1213,51 +1274,6 @@
           "url": "https://cruciblebench.ai/",
           "why_picked": "用 1970 年代文字冒险游戏 MUD 评估 LLM，HN 536 分，低成本高效益的新 eval 思路",
           "so_what": "如果你在做 Agent 评估：MUD 天然具备状态追踪、工具使用、长期规划等特性，比静态 benchmark 更适合评估 agentic 能力。考虑将交互式环境纳入你的 eval 管线，而不仅依赖静态问答集。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-20",
-      "items": [
-        {
-          "title": "Qwen3.8-Max-Preview 发布：2.4T 参数旗舰模型",
-          "category": "新发布",
-          "source": "IT之家",
-          "url": "https://m.ithome.com/html/978730.htm",
-          "why_picked": "阿里千问新一代旗舰模型预览版上线，宣称除 Fable 5 外最强大模型，即将开源",
-          "so_what": "如果你在做 Agent 管线选型，Qwen3.8 的 2.4T 参数和全栈开发/多 Agent 长程任务能力值得对比评估。预览版已在 Token Plan / Qoder 上线，可快速做 benchmark。正式版开源后适合本地部署做私有 Agent 后端。"
-        },
-        {
-          "title": "GitHub Copilot SDK 开源：六语言嵌入 Copilot Agent 工作流",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/github/copilot-sdk",
-          "why_picked": "GitHub 官方发布 Copilot SDK，支持 Python/TS/Go/.NET/Java/Rust，将 Copilot CLI 的 agent runtime 可编程化暴露",
-          "so_what": "如果你在建 Agent 应用，不需要自己实现编排层——直接嵌入 Copilot SDK 即可复用其规划、工具调用、文件编辑能力。六语言覆盖意味着可以用在你现有的技术栈中。"
-        },
-        {
-          "title": "code-review-graph：本地优先代码图谱，MCP 精准上下文",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/tirth8205/code-review-graph",
-          "why_picked": "用 Tree-sitter 构建代码结构图谱，增量追踪变更，通过 MCP 给 AI 编码工具精准上下文，减少 token 浪费",
-          "so_what": "如果你在跑大型项目的 AI code review，这个工具能显著降低上下文窗口消耗。一行命令安装，自动检测平台配置，适合 CI 集成。"
-        },
-        {
-          "title": "wigolo：AI 编码 Agent 的本地 web 情报引擎",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/KnockOutEZ/wigolo",
-          "why_picked": "为 AI coding agent 提供搜索/抓取/爬取/研究一体化 MCP 服务，无需 API key，$0/query，日增 595 stars",
-          "so_what": "如果你的 Agent 需要实时 web 信息但受限于 API 成本，wigolo 提供零成本的本地替代方案。支持 Claude Code/Cursor/Codex 等主流 agent，npm 一键安装。"
-        },
-        {
-          "title": "《深入理解 AI Agent》开源全书：设计原理与工程实践",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/bojieli/ai-agent-book",
-          "why_picked": "李博杰著 AI Agent 工程实践开源书，十章覆盖上下文工程/MCP/RAG/评估/后训练，中英双语 PDF+配套代码",
-          "so_what": "如果你刚进入 Agent 开发领域，这本书提供了从 Agent=LLM+上下文+工具 核心公式到生产级评估的完整路径。每章配套代码可直接运行验证。"
         }
       ]
     }
