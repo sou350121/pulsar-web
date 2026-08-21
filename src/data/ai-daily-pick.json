@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-21",
+      "items": [
+        {
+          "title": "Mojo🔥 1.0 正式开源，编译器与工具链 Apache 2.0 许可",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://www.modular.com/blog/mojo-open-source",
+          "why_picked": "Mojo 历经四年封闭开发，随 1.0 版本同步开源编译器与工具链，Python 开发者可自由 Fork 定制 GPU 编程栈",
+          "so_what": "如果你在做 GPU 密集型推理管线或自定义算子开发：Mojo 的开源意味着你可以直接修改编译器后端、对接自有加速卡，而不必等 Modular 官方支持。Apache 2.0 许可也消除了企业采用的法律顾虑。"
+        },
+        {
+          "title": "OpenAI 推出 AI Futures 博客，聚焦「权力集中」风险",
+          "category": "观点",
+          "source": "GitHub",
+          "url": "https://openai.com/index/introducing-ai-futures",
+          "why_picked": "OpenAI 成立 Strategic Futures 团队并发布首篇博客，核心论点是 TAI 时代「权力依赖人类劳动」的假设正在瓦解，需重新设计治理框架",
+          "so_what": "如果你在做 AI 治理/合规/政策研究：这是 OpenAI 首次系统性阐述其对「权力集中风险」的立场，信号意义大于技术意义——值得关注其后续是否影响产品安全策略或 API 权限设计。"
+        },
+        {
+          "title": "Bun 1.4 正式发布：Rust 重写后首次稳定版，新增 WebView/Image/markdown/cron",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://bun.com/blog/bun-v1.4",
+          "why_picked": "Bun 1.4 是 Rust 重写后的首个稳定版，Node.js 兼容性测试增加 1517 个、修复 2900+ issue，CPU 占用降 5 倍、内存降 35%、启动快 50%",
+          "so_what": "如果你在用 Node.js 构建 Agent 工具链或 CI 管线：Bun 1.4 的稳定性提升使其值得在生产环境评估替换，尤其是 Bun.WebView 可提供无头浏览器 JSON API，替代 Puppeteer/Playwright 降低 Agent 浏览器自动化依赖。"
+        },
+        {
+          "title": "IBM 研究：Agent 内存不是「开关」而是「剂量」——校准比堆量更重要",
+          "category": "观点",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ibm-research/altk-evolve-hmm",
+          "why_picked": "ALTK-Evolve 在 8 个模型上测试 agent memory 注入量对性能的影响，发现强模型需要全量 guideline、弱模型需要精简核心+按需检索、饱和模型无收益",
+          "so_what": "如果你在做 Agent 长期记忆/经验回放系统：不要盲目把全部历史经验注入 context。按模型能力分层设计 memory dosage——强模型给全量、弱模型做精选检索，可兼顾 accuracy 和 token 成本。"
+        },
+        {
+          "title": "Sentence Transformers v6.0 新增 MultiVectorEncoder：ColBERT 晚交互检索原生支持",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/multi-vector-encoder",
+          "why_picked": "Sentence Transformers v6.0 新增第四种模型类型 MultiVectorEncoder，直接加载 PyLate/ColBERT/ColPali 检查点，支持文本和视觉文档检索",
+          "so_what": "如果你在做 RAG管线且 dense embedding 检索精度遇到瓶颈：ColBERT 风格的 late interaction 保留 token 级匹配信息，通常在复杂查询上显著优于单向量，且 v6.0 的 pip install 即可上手。"
+        },
+        {
+          "title": "smolvm：用硬件隔离 VM 沙箱运行不可信 Python/JS，冷启动 0.6-1.5s",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://github.com/simonw/research/tree/main/smolmachines-untrusted-sandbox",
+          "why_picked": "Simon Willison 实测 smolvm 1.8.3 作为 untrusted code sandbox，提供 CPU/RAM 限制、无网络、读写挂载隔离，比容器更安全的沙箱方案",
+          "so_what": "如果你在做 Agent 代码执行/沙箱（如 Open Interpreter 类应用）：smolvm 提供硬件级隔离而非共享内核容器，冷启动 <1.5s 适合按需创建，可显著降低恶意代码逃逸风险。"
+        },
+        {
+          "title": "DeepSeek Harness 插件生态爆发：社区精选 15 款值得安装的插件",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://juejin.cn/post/7675273747710001206",
+          "why_picked": "DSH 新版本 14 项更新后插件生态快速增长，涵盖多模态、工具调用、工作流编排等场景，显示 DSH 正从单一 Agent 框架向平台演进",
+          "so_what": "如果你在选择 Agent 框架或评估 DSH：插件生态的丰富度是平台生命力的关键指标。DSH 的插件扩展模式类似 VS Code 生态——值得跟踪其插件质量而非仅看核心功能。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-20",
       "items": [
         {
