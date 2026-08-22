@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-22",
+      "items": [
+        {
+          "title": "OpenAI 全面开源 Codex Harness：Agent 循环引擎 Apache 2.0 许可",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/openai/codex",
+          "why_picked": "OpenAI 将驱动 Codex 的核心 Harness 框架全面开源，含 CLI/SDK/app-server 三大组件。Greg Brockman 称「远不止编程工具」，首批案例已落地税务/云平台。",
+          "so_what": "如果你在做 Agent 产品集成：这意味着不必再把业务流程硬塞进聊天框。用 app-server 的 JSON-RPC 协议将 Agent 嵌入自有仪表盘，利用 Human-in-the-loop 审批机制实现可控自动化。ARC-AGI-3 上仅两项 Harness 调整就让 GPT-5.6 Sol 分数从 13.3% 飙到 38.3%，说明 Harness 设计比模型选择更关键。"
+        },
+        {
+          "title": "博通谈判 700 亿美元债务融资，为 Anthropic 等 AI 企业提供基础设施",
+          "category": "行业",
+          "source": "Readhub",
+          "url": "https://readhub.cn/topic/8vmW6XLNHQX",
+          "why_picked": "博通联合黑石/阿波罗洽谈史上最大 AI 基础设施债务融资，优先档 450 亿 + 次级档 350 亿美元。AI 基建军备竞赛进入「千亿美元级」阶段。",
+          "so_what": "如果你在做 AI 基础设施选型：这笔资金将直接转化为 GPU 集群和数据中心产能，影响未来 1-2 年的算力供给和 API 定价。关注 Anthropic 后续产能扩张节奏——它可能直接影响 Claude API 的可用性和延迟。"
+        },
+        {
+          "title": "AWS Bedrock 查询感知压缩：RAG 输入 Token 成本优化模式",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/reduce-rag-costs-on-amazon-bedrock-with-query-aware-compression/",
+          "why_picked": "AWS 官方博客发布 RAG 后检索压缩模式：用小模型过滤 retrieved chunks 再喂给主模型，同时降低幻觉面积。兼容 Bedrock Knowledge Bases + Prompt Caching + Rerank API。",
+          "so_what": "如果你在做 RAG管线：这是生产级成本优化的标准范式。检索后加一层轻量过滤（如用 2B 模型），可削减 30-60% 输入 Token 而不损失答案质量。与 Prompt Caching 叠加后，规模化 RAG 成本可再降一个量级。"
+        },
+        {
+          "title": "Google Research：将移动模式注入 LLM，让模型「理解」物理空间",
+          "category": "观点",
+          "source": "Google Research",
+          "url": "https://research.google/blog/how-mobility-gives-language-models-a-deeper-understanding-of-place/",
+          "why_picked": "提出 ME-POIs 框架，将匿名移动数据（到达时间/停留时长/周边活动）与文本描述融合，构建同时编码 POI 身份和功能节奏的向量表示。在访问意图预测上提升 81.9%，价格分类提升 75.1%。",
+          "so_what": "如果你在做空间感知 Agent 或 LBS 应用：纯文本 embedding 已不足以捕捉 POI 的动态特征。将移动模式作为先验注入 embedding，可显著提升营业时间预测、拥挤度估计等下游任务。对 Agent 理解「真实世界」有方法论启发。"
+        },
+        {
+          "title": "HumeAI：语音识别基准优化（benchmaxxing）首次量化，多个开源 ASR 模型「背答案」",
+          "category": "实验",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/asr-benchmark-optimization",
+          "why_picked": "评估 11 个开源 ASR 模型发现，多个高分模型在音频与参考答案矛盾时仍复述基准答案，甚至能识别「你在参加哪个基准测试」。提出三种量化 benchmaxxing 的测试方法。",
+          "so_what": "如果你在做语音 Agent 或 ASR 管线：公开基准分数可能严重高估模型真实能力。引入 held-out 测试集和对抗性音频（修改/静音部分词）来验证模型鲁棒性。选择模型时不要只看 leaderboard 排名，要做自己的真实场景 eval。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-21",
       "items": [
         {
