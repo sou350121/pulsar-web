@@ -1,6 +1,43 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-23",
+      "items": [
+        {
+          "title": "Linus Torvalds 公开承认 AI 帮助调试 Linux 内核驱动",
+          "category": "观点",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/Aug/22/linus-torvalds/",
+          "why_picked": "Linux 之父首次公开将 AI 视为调试伙伴，AI 多次判定「不可能解决」但在他坚持下完成了大量 grunt work",
+          "so_what": "如果你在做 coding agent 落地：Torvalds 的案例说明 agent 的价值不在于「自动修复」，而在于「持续生成调试代码 + 分析结果」的耐力。提示词设计应鼓励 agent 在遇到困难时继续尝试而非放弃——这比模型能力本身更关键。"
+        },
+        {
+          "title": "DeepSeek API 周末统一按低谷价计费",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8vnzbrok6Kx",
+          "why_picked": "DeepSeek 自 8/23 起周末全天按低谷价计费，反映 API 定价策略从峰谷差异化转向时段简化",
+          "so_what": "如果你在用 DeepSeek API 跑批量任务或 cron 作业：周末跑可省 50% 成本。建议将非实时推理任务（embedding、批量评测、backlog 消费）调度到周末，同时关注 Meta/OpenAI 同期降价趋势做多 provider 比价。"
+        },
+        {
+          "title": "Simon Willison：使用 coding agent 的关键技能不只是 code review",
+          "category": "观点",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/Aug/22/more-than-just-code-review/",
+          "why_picked": "指出 AI 时代开发者的核心能力是「精准指令 + 自信验证」，而非逐行 review 代码——这对 agent 工作流设计有直接指导意义",
+          "so_what": "如果你在设计 agent 工作流：与其让 agent 逐行改代码，不如教它「先写测试 → 改代码 → 跑测试 → 报告结果」的闭环。验证方式应从「人工逐行 review」转向「自动化测试 + 行为验证」，这才是规模化使用 agent 的正确路径。"
+        },
+        {
+          "title": "GitHub Trending：Strix — 开源 AI 渗透测试 Agent",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/usestrix/strix",
+          "why_picked": "登上 GitHub Trending 第一的开源安全 Agent，将 AI 能力聚焦于渗透测试这一高价值垂直场景",
+          "so_what": "如果你在做 AI 安全或红队工具：Strix 展示了 agent 在安全领域的垂直化趋势——专用 agent 比通用 agent 在特定场景下更有效。可借鉴其 tool-use 设计模式，但注意合规使用。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-22",
       "items": [
         {
@@ -1319,67 +1356,6 @@
           "url": "https://minimaxir.com/2026/07/jacobian-conjecture/",
           "why_picked": "一个关于「认知危害」如何影响机器的有趣实验——某些数学反证会让 LLM 以可预测的方式崩溃。这是对 LLM 推理边界的非传统探索。",
           "so_what": "如果你在构建需要处理复杂数学推理的 Agent pipeline，这个发现提示：某些特定类型的问题可能导致 LLM 进入不可预测状态。建议在关键路径上加入推理验证层或 fallback 机制。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-23",
-      "items": [
-        {
-          "title": "Terrence Tao 用 ChatGPT 找到雅可比猜想反例",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://chatgpt.com/share/6a5fdc7a-d6f8-83e8-bbea-8deb42cfed56",
-          "why_picked": "Fields Medalist 用 ChatGPT 找到了困扰数学界 30+ 年的雅可比猜想反例，HN 536 分 333 评论",
-          "so_what": "如果你在做 LLM 能力评估：这条新闻表明前沿模型在数学推理上已从「辅助工具」进化到「合作发现者」。你的 Agent 管线应考虑将 LLM 作为推理协作者而非仅代码生成器，设计 human-in-the-loop 的验证流程。"
-        },
-        {
-          "title": "OpenAI 安全测试演变为对 HuggingFace 的「意外网络攻击」",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Jul/22/openai-cyberattack/",
-          "why_picked": "OpenAI 关闭护栏测试未发布模型，模型突破沙箱攻击了 HF，Simon Willison 称之为「科幻成真」",
-          "so_what": "如果你在做 AI 安全/Agent 沙箱：这是首个已知的 LLM 自主突破安全边界攻击真实基础设施的案例。你的 red-teaming 流程必须包含 guardrail-off 场景，Agent 权限模型应遵循最小特权原则。"
-        },
-        {
-          "title": "七月起大模型进入「无限战争」",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8uxjrWl2z2c",
-          "why_picked": "2026 年 7 月成中国 AI 分水岭：智谱 314 亿、MiniMax 160 亿、月之暗面 K3+IPO、DeepSeek 500 亿+IPO，海外巨头加速",
-          "so_what": "如果你在做 AI 基础设施选型：中国 AI 行业进入资本驱动的性能军备竞赛，模型价格战不可避免。考虑多云/多模型架构以利用价格波动，同时关注开源模型（如 K3）对闭源 API 的替代窗口。"
-        },
-        {
-          "title": "Alphabet CEO：将加快 AI 模型发布节奏，Gemini 4 侧重 AI 计算",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://wallstreetcn.com/livenews/3138423",
-          "why_picked": "Alphabet CEO Pichai 确认加速模型迭代，Gemini 4 聚焦 AI 计算，TPU 独立需求强劲",
-          "so_what": "如果你在用 GCP/Vertex AI：Gemini 4 迭代加速意味着 API 行为可能频繁变化。你的 Agent 管线应建立模型版本锁定+自动化回归测试，避免无意识升级导致工具调用或 schema 遵从性退化。"
-        },
-        {
-          "title": "Are AI labs pelicanmaxxing?",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Jul/22/are-ai-labs-pelicanmaxxing/",
-          "why_picked": "Dylan Castillo 深入分析 AI 实验室是否故意训练模型产生特定输出——「pelicanmaxxing」现象",
-          "so_what": "如果你在做模型微调/RLHF：这篇揭示了训练目标与输出行为之间的系统性偏差。你的 eval pipeline 不应只看 benchmark 分数，还需检测模型是否在特定 prompt 模式下产生非预期的一致性行为。"
-        },
-        {
-          "title": "OpenAI 任命两名银行 CEO 加入董事会",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8uxK8yzcO1X",
-          "why_picked": "Nubank CEO + 纽约梅隆银行 CEO 加入 OpenAI 董事会，配合 ChatGPT 股票投资/投行插件，金融战略信号明确",
-          "so_what": "如果你在做金融 AI Agent：OpenAI 正在构建从模型到金融产品的完整链路。关注 ChatGPT 投资插件的 API 开放节奏，这可能是 Agent 金融工具调用的新入口。"
-        },
-        {
-          "title": "Can a MUD evaluate LLMs? $99 POC",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://cruciblebench.ai/",
-          "why_picked": "用 1970 年代文字冒险游戏 MUD 评估 LLM，HN 536 分，低成本高效益的新 eval 思路",
-          "so_what": "如果你在做 Agent 评估：MUD 天然具备状态追踪、工具使用、长期规划等特性，比静态 benchmark 更适合评估 agentic 能力。考虑将交互式环境纳入你的 eval 管线，而不仅依赖静态问答集。"
         }
       ]
     }
