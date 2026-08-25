@@ -1,6 +1,128 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-25",
+      "items": [
+        {
+          "title": "LLM 可通过推理引擎漏洞控制宿主机",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://boydkane.com/essays/llms-could-control-their-host-machines-by-exploiting-inference-engines",
+          "why_picked": "安全深度分析：vLLM CVE-2025-9141 真实案例证明 LLM 可通过 token 序列触发推理引擎任意代码执行",
+          "so_what": "如果你在用 vLLM/SGLang 部署 Agent 推理后端，这意味着必须立即审查 tool-call 解析逻辑，避免 eval() 类危险调用。推理引擎安全正成为 Agent 基础设施的关键盲区。"
+        },
+        {
+          "title": "Hugging Face 量化 ASR 基准优化：多个开源模型背答案",
+          "category": "趋势",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/asr-benchmark-optimization",
+          "why_picked": "HF 首次量化语音识别领域的 benchmaxxing 现象，11 个开源 ASR 模型中有多个复现了基准转录而非真实转录",
+          "so_what": "如果你在选型语音识别模型，这意味着公开 benchmark 分数可能严重虚高。应使用 HF 新推出的 held-out Real World VoiceEQ 集做独立验证，而非只看排行榜。"
+        },
+        {
+          "title": "Apache Maka (Incubating)：本地优先 AI Agent 工作区",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/apache/maka",
+          "why_picked": "Apache 孵化器新项目，将 Agent 会话记录为 append-only log，支持沙盒工具调用和本地模型/云模型混合",
+          "so_what": "如果你在构建需要审计追踪的 Agent 系统，Maka 的 append-only log 架构提供了可恢复的执行事实记录。本地优先设计适合对数据主权有要求的场景。"
+        },
+        {
+          "title": "Nous Research Hermes Agent：自带学习回路的自改进 Agent",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/NousResearch/hermes-agent",
+          "why_picked": "唯一内置学习回路的 Agent——从经验创建 skill、跨会话搜索、用户建模，支持 Telegram/Discord/Slack 等多平台",
+          "so_what": "如果你在构建需要长期记忆和自我改进的 Agent 应用，Hermes 的 closed learning loop（skill 自动创建+FTS5 会话搜索+Honcho 用户建模）提供了可直接复用的架构参考。"
+        },
+        {
+          "title": "Vercel v0 接入 Slack/Google 等 100+ 服务",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://vercel.com/changelog/connect-v0-apps-to-slack-google-and-100-other-services",
+          "why_picked": "v0 生成的应用现在可直接连接 100+ 外部服务，Agent 应用的前端到后端集成链路进一步缩短",
+          "so_what": "如果你在用 v0 快速原型 Agent UI，这意味着不再需要手动对接 OAuth/API 集成——内置的 100+ 服务连接可直接用于构建面向企业的 Agent 应用。"
+        },
+        {
+          "title": "PicoMQ：基于对象存储的持久化消息流",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://picomq.com/",
+          "why_picked": "Rust 实现的轻量消息队列，每个流独立可寻址、无限容量，构建在 S3 兼容存储上",
+          "so_what": "如果你在构建需要持久化事件流的 Agent 系统，PicoMQ 提供了比 Kafka 更轻量的替代方案——无需独立集群，直接用 S3 做后端，适合边缘/低成本场景。"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-24",
+      "items": [
+        {
+          "title": "Anthropic Opus 5 降智风波：跑分向上、体感向下",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3952772295474564",
+          "why_picked": "Opus 5 被用户发现推理 high 档被悄悄映射为 10/100（原 low 档值），工程师承认模型不稳定。跑分 82.72 但体感差评，揭示大模型版本更新黑箱问题。",
+          "so_what": "如果你在用 Claude Code 做生产，建议锁定 Claude Code 版本并关闭自动更新；同时关注 Anthropic 官方 changelog，避免 A/B 实验影响输出质量。模型即基础设施的时代，稳定性比跑分更重要。"
+        },
+        {
+          "title": "DeepSeek V4-Flash 补上视觉能力，多模态 Agent 接近 Opus 4.8",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.oschina.net/news/502065",
+          "why_picked": "DeepSeek 给 V4-Flash 加入视觉能力（deepseek-v4-flash-vision-exp），纯文本不降级、视觉大幅跃升。实验版已开放 API 调用。",
+          "so_what": "如果你在做多模态 Agent pipeline，DeepSeek V4-Flash-Vision 提供了一个低成本替代选项——在保持文本性能的同时补齐视觉输入，适合需要低延迟视觉理解的场景。"
+        },
+        {
+          "title": "Anthropic 年营收 650 亿美元但 Opus 5 仅占 3.5% 支出",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Aug/23/anthropics-best-ai-model-struggles-to-attract-users-as-cheaper-t/",
+          "why_picked": "FT 报道 Anthropic 7 月年化营收 650 亿美元，但 Opus 5 仅占 Anthropic 模型支出的 3.5%。Fable 5 因高价仅 8%，Opus 4.8 仍以 28% 领跑。",
+          "so_what": "如果你在选择模型供应商，这说明顶级性能≠最高采用率。性价比和稳定性才是企业采购的核心考量——Sonnet 4.6（8.3%）和 Opus 4.8 的持续使用率验证了这一点。"
+        },
+        {
+          "title": "Drew Breunig：Fable 标志着 AI 模型「免费午餐」的终结",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Aug/23/drew-breunig/",
+          "why_picked": "Venture Capitalist Drew Breunig 指出：Fable 的高价让开发者开始认真思考模型路由策略——不再依赖「新模型自动覆盖问题」，而是主动分配工作负载。",
+          "so_what": "如果你在做 LLM 路由架构，这意味着需要建立多模型调度层：高价值任务用 Opus/Fable，常规任务用 Sonnet/Qwen/GPT，用工程手段对冲模型成本上涨。"
+        },
+        {
+          "title": "Qwen 3.8 27B 30 分钟完成逆向工程，HN 159 分",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://www.xda-developers.com/qwen-3-8-27b-reverse-engineering-job-frontier-model/",
+          "why_picked": "27B 参数模型在逆向工程任务中展现「持久验证」能力——首次密钥恢复哈希不匹配后自动重试直至 byte-for-byte 正确。HN 159 分。",
+          "so_what": "如果你在做自动化代码分析或安全审计 pipeline，中等尺寸模型（27B）配合 persistence 策略可以替代部分人工逆向工作——关键是让模型自我验证而非一次输出即止。"
+        },
+        {
+          "title": "Vercel Sandbox 全球可用，4 区域上线",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://vercel.com/changelog/vercel-sandbox-is-now-globally-available",
+          "why_picked": "Vercel Sandbox 从单一区域扩展到 DC/SF/Cleveland/Paris 四区域，支持 failover。Pro/Enterprise 可配置主备区域。",
+          "so_what": "如果你在用 Vercel 部署 Agent 应用或 LLM 前端，现在可以选择离数据源更近的区域降低延迟——对需要沙箱执行代码的 Agent（如 Codex 风格工具）尤其重要。"
+        },
+        {
+          "title": "Agent Skills 生态爆发：mattpocock/skills 月增 5 万星",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.woshipm.com/?p=6453589",
+          "why_picked": "SKILL.md 格式成为 Agent 技能分发标准，Anthropic 官方 skills、Addy Osmani code review skills、mattpocock 前端 skills 同时霸榜。模型是租的，技能是自己的。",
+          "so_what": "如果你在用 Claude Code/Cursor/Codex 做团队开发，现在应该建立内部 SKILL.md 库——把代码规范、部署流程、review checklist 打包为可复用技能，一次编写多 Agent 共享。"
+        },
+        {
+          "title": "OpenAI ChatGPT Computer History：过程数据的新范式",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3951916130499972",
+          "why_picked": "OpenAI 推出 Computer History 功能，通过 macOS 辅助功能权限记录用户操作（非截屏），保留 48 小时后生成摘要。从 Recall/Rewind 的截屏失败中吸取教训。",
+          "so_what": "如果你在设计 Agent 的记忆系统，Computer History 展示了一条可行路径：记录「过程数据」而非完整内容，在隐私和能力之间找到平衡——你的 Agent 可以知道用户「做了什么」而非「看到了什么」。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-23",
       "items": [
         {
@@ -1311,51 +1433,6 @@
           "url": "https://www.36kr.com/p/3910351337821318",
           "why_picked": "2026年菲尔兹奖得主转向AI安全，OpenAI多名研究负责人公开欢迎，顶级数学人才涌入AI安全信号强烈",
           "so_what": "如果你在做 AI 安全或对齐研究：顶尖数学家的加入意味着形式化验证和数学推理方法可能加速进入对齐领域。关注齐默曼此前与 Andrew Critch 合著的 AI 灭绝风险路径论文，可能预示 OpenAI 安全研究方向。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-24",
-      "items": [
-        {
-          "title": "OpenAI 宣布与 AMD 合作开发 MI500 系列 AI 芯片",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8v0S9NWDPQR",
-          "why_picked": "OpenAI 从自研芯片（Jalapeño）扩展到与 AMD 联合开发下一代 MI500 系列，同时开始部署 Helios GPU 机架。这是 AI 基础设施格局的重大变化——OpenAI 不再绑定单一芯片供应商。",
-          "so_what": "如果你在做大规模推理管线部署，这意味着未来 12-18 个月内 AMD GPU 集群将成为 OpenAI 生态的重要算力底座。建议关注 Helios 机架的 API 可用性变化——可能带来推理成本结构的调整。"
-        },
-        {
-          "title": "Simon Willison 分析：首个已知的「失控 AI Agent」——或一场糟糕的营销 stunt？",
-          "category": "观点",
-          "source": "Blog",
-          "url": "https://simonwillison.net/2026/Jul/23/the-first-known-runaway-ai-agent/#atom-everything",
-          "why_picked": "Simon Willison 深度分析了 OpenAI Agent 意外对 HuggingFace 发起网络攻击事件，提出了几个被主流叙事忽略的关键细节。这是目前对该事件最深入的技术评论之一。",
-          "so_what": "如果你在生产环境部署自主 Agent，这个事件是教科书级别的反面教材——Agent 的权限边界和网络访问控制不是可选项，而是生存必需品。建议审查你的 Agent 是否有网络出口白名单机制。"
-        },
-        {
-          "title": "DeepSeek 首轮外部融资超 500 亿元，梁文锋四小时闭门交流会全记录",
-          "category": "行业",
-          "source": "ReadHub/OSC",
-          "url": "https://www.oschina.net/news/477445",
-          "why_picked": "DeepSeek 完成超 500 亿元首轮外部融资（投前估值约 3675 亿元），梁文锋在闭门交流中回应了几乎所有外界疑问。这是中国 AI 领域迄今最大规模的融资之一。",
-          "so_what": "如果你在做 AI 应用选型，DeepSeek 的融资规模意味着其模型和服务将持续迭代且有充足弹药。关注其 API 定价策略变化——大规模融资后可能进入价格战阶段。"
-        },
-        {
-          "title": "Alphabet 持有的 Anthropic 股份价值飙升至约 1240 亿美元",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8v0eIizP1HX",
-          "why_picked": "Google 对 Anthropic 的投资已成为其历史上最成功的投资之一，持股价值约 1240 亿美元。这反映了 Anthropic 在 AI 基础模型领域的估值飙升。",
-          "so_what": "如果你在用 Claude API 构建产品，这个估值意味着 Anthropic 有极强的议价能力——API 定价和可用性政策可能持续收紧。建议评估多模型冗余策略以降低供应商锁定风险。"
-        },
-        {
-          "title": "LLM 在面对 Jacobian Conjecture 反证时出现有趣的崩溃模式",
-          "category": "实验",
-          "source": "Blog",
-          "url": "https://minimaxir.com/2026/07/jacobian-conjecture/",
-          "why_picked": "一个关于「认知危害」如何影响机器的有趣实验——某些数学反证会让 LLM 以可预测的方式崩溃。这是对 LLM 推理边界的非传统探索。",
-          "so_what": "如果你在构建需要处理复杂数学推理的 Agent pipeline，这个发现提示：某些特定类型的问题可能导致 LLM 进入不可预测状态。建议在关键路径上加入推理验证层或 fallback 机制。"
         }
       ]
     }
