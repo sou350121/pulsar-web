@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-26",
+      "items": [
+        {
+          "title": "OpenAI 首颗自研推理芯片 Jalapeño 实测：吞吐+能效领先",
+          "category": "新发布",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/jalapeno-first-results",
+          "why_picked": "OpenAI 首个自研推理芯片公布实测数据，吞吐和能效均领先，标志着 AI 基础设施从依赖外部芯片向自研架构的重大转折",
+          "so_what": "如果你在做大规模推理部署：Jalapeño 意味着 OpenAI 未来可能将自家模型优先跑在自研芯片上，第三方 API 的延迟/成本结构可能变化。关注其是否开放给 Azure 合作伙伴，以及与其他推理芯片（如 Groq、Inferentia）的对比数据。"
+        },
+        {
+          "title": "Vercel Connect GA：用运行时短期 Token 终结 Agent 凭证 sprawl",
+          "category": "新发布",
+          "source": "Vercel",
+          "url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents",
+          "why_picked": "Agent 权限管理是工程痛点——Connect 用运行时短期 Token 替代长期凭证，解决 Agent 连接 100+ 服务时的凭证泛滥问题",
+          "so_what": "如果你在做 Agent 权限控制或集成第三方 API：Connect 的短期 Token 模式值得直接引入架构。对比 AWS STS / OAuth2 设备码流程，它能减少 90% 的密钥管理负担，特别适合多 Agent 并行调用外部服务的场景。"
+        },
+        {
+          "title": "IBM Granite 4.2：推理 + 原生工具调用 + Agentic RL，Apache 2.0",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ibm-granite/granite-4-2",
+          "why_picked": "Granite 4.2 是 Apache 2.0 许可下少有的同时覆盖推理、原生工具调用和 Agentic RL 训练的开源模型，企业可商用无顾虑",
+          "so_what": "如果你在做企业级 Agent 选型：Granite 4.2 提供了 OpenAI 工具调用格式的开源替代方案，且支持 Agentic RL 微调。对比 Llama 系列，它在工具调用准确率上有竞争力，适合需要数据不出域的私有化部署。"
+        },
+        {
+          "title": "豆包工作深度打通飞书：Agent 继承企业上下文，以组织成员身份运行",
+          "category": "工具",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8vt4kIJ2J3n",
+          "why_picked": "字节跳动将 AI Agent 深度嵌入飞书组织体系——Agent 不再是外部工具，而是以虚拟员工身份继承企业权限和上下文",
+          "so_what": "如果你在做企业 Agent 落地：豆包+飞书的方案展示了 Agent 与 OA 系统深度集成的范式——权限继承、上下文感知、以员工身份协作。对比 Slack Bot 模式，这种组织内原生 Agent 代表了企业 AI 的方向。"
+        },
+        {
+          "title": "OpenAI 高层持续变动：数据中心负责人离开，为 2027 IPO 做准备",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8vtMZFHC0bz",
+          "why_picked": "OpenAI 2030 年计算基础设施支出预期从 6000 亿上调至 7500 亿美元，同时多位高管离职，公司处于 IPO 前重组期",
+          "so_what": "如果你依赖 OpenAI API 做业务：高层变动 + IPO 准备期可能带来定价策略、API 稳定性、产品路线的调整。建议关注其基础设施合作伙伴（甲骨文/软银/云厂商）的动态，预判产能变化对 API 配额的影响。"
+        },
+        {
+          "title": "Vercel Run SDK：在沙箱中安全执行 Agent 生成的代码",
+          "category": "工具",
+          "source": "Vercel",
+          "url": "https://vercel.com/blog/introducing-run",
+          "why_picked": "Agent 生成代码的安全执行是核心挑战——Run SDK 提供沙箱化执行环境，解决代码注入和越权问题",
+          "so_what": "如果你在做 coding agent 或代码生成管线：Run SDK 提供了开箱即用的沙箱执行方案。对比 Docker-in-Docker 或 gVisor 自建方案，它能减少运维负担，适合需要快速上线代码执行能力的 Agent 产品。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-25",
       "items": [
         {
@@ -1380,59 +1433,6 @@
           "url": "https://github.com/QuantumNous/new-api",
           "why_picked": "one-api 的活跃分支，支持将多种 LLM 统一转为 OpenAI/Claude/Gemini 兼容格式。正是 relay market 调查中被广泛使用的开源工具——但本身是合法的多模型管理网关。",
           "so_what": "如果你需要多模型路由/负载均衡：new-api 是目前最活跃的开源方案，支持 Docker 一键部署、用量统计、成本核算。JetBrains 开源支持。注意：务必配合 IP 白名单和 key 额度限制使用。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-26",
-      "items": [
-        {
-          "title": "Claude Opus 5 正式发布：Fable 5 性能、一半价格",
-          "category": "新发布",
-          "source": "Anthropic Blog",
-          "url": "https://www.anthropic.com/news/claude-opus-5",
-          "why_picked": "Anthropic 新一代旗舰模型，Frontier-Bench SOTA，ARC-AGI 3 得分是第二名3倍，OSWorld 2.0 以1/3成本超越Fable 5",
-          "so_what": "如果你在做 Agent 系统选型：Opus 5 是日常高频任务的最优性价比选择——Frontier-Bench 上性能翻倍于 Opus 4.8 且成本持平。API 使用 claude-opus-5 模型名，注意 Fast mode 价格是基础2倍。新增的对话中途换工具+API自动降级两个测试功能值得在 production pipeline 中试验。"
-        },
-        {
-          "title": "Boris Cherny：Opus 5 是最抗 prompt injection 的 Claude 模型",
-          "category": "观点",
-          "source": "Simon Willison / Anthropic System Card",
-          "url": "https://simonwillison.net/2026/Jul/25/boris-cherny/",
-          "why_picked": "Anthropic AI 负责人 Boris Cherny 指出 Opus 5 在 PI evals 和 red teaming 中极难被注入，系统卡第73页有详细数据",
-          "so_what": "如果你在做多 Agent 协作或 tool calling 管线：Opus 5 的抗注入能力意味着可以在更开放的环境中部署——减少 prompt 隔离层的复杂度，降低安全审计成本。但网络安全任务仍落后 Mythos 5，安全敏感场景需分层选型。"
-        },
-        {
-          "title": "Ruff v0.16.0：默认检查规则从 59 条暴增至 413 条",
-          "category": "工具",
-          "source": "Simon Willison / Astral Blog",
-          "url": "https://simonwillison.net/2026/Jul/25/ruff/",
-          "why_picked": "Python 生态重大 breaking change，大量 CI 任务因新默认规则失败，Simon Willison 实测发现数百个历史问题",
-          "so_what": "如果你在用 Python + CI：立即 pin 住 ruff 版本避免意外 CI 失败。用 uvx ruff@latest check . --fix --unsafe-fixes 可批量修复。新规则覆盖语法错误和运行时错误检测，对 Agent 生成的代码质量审查尤其有价值。"
-        },
-        {
-          "title": "Andrew Ng 发布 aisuite：统一多 AI Provider 接口",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/andrewyng/aisuite",
-          "why_picked": "Andrew Ng 亲自操刀的轻量统一接口，解决多模型切换的样板代码问题，GitHub Trending 热门",
-          "so_what": "如果你在建 RAG管线或需要模型 fallback：aisuite 提供统一的 generate() 接口，切换 OpenAI/Anthropic/Gemini 只需改一行配置。比 LangChain 的 model router 更轻量，适合不想引入重型框架的团队。"
-        },
-        {
-          "title": "微软、英伟达、Meta、IBM 联合呼吁开放权重 AI 模型",
-          "category": "行业",
-          "source": "36kr / 界面新闻",
-          "url": "https://www.36kr.com/p/3910351337821318",
-          "why_picked": "黄仁勋新开 X 账号首帖即为联署文章，科技巨头罕见集体为开源模型发声",
-          "so_what": "如果你在做私有化部署或合规 AI：开放权重生态加速意味着更多高质量可商用模型可用（如 Llama 系列后续），降低对闭源 API 的依赖风险。关注 Meta 和 NVIDIA 后续开源路线图。"
-        },
-        {
-          "title": "菲尔兹奖得主雅各布·齐默曼加入 OpenAI 从事 AI 安全研究",
-          "category": "行业",
-          "source": "36kr / 界面新闻",
-          "url": "https://www.36kr.com/p/3910351337821318",
-          "why_picked": "2026年菲尔兹奖得主转向AI安全，OpenAI多名研究负责人公开欢迎，顶级数学人才涌入AI安全信号强烈",
-          "so_what": "如果你在做 AI 安全或对齐研究：顶尖数学家的加入意味着形式化验证和数学推理方法可能加速进入对齐领域。关注齐默曼此前与 Andrew Critch 合著的 AI 灭绝风险路径论文，可能预示 OpenAI 安全研究方向。"
         }
       ]
     }
