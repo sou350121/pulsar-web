@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-27",
+      "items": [
+        {
+          "title": "Paul Dix：AI 写了 100 万行代码并持续打磨到可靠，正在百万开发者机器上运行",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Aug/26/paul-dix/",
+          "why_picked": "Basecamp 创始人 Paul Dix 公开确认用 AI 完成了百万行级代码重写并持续迭代，验证了 AI 编码从 demo 到生产级的跨越",
+          "so_what": "如果你在用 coding agent 做大型重构：关键不是让 agent 一次写完，而是建立可验证的反馈回路（oracle/测试套件），让 AI 持续迭代直到通过。这比一次性生成质量高一个量级。"
+        },
+        {
+          "title": "Meta Muse Image 上线 Vercel AI Gateway：统一生成+编辑的图像模型",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://vercel.com/changelog/muse-image-now-available-on-ai-gateway",
+          "why_picked": "Meta Superintelligence Labs 首个图像模型，一个模型同时支持文生图和图像编辑，已在 Vercel AI Gateway 可用",
+          "so_what": "如果你在做多模态 Agent 应用：无需在生成和编辑模型间切换，统一 API 调用 meta/muse-image-1.0 即可。配合 reference image 做风格迁移，适合 Agent 内嵌的图像创作管线。"
+        },
+        {
+          "title": "Gradio Workflow：拖拽式 AI 管线，一图抵千行 Python",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/gradio-workflow-guide",
+          "why_picked": "Hugging Face 在 Gradio 中引入 gr.Workflow，用有类型节点的 DAG 描述 AI 管线，自动生成拖拽 UI + REST API + Spaces 一键部署",
+          "so_what": "如果你需要快速原型化多步 AI 管线（如图像→去背→配音→标题）：gr.Workflow 把 Python 脚本变成可视化 DAG，每个节点可独立调试，中间结果可见，大幅降低 pipeline debug 成本。"
+        },
+        {
+          "title": "Sentence Transformers v6.0 训练指南：ColBERT 晚交互检索原生支持",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/train-multi-vector-encoder",
+          "why_picked": "Sentence Transformers 新增 MultiVectorEncoder 模型类型 + 完整训练流程，单卡 RTX 3090 微调 14.5h 即可超越通用 dense/sparse 检索器",
+          "so_what": "如果你在做 RAG 检索优化：ColBERT 晚交互检索在 domain-specific 场景下显著优于 dense embedding。用 mLateOn-medical 等预训练模型微调，比从头训练 dense 模型性价比更高。"
+        },
+        {
+          "title": "browser-use：让 AI Agent 自动化网页操作",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/browser-use/browser-use",
+          "why_picked": "GitHub Trending 热门项目，让 AI Agent 通过浏览器自动完成网页任务，star 增长迅速",
+          "so_what": "如果你在做需要网页交互的 Agent（如数据采集、表单填写、跨系统操作）：browser-use 提供高层 API 封装浏览器自动化，比 Playwright/Puppeteer 更贴近 Agent 语义层，可直接用自然语言驱动浏览器。"
+        },
+        {
+          "title": "Anthropic 发布 Claude Code 官方插件目录",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/anthropic/claude-plugins-official",
+          "why_picked": "Anthropic 官方维护的高质量 Claude Code 插件目录，标志着 Agent Skills 生态从社区实验走向官方标准化",
+          "so_what": "如果你在用 Claude Code 或关注 Agent Skills 标准：官方目录的发布意味着技能生态正在收敛。参考此目录结构规划自己的 Agent 技能体系，避免碎片化。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-26",
       "items": [
         {
@@ -1396,43 +1449,6 @@
           "url": "https://github.com/letsseal/letsseal",
           "why_picked": "类似 Let's Encrypt 对 TLS 证书做的事——让文档签名免费、开源、自托管，支持 PDF PAdES 标准",
           "so_what": "如果你在做文档工作流或 Agent 自动化签名，Let's Seal 提供了一条摆脱 DocuSign 付费锁定的路径。支持自托管 + REST API + SDK，适合集成到 Agent 管线中。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-27",
-      "items": [
-        {
-          "title": "OpenAI 三线齐崩：连续17天无正常日，Agent时代宕机成本换挡",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3911112634340996",
-          "why_picked": "7/25 OpenAI API+ChatGPT+Codex 三线同时报错，31个组件受影响。连续17天无完全正常日，标志着单模型依赖风险从理论变为现实。",
-          "so_what": "如果你在生产环境跑 Agent 管线：多云多模型路由已从加分项变成标配。建议立刻评估 fallback 方案（如 Bedrock + 国产模型），并为关键 Agent 任务加入断点续跑逻辑。Codex 中断 111 分钟足以让大项目烂尾。"
-        },
-        {
-          "title": "Claude Opus 5 系统提示词 1511 行全泄露",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://m.ithome.com/html/981688.htm",
-          "why_picked": "Opus 5 刚发布即遭提示词泄露，1511 行 system prompt 被完整曝光。这是 Anthropic 安全承诺（「最抗 prompt injection」）与透明度之间的张力样本。",
-          "so_what": "如果你在用 Claude 构建 Agent：泄露的 prompt 结构揭示了 Anthropic 对工具调用、安全边界、输出格式的精细控制逻辑。可借鉴其分层指令设计，但注意 Opus 5 的 anti-injection 能力不依赖 prompt 长度。"
-        },
-        {
-          "title": "Simon Willison 深度调查：LLM Token 黑市 relay market",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Jul/26/relay-market/",
-          "why_picked": "Matt Lenhard 调查揭示了围绕 LLM token 倒卖的灰色产业链——滥用免费试用、代理未保护 support bot、甚至盗刷信用卡。HN 热帖。",
-          "so_what": "如果你在运营 LLM 应用：存在一个成熟的灰色生态专门寻找未保护端点牟利。务必为 API key 设置严格额度上限（cap），不要依赖默认的无限制消耗。推荐用 new-api 等网关做用量监控。"
-        },
-        {
-          "title": "QuantumNous/new-api ⭐12k+ LLM API 聚合网关",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/QuantumNous/new-api",
-          "why_picked": "one-api 的活跃分支，支持将多种 LLM 统一转为 OpenAI/Claude/Gemini 兼容格式。正是 relay market 调查中被广泛使用的开源工具——但本身是合法的多模型管理网关。",
-          "so_what": "如果你需要多模型路由/负载均衡：new-api 是目前最活跃的开源方案，支持 Docker 一键部署、用量统计、成本核算。JetBrains 开源支持。注意：务必配合 IP 白名单和 key 额度限制使用。"
         }
       ]
     }
