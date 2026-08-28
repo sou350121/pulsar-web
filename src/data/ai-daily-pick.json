@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-28",
+      "items": [
+        {
+          "title": "Anthropic 发布 Model Hardware Standard (MHS) 研究预览：AI Agent 标准化操控物理设备",
+          "category": "新发布",
+          "source": "Anthropic",
+          "url": "https://www.anthropic.com/news/model-hardware-standard-research-preview",
+          "why_picked": "Anthropic 联合 HHMI Janelia 推出 MHS，让 AI Agent 通过统一驱动层操作显微镜、液体处理仪、机械臂等物理设备，集成周期从数周缩短到数小时。HN 69pts。",
+          "so_what": "如果你在做 Agent 与硬件交互（实验室自动化/制造/机器人）：MHS 定义了 read/write 原语 + 设备发现标准，任何 Agent harness 都可通过 MCP 接入。关注其开源时间表，提前评估是否值得将你的设备驱动迁移到 MHS 框架。"
+        },
+        {
+          "title": "tare：Claude Code 用量审计工具，10 分钟耗尽配额后的自救",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/kelviq/tare",
+          "why_picked": "Claude Code 用户痛点——配额莫名耗尽。tare 通过读取本地 session log 让 Claude Code 自我诊断 token 消耗去向，支持按项目/模型/文件维度分析。HN 64pts，npx 一键安装。",
+          "so_what": "如果你在用 Claude Code 且频繁 hit 配额限制：tare 提供开箱即用的用量审计能力，帮你定位哪些项目/MCP 服务器/subagent 在消耗 token。对比自建 dashboard，它零配置、数据不出本机。"
+        },
+        {
+          "title": "OpenAI GPT-5.6 Terra/Luna 登陆 AWS Bedrock 印度区域",
+          "category": "行业",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-openai-models-on-amazon-bedrock-for-in-country-inferencing-in-india/",
+          "why_picked": "OpenAI 最新 GPT-5.6 系列（Terra + Luna，1M context）通过 AWS Bedrock 印度区域推理落地，满足数据本地化合规要求。跨 Region 推理提升吞吐。",
+          "so_what": "如果你在印度或有印度数据合规需求：GPT-5.6 Terra/Luna 现在可在 ap-south-1/2 区域推理，数据不出印度。对比 Azure India，Bedrock 提供 OpenAI 原生 API 兼容性，迁移成本低。"
+        },
+        {
+          "title": "OpenAI 千人大样本研究：ChatGPT + 批判性思维训练提升学生答案质量",
+          "category": "观点",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/what-students-gain-from-chatgpt-critical-thinking-training",
+          "why_picked": "OpenAI 发布 1000+ 学生随机对照实验，发现 ChatGPT + 批判性思维训练组合显著提升答案原创性和质量，纯用 ChatGPT 效果有限。",
+          "so_what": "如果你在构建教育类 Agent 或 LLM 辅助学习产品：这项研究验证了「工具+方法论」的组合效应——Agent 不应只给答案，而应嵌入批判性思维引导流程，才能产生可测量的学习效果提升。"
+        },
+        {
+          "title": "海光信息发布 Agent to Token 开放计算架构",
+          "category": "行业",
+          "source": "ReadHub",
+          "url": "https://readhub.cn/topic/8vw0F0WNGwd",
+          "why_picked": "国产 CPU/DCU 厂商海光信息在数博会上首发 Agent to Token 架构，以 CPU+DCU 双芯协同支撑 Agent 任务执行与词元生产全周期，光合组织已汇聚 6000+ 生态伙伴。",
+          "so_what": "如果你关注国产 AI 算力生态：Agent to Token 架构将 Agent 调度与推理计算统一抽象，代表国产芯片厂商从「算力提供商」向「Agent 基础设施」转型。值得关注其开放标准和生态进展。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-27",
       "items": [
         {
@@ -1404,51 +1449,6 @@
           "url": "https://readhub.cn/topic/8v8fJ7eAZDn",
           "why_picked": "xAI 为 SuperGrok Heavy 订阅者推出 Build 模型，定位编码 Agent。继 Claude Code / Cursor / GPT-5.6 Codex 之后，又一玩家加入编码 Agent 赛道。",
           "so_what": "如果你在选型编码 Agent 后端，这意味着竞争进一步加剧——Build 模型加入使编码 Agent 选项达到 5+ 主流玩家。关注其 benchmark 表现和定价，可能在特定场景（如大型代码库理解）有差异化优势。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-28",
-      "items": [
-        {
-          "title": "Kimi K3 正式开源：2.8T 参数模型权重发布",
-          "category": "新发布",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/moonshotai/Kimi-K3",
-          "why_picked": "月之暗面如期开源 Kimi K3，全球最大开源模型之一，综合性能前三",
-          "so_what": "如果你在做本地模型部署或推理优化，K3 的 100 万 token 上下文窗口和修改版 MIT 许可证值得评估。OpenRouter 已有 7 家供应商上线，输入 $3/百万 token。注意其 MaaS 收入超 $2000 万需另签协议的条款。"
-        },
-        {
-          "title": "特朗普政府即将敲定 AI 自愿监管框架",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8v7IcxfPyzt",
-          "why_picked": "美国白宫拟要求 AI 公司在发布前沿模型前提交政府审查，OpenAI/Anthropic/谷歌联合提交修改意见",
-          "so_what": "如果你在做企业 AI 合规或出海产品，美国监管框架的落地节奏将影响模型 API 可用性和数据治理要求。关注自愿审查流程的具体运作细节，这可能成为行业准入门槛。"
-        },
-        {
-          "title": "Anthropic 澄清：从未主张禁止开放权重模型",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8v7Q8PsLA1f",
-          "why_picked": "Anthropic CEO 反驳此前「主张禁止开放权重」的说法，不同意开放权重天然更利于安全防护的观点",
-          "so_what": "如果你在做开源模型选型或安全评估，这场争论反映了 closed vs open 的核心分歧——Anthropic 作为商业公司却为开放权重辩护，立场值得注意。"
-        },
-        {
-          "title": "Ethan Mollick 更新 AI 工具选择指南：全面转向 Agentic 视角",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.oneusefulthing.org/p/an-opinionated-guide-to-which-ai-b22",
-          "why_picked": "Ethan Mollick 的年度指南已从纯聊天工具对比演变为 agentic 系统评测，Gemini 因缺 Codex/Work 替代品被降级",
-          "so_what": "如果你在选择 AI 工具栈，这份指南提供了从 Chat → Work → Cowork → Code 的实用路径。注意 ChatGPT Work 和 Claude Cowork 的命名混淆——它们本质是带电脑访问权限的 Agent 模式。"
-        },
-        {
-          "title": "Let's Seal：开源文档签名工具，对标 DocuSign",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/letsseal/letsseal",
-          "why_picked": "类似 Let's Encrypt 对 TLS 证书做的事——让文档签名免费、开源、自托管，支持 PDF PAdES 标准",
-          "so_what": "如果你在做文档工作流或 Agent 自动化签名，Let's Seal 提供了一条摆脱 DocuSign 付费锁定的路径。支持自托管 + REST API + SDK，适合集成到 Agent 管线中。"
         }
       ]
     }
