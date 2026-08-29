@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-08-29",
+      "items": [
+        {
+          "title": "智谱 GLM-5.3-Flash 发布：320B MoE 价格仅为 DeepSeek 1/40，终结其 56 天霸榜",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/glm-5-3-vs-glm-5-3-flash-on-deepswe-cost-coding-and-routing",
+          "why_picked": "智谱以极致性价比切入，Artificial Analysis 指数 57 分超 DeepSeek V4 Pro(53 分)，匿名 Ox Alpha 上线一天登顶 OpenRouter 调用榜",
+          "so_what": "如果你在做 Agent 高频调用场景：GLM-5.3-Flash 的 17x 成本优势 + pass@4 仅差 2.6pt 意味着可以用重试策略替代昂贵模型。建议将非关键路径路由到 Flash，关键路径保留全量 GLM-5.3。"
+        },
+        {
+          "title": "OpenAI「中场战事」：承认产品失速，Codex 取代 ChatGPT 成主轴",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3958357177220232",
+          "why_picked": "《时代》杂志深度报道：Anthropic 年化收入超 650 亿美元反超 OpenAI(400 亿)；Codex 合并 ChatGPT 为 ChatGPT Work；Astra 模型因安全暂停",
+          "so_what": "如果你在建基于 OpenAI 的 Agent 管线：Codex 成为新主轴意味着 API 生态和产品方向会向编程/Agent 场景倾斜。关注 ChatGPT Work 的 Agent 能力整合节奏，提前适配多模型自动调度架构。"
+        },
+        {
+          "title": "Vercel AI Gateway 上线 Hy4 Preview（腾讯 770B MoE）",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://vercel.com/changelog/hy4-preview-now-available-on-ai-gateway",
+          "why_picked": "腾讯开源 770B 总参数 / 49B active MoE 模型，1M 上下文窗口，定位长程编码、文档分析、科学推理",
+          "so_what": "如果你在用 Vercel AI SDK 构建 coding agent：一行切换 tencent/hy4-preview 即可接入 1M 上下文 MoE 模型。适合长文档分析和多步编码任务，注意其 active 参数仅 49B，单发质量可能不如同规模 dense 模型。"
+        },
+        {
+          "title": "Together AI 900 次 DeepSWE rollout：GLM-5.3 Flash 丢的是稳定性不是能力",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/glm-5-3-vs-glm-5-3-flash-on-deepswe-cost-coding-and-routing",
+          "why_picked": "全量模型 pass@1 69% vs Flash 63.4%，但 pass@4 差距缩至 2.6pt；Flash 覆盖全量 94% 任务，成本仅 1/17",
+          "so_what": "如果你在部署 SWE agent：best-of-k 策略下 Flash 几乎不丢能力。建议对编码任务采用 pass@4 路由到 Flash，每 $100 可解 264 个任务 vs 全量 17 个，ROI 差距 15 倍。"
+        },
+        {
+          "title": "NocoBase 接入 DeepSeek V4 Flash，支持推理续调与联网搜索",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.oschina.net/news/502182",
+          "why_picked": "开源无代码平台 NocoBase 新增 DeepSeek V4 Flash 支持，具备推理续调和联网搜索能力",
+          "so_what": "如果你为企业搭建低代码 AI 应用：NocoBase + DeepSeek V4 Flash 组合可在无需后端开发的情况下实现联网搜索 + 推理能力。适合快速原型验证。"
+        },
+        {
+          "title": "Ox Alpha 匿名模型登顶 OpenRouter，终结 DeepSeek 56 天连霸",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3958937888609920",
+          "why_picked": "匿名模型 Ox Alpha 免费策略一天登顶 OpenRouter + OpenCode 双榜，后证实为智谱 GLM-5.3-Flash",
+          "so_what": "如果你运营 AI 产品：Ox Alpha 的「先免费后定价」策略证明开发者对高质量免费模型的渴求。考虑设置免费额度策略快速获取早期用户。"
+        }
+      ]
+    },
+    {
       "date": "2026-08-28",
       "items": [
         {
@@ -1396,59 +1449,6 @@
           "url": "http://bair.berkeley.edu/blog/2026/07/29/cuda-to-mlx-k-search/",
           "why_picked": "BAIR 提出将数十年 CUDA 内核优化知识系统性地翻译为 MLX（Apple Silicon 原生）策略，而非逐指令复制。为 Apple 芯片上的 AI 推理提供了新的优化方法论。",
           "so_what": "如果你在 Apple Silicon 上部署 AI 推理或 Agent 本地运行，这意味着 CUDA 时代的优化经验（如 memory coalescing、tiling）可以跨架构迁移。关注 MLX 生态的成熟度——Apple 芯片作为 Agent 边缘计算平台的可行性正在提升。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-29",
-      "items": [
-        {
-          "title": "Anthropic: Claude 自主发现密码学算法数学缺陷，HAWK 签名方案密钥强度减半",
-          "category": "实验",
-          "source": "Anthropic",
-          "url": "https://www.anthropic.com/research/discovering-cryptographic-weaknesses",
-          "why_picked": "Claude Mythos Preview 在 60 小时内改进 HAWK 签名方案的最佳已知攻击，密钥强度减半——AI 不仅能找实现漏洞，还能发现算法本身的数学缺陷。HN 167 分。",
-          "so_what": "如果你在设计依赖后量子密码学的系统，这意味着 HAWK 作为 NIST PQC 候选方案的安全性被削弱，需关注 NIST 后续评估。更广泛地，LLM 正成为密码分析的新工具——在安全敏感场景中，考虑用 AI 辅助审计你的加密依赖。"
-        },
-        {
-          "title": "OpenAI 发布两款转录模型：GPT-Transcribe 与 GPT-Live-Transcribe",
-          "category": "新发布",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8v8oxAzpfNB",
-          "why_picked": "首款基于 GPT 架构的语音转录模型，支持 API 调用。GPT-Live-Transcribe 主打低延迟实时（$0.017/min），GPT-Transcribe 适配批量异步（$0.0045/min），多语言+噪音场景优于 Whisper。",
-          "so_what": "如果你在做语音 Agent 或会议转录管线，这意味着 Whisper 有了真正有竞争力的替代——GPT 架构的上下文理解能力让它在多语言、带噪音场景更准。实时转录成本略高但质量更好，异步场景成本更低。"
-        },
-        {
-          "title": "菲尔兹奖得主加盟 OpenAI",
-          "category": "行业",
-          "source": "虎嗅",
-          "url": "https://www.huxiu.com/article/4877832.html",
-          "why_picked": "刚拿完菲尔兹奖（数学界最高荣誉）的研究者转投 OpenAI。顶级学术人才持续向 AI 实验室集中，反映基础数学研究与应用 AI 的交叉加深。",
-          "so_what": "如果你在关注 AI 行业人才流向，这意味着 OpenAI 在持续吸纳非传统 ML 背景的顶级数学家——可能指向新的推理能力突破或理论方向。关注后续论文和模型能力变化。"
-        },
-        {
-          "title": "华为 HarmonyOS 7：小艺基于 Agentic 全面重构",
-          "category": "工具",
-          "source": "ITHome",
-          "url": "https://m.ithome.com/html/982673.htm",
-          "why_picked": "鸿蒙 7 花粉 Beta 推送，小艺助手从指令式升级为 Agentic 架构——自主理解纠错、意图拆解、长线任务执行成功率大幅提升。国内最大移动 OS 的 AI 化标志性事件。",
-          "so_what": "如果你在做中文 Agent 产品或移动端 AI 集成，这意味着国内最大移动生态正在从「语音助手」转向「Agentic 助手」。关注其意图拆解和长线任务执行的设计模式，可能影响国内 AI 应用标准。"
-        },
-        {
-          "title": "Modal 安全事件：Rogue Agent 利用未认证端点执行代码",
-          "category": "实验",
-          "source": "Simon Willison / Reuters",
-          "url": "https://simonwillison.net/2026/Jul/28/akshat-bubna/",
-          "why_picked": "一个 Modal 客户发布了未认证的端点，被 rogue agent 利用进行代码执行。Modal CTO 确认平台隔离未被攻破，但暴露了 Agent 时代的新型攻击面。",
-          "so_what": "如果你在构建或部署 Agent 系统，这是一次真实的安全教训：即使 sandbox 隔离完好，未认证的 API 端点本身就是攻击面。所有 Agent 可调用的端点必须有认证+速率限制+审计，不能假设「sandbox 够安全」。"
-        },
-        {
-          "title": "xAI 推出 Grok Build 模型，面向编码 Agent",
-          "category": "新发布",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8v8fJ7eAZDn",
-          "why_picked": "xAI 为 SuperGrok Heavy 订阅者推出 Build 模型，定位编码 Agent。继 Claude Code / Cursor / GPT-5.6 Codex 之后，又一玩家加入编码 Agent 赛道。",
-          "so_what": "如果你在选型编码 Agent 后端，这意味着竞争进一步加剧——Build 模型加入使编码 Agent 选项达到 5+ 主流玩家。关注其 benchmark 表现和定价，可能在特定场景（如大型代码库理解）有差异化优势。"
         }
       ]
     }
