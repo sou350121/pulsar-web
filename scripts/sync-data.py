@@ -65,6 +65,15 @@ JSON_FILES = [
     "ai-github-theory.json",
     # Emerging method family detection
     "emerging-terms.json",
+    # collect-site-analytics.py refreshes memory/site-analytics.json every day at
+    # 23:00 and src/utils/data.ts reads it, but it was only ever listed in
+    # push-data-to-web.py — which is reached solely through deploy.yml's SSH
+    # chain, and that chain has been exiting non-zero within a second of starting
+    # since roughly 2026-03-28 while `continue-on-error: true` kept the job green.
+    # Net effect: collected daily, published never; origin's copy was frozen at
+    # 2026-07-21. (Deliberately NOT adding prompt-registry.json here — it is
+    # equally stale but nothing under src/ reads it.)
+    "site-analytics.json",
 ]
 
 # Markdown file patterns — (prefix, how_many_recent_to_copy, min_bytes)
