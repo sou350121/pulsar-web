@@ -1,0 +1,340 @@
+{
+  "ok": true,
+  "model": "deepseek-v4-flash",
+  "total": 20,
+  "counts": {
+    "⚡": 0,
+    "🔧": 2,
+    "📖": 8,
+    "❌": 10
+  },
+  "parse_error": "",
+  "papers": [
+    {
+      "title": "Does Imitation Learning Preserve Temporal Robustness in Dexterous Manipulation? An Expert-Learner Comparison Across Task Execution Speeds",
+      "authors": "Clinton Enwerem, John S. Baras, Calin Belta",
+      "url": "https://arxiv.org/abs/2609.01453v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "action chunking"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Dexterous manipulation policies learned by imitation are typically evaluated for robustness to variation in scenes, objects, or instructions, but their performance across task execution speeds is less often examined. This leaves open how much temporal robustness a learner retains relative to the expert it imitates. We compare an expert and learner under the same task conditions, initial-condition draws, and speedup factors. We instantiate the evaluation in ParcelStow, a contact-rich task in whic",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "对比专家与模仿学习策略在任务执行速度变化下的时间鲁棒性，指出灵巧操作 IL 在这一维度上的退化情况。为变速场景下的灵巧/VLA 操作评测提供了新的分析视角。",
+      "affiliation": ""
+    },
+    {
+      "title": "Evaluating Multimodal LLMs as Generalist Vision-Language-Action Agents for Drone Control: Commanding, Approaching, Tracking and Searching",
+      "authors": "Jaewoo Park, Minyoung Lee, Sukmin Seo, Moonbin Yim, Hyunwook Yoon, Dohoon Ryu",
+      "url": "https://arxiv.org/abs/2609.01404v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Multimodal Large Language Models (MLLMs) are strong perceivers of images and video. We ask how far that reach extends into acting: dropping an MLLM directly into a drone's control loop, with its entire action space declared solely in the prompt. Recent systems approach this setting but increasingly narrow the model's decision-making. We widen it back. We introduce DroneCATS-Agent, an architecture where the MLLM is a swappable component, and DroneCATS, a benchmark treating the model as the indepe",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "把 MLLM 直接接入无人机控制回路、用 prompt 声明完整动作空间，评估其在指挥/接近/跟踪/搜索任务上的 VLA 能力。属于 MLLM-as-controller 的评测研究，面向飞行而非机械臂操作。",
+      "affiliation": "[Drone AI Team, NAVER Cloud]"
+    },
+    {
+      "title": "EmbodiedSkills: A Unified Framework for Orchestrating, Training, and Deploying VLA Agents",
+      "authors": "Wei Wang, Wenqiao Zhang, Yutong Lin, Yuqian Yuan, Tianwei Lin, Jinhao Mao",
+      "url": "https://arxiv.org/abs/2609.01281v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "pi0"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Vision-language-action (VLA) models map visual observations and language instructions directly to robot actions, but long-horizon tasks require more than action prediction. An agent must coordinate perception, planning, execution, progress verification, and recovery as the physical state evolves. An action prediction or a model-generated skill decision does not, by itself, guarantee that the proposed operation is valid in the current state or that its outcome will be verified. We propose Embodie",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "面向长程任务提出统一编排框架，要求 VLA agent 覆盖感知-规划-执行-进度验证-恢复闭环而不仅输出动作。摘要仅给出系统定位，技术路线与量化结果待正文确认，暂存观察。",
+      "affiliation": "[College of Computer Science and Technology, Zhejiang University]"
+    },
+    {
+      "title": "REFACTOR-VLA: Unsupervised Library Learning of Typed Motor Programs",
+      "authors": "Riyaaz Shaik, Chandru Venkataraman",
+      "url": "https://arxiv.org/abs/2609.01215v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "OpenVLA"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Most vision-language-action (VLA) models -- OpenVLA, $π_0$, RT-2, RDT-1B -- are monolithic: they emit raw motor commands or short action chunks without organizing behavior into reusable abstractions, so they degrade on long-horizon tasks and resist interpretation. Existing skill-discovery methods sidestep the core question of when two action sequences are behaviorally equivalent, either clustering contrastive embeddings or delegating the judgment to a language model uncalibrated to the robot's d",
+      "pub_date": "2026-09-01",
+      "rating": "🔧",
+      "reason": "针对 OpenVLA/π0 等单块式 VLA 缺乏可复用行为抽象、长程任务易退化的问题，提出无监督学习带类型的电机程序库。为 VLA 技能分解/程序化重构方向提供了一个可关注的新训练范式。",
+      "affiliation": "[Apple]"
+    },
+    {
+      "title": "Knowing When to Stop: Adaptive Action Chunking via Internal Cross-Attention Dynamics in VLAs",
+      "authors": "Runze Xu, Xiaolong Shan, Shuang Dai, Yu Wang, Jincheng Yu",
+      "url": "https://arxiv.org/abs/2609.00908v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "action chunking"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Action chunking is a standard execution strategy in modern Vision-Language-Action (VLA) frameworks, but fixed execution horizons impose a trade-off between efficiency and accuracy. Short chunks require frequent inference and may cause oscillatory behavior, whereas long chunks can become misaligned with newly observed states. We address this limitation with an adaptive action chunking approach based on internal cross-attention dynamics in the action expert. We observe that, as the prediction hori",
+      "pub_date": "2026-09-01",
+      "rating": "🔧",
+      "reason": "用 VLA 内部 cross-attention 动力学作为停止信号，让动作块长度自适应，缓解固定 chunk 在效率与精度间的两难。推理期即可接入现有框架，是免重训提升 VLA 执行效率的实用改进。",
+      "affiliation": "[Tsinghua University]"
+    },
+    {
+      "title": "Peg-in-Bench: A Modular Benchmark for High-Precision Robotic Insertion",
+      "authors": "Yosel Delgado, José G. Buenaventura-Carreón, Floris Erich, Roman Mykhailyshyn, Tomohiro Motoda, Koshi Makihara",
+      "url": "https://arxiv.org/abs/2609.00906v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "High-precision insertion remains a fundamental challenge in robotic manipulation due to the strict alignment requirements and contact-rich interactions involved. Although peg-in-hole tasks are widely used for evaluation, existing bench- marks often rely on fixed task configurations, limiting their ability to assess robustness and generalization across different insertion scenarios. This paper introduces a reconfigurable peg-in-hole benchmark designed to evaluate task generalization in high-preci",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "提出模块化的高精度机器人插装 benchmark，可配置偏移、几何与间隙等条件，覆盖接触丰富的插装难题。为插装类操作策略提供更灵活的评估与对比平台。",
+      "affiliation": "[National Institute of Advanced Industrial Science and Technology (AIST)]"
+    },
+    {
+      "title": "ADAPT: Agile Diffusion Action Priors for Robust and Steerable Online Text-Driven Humanoid Control",
+      "authors": "Yan Wu, Chenhao Li, Kaifeng Zhao, Gen Li, Marco Hutter, Siyu Tang",
+      "url": "https://arxiv.org/abs/2609.00677v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "diffusion policy"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "We present ADAPT, an end-to-end framework for interactive, text-conditioned humanoid whole-body control. Unlike dominant text-to-motion pipelines that generate kinematic motions for a separate tracker, ADAPT solves language control with an end-to-end closed-loop control framework, where the robot must continuously respond to changing commands while maintaining balance, natural motion, and smooth transitions. ADAPT learns a diffusion-based action prior from text-labeled humanoid state-action traj",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "ADAPT 将文本条件的人形全身控制做成端到端闭环，用扩散动作先验直接生成控制量，摆脱 text-to-motion 加跟踪器的两步范式。面向人形本体运动控制，与机械臂操作路径不同。",
+      "affiliation": "[ETH|Hutter]"
+    },
+    {
+      "title": "AM-Bench: A Modular Simulation Suite and Benchmark for Aerial Manipulation Policy Learning",
+      "authors": "Yutong Wang, Dongjae Lee, Xiaofeng Guo, Yuanzhu Zhan, Yufei Jiang, Bavin Saravanan",
+      "url": "https://arxiv.org/abs/2609.00641v1",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Standardized benchmarks have played a central role in advancing robot manipulation learning, yet most focus on ground-supported manipulation systems, which limits their applicability to dynamics-critical domains such as aerial manipulation (AM). AM presents distinct system-level challenges, including environmental disturbances, coupled dynamics between the manipulator and floating base, and constrained degrees of freedom. Consequently, task performance depends jointly on robot embodiment, low-le",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "为空中操纵（aerial manipulation）策略学习构建模块化仿真套件与 benchmark，关注飞行与操纵动力学耦合带来的独特挑战，填补地面支撑操作基准的盲区。",
+      "affiliation": "[The Robotics Institute, School of Computer Science, Carnegie Mellon University]"
+    },
+    {
+      "title": "A Wearable Pneumatic Device for Continuous, Closed-Loop, Bidirectional Tactile Interaction",
+      "authors": "Cosima du Pasquier, Aliyah Smith, Serin Huber, Joshua Phelps, Ilana A. Cohen, Ava Chen",
+      "url": "https://arxiv.org/abs/2609.00612v1",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "tactile"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "We present a system of two wearable pneumatic haptic devices that supports continuous, closed-loop, bidirectional tactile interaction at perceptually relevant force and temporal scales. A single device can contain up to twelve pressure sensing channels connected to textile-based pneumatic pouches. Each channel in a device can be used as a sensor, an actuator, or both. As an actuator with integrated sensing, the channel generates stable skin indentation through local closed-loop control. As a sen",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "面向人体穿戴的气动触觉反馈装置，属于触觉人机交互硬件，不涉及机器人操作策略或具身智能研究，过滤。",
+      "affiliation": "[Department of Mechanical Engineering, Stanford University]"
+    },
+    {
+      "title": "Potential-Guided Particle Steering for Negation-Constrained Dexterous Grasping",
+      "authors": "Geonho Kim, SooGon Kim, Jongmin Lee",
+      "url": "https://arxiv.org/abs/2609.00555v1",
+      "source": "cs.RO",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Language-driven dexterous grasp models, such as DextER, perform well when instructions specify where to grasp, but we find they fail systematically when an instruction also specifies where not to grasp (e.g., \"grasp the handle but avoid the body\"). Existing training corpora, DexGYSNet among them, contain virtually no avoidance instructions, and collecting examples for every possible constraint is impractical. Moreover, because every part mentioned during training denotes a contact target, models",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "针对语言指令含否定约束（如“抓住把手但别碰主体”）时灵巧抓取泛化失败的问题，提出势场引导的粒子转向优化，并指出 DexGYSNet 等语料缺陷。对语言条件灵巧抓取有参考价值。",
+      "affiliation": ""
+    },
+    {
+      "title": "Belief-Calibrated Optimization: An Explicit World Model for Agentic Optimization",
+      "authors": "Yuhan Chen, Zhihua Tian, Mahavir Dabas, Charith Peris, Rahul Gupta, Ming Jin",
+      "url": "https://arxiv.org/abs/2609.01861v1",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "The performance of an LLM agent depends on the scaffold around a frozen model. A common way to improve that scaffold is to use a coding agent as an optimizer: it reads current scores and traces and iteratively edits the source, producing a new candidate each round. Each edit is chosen according to a belief about how the environment will respond: what went wrong, and which change should help. That belief is typically implicit. It lives in the coding agent's reasoning on the current call, or remai",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "面向 coding agent 的 scaffold 优化方法，用显式世界模型迭代修改源码提升 agent 分数，与机器人操作/具身智能无实质关联，过滤。",
+      "affiliation": ""
+    },
+    {
+      "title": "Provably Safe Sim-to-Real Transfer",
+      "authors": "Tingting Ni, Maryam Kamgarpour",
+      "url": "https://arxiv.org/abs/2609.01418v1",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "sim-to-real"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "To mitigate the sample complexity of real-world reinforcement learning (RL), a common practice is to first train a policy in a simulator, where samples are cheap, and then deploy the learned policy in the real world with the hope that it generalizes effectively. Such direct sim-to-real transfer is not guaranteed to succeed: simulator-trained policies can be suboptimal in the real world due to sim-to-real mismatch. Correcting this mismatch requires collecting data from the real system, but in man",
+      "pub_date": "2026-09-01",
+      "rating": "📖",
+      "reason": "为强化学习的 sim-to-real 迁移提供可证明的安全性框架，降低仿真策略部署到真实系统的风险。未展示机器人操作实验细节，与 VLA 无直接通路，按相邻方法收录。",
+      "affiliation": "[SYCAMORE, EPFL]"
+    },
+    {
+      "title": "Text-guided flow matching enables sample-efficient crystal structure generation",
+      "authors": "Wentao Li",
+      "url": "https://arxiv.org/abs/2609.01076v1",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Crystal generators can now propose periodic structures, but their control interfaces remain poorly matched to the mixed descriptors used in materials design. Text provides a compact way to combine composition, symmetry, prototype and property cues, yet it has not been clear whether such information can steer flow-based crystal generation. Here we introduce TFMat, a text-conditioned flow-matching framework that uses structured materials language as a semantic prior for a CrystalFlow generator. Ac",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "文本条件晶体结构生成，属于材料设计与机器学习领域，与机器人操作/具身 AI 无关联，过滤。",
+      "affiliation": "[Tsinghua University]"
+    },
+    {
+      "title": "ReFlowSET: Representation-Aligned Latent Flow Matching for SAR-to-EO Image Translation",
+      "authors": "Jeonghyeok Do, Seungchul Lee, Munchurl Kim",
+      "url": "https://arxiv.org/abs/2609.00968v1",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "SAR-to-EO image translation aims to generate electro-optical (EO) imagery from synthetic aperture radar (SAR) observations. Existing latent diffusion approaches typically inherit a predetermined autoencoder, although reconstruction fidelity can vary substantially across codecs and modalities. Because the latent codec affects the round-trip preservation of both SAR conditions and EO targets, codec selection constitutes a fundamental design choice; nevertheless, existing methods largely rely on co",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "SAR 到 EO 遥感图像翻译的生成方法，属遥感图像处理，无机器人操作场景，过滤。",
+      "affiliation": "[KAIST]"
+    },
+    {
+      "title": "Conditional Flow Matching for Cross-Field MRI Harmonisation",
+      "authors": "Baris Imre, Aram Salehi, Levente Baljer, Andrew Webb, Marius Staring, Efe Ilicak",
+      "url": "https://arxiv.org/abs/2609.00960v1",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Magnetic resonance images of the same subject look markedly different across field strengths, which complicates the comparison and pooling of data across sites. We address cross-field brain-MRI translation for the MRIxFields2026 challenge, and in particular its Task~3: a single model that translates between any directed pair of the five field strengths and across three contrasts. We phrase the problem as a conditional flow matching path: because the source and target volumes are spatially regist",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "跨场强脑部 MRI 图像翻译，属医疗影像方向，与机器人操作/embodied AI 无关，过滤。",
+      "affiliation": "[Division of Image Processing, Department of Radiology, Leiden University Medical Center]"
+    },
+    {
+      "title": "ReBridge-Flow: Re-Coupling Posterior Bridges in Flow Matching for Image Restoration",
+      "authors": "Jiaqi Zhang, Yiqi Wang, Hongjie Wu, Bohan Guo, Xinan Wang, Zichen Luo",
+      "url": "https://arxiv.org/abs/2609.00811v1",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Flow Matching provides an efficient generative prior for image restoration by learning continuous transport between source and data distributions. However, existing methods typically incorporate measurement constraints through local corrections. Such corrections may disrupt the source-clean endpoint coupling implicitly encoded by the pretrained flow, making the corrected endpoint pair incompatible with the current state. To address this issue, we propose ReBridge-Flow, a posterior bridge re-coup",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "面向图像恢复的 flow matching 条件生成方法，属于底层视觉任务，无机器人操作与具身关联，过滤。",
+      "affiliation": "[Jiangsu University]"
+    },
+    {
+      "title": "Streaming4D: Accelerate 4D World Models via Block-wise Video Generation and Incremental Reconstruction",
+      "authors": "Xiaoyan Liu, Jiaxin Liu, Kangrui Li, Sifan Zhou",
+      "url": "https://arxiv.org/abs/2609.00610v1",
+      "source": "cs.CV",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Current 4D generation paradigms are often bottlenecked by a sequential decoupling design: video is generated first, followed by 3D reconstruction, leading to high interaction latency. This limits applications in interactive real-time scenarios. To this end, we propose \\textbf{Streaming4D}, a tightly coupled synchronous pipeline that integrates block-wise autoregressive video generation with incremental 3D reconstruction. Unlike traditional frame-by-frame emission and delayed geometry recovery, S",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "做 4D 动态场景视频生成与增量重建，面向实时交互式 3D 内容，不是机器人/具身世界模型，过滤。",
+      "affiliation": "[The Chinese University of Hong Kong]"
+    },
+    {
+      "title": "CAT-Flow: Curvature-Adaptive sTeps for Flow Matching",
+      "authors": "Qinchan Li, Pedro Cisneros-Velarde, Keru Fu, Samuel Antunes Miranda, Sharan Vaswani, Hao Zhang",
+      "url": "https://arxiv.org/abs/2609.01746v1",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Flow Matching has emerged as a leading framework for generative modeling, powering state-of-the-art systems such as FLUX and Stable Diffusion 3.5. However, the iterative nature of its ODE-based sampling process creates a fundamental efficiency bottleneck: the quality of generated samples is highly sensitive to the choice of step-sizes, and current models typically require 20 to 30 steps for good quality. In this work, we propose two lightweight, training-free algorithms, CAT-OV and CAT-OT that a",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "针对 flow matching ODE 采样的曲率自适应步长方法，属于通用生成模型推理加速，不涉及机器人动作或具身场景，过滤。",
+      "affiliation": "[Simon Fraser University]"
+    },
+    {
+      "title": "Sim2Signal: Sim-to-Real Benchmarks for Traffic Signal Control",
+      "authors": "Ferdous Al Rafi, Susrik Mukherjee, Latika Liladhar Dekate, Jennifer Yawa Lavoe, Huaiyuan Yao, Shlok Mohanty",
+      "url": "https://arxiv.org/abs/2609.01676v1",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "sim-to-real"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Reinforcement learning achieves strong traffic signal control performance in simulation, yet policies trained in simulators often fail once deployed in the real world, a failure known as the Sim-to-Real gap. When RL is applied to traffic signal control, this gap arises from several sources: sensing, action execution, traffic dynamics, and the control objective. Their relative impact and the reliability of existing Sim-to-Real mitigation methods remain insufficiently understood, and the field lac",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "交通信号控制 RL 的 sim-to-real 基准，属于智能交通系统而非机器人操作，过滤。",
+      "affiliation": "[Arizona State University]"
+    },
+    {
+      "title": "Conditional Flow Matching for ML-Based Inverse Design Problems",
+      "authors": "Juliana Felder, Milad Habibi, Soheyl Massoudi, Mark Fuge",
+      "url": "https://arxiv.org/abs/2609.00863v1",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Engineering inverse design is often limited by the high computational cost of iterative solvers for optimization problems constrained by partial differential equations (PDEs) and by their sensitivity to initialization. Deep generative models can produce candidate designs without rerunning the simulator at inference time. Generative adversarial networks (GANs) sample in one forward pass, whereas diffusion models require iterative reverse-time integration. In this work, we add conditional flow mat",
+      "pub_date": "2026-09-01",
+      "rating": "❌",
+      "reason": "用条件 flow matching 求解 PDE 约束的工程逆向设计，属于计算设计与仿真优化，与机器人操作/具身智能无关，过滤。",
+      "affiliation": "[ETH Zürich]"
+    }
+  ]
+}
