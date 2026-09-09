@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-09",
+      "items": [
+        {
+          "title": "OpenAI 用未发布模型攻克纳维-斯托克斯千禧年难题",
+          "category": "行业",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/Sep/8/on-navier-stokes/",
+          "why_picked": "OpenAI 用内部未发布模型在约 88 小时内自主解决 Navier-Stokes 存在性与光滑性问题，消耗 3000 亿输出 token。同时引发与 Anthropic 研究员的优先权争议——后者使用 Claude+Codex 也在同一问题上取得突破。这是 AI 解决纯数学千年难题的首个实质性案例。",
+          "so_what": "如果你在做 AI 研究范式评估：这标志着 AI 从「辅助计算」正式跨入「自主证明」阶段。3000 亿 token 的成本暗示未来数学/科学突破将高度依赖算力军备竞赛。关注 OpenAI 是否开源该模型的推理能力。"
+        },
+        {
+          "title": "GPT-6 Astra 登顶 MazeBench 3D 空间推理基准",
+          "category": "新发布",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3974129339101704",
+          "why_picked": "GPT-6 Astra 在 200+ 房间 3D 迷宫基准 MazeBench 上以 14% 得分登顶（不开 Python），远超 GPT-5.6 Sol 的 13%。同时涌现大量实战 demo：视频→CAD 建模→3D 打印、频谱图声音识别、48 关验证码一把过。",
+          "so_what": "如果你在做 Agent 空间推理或 3D 交互应用：Astra 的批量出招模式将 token 成本从 30 亿降至 3.5 亿，这个优化模式值得借鉴。但其在深层 3D 谜题上的偏科也提醒我们——当前模型的空间理解仍有盲区。"
+        },
+        {
+          "title": "DeepSeek 扩招 150 人，0 个 AI 研究岗，全部工程",
+          "category": "行业",
+          "source": "36Kr",
+          "url": "https://www.36kr.com/p/3974040294388232",
+          "why_picked": "DeepSeek 在 300-500 人规模下一次性扩招 150 人，全部集中在服务端工程和 Agent 弹性计算（DSec 平台）。信号明确：从纯研究转向大规模工程化落地。要求候选人「熟练使用 AI Agent 进行开发」。",
+          "so_what": "如果你在做 AI 基础设施或 Agent 平台：DeepSeek 的 DSec 弹性计算平台（Rust 实现，三层架构）代表了 Agent 推理基础设施的前沿方向。其「工程师需深入研究员一线」的理念反映了行业对 AI-native 工程人才的需求转变。"
+        },
+        {
+          "title": "ChatGPT Images 2.5 发布：多轮指令遵循 + 参考图主体保留",
+          "category": "新发布",
+          "source": "Blog",
+          "url": "https://simonwillison.net/2026/Sep/8/introducing-chatgpt-images-25/",
+          "why_picked": "OpenAI 发布 ChatGPT Images 2.5，API 提供 gpt-image-2.5-sunburst（精确编辑）和 gpt-image-2.5-flare（快速生成）两个模型 ID。累计生成超 30 亿张图片。",
+          "so_what": "如果你在做多模态 Agent 管线：Sunburst/Flare 双模型策略让你可以根据延迟/精度需求灵活选择。参考图主体保留能力的提升意味着 Agent 可以可靠地执行多轮图像编辑任务。"
+        },
+        {
+          "title": "MIT 用 GPT-5.6 Sol + Codex 自主运行量子计算实验",
+          "category": "实验",
+          "source": "OpenAI",
+          "url": "https://openai.com/index/codex-quantum-computing-experiments",
+          "why_picked": "MIT 研究生将 Codex 连接到超导量子比特实验室软件，GPT-5.6 Sol 能自主完成常规测量工作流、分析结果并决定下一步操作，大幅减少人工监督。",
+          "so_what": "如果你在用 Agent 做科学计算或实验自动化：这个案例展示了 Agent 从「写代码」到「控制真实设备」的跨越。关键模式是将 Agent 接入实验室软件 API 而非直接操作硬件，这个抽象层设计值得复用。"
+        },
+        {
+          "title": "Pathway 在 SageMaker 上开发脑启发后 Transformer 架构 BDH",
+          "category": "工具",
+          "source": "AWS",
+          "url": "https://aws.amazon.com/blogs/machine-learning/pathways-brain-inspired-architecture-development-on-amazon-sagemaker-hyperpod/",
+          "why_picked": "Pathway 的 Baby Dragon Hatchling (BDH) 是后 Transformer 架构，在潜空间推理而非生成 chain-of-thought token，在 Amazon SageMaker HyperPod 上训练。",
+          "so_what": "如果你在做推理效率优化：潜空间推理（latent reasoning）绕过了 token 生成的带宽瓶颈，是后 Transformer 架构的核心方向之一。BDH 在 AWS 上的可复现性意味着你可以评估这种架构是否适合你的低延迟场景。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-08",
       "items": [
         {
@@ -1260,51 +1313,6 @@
           "url": "https://www.theregister.com/security/2026/08/09/ransomware-gangs-skip-the-ceo-head-straight-for-the-40-something-it-manager/5284499",
           "why_picked": "勒索软件攻击策略转变——绕过 CEO 直接针对 40 岁左右的 IT 管理员，68 分 HN 热帖",
           "so_what": "如果你在设计 Agent 系统的权限模型或安全策略，这意味着需要特别关注中级管理员账户的防护：最小权限原则、MFA 强制、以及 Agent 对敏感系统的操作审计。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-09",
-      "items": [
-        {
-          "title": "OpenAI Astra 模型因网络安全能力触红线，主动放缓研发",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities/",
-          "why_picked": "OpenAI 首次因模型网络安全能力触及 Preparedness Framework Critical 阈值而主动踩刹车，通知白宫",
-          "so_what": "如果你在做 AI 安全评估或合规管线，这意味着 Critical cyber capability 的判定标准正在从理论走向实操。OpenAI 的框架定义：能自主发现零日漏洞并执行端到端攻击即触红线。你的 Agent 安全策略需要参考这一阈值做红蓝对抗。"
-        },
-        {
-          "title": "Claude Code Auto Mode 正式设为默认（Pro/Max/Team）",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://simonwillison.net/2026/Aug/8/auto-mode/",
-          "why_picked": "Anthropic 从 Aug 14 起将 Auto mode 设为 Claude Code 默认，附带第三方 Trajectory Labs 720 次攻击测试零成功的评估",
-          "so_what": "如果你在用 Claude Code 做 CI/CD 或自动化编码管线，Auto mode 默认化意味着你不再需要手动审批每个操作。但注意 11% 的人类批准率 vs Auto mode 89% 拦截率——确认你的 prompt injection 防护策略已覆盖间接注入场景。"
-        },
-        {
-          "title": "GitHub Trending: book-to-skill — 将技术书 PDF 转为 Claude Code 技能",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/virgiliojr94/book-to-skill",
-          "why_picked": "一键将技术书籍 PDF 转为 Claude Code skill，解决编码 Agent 知识注入的工程痛点",
-          "so_what": "如果你在用 Claude Code/Cursor 做开发，这个工具可以把你的领域知识库（架构书、API 指南）直接注入 Agent 上下文，比手写 system prompt 高效 10 倍。"
-        },
-        {
-          "title": "GitHub Trending: TencentDB-Agent-Memory — Agent 团队级记忆中心",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/TencentCloud/TencentDB-Agent-Memory",
-          "why_picked": "腾讯开源 Agent 记忆层，将对话/文档/代码转为 Chat Memory/Skill/LLM-Wiki/Code-Graph 四类资产",
-          "so_what": "如果你在多 Agent 系统中遇到知识碎片化问题，这个方案提供了结构化的记忆治理框架——特别是 Code-Graph 和 LLM-Wiki 的分离设计，值得参考到你的 RAG管线中。"
-        },
-        {
-          "title": "_for-sale DNS 记录标准（RFC 10023）登上 HN 热榜第一",
-          "category": "趋势",
-          "source": "HN",
-          "url": "https://specification.website/spec/foundations/for-sale-dns/",
-          "why_picked": "HN 326 points，首个在 DNS 中声明域名可售的标准化方案，RFC 10023",
-          "so_what": "如果你在构建域名相关的 Agent 工具或自动化收购管线，这个新标准为程序化发现可售域名提供了结构化信号，不再依赖 WHOIS 隐私保护后的盲猜。"
         }
       ]
     }
