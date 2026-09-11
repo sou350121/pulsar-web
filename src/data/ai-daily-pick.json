@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-11",
+      "items": [
+        {
+          "title": "DeepSeek V4.1 Flash 正式发布：552B MoE、原生多模态、最高降价 60%",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+          "why_picked": "新结构 Causal-Encoder-Decoder，输入激活仅 8B，官方称超越 V4 Pro 并将下线 V4 Pro",
+          "so_what": "如果你在做 Agent 系统：V4.1 Flash 输入激活仅 8B、KV Cache 压到上一代 1/4，Agent 多轮长上下文的缓存成本骤降；API 模型名改用 deepseek-flash，9/14 起 deepseek-v4-pro 会自动路由到 Flash 并按 Flash 计费，趁早评估迁移可省最高 60%。"
+        },
+        {
+          "title": "OpenAI 推出金融服务版 ChatGPT（GPT-6 Astra 驱动）",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-chatgpt-financial-services",
+          "why_picked": "与摩根士丹利/Evercore 合作，内置金融数据与粒度引用，免自建 MCP 连接器",
+          "so_what": "如果你在做垂直行业 Agent：官方把内置数据源+粒度引用+语义层打包成成品，接入从自建 MCP 连接器转向引用可追溯；做金融/法律类 Agent 时重点应放在 row/table 级权限治理与来源标注。"
+        },
+        {
+          "title": "OpenAI Data agent 上线 ChatGPT Work",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/put-data-to-work",
+          "why_picked": "Agent 直连 Redshift/BigQuery/Snowflake/dbt 等企业数据并生成交互式仪表盘",
+          "so_what": "如果你在做 RAG 或 BI Agent：它用语义层与 metric 定义而非裸 SQL 约束输出，且查询强制沿用已连接账号的 table/row/column 级权限；把你的检索层也收敛到同样的最小权限模型。"
+        },
+        {
+          "title": "Anthropic 发布 2026-09 威胁情报报告",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.anthropic.com/threat-intelligence-report-september-2026",
+          "why_picked": "八个月阻断网络/监视/影响/常规武器/生物滥用/非法蒸馏六类滥用，含疑似生物武器图谋",
+          "so_what": "如果你在做 Agent 安全护栏：按网络、监视、影响、常规武器、生物滥用、非法蒸馏六类各写一条检测规则与人工复核触发条件，比泛化的 prompt 护栏更落地、可对标。"
+        },
+        {
+          "title": "Amazon 在 ChatGPT 内试点广告服务",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.marketingdive.com/news/amazon-pilots-ad-services-in-chatgpt-what-marketers-need-to-know/829945/",
+          "why_picked": "亚马逊广告进入对话式入口，HN 88 分",
+          "so_what": "如果你在做 Agent 推荐或商业化：答案排序可能受商业因素影响，应把数据源与内容排序显式分层并保留可解释的来源标注，避免下游用户把广告位当成事实。"
+        },
+        {
+          "title": "Vercel Sandbox 存储从 32GB 提升到 64GB",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/vercel-sandbox-64-gb-storage",
+          "why_picked": "面向大仓库、依赖、构建产物与存储密集型 agent 任务",
+          "so_what": "如果你在做 Coding Agent 或沙箱执行：单沙箱 32→64GB，monorepo 级任务可把更多缓存留在沙箱内减少反复拉取；注意仍是临时存储，别当持久盘用。"
+        },
+        {
+          "title": "AWS SageMaker HyperPod 支持模型缓存",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/reduce-inference-cold-starts-on-amazon-sagemaker-hyperpod-with-model-caching/",
+          "why_picked": "预加载权重与镜像到节点本地 NVMe，降低推理冷启动",
+          "so_what": "如果你在自托管模型或推理服务：权重预加载到节点本地 NVMe 后扩容抖动显著降低，多模型 agent 后端尤其受益；配合前缀缓存可进一步压缩高频工具调用的首 token 延迟。"
+        },
+        {
+          "title": "OpenAI 数学发布附带 Lean 4 形式化证明",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://news.ycombinator.com/item?id=49650326",
+          "why_picked": "HN 123 分热议，前沿 lab 是否把可机器验证产出当交付标准",
+          "so_what": "如果你在做形式化或可验证 Agent：前沿 lab 开始把可机器验证的产出当交付标准，让你的代码/数学 agent 输出附带证明或测试工件，把看起来对升级为可验证对。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-10",
       "items": [
         {
@@ -1252,67 +1321,6 @@
           "url": "https://m.ithome.com/html/988396.htm",
           "why_picked": "DeepSeek 创始人梁文锋净资产从 $10B 飙升至 $395B，一年 3850% 增速登顶全球，AI 赛道造富速度继续刷新认知",
           "so_what": "如果你在做 AI 创业或投资判断：DeepSeek 的估值飙升反映市场对国产推理模型的商业化信心。但需警惕估值泡沫——参考甲骨文 CEO 同期缩水 $1387B 的反例。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-11",
-      "items": [
-        {
-          "title": "Meta 发布 Muse Glimmer 30B：Apache 2.0 本地多模态 Agent 模型",
-          "category": "新发布",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/muse-glimmer",
-          "why_picked": "Meta 回归开源，30B 蒸馏模型专为本地 Agent 场景设计，Apache 2.0 许可。MCP Atlas 75.5 / SWE-Bench Verified 76.0，超越 Gemma4-31B 和 Qwen3.6-27B。",
-          "so_what": "如果你在做本地 Agent 部署（隐私敏感或离线场景），Muse Glimmer 提供了当前最强的 Apache 2.0 多模态选项。28B 文本 + 2B ViT 架构可在 24-32GB 显存运行，day-0 支持 transformers/llama.cpp/vLLM。建议对比 Qwen3.6-27B 做你的工具调用 benchmark。"
-        },
-        {
-          "title": "OpenAI 推出 GPT-5.6-Cyber：面向网络安全专家的特化模型",
-          "category": "新发布",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8vULULnvgvi",
-          "why_picked": "GPT-5.6 家族新增 Cyber 变体，Daybreak 计划分两级开放访问。宣称可响应 95% 高级安全任务，高风险能力仅向获批准用户开放。",
-          "so_what": "如果你在做安全类 Agent 产品或安全运营自动化，GPT-5.6-Cyber 代表 OpenAI 将前沿能力垂直化的策略。关注其能力审批流程是否可集成到你的 Agent 权限体系中，以及 Daybreak 计划的开放节奏。"
-        },
-        {
-          "title": "OpenAI 8520 亿美元估值回购 70 亿美元员工股份",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8vUYi0nO1pf",
-          "why_picked": "未引入外部投资者，纯内部回购为 IPO 铺路。8520 亿估值较上一轮再上一个台阶，反映资本市场对 OpenAI 商业化前景的持续看好。",
-          "so_what": "如果你在选择 AI 基础设施供应商，OpenAI 的 IPO 临近意味着其产品策略可能从增长优先转向盈利优先——API 定价、速率限制、功能分级都可能调整。建议评估多供应商策略降低锁定风险。"
-        },
-        {
-          "title": "Codex vs Claude Code 负责人公开对喷：Harness 之争浮出水面",
-          "category": "观点",
-          "source": "36氪",
-          "url": "https://www.36kr.com/p/3933059944775041",
-          "why_picked": "OpenAI Codex 负责人 Tibo 公开教用户把 GPT-5.6 Sol 接入 Claude Code，一个月后 Anthropic 封了照做的开发者账号。核心问题：Coding Agent 的竞争到底是模型还是 Harness？",
-          "so_what": "如果你在选择 Coding Agent 工具链，这个事件揭示了一个关键架构决策——模型和 Harness 正在解耦。CLIProxyAPI 等中间层让你可以在 Claude Code 里跑 GPT-5.6 Sol（反之亦然）。建议关注 Harness 层的工具集成质量，它可能比模型本身更影响实际开发体验。"
-        },
-        {
-          "title": "NVIDIA 开源 Magpie TTS 多语言版：12 语言低延迟语音 Agent",
-          "category": "工具",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/nvidia/magpie-tts-multilingual-voice-agents",
-          "why_picked": "364M 参数开源 TTS 模型，支持 12 语言（含新增阿拉伯语/韩语/巴西葡萄牙语），NIM 生产部署就绪，专为级联语音架构设计。",
-          "so_what": "如果你在做多语言语音 Agent（客服/医疗/企业助手），Magpie 提供了可自部署的开源 TTS 替代方案。级联架构（ASR+LLM+TTS 独立组件）比端到端模型更易调优延迟和音质，364M 参数也适合边缘部署。"
-        },
-        {
-          "title": "nOps 用 Bedrock AgentCore 替代 LangGraph：FinOps Agent 交付提速 75%",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/how-nops-shipped-finops-agents-75-faster-with-amazon-bedrock-agentcore/",
-          "why_picked": "nOps 将 Clara FinOps Agent 从自管 EKS + LangChain/LangGraph 迁移到 Bedrock AgentCore，交付周期从 10-12 个月缩短到 4 个月，解决多租户隔离和响应延迟问题。",
-          "so_what": "如果你在评估 Agent 基础设施，nOps 案例验证了 Bedrock AgentCore 相比自建 LangGraph 栈的交付效率优势。核心收益来自托管的会话状态、工具注册和观测能力——如果你的团队规模 <50 人，托管方案可能比自建更划算。"
-        },
-        {
-          "title": "OpenAI GPT Image 新检查点 mona-lisa-1 泄露：塑料感显著减少",
-          "category": "新发布",
-          "source": "36氪",
-          "url": "https://www.36kr.com/p/3933115490368647",
-          "why_picked": "代号 mona-lisa-1 在 LM Arena 盲测中超越 GPT Image 2，SynthID 水印确认 OpenAI 出品。真实感和细节大幅提升，可能是同代地基上的新 checkpoint。",
-          "so_what": "如果你的产品管线依赖 AI 生图（营销/设计/内容生成），mona-lisa-1 暗示 GPT Image 3 即将正式推出。建议提前测试 Image 2 API 的迁移路径，新模型上线后 prompt 兼容性可能有变化。"
         }
       ]
     }
