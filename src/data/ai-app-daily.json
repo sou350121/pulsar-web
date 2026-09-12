@@ -1,87 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-08-12",
-      "config_version": 13,
-      "items": [
-        {
-          "title": "OpenAI 在 ChatGPT 中测试广告",
-          "url": "https://openai.com/index/testing-ads-in-chatgpt",
-          "source": "blog-openai",
-          "category": "垂直应用",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "chatgpt",
-            "ads",
-            "monetization"
-          ],
-          "direction_note_prefix": "",
-          "why": "OpenAI 首次在产品中引入广告，标志免费层商业模式重大转向"
-        },
-        {
-          "title": "Claude Apps Gateway for AWS 企业部署指南",
-          "url": "https://aws.amazon.com/blogs/machine-learning/deploying-anthropic-claude-apps-gateway-for-aws-for-enterprise-workloads/",
-          "source": "blog-aws-ai",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Anthropic/AWS",
-          "labels": [
-            "gateway",
-            "deployment",
-            "enterprise"
-          ],
-          "direction_note_prefix": "",
-          "why": "自托管治理层连接 Claude Code/Desktop 与 Bedrock，填补企业管控空白"
-        },
-        {
-          "title": "Weaviate Query Agent 搜索模式支持三级算力调节",
-          "url": "https://weaviate.io/blog/search-mode-effort",
-          "source": "blog-weaviate",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "Weaviate",
-          "labels": [
-            "agent",
-            "retrieval",
-            "test-time-compute"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "medium/high/ultrahigh 三级 effort 让检索 Agent 可按需分配推理算力"
-        },
-        {
-          "title": "Stealing Reasoning Traces：闭源 LLM API 的 CoT 重放攻击",
-          "url": "https://simonwillison.net/2026/Aug/11/stealing-reasoning-traces/",
-          "source": "blog-simonwillison",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "—",
-          "labels": [
-            "security",
-            "llm",
-            "chain-of-thought"
-          ],
-          "direction_note_prefix": "",
-          "why": "Anthropic/OpenAI/Google 返回的加密 CoT 可跨会话重放，暴露推理链安全漏洞"
-        },
-        {
-          "title": "Claude 上线隐形文本水印，每个字可全球追踪",
-          "url": "https://www.36kr.com/p/3934784035356034",
-          "source": "tophub-36kr",
-          "category": "其他",
-          "importance": "strategic",
-          "developer": "Anthropic",
-          "labels": [
-            "watermark",
-            "claude",
-            "content-provenance"
-          ],
-          "direction_note_prefix": "",
-          "why": "Claude 悄悄部署逐字隐形水印，内容溯源能力进入新阶段"
-        }
-      ]
-    },
-    {
       "date": "2026-08-13",
       "config_version": 13,
       "items": [
@@ -2670,6 +2589,102 @@
           ],
           "direction_note_prefix": "",
           "why": "前缀缓存路由是降本增效的实用手段"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "config_version": 15,
+      "items": [
+        {
+          "title": "Build interactive MCP Apps using Amazon Bedrock AgentCore",
+          "url": "https://aws.amazon.com/blogs/machine-learning/build-interactive-mcp-apps-using-amazon-bedrock-agentcore/",
+          "source": "blog-aws-ai",
+          "category": "UI/UX 工具",
+          "importance": "strategic",
+          "developer": "AWS",
+          "labels": [
+            "mcp",
+            "agent-ui",
+            "serverless"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "MCP Apps 把交互式 HTML widget 搬进 AI host，Agent UI 标准化落地路径。"
+        },
+        {
+          "title": "Monitoring production agent lifecycle with AWS DevOps Agent and AgentCore Evaluations",
+          "url": "https://aws.amazon.com/blogs/machine-learning/monitoring-production-agent-lifecycle-with-aws-devops-agent-and-agentcore-evaluations/",
+          "source": "blog-aws-ai",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "agent",
+            "observability",
+            "evals"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "多 Agent 生产的质量监控缺口：实时评分交互，而非只看基础设施指标。"
+        },
+        {
+          "title": "litelm: LiteLLM Without the Bloat",
+          "url": "https://github.com/kennethwolters/litelm",
+          "source": "hn",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "kennethwolters",
+          "labels": [
+            "gateway",
+            "llm-routing",
+            "sdk"
+          ],
+          "direction_note_prefix": "",
+          "why": "把 LLM 路由/翻译核心从 10 万行 LiteLLM 剥成 2900 行、仅 2 个依赖。"
+        },
+        {
+          "title": "How Tailscale built a customer-facing model router on AI Gateway",
+          "url": "https://vercel.com/blog/how-tailscale-built-a-customer-facing-model-router-on-ai-gateway",
+          "source": "blog-vercel",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "Vercel / Tailscale",
+          "labels": [
+            "gateway",
+            "model-router",
+            "sandbox"
+          ],
+          "direction_note_prefix": "",
+          "why": "企业用网关+沙箱把模型访问绑定到 tailnet 身份，而非逐个发 API key。"
+        },
+        {
+          "title": "So you want to use OpenRouter?",
+          "url": "https://simonwillison.net/2026/Sep/11/so-you-want-to-use-openrouter/",
+          "source": "blog-simonwillison",
+          "category": "API 包装器",
+          "importance": "actionable",
+          "developer": "OpenRouter",
+          "labels": [
+            "routing",
+            "fallback",
+            "api"
+          ],
+          "direction_note_prefix": "",
+          "why": "同一 OpenRouter 端点在不同后端行为不一，需 provider.only 固定路由。"
+        },
+        {
+          "title": "Rapidly scaling online storage to serve over 1 billion ChatGPT users",
+          "url": "https://openai.com/index/scaling-storage-one-billion-users-part-one",
+          "source": "blog-openai",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "infra",
+            "storage",
+            "scale"
+          ],
+          "direction_note_prefix": "",
+          "why": "ChatGPT/Codex 背后的在线存储 Habitat：70M QPS、500PB 的规模工程复盘。"
         }
       ]
     }
