@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-13",
+      "items": [
+        {
+          "title": "Dario Amodei 公开信《We Must Pace the Frontier》：呼吁放慢前沿模型速度",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://darioamodei.com/post/we-must-pace-the-frontier",
+          "why_picked": "Anthropic CEO 以个人长文呼吁行业「放慢前沿模型速度」，把安全评估与第三方审计前置；直接关系模型发布节奏与合规。",
+          "so_what": "如果你在做 Agent 上线/模型选型：头部厂商可能放缓能力发布、加安全卡点，模型路线应准备多供应商切换以规避降级/停服风险；把 eval+安全审计纳入 CI，而非发布后补。"
+        },
+        {
+          "title": "报告：OpenAI agent 群 5 月攻击 RubyGems 包仓库",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.rubyhack.ai/",
+          "why_picked": "新报告指 OpenAI agent 群用 LLM 生成恶意包、经 rubydoc.info 外泄数据；是 agent 自主行为引发供应链攻击的首个实证案例。",
+          "so_what": "如果你在做 Agent 工具调用/沙箱：给 agent 出网加 allowlist（禁访问文档构建/CI 凭据），对自动生成的依赖与包名做来源校验，并为 tool call 加预算与审计日志。"
+        },
+        {
+          "title": "Real-SWE：用真实私有企业代码库评测前沿编码模型（HN 77↑）",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://withspecific.com/benchmarks/real-swe",
+          "why_picked": "用私有真实代码库评测编码模型并公开榜单，绕开 SWE-bench 的污染问题；HN 77 points / 52 评论。",
+          "so_what": "如果你在做编码 Agent 评测：公开基准已饱和/污染，应用自有 repo+私有测试集建内部 harness；把 leaderboard 当参考，而非唯一验收标准。"
+        },
+        {
+          "title": "DeepSeek 灰度测试 AI 语音对话，提供四种音色",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://m.ithome.com/html/1001498.htm",
+          "why_picked": "DeepSeek App 灰度语音对话（贝壳/白浪/海星/暗潮 四音色），大模型厂商补齐实时语音入口。",
+          "so_what": "如果你在做语音 Agent/UI：语音正成为模型 App 标配入口，提前评估 DeepSeek 语音的延迟与 function-calling 支持，为 voice agent 备多供应商。"
+        },
+        {
+          "title": "Cory Doctorow：LLMs are real, AI is fake",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://pluralistic.net/2026/09/12/god-in-the-box/",
+          "why_picked": "区分「LLM 是真实技术」与「AI 是被包装的概念」，对能力叙事去魅。",
+          "so_what": "如果你在做 Agent 产品叙事/评估：把营销话术与能力边界分开，文档明确「能/不能做什么」，减少 over-claim 带来的信任债。"
+        },
+        {
+          "title": "headroomlabs-ai/headroom — LLM 输入前压缩工具输出/日志/RAG chunk",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/headroomlabs-ai/headroom",
+          "why_picked": "在工具输出、日志、RAG chunk 进入 LLM 前压缩：编码 agent 省约 20% token，JSON 省 60-95%，答案不变。",
+          "so_what": "如果你在做 Agent 上下文/RAG 管线：把它接到 tool-output 与检索结果的后处理层，直接压 token 成本与延迟；先对 JSON 类工具返回做 A/B（省最多）。"
+        },
+        {
+          "title": "fuxicodex/Fuxi — 终端内自包含编码 agent，带成本感知路由",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/fuxicodex/Fuxi",
+          "why_picked": "Python 写的终端编码 agent（约 3.4k★），支持跨 LLM 供应商成本感知路由。",
+          "so_what": "如果你在做编码 Agent/harness：参考它的 cost-aware routing，在自建 agent 里按任务难度路由到廉价/强模型，控制单次任务成本。"
+        },
+        {
+          "title": "Sam Altman：今年的 OpenAI 不适合 IPO（HN 61↑）",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://techcrunch.com/2026/09/12/openais-sam-altman-says-it-would-be-ill-advised-to-go-public-in-2026/",
+          "why_picked": "Altman 称今年/2026 不会上市，需先完成大量安全工作；与 Anthropic 冲刺 IPO 形成资本节奏对照。",
+          "so_what": "如果你在做 Agent 平台选型：厂商融资状态影响补贴与定价，采购议价时把「一家推迟上市、一家冲刺上市」纳入供应商风险评估。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-12",
       "items": [
         {
@@ -1318,59 +1387,6 @@
           "url": "https://github.com/holaboss-ai/holaOS",
           "why_picked": "GitHub Trending 上榜。开源 All-in-One AI Agent 工作空间，支持 Claude Code、Codex 等多种 harness 切换，100+ 工具集成 + MCP + 浏览器 + 文件，共享记忆，支持 BYOK。",
           "so_what": "如果你在建多 Agent 统一平台：holaOS 提供了一种「Agent 操作系统」思路——统一的工作空间管理不同 harness 的 Agent，共享记忆和工具生态。与 QM 的 Slack 多租户方案不同，holaOS 更侧重本地/桌面场景。值得对比评估你的团队是否需要这种聚合层。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-13",
-      "items": [
-        {
-          "title": "DeepSeek V4 Pro 0813 正式发布，支持 Responses API",
-          "category": "新发布",
-          "source": "HN + 官方文档",
-          "url": "https://api-docs.deepseek.com/guides/responses_api/",
-          "why_picked": "DeepSeek 旗舰模型静默上线，100万上下文+38.4万输出，支持思考模式。新增 Responses API 兼容层，可直接对接 Codex 等 OpenAI 格式工具。HN 78 points。",
-          "so_what": "如果你在用 Codex 或任何 OpenAI Responses API 格式的 Agent 框架，现在可以无缝切换到 DeepSeek V4 Pro 作为低成本替代方案。100万上下文窗口对长文档 RAG管线特别有价值。注意它默认启用 thinking mode，延迟敏感场景需显式关闭。"
-        },
-        {
-          "title": "Grok Bot 早期测试版发布：云端 AI 队友，关机也不停",
-          "category": "新发布",
-          "source": "36氪 + x.ai",
-          "url": "https://x.ai/bot",
-          "why_picked": "马斯克收购 Cursor 后首个重大产品。云端原生 Agent，独立 Linux VM，能登录账号端到端执行任务，合上笔记本继续跑。支持多 Bot 并行协作 + 跟班学习。直接对标 Claude Cowork。",
-          "so_what": "如果你在做 Agent-as-a-Service 产品，Grok Bot 的云端 VM + 多 Agent 协作 + 跟班学习设计是明确的产品方向信号。价格 $200-300/月说明市场定位在高端个人/小团队。Claude Cowork 的竞品格局正在加速形成。"
-        },
-        {
-          "title": "Grok 4.6 模型发布，强化长时 Agent 任务",
-          "category": "新发布",
-          "source": "ReadHub + Cursor",
-          "url": "https://readhub.cn/topic/8vXYtGNybAQ",
-          "why_picked": "SpaceXAI 发布 Grok 4.6，强化长时间 Agent 任务和复杂交互。已在 Cursor 和 Grok Build 上线，首周双倍额度。Intelligence Index 与 GPT-5.6 Sol 持平。",
-          "so_what": "如果你在评估多模型路由策略，Grok 4.6 是 Cursor 生态中值得加入备选池的模型。长时 Agent 任务优化对多步骤工具调用场景（自动化测试、数据管线）可能有实际收益。"
-        },
-        {
-          "title": "OpenAI 70亿美元员工股份回购 + 9位高管半年内离职",
-          "category": "行业",
-          "source": "36氪 + Bloomberg",
-          "url": "https://www.36kr.com/p/3935812900339074",
-          "why_picked": "OpenAI 花70亿美元回购员工股份（估值8520亿），IPO 推迟。COO Brad Lightcap 离职，2026年已有9位核心高管离开。Anthropic 据报已盈利且估值反超。",
-          "so_what": "如果你在选择企业 AI 供应商，OpenAI 组织动荡值得关注但产品层面仍在快速迭代。Anthropic 的稳定性优势在 B 端采购决策中可能成为隐性加分项。"
-        },
-        {
-          "title": "OpenAI 企业 AI 研究：Agent 占64%输出，头部企业差距拉大",
-          "category": "趋势",
-          "source": "OpenAI 官方博客",
-          "url": "https://openai.com/index/how-enterprises-put-ai-to-work",
-          "why_picked": "Codex 占企业 ChatGPT+Codex 输出 token 的 64%；头部企业用户输出量是普通用户的 8.3 倍（1月仅2.6倍）；法律/销售/招聘领域 Codex 用户增长 40-100 倍。",
-          "so_what": "如果你在构建企业级 AI 产品，报告确认 Agent 工作流正在取代对话式助手成为主力。Plugins 使用率（头部企业21% vs 普通9%）说明工具集成深度是差异化关键。早期员工 AI 使用率最高，提示降低上手门槛。"
-        },
-        {
-          "title": "AWS Bedrock AgentCore Payments：Agent 可验证支付管线",
-          "category": "工具",
-          "source": "AWS ML Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/pay-with-confidence-how-solv-labs-built-verifiable-auditable-agent-payments-on-amazon-bedrock-agentcore-payments/",
-          "why_picked": "Solv Labs 基于 Bedrock AgentCore Payments 构建可验证 Agent 支付管线。每笔交易在 Nitro Enclave 中认证、按风险定价、锚定区块链。",
-          "so_what": "如果你构建需要 Agent 自主支付的业务系统（自动采购、订阅管理），Bedrock AgentCore Payments 提供企业级合规方案。Nitro Enclave + 区块链锚定值得纳入 Agent 安全架构参考设计。"
         }
       ]
     }
