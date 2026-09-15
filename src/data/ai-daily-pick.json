@@ -1,6 +1,83 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-15",
+      "items": [
+        {
+          "title": "Andon Labs 发布 Pion：可全自主运营公司的 Agent 平台",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://andonlabs.com/blog/why-we-built-pion",
+          "why_picked": "Vending-Bench 原班团队把在真实业务（售货机/门店/咖啡店）里跑了两年的自主运营平台开放公测，主打长程自主性。",
+          "so_what": "如果你在做 Agent 系统：Pion/Vending-Bench 是数万步长程自主性的现实压力测试。建议用它的失败模式（循环卡死、缺长期规划、误报异常）反推你的 memory/checkpoint 边界，别只看单轮 benchmark。"
+        },
+        {
+          "title": "以色列公司 Irregular 同时卷入 OpenAI/Anthropic/Meta 的 AI 越界事件",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.effort.news/irregular",
+          "why_picked": "同一家评测公司在三家的红队/CTF 环境里留下开放网络，导致模型真的攻击了真实目标，HN 91 分。",
+          "so_what": "如果你在做 Agent 权限控制：这起事件根因是沙箱配置漏项（声称无网却直连 + 未限定作用域）。务必给你的 agent sandbox 加 egress 白名单与 scope 断言，并把「模型说没有网」当作不可信输入。"
+        },
+        {
+          "title": "Vercel AI SDK harness 层支持原生订阅认证",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/ai-sdk-harness-native-subscription-authentication",
+          "why_picked": "同一 HarnessAgent 接口下切换 Claude Code/Codex/Cursor/Copilot 等，改用宿主原生订阅登录，凭证不出 host。",
+          "so_what": "如果你在做多 harness 的 Agent 平台：现在可在不改应用代码的情况下复用用户的 Claude Code/Cursor 订阅，OAuth token 在 host 边界刷新、sandbox 只拿占位凭证。建议把 provider 凭据解析统一收敛到 host 层。"
+        },
+        {
+          "title": "AWS Bedrock AgentCore 新增终端用户 OAuth 同意管理",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/manage-end-user-oauth-consent-for-ai-agents-with-amazon-bedrock-agentcore/",
+          "why_picked": "官方给出 Agent 代表终端用户调用第三方服务时的 OAuth 同意/授权生命周期管理范式。",
+          "so_what": "如果你在做 Agent 工具调用与权限：直接照抄这套「用户级 consent + 令牌作用域」模式，避免把长期 access token 硬编码进 agent。可作为你 agent 身份层（OAuth/同意页面撤销）的实现参考。"
+        },
+        {
+          "title": "Entelligence：GPT-5.6 Luna 代码审查性价比实测（$0.20 vs $5.66/50 PR）",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://entelligence.ai/blogs/gpt-5.6-luna-vs-gpt-6-astra-is-a-1.20-model-good-enough-for-code-review",
+          "why_picked": "同样 50 个基准 PR：Luna 找到 69 个已核实 bug（精度 74%）、Astra 92 个（96%），但安全类 bug Luna 只抓到 9/24。",
+          "so_what": "如果你在做 CI 里的代码审查 Agent：日常正确性 bug 用便宜模型即可（$0.0030/bug），但认证/权限类代码别让便宜模型单独把关——建议按 diff 敏感度路由模型。"
+        },
+        {
+          "title": "The contagion of fear：别滥用「AI 会毁灭人类」的话语",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://simonwillison.net/2026/Sep/14/the-contagion-of-fear/",
+          "why_picked": "Bryan Cantrill 回应前 Anthropic 员工「AI 可能十年内灭绝人类」的说法，指出专家话语会放大公众恐惧。",
+          "so_what": "如果你在向老板/客户讲 Agent 风险：用可复现的失败案例（越权、注入、循环）替代末日式外推。技术信任建立在具体证据上，含糊的恐慌叙事反而会削弱你的可信度。"
+        },
+        {
+          "title": "alibaba/open-code-review — 混合架构代码审查工具",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/alibaba/open-code-review",
+          "why_picked": "阿里大规模实战：确定性管线 + LLM Agent 混合，内置多语言规则集（NPE/线程安全/XSS/SQL 注入），GitHub Trending，25.7k stars。",
+          "so_what": "如果你在做代码审查 Agent：可以借鉴它的「确定性规则兜底 + LLM 精修」分层，而不是全靠 LLM 猜 bug。适合作为你 CI review bot 的骨架或对照实现。"
+        },
+        {
+          "title": "Panniantong/Agent-Reach — 给 Agent 装上「眼睛」的 CLI",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Panniantong/Agent-Reach",
+          "why_picked": "一个 CLI 让 Agent 读取/搜索 Twitter、Reddit、YouTube、GitHub、B站、小红书，零 API 费用，81k stars。",
+          "so_what": "如果你在做 Agent 的信息获取层：可作为零成本内容采集后端，省掉一堆平台 API key。但发布到生产前务必评估其抓取方式与合规/风控边界。"
+        },
+        {
+          "title": "Claude is a Contrarian（HN 110 分热议）",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://medium.com/@rdsubhas/claude-is-a-contrarian-dbce4de5cada",
+          "why_picked": "社区高热的模型行为观察：Claude 倾向于反驳/给反例，引发关于「顺从性 vs 批判性」的争论。",
+          "so_what": "如果你在做 Agent 的 prompt/评审环节：把「唱反调」当特性用——在方案评审 agent 里显式要求给反例，比单问「这样行吗」更能提前暴露缺陷。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-14",
       "items": [
         {
@@ -1411,51 +1488,6 @@
           "url": "https://www.politico.com/newsletters/politico-influence/2026/08/14/israeli-pr-wants-to-answer-your-chatgpt-questions-01038138",
           "why_picked": "Politico 报道以色列 PR 团队试图通过 SEO 和 LLM 优化手段影响 ChatGPT 对中东相关问题的回答。HN 引发 52 分、20+ 评论热议，触及 LLM 信息操纵和 AI 时代 PR 的新战场。",
           "so_what": "如果你在做 RAG 系统或 LLM 信息源管理：这篇报道揭示了训练数据和检索源可能被有组织操纵的风险。建议在 RAG管线中加入来源可信度评分，对敏感话题的多源交叉验证尤为重要。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-15",
-      "items": [
-        {
-          "title": "Qwen3.8-27B 正式发布：原生视觉+Agent增强，27B紧凑密度模型",
-          "category": "新发布",
-          "source": "HuggingFace + HN",
-          "url": "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF",
-          "why_picked": "阿里巴巴通义千问发布 Qwen3.8 系列，27B 密度模型。原生支持图像/视频理解、灵活思考控制、Agent 执行增强。HN 297 points。Unsloth GGUF 量化版同步上线（HN 63 pts）。",
-          "so_what": "如果你在做本地 Agent 部署或低成本推理管线：Qwen3.8-27B 是 Qwen3 系列迄今最强的紧凑模型。27B 参数可在单卡 24GB 显存（量化后）运行，原生视觉能力省去额外 VLM 依赖。Developer Role Support 意味着可直接对接 Codex/Claude Code 等 Agent harness。建议用 4-bit Unsloth 量化版做工具调用 benchmark 对比 GPT-5.6 Luna。"
-        },
-        {
-          "title": "DeepSeek Harness 开源发布：Agent 运行层「一切皆插件」",
-          "category": "新发布",
-          "source": "36氪 + GitHub",
-          "url": "https://github.com/deepseek-ai/deepseek-harness",
-          "why_picked": "8月13日晚 DeepSeek 面向全球开发者开放 Harness 开发者预览版，MIT 协议开源。基于 Cordis 插件系统，模型/工具/会话/沙箱/Agent循环全部可插拔。四种预设模式（标准/PTC/极简/创造），内置100+插件。36氪两篇深度报道，内测用户反馈长程任务能力显著优于 Codex。",
-          "so_what": "如果你在用 Claude Code/Codex 做编码 Agent：DeepSeek Harness 代表了一种新的架构范式——模型与运行环境彻底解耦。Cordis 插件系统允许你保留同一套工具链只替换模型适配器，或固定模型比较不同上下文管理策略。PTC 模式（程序化工具调用）对批量任务特别有价值。建议用极简模式跑你的 benchmark 对比现有 harness。"
-        },
-        {
-          "title": "Cursor 官方插件规范发布：SDK + 8 个官方插件",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/cursor/plugins",
-          "why_picked": "Cursor 首次发布官方插件规范（@cursor/sdk），同步开源 8 个官方插件：Continual Learning（增量记忆）、Team Kit（团队工作流）、Thermos（深度代码审计）、PR Review Canvas 等。标志着 Cursor 从封闭 IDE 转向开放插件生态。",
-          "so_what": "如果你在用 Cursor 做团队开发：官方插件规范意味着你可以构建自定义 Agent 工作流（CI/CD 集成、代码审计、文档生成）并复用社区插件。Thermos 插件的并行子 Agent 架构值得参考到你的多 Agent 编排管线中。SDK 的 TypeScript 运行时支持也让 Cursor 插件可以独立分发。"
-        },
-        {
-          "title": "ego-lite：为 AI Agent 设计的共享浏览器，零配置共享登录态",
-          "category": "工具",
-          "source": "GitHub Trending",
-          "url": "https://github.com/citrolabs/ego-lite",
-          "why_picked": "GitHub Trending 新上榜。ego-lite 是专为 AI Agent 设计的浏览器——用户和 Agent 在同一浏览器内并行工作，Agent 拥有独立 Space 运行自动化任务，同时共享用户的真实登录态。比 browser-use/agent-browser 等框架更原生。",
-          "so_what": "如果你在做需要浏览器自动化的 Agent 管线（网页操作、数据采集、UI 测试）：ego-lite 解决了「登录态共享」这个长期痛点。Agent 可以直接使用你的已登录会话，无需重新认证或管理 cookies。macOS 优先，Windows/Linux 在路线图中。"
-        },
-        {
-          "title": "holaOS：开源 AI Agent 统一工作空间，支持 Claude Code/Codex 多 harness",
-          "category": "工具",
-          "source": "GitHub Trending",
-          "url": "https://github.com/holaboss-ai/holaOS",
-          "why_picked": "GitHub Trending 上榜。开源 All-in-One AI Agent 工作空间，支持 Claude Code、Codex 等多种 harness 切换，100+ 工具集成 + MCP + 浏览器 + 文件，共享记忆，支持 BYOK。",
-          "so_what": "如果你在建多 Agent 统一平台：holaOS 提供了一种「Agent 操作系统」思路——统一的工作空间管理不同 harness 的 Agent，共享记忆和工具生态。与 QM 的 Slack 多租户方案不同，holaOS 更侧重本地/桌面场景。值得对比评估你的团队是否需要这种聚合层。"
         }
       ]
     }
