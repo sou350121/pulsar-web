@@ -1,57 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-08-17",
-      "config_version": 14,
-      "items": [
-        {
-          "title": "OpenAI 人事大震荡：安全团队撤编 + 12位高管离职",
-          "url": "https://www.36kr.com/p/3941902971993225",
-          "source": "tophub-36kr",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "org-change",
-            "safety",
-            "governance"
-          ],
-          "direction_note_prefix": "",
-          "why": "IPO前组织重构，Preparedness安全团队解散，安全从独立建制变为研发环节"
-        },
-        {
-          "title": "Qwen 3.8 27B 默认过度推理：实测需手动调低 reasoning_effort",
-          "url": "https://simonwillison.net/2026/Aug/16/qwen-38-27b/",
-          "source": "blog-simonwillison",
-          "category": "模型发布",
-          "importance": "actionable",
-          "developer": "Qwen/Alibaba",
-          "labels": [
-            "llm",
-            "reasoning",
-            "local-inference"
-          ],
-          "direction_note_prefix": "",
-          "why": "默认 xhigh 推理消耗大量 token，本地部署需手动调低 reasoning_effort 以平衡速度与质量"
-        },
-        {
-          "title": "英伟达洽谈向 SB Energy 投资 30 亿美元",
-          "url": "https://readhub.cn/topic/8vcmZY6DUzO",
-          "source": "tophub-readhub",
-          "category": "基础设施",
-          "importance": "read-only",
-          "developer": "Nvidia",
-          "labels": [
-            "infrastructure",
-            "datacenter",
-            "OpenAI"
-          ],
-          "direction_note_prefix": "",
-          "why": "OpenAI 数据中心交易组成部分，Nvidia 以财力扶持 AI 基础设施生态"
-        }
-      ]
-    },
-    {
       "date": "2026-08-18",
       "config_version": 14,
       "items": [
@@ -2629,6 +2578,116 @@
           ],
           "direction_note_prefix": "",
           "why": "Python 后端日发 100 次的部署范式，agent 服务 CI/CD 参考"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "config_version": 16,
+      "items": [
+        {
+          "title": "Claude Cowork 与 chat 合并为一个 Claude；新增 Claude Docs / Slides",
+          "url": "https://claude.com/blog/cowork-is-now-claude",
+          "source": "claude.com（Anthropic 官方博客）",
+          "category": "UI/UX 工具",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "agent-ui",
+            "chat-ui",
+            "product"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "对话即工作台：聊天/Cowork/Design 合并，文档与幻灯片就地生成"
+        },
+        {
+          "title": "OpenAI 发布模型失准上报框架，附 6 份异常行为报告",
+          "url": "https://openai.com/index/model-misalignment-reporting-framework",
+          "source": "openai.com（OpenAI 官方）",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "safety",
+            "evals",
+            "governance"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "把失准事件按航空式流程公开上报，安全披露走向制度化"
+        },
+        {
+          "title": "OpenAI 在美测试 ChatGPT 广告「赞助代理」，打通 HubSpot/Shopify",
+          "url": "https://openai.com/index/reimagining-advertising-with-ai",
+          "source": "openai.com（OpenAI 官方）",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "agents",
+            "ads",
+            "commerce"
+          ],
+          "direction_note_prefix": "",
+          "why": "广告变成可对话的赞助 agent，agent 商业化路径落地"
+        },
+        {
+          "title": "AWS 开源 38 个 HCLS Agent Skills，遵循 Agent Skills 开放标准",
+          "url": "https://aws.amazon.com/blogs/machine-learning/improving-hcls-ai-reasoning-with-open-source-agent-skills/",
+          "source": "aws.amazon.com（AWS ML Blog）",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "awslabs",
+          "labels": [
+            "agent-skills",
+            "domain-reasoning",
+            "opensource"
+          ],
+          "direction_note_prefix": "",
+          "why": "把领域方法论写成 SKILL.md，agent 头对头胜率提到 70–86%"
+        },
+        {
+          "title": "AWS AgentCore 用生产 trace 自动优化 agent 系统提示并 A/B 验证",
+          "url": "https://aws.amazon.com/blogs/machine-learning/optimizing-agent-system-prompts-with-amazon-bedrock-agentcore/",
+          "source": "aws.amazon.com（AWS ML Blog）",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "awslabs",
+          "labels": [
+            "llmops",
+            "observability",
+            "prompt-optimization"
+          ],
+          "direction_note_prefix": "",
+          "why": "trace→改写提示→离线评测→线上 A/B 固化，prompt 可迭代闭环"
+        },
+        {
+          "title": "Appwrite 2.0：面向 agent 与开发者的开源云",
+          "url": "https://www.producthunt.com/products/appwrite",
+          "source": "Product Hunt",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "appwrite",
+          "labels": [
+            "backend",
+            "opensource",
+            "agent-infra"
+          ],
+          "direction_note_prefix": "",
+          "why": "开源后端补齐 agent 所需 auth/存储/函数，降低自托管门槛"
+        },
+        {
+          "title": "Mustafa Suleyman：不应把模型当作有感受或权利的存在",
+          "url": "https://simonwillison.net/2026/Sep/16/mustafa-suleyman/",
+          "source": "simonwillison.net",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "—",
+          "labels": [
+            "opinion",
+            "ai-ethics"
+          ],
+          "direction_note_prefix": "",
+          "why": "模型拟人化边界之争，影响 agent 人格化产品设计取向"
         }
       ]
     }
