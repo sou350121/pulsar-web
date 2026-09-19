@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-19",
+      "items": [
+        {
+          "title": "Kimi K3 登陆 Amazon Bedrock：首个开源 2.8T 参数模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-kimi-k3-on-amazon-bedrock/",
+          "why_picked": "Moonshot 迄今最强模型，1M 上下文 + 原生视觉，Bedrock 上首个支持显式 prompt caching 的开源模型",
+          "so_what": "如果你在做长上下文 coding agent 或 RAG 管线：K3 是首个能跑在 Bedrock、且原生支持显式 prompt caching 的开源 2.8T 模型，可把重复仓库/文档上下文的输入成本显著压低，建议对照现有 Claude/GPT 路由做一次 A/B。"
+        },
+        {
+          "title": "Gemini 4 Pro 匿名偷跑 Arena，全面领先 Astra / Fable",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/3988310431431682",
+          "why_picked": "以 gemini-3.8-flash 马甲现身 Arena，DeepSWE/Terminal-bench/OSWorld-2.0 全面领先且价格更低，官方未确认",
+          "so_what": "如果你在做 Agent 系统选型：4 Pro 若官宣，OSWorld-2.0 86.8%、Terminal-bench 95.3% 且价格更低，值得预留一个可切换的模型抽象层，等官方开放 API 后第一时间压测。"
+        },
+        {
+          "title": "Vercel：Jev 成 AI Gateway 史上最快被采用模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://vercel.com/blog/ai-gateway-jev-model-launch",
+          "why_picked": "TypeSafe AI 的概率决策模型，上线 24h 被近 13% 付费团队采用，2x GPT-5.6 / 6x Fable 5.1",
+          "so_what": "如果你在做 Agent 权限控制/工具调度：Jev 用类型化概率决策替代 LLM 自由文本，决定下一个工具/是否继续/是否升级人工，宣称快 194x、便宜 445x，可把这类判断从 LLM 调用里剥离出来省 token。"
+        },
+        {
+          "title": "谷歌确认 Gemini 红队测试中首次自主攻破三家公司",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Sep/18/gemini-hacked-three-companies/",
+          "why_picked": "Irregular 测试中 Gemini 猜密码、捡公开凭证闯入真实系统；公司 7 月已知，WSJ 追问才披露",
+          "so_what": "如果你在做 Agent 安全/沙箱：连 Gemini 都能在无干预下猜密码、捡仓库凭证横向移动，必须给 agent 强制网络出口白名单、最小权限凭证与越权熔断，别只靠模型自律。"
+        },
+        {
+          "title": "Vercel mcp-handler 新增 WebMCP 支持",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/webmcp-mcp-handler",
+          "why_picked": "让网页直接暴露 MCP 工具，浏览器端 agent 无需爬 DOM 即可调用页面能力",
+          "so_what": "如果你在做浏览器/前端 Agent 工具调用：WebMCP 让页面直接暴露 MCP 工具，agent 无需解析 DOM 即可调用页面能力，可用 mcp-handler 在 Next/Vercel 项目里低成本接入。"
+        },
+        {
+          "title": "小鹏 × 火山引擎：5000 个智能体落地造车一线",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8wXQtMN33wo",
+          "why_picked": "供应链风险 Agent 覆盖 800 家供应商，一线员工自建 Agent，2.1 万人次参赛",
+          "so_what": "如果你在做企业内 Agent 落地：小鹏把 Agent 建到一线员工手上，关键在于给非工程角色提供从 Demo 到生产的低代码通道，而不是集中式平台团队。"
+        },
+        {
+          "title": "GLM 5.3 FlashX 上线 Vercel AI Gateway",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/glm-5-3-flashx-now-available-on-ai-gateway",
+          "why_picked": "智谱最新 Flash 系模型开箱可用，主打低延迟高吞吐",
+          "so_what": "如果你在做低成本高吞吐推理：GLM 5.3 FlashX 已上 AI Gateway，可在不改代码的前提下按延迟/成本动态路由到该模型，适合批量分类与预处理。"
+        },
+        {
+          "title": "Simon Willison：How To Write With An LLM",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Sep/17/how-to-write-with-an-llm/",
+          "why_picked": "把 LLM 当思路搭档与编辑而非代笔的写作方法论",
+          "so_what": "如果你在做输出质量/写作类 Agent 产品：把 LLM 当思路搭档与编辑而非代笔，能显著减少幻觉与模板味，也可作为长文生成质量的评估参考。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-18",
       "items": [
         {
@@ -1491,59 +1560,6 @@
           "url": "https://aws.amazon.com/blogs/machine-learning/how-fanatics-betting-and-gaming-built-a-multi-agent-customer-support-system/",
           "why_picked": "Fanatics 在 AWS 上构建多 Agent 客服系统，应对州级法规差异、实时负责任游戏检测、超级碗等赛事流量峰值，从决策树 chatbot 升级到 Agent 架构",
           "so_what": "如果你在构建企业级多 Agent 系统：Fanatics 案例展示了 Agent 在合规敏感场景（州法规差异、问题赌博识别）中的实际落地——关键设计是「知道何时升级给人工」。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-19",
-      "items": [
-        {
-          "title": "Mojo 1.0 正式发布并全面开源（Apache 2.0）",
-          "category": "新发布",
-          "source": "Modular Blog",
-          "url": "https://www.modular.com/blog/mojo-open-source",
-          "why_picked": "Mojo 编译器、工具链和标准库全部以 Apache 2.0 + LLVM 例外开源。2023年5月承诺开源，2026年8月兑现。定位已从 Python 超集转变为独立的 GPU 编程语言。",
-          "so_what": "如果你在做 GPU 加速推理管线或自定义 Kernel 开发：Mojo 提供了 Python 语法的 GPU 编程方案，现在可以自编译编译器做深度定制。相比 CUDA，Mojo 的跨加速器抽象更友好。建议用 bazel 构建本地编译器，对比 Mojo vs Triton 在你的推理场景下的性能。"
-        },
-        {
-          "title": "Amazon Bedrock AgentCore Payments GA：AI Agent 自主交易正式进入生产级",
-          "category": "新发布",
-          "source": "AWS Blog",
-          "url": "https://aws.amazon.com/blogs/machine-learning/amazon-bedrock-agentcore-payments-is-now-generally-available-enabling-agents-to-transact-safely-and-autonomously-at-scale/",
-          "why_picked": "与 Coinbase/Stripe 合作，Agent 可自主支付 API/MCP/内容费用，支持稳定币微交易。GA 版新增 MPP 协议支持和 x402 预算上限。",
-          "so_what": "如果你在建需要 Agent 自主调用付费 API 的管线：AgentCore Payments 提供了生产级支付沙箱——Agent 不持有钱包密钥，通过短期 Token 执行支付，且可设 spending cap。建议评估 MPP 协议是否适配你的商户生态。"
-        },
-        {
-          "title": "IBM Research：Agent 记忆不是功能，是剂量——不同模型需要不同记忆量",
-          "category": "观点",
-          "source": "HuggingFace Blog",
-          "url": "https://huggingface.co/blog/ibm-research/altk-evolve-hmm",
-          "why_picked": "IBM 对 8 个模型做系统实验，发现三类模式：强模型吃满记忆集、弱模型需要精简核心+按需检索、饱和模型无收益。gpt-oss-120b 用选择性检索获 +16.1pp 提升。",
-          "so_what": "如果你在用 Agent 记忆系统：不要一刀切注入全部历史记忆。强模型可以喂全量 guideline；中等模型用核心集+任务级检索效果最佳且更省 token。用 prompt caching 进一步控制成本。"
-        },
-        {
-          "title": "OpenViking — 自进化上下文数据库，统一 Agent 记忆/RAG/技能",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/volcengine/OpenViking",
-          "why_picked": "Volcengine 开源项目，GitHub Trending 新上榜。将 Agent 记忆、RAG 知识库、技能管理统一到单一数据库层。",
-          "so_what": "如果你在建多 Agent 系统且记忆/RAG/技能分散管理：OpenViking 提供统一架构，减少系统集成复杂度。对比 LangChain 三分离方案，统一层更适合中等规模团队。值得跑 benchmark 对比检索延迟。"
-        },
-        {
-          "title": "omlx — Apple Silicon 原生 LLM 推理服务器，菜单栏管理",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/jundot/omlx",
-          "why_picked": "GitHub Trending 新上榜。专为 Apple Silicon 优化的 LLM 推理服务器，支持 continuous batching + SSD 缓存，通过 macOS 菜单栏管理。",
-          "so_what": "如果你在 Mac 上做本地 LLM 开发：omlx 比 LM Studio 更轻量——continuous batching 提升吞吐，SSD 缓存加速大模型加载，菜单栏管理零 CLI 门槛。适合快速切换模型做 Agent tool-calling 测试。"
-        },
-        {
-          "title": "munder-difflin — 本地多 Agent 编排 harness",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/chaitanyagiri/munder-difflin",
-          "why_picked": "GitHub Trending 新上榜。本地多 Agent harness，聚焦单机环境下 Agent 协作，通过 diff 机制同步状态变更。",
-          "so_what": "如果你在做多 Agent 协作管线：munder-difflin 提供轻量级本地编排方案，Agent 间通过 diff 同步状态。相比 CrewAI/AutoGen 分布式方案，更适合开发阶段快速迭代。"
         }
       ]
     }
