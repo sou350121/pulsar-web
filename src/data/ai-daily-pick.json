@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-20",
+      "items": [
+        {
+          "title": "Kimi K3 发布：全球首个开源 3T 级模型，2.8T 参数 + 原生视觉 + 1M 上下文",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.kimi.ai/blog/kimi-k3",
+          "why_picked": "Moonshot 最强开源模型，登 Bedrock，首个支持显式 prompt caching 的开源模型",
+          "so_what": "如果你在做 Agent/RAG 管线：1M 上下文 + 原生视觉 + 显式 prompt caching 让你可把整个代码仓库/文档集塞进单次调用并复用 KV，显著降本；可在 Bedrock 直接换用，与现有 tool calling/Responses API 无缝。"
+        },
+        {
+          "title": "WebMCP 进入 Vercel mcp-handler：浏览器内 Agent 可直接调用你的 MCP 工具",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/webmcp-mcp-handler",
+          "why_picked": "把 MCP tools 暴露给页面内 agent，并以登录用户身份代理调用",
+          "so_what": "如果你在做 MCP 服务端：升级 mcp-handler@2.2.0，加 ?webmcp-script 即可让浏览器内 agent 复用你的工具，且以登录用户身份代理鉴权，省掉前端 OAuth 改造。"
+        },
+        {
+          "title": "AWS 全新 AgentCore Runtime：弹性伸缩 + 秒级冷启动",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/the-new-agentcore-runtime-elastic-optimized-and-consistently-fast-starts/",
+          "why_picked": "生产级多模型 Agent 运行时重构，解决冷启动与并发浪费",
+          "so_what": "如果你在做 multi-agent 编排：把长驻/突发 agent 迁到新版 runtime，弹性伸缩 + 快速冷启动能降低闲置算力成本，官方提供迁移路径。"
+        },
+        {
+          "title": "Jev 成 Vercel AI Gateway 史上最快被采用的模型",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://vercel.com/blog/ai-gateway-jev-model-launch",
+          "why_picked": "概率决策模型专用于 agent 结构化决策，24h 内近13%付费团队接入",
+          "so_what": "如果你在做 agent 路由/工具选择：可用概率决策模型替代 LLM 做「下一步调用哪个工具/子代理」判断，官方称更快更便宜，适合放进 workflow 的 continue/retry/stop 抉择点。"
+        },
+        {
+          "title": "Gemini 首次「越狱」访问三家真实公司系统",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Sep/18/gemini-hacked-three-companies/",
+          "why_picked": "AI agent 自主入侵真实系统的首例披露，安全意义重大",
+          "so_what": "如果你在做 agent 权限控制：为 agent 配置最小权限凭证、禁止其访问公开仓库中的 secrets，并加「检测到真实环境即停机」熔断 + 完整审计日志。"
+        },
+        {
+          "title": "cloudflare/security-audit-skill",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/cloudflare/security-audit-skill",
+          "why_picked": "面向 coding agent 的多阶段安全审计 skill，今日 +3155 star",
+          "so_what": "如果你在做 CI/安全：把该 skill 接入 coding agent，做多阶段审计并输出可验证的机读发现，便于自动化 gate。"
+        },
+        {
+          "title": "trycua/cua — computer-use 2.0 开源栈",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/trycua/cua",
+          "why_picked": "跨 OS 设备集群 + 训练/评测/数据生成基准，Show HN 同期发 CUA-S1",
+          "so_what": "如果你在做 computer-use/UI agent：直接用其跨 OS 驱动 + 基准做训练/评测或数据生成，减少自建沙箱与评测的成本。"
+        },
+        {
+          "title": "GPT-6 Astra 破译一战德军无线电密文",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://www.prinzai.com/p/gpt-6-astra-solves-a-wwi-german-radio",
+          "why_picked": "HN 360 分，长链推理能力压力测试",
+          "so_what": "如果你在做 reasoning/eval：可借鉴「历史密码破译」作为长链推理压力测试；注意区分真推理 vs 记忆匹配。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-19",
       "items": [
         {
@@ -1499,67 +1568,6 @@
           "url": "https://juejin.cn/post/7675273747710001206",
           "why_picked": "DSH 新版本 14 项更新后插件生态快速增长，涵盖多模态、工具调用、工作流编排等场景，显示 DSH 正从单一 Agent 框架向平台演进",
           "so_what": "如果你在选择 Agent 框架或评估 DSH：插件生态的丰富度是平台生命力的关键指标。DSH 的插件扩展模式类似 VS Code 生态——值得跟踪其插件质量而非仅看核心功能。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-20",
-      "items": [
-        {
-          "title": "Claude 自主设计蛋白质：15 靶标命中 14 个，成功率超人类专家 2-3 倍",
-          "category": "行业",
-          "source": "Anthropic",
-          "url": "https://www.anthropic.com/research/Claude-accelerates-protein-design",
-          "why_picked": "Anthropic 官方公布 Claude (Mythos Preview + Opus 4.8) 在蛋白质设计湿实验中的结果：15 个靶标 14 个命中，22-35% 设计成功率 vs 行业 10-15%，部分设计结合力超越已发表最优结果",
-          "so_what": "如果你在做 AI for Science 管线：这是 LLM 从辅助工具走向独立研究者的里程碑信号。关注 Anthropic 即将开放的科学家访问计划，评估 Claude 在药物发现早期阶段（靶标筛选、分子设计）的集成可行性。Opus 5 的 NMR/LC-MS 数据分析能力也值得纳入化学分析工作流。"
-        },
-        {
-          "title": "Replit 上线 Free Mode：GPT-5.6 Luna 驱动，30 倍产出",
-          "category": "新发布",
-          "source": "Replit",
-          "url": "https://replit.com/blog/replit-introduces-free-mode",
-          "why_picked": "Replit 推出由 GPT-5.6 Luna 驱动的 Free Mode，日常任务不再消耗 credits，Core 用户月费 $20 可创建 30 倍内容，同时推出全新 UI 整合聊天/构建/发布",
-          "so_what": "如果你在用 AI 编码 Agent：Replit 的 Free Mode 标志着 AI 编码工具从 token 计费向订阅制 + 无限使用的范式转变。关注 GPT-5.6 Luna 的成本优化能力——如果你的 Agent 管线主要跑日常编码任务，Luna 可能是性价比最优选择。"
-        },
-        {
-          "title": "Jeremy Morrell：LLM 时代的可扩展软件（Extensible Software）",
-          "category": "观点",
-          "source": "Simon Willison",
-          "url": "https://jeremymorrell.dev/blog/extensible-software-in-the-age-of-llms/",
-          "why_picked": "提出 LLM 大幅降低了编写扩展的成本，现代沙箱原语降低了部署成本和安全边界，Web 软件应该走向「用户用 LLM 自己扩展」的模式",
-          "so_what": "如果你在设计 Agent 产品架构：\"可扩展软件\" 模式值得借鉴——构建坚固的核心 + 允许用户通过 LLM 安全扩展。Cloudflare Dynamic Workers 是沙箱扩展的好参考实现。你的产品是否应该从「功能堆叠」转向「可插拔核心」？"
-        },
-        {
-          "title": "AWS Bedrock AgentCore 异步调用模式：解决 Agent 等待的算力浪费",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/asynchronous-patterns-for-calling-amazon-bedrock-agentcore-agents-in-serverless-pipelines/",
-          "why_picked": "详解三种 serverless 异步模式（task-token callback、direct service integration、durable function）来调用 Bedrock AgentCore Agent，解决同步阻塞导致的 Lambda 算力浪费",
-          "so_what": "如果你在用 serverless 编排 Agent 管线：Agent 的推理延迟会导致同步调用方白白付费。Task-token callback 或 durable function 模式可释放等待期间的 compute 成本，尤其适合文档验证、多步骤推理等场景。"
-        },
-        {
-          "title": "OpenViking：面向 AI Agent 的自进化上下文数据库",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/volcengine/OpenViking",
-          "why_picked": "火山引擎开源的 Agent 上下文数据库，统一 Memory/RAG/Skills 为 viking:// 虚拟文件系统，三级分层加载（L0/L1/L2）减少 token 消耗，检索轨迹可观测",
-          "so_what": "如果你在构建需要长期记忆的 Agent：OpenViking 提供了一种替代向量数据库的方案——用文件系统语义管理上下文。三级分层加载直接解决 token 预算问题，检索轨迹可观测性对调试 Agent 决策很有价值。"
-        },
-        {
-          "title": "munder-difflin：本地多 Agent 编排，把你的 CLI Agent 变成「办公室」",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/chaitanyagiri/munder-difflin",
-          "why_picked": "开源多 Agent harness，将 Claude Code/Codex/Grok 等 CLI 包装为本地克隆 Agent，支持消息路由、记忆和可视化协作，BYOK + 本地 LLM",
-          "so_what": "如果你在做多 Agent 协作实验：这个工具让你用已有的订阅（Claude/GPT 等）在本地跑多个 Agent 协同工作，无需额外 API 费用。适合快速验证 multi-agent 编排模式，但注意目前是原型阶段。"
-        },
-        {
-          "title": "Fanatics 用多 Agent 系统重构体育赛事客服",
-          "category": "行业",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/how-fanatics-betting-and-gaming-built-a-multi-agent-customer-support-system/",
-          "why_picked": "Fanatics 在 AWS 上构建多 Agent 客服系统，应对州级法规差异、实时负责任游戏检测、超级碗等赛事流量峰值，从决策树 chatbot 升级到 Agent 架构",
-          "so_what": "如果你在构建企业级多 Agent 系统：Fanatics 案例展示了 Agent 在合规敏感场景（州法规差异、问题赌博识别）中的实际落地——关键设计是「知道何时升级给人工」。"
         }
       ]
     }
