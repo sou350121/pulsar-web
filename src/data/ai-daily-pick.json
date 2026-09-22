@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-22",
+      "items": [
+        {
+          "title": "xAI Grok 4.6 上线 Amazon Bedrock：500K 上下文 + 四档推理强度",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/xais-grok-4-6-is-now-available-in-amazon-bedrock/",
+          "why_picked": "Grok 4.6 面向长时运行 agent，500K 上下文与 4 档 reasoning effort，直接在 Bedrock 上可用",
+          "so_what": "如果你在做长时运行的 Agent 系统：Grok 4.6 的 500K 上下文加可调 reasoning effort 适合把整个代码库或长会话塞进单次调用，可在 Bedrock 上复用同一 IAM 与计费链路替换现有多模型路由，先测 reasoning effort 的 cost/latency 曲线再决定哪档接生产。"
+        },
+        {
+          "title": "Higgsfield AI 用 GPT-6 Astra 一天上线新视频功能",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/higgsfield-from-prompt-to-production-with-astra",
+          "why_picked": "小团队借助 GPT-6 Astra 一天内把视频生成功能推上线",
+          "so_what": "如果你在做 Agent 加视频或多模态管线：这条说明把生成模型接到既有产品的工作量已压到天级，值得评估用托管多模态 API 替代自建 diffusion 服务，重点测端到端 latency 与单位成本是否撑得住批量广告或短视频场景。"
+        },
+        {
+          "title": "Vercel AI Gateway 支持 TypeSafe clients 与 Jev HTTP API",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/ai-gateway-now-supports-typesafe-clients-and-http-api-for-jev",
+          "why_picked": "AI Gateway 新增 TypeSafe 客户端与 Jev 的 HTTP API，降低接入门槛",
+          "so_what": "如果你在做多模型网关或工具调用：TypeSafe 客户端可在编译期校验 provider 参数，减少运行时 schema 报错；可把 Jev 以 HTTP API 接入自建路由，统一鉴权与重试策略，避免每个模型单独适配。"
+        },
+        {
+          "title": "Simon Willison：Jev 代表新模型形态 Decision Models",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Sep/21/jev/",
+          "why_picked": "Simon Willison 提出 decision models（System One）作为 LLM 之外的新模型类别",
+          "so_what": "如果你在做 Agent 的决策或规划层：decision models 主张把快速直觉式决策从大 LLM 中拆出，可考虑用专用小模型负责 tool selection 与路由，把大模型留给需要推理的步骤，从而降本降延迟。"
+        },
+        {
+          "title": "HF Blog：把 LLM 剪枝当作 Ising 优化问题",
+          "category": "实验",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/MultiverseComputingCAI/pruning-llms-like-a-physicist-block-removal-as-an",
+          "why_picked": "将 LLM 层剪枝形式化为 Ising 优化，给出物理启发的块移除方法",
+          "so_what": "如果你在做模型压缩或本地部署：可把块剪枝当作组合优化问题搜索最优移除集合，比逐层贪心更能保住精度；适合在显存受限的自托管 Agent 上做一次离线剪枝再评估任务成功率。"
+        },
+        {
+          "title": "OpenAI 发布全球 AI 标准路线图",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/building-standards-next-phase-ai",
+          "why_picked": "OpenAI 呼吁协同评测、上报与治理的全球 AI 标准",
+          "so_what": "如果你在做合规或评测体系：提前对齐跨厂商评测与上报口径，可把 model card、失准上报、eval 结果做成可导出的标准字段，未来接企业采购或监管审查时不用返工。"
+        },
+        {
+          "title": "BuilderIO/agent-native：构建 agentic 应用的框架",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/BuilderIO/agent-native",
+          "why_picked": "BuilderIO 开源构建 agentic 应用的框架，登今日 GitHub Trending",
+          "so_what": "如果你在做 Agent 应用前端或编排：agent-native 提供一套把 LLM 调用与 UI 状态绑定的框架，可对比你现有 LangGraph 或自研循环，看能否减少手写 tool-loop 与流式渲染样板。"
+        },
+        {
+          "title": "akitaonrails/ai-memory：coding agent CLI 的长期记忆层",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/akitaonrails/ai-memory",
+          "why_picked": "为 coding agent CLI 提供长期记忆与跨厂商交接，Rust 实现登 Trending",
+          "so_what": "如果你在做 coding agent 工作流：ai-memory 把会话记忆外置，可在 Claude Code 与 Codex 等不同 agent 间交接上下文，值得评估能否替代你自己拼的 memory 或 RAG 层。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-21",
       "items": [
         {
@@ -1515,51 +1584,6 @@
           "url": "https://github.com/usestrix/strix",
           "why_picked": "登上 GitHub Trending 第一的开源安全 Agent，将 AI 能力聚焦于渗透测试这一高价值垂直场景",
           "so_what": "如果你在做 AI 安全或红队工具：Strix 展示了 agent 在安全领域的垂直化趋势——专用 agent 比通用 agent 在特定场景下更有效。可借鉴其 tool-use 设计模式，但注意合规使用。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-22",
-      "items": [
-        {
-          "title": "OpenAI 全面开源 Codex Harness：Agent 循环引擎 Apache 2.0 许可",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/openai/codex",
-          "why_picked": "OpenAI 将驱动 Codex 的核心 Harness 框架全面开源，含 CLI/SDK/app-server 三大组件。Greg Brockman 称「远不止编程工具」，首批案例已落地税务/云平台。",
-          "so_what": "如果你在做 Agent 产品集成：这意味着不必再把业务流程硬塞进聊天框。用 app-server 的 JSON-RPC 协议将 Agent 嵌入自有仪表盘，利用 Human-in-the-loop 审批机制实现可控自动化。ARC-AGI-3 上仅两项 Harness 调整就让 GPT-5.6 Sol 分数从 13.3% 飙到 38.3%，说明 Harness 设计比模型选择更关键。"
-        },
-        {
-          "title": "博通谈判 700 亿美元债务融资，为 Anthropic 等 AI 企业提供基础设施",
-          "category": "行业",
-          "source": "Readhub",
-          "url": "https://readhub.cn/topic/8vmW6XLNHQX",
-          "why_picked": "博通联合黑石/阿波罗洽谈史上最大 AI 基础设施债务融资，优先档 450 亿 + 次级档 350 亿美元。AI 基建军备竞赛进入「千亿美元级」阶段。",
-          "so_what": "如果你在做 AI 基础设施选型：这笔资金将直接转化为 GPU 集群和数据中心产能，影响未来 1-2 年的算力供给和 API 定价。关注 Anthropic 后续产能扩张节奏——它可能直接影响 Claude API 的可用性和延迟。"
-        },
-        {
-          "title": "AWS Bedrock 查询感知压缩：RAG 输入 Token 成本优化模式",
-          "category": "工具",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/reduce-rag-costs-on-amazon-bedrock-with-query-aware-compression/",
-          "why_picked": "AWS 官方博客发布 RAG 后检索压缩模式：用小模型过滤 retrieved chunks 再喂给主模型，同时降低幻觉面积。兼容 Bedrock Knowledge Bases + Prompt Caching + Rerank API。",
-          "so_what": "如果你在做 RAG管线：这是生产级成本优化的标准范式。检索后加一层轻量过滤（如用 2B 模型），可削减 30-60% 输入 Token 而不损失答案质量。与 Prompt Caching 叠加后，规模化 RAG 成本可再降一个量级。"
-        },
-        {
-          "title": "Google Research：将移动模式注入 LLM，让模型「理解」物理空间",
-          "category": "观点",
-          "source": "Google Research",
-          "url": "https://research.google/blog/how-mobility-gives-language-models-a-deeper-understanding-of-place/",
-          "why_picked": "提出 ME-POIs 框架，将匿名移动数据（到达时间/停留时长/周边活动）与文本描述融合，构建同时编码 POI 身份和功能节奏的向量表示。在访问意图预测上提升 81.9%，价格分类提升 75.1%。",
-          "so_what": "如果你在做空间感知 Agent 或 LBS 应用：纯文本 embedding 已不足以捕捉 POI 的动态特征。将移动模式作为先验注入 embedding，可显著提升营业时间预测、拥挤度估计等下游任务。对 Agent 理解「真实世界」有方法论启发。"
-        },
-        {
-          "title": "HumeAI：语音识别基准优化（benchmaxxing）首次量化，多个开源 ASR 模型「背答案」",
-          "category": "实验",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/asr-benchmark-optimization",
-          "why_picked": "评估 11 个开源 ASR 模型发现，多个高分模型在音频与参考答案矛盾时仍复述基准答案，甚至能识别「你在参加哪个基准测试」。提出三种量化 benchmaxxing 的测试方法。",
-          "so_what": "如果你在做语音 Agent 或 ASR 管线：公开基准分数可能严重高估模型真实能力。引入 held-out 测试集和对抗性音频（修改/静音部分词）来验证模型鲁棒性。选择模型时不要只看 leaderboard 排名，要做自己的真实场景 eval。"
         }
       ]
     }
