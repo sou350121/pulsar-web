@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-23",
+      "items": [
+        {
+          "title": "Claude Opus 5.5 发布：多数任务追平 Fable 5.1，典型成本降 40%",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.anthropic.com/news/claude-opus-5-5",
+          "why_picked": "Anthropic 首款 Claude 5.5 系列模型，agentic coding 与长程任务大幅提升，成本较 Opus 5 降 40%，并经 METR 等外部评估",
+          "so_what": "如果你在做长程 Agent 或编码 Agent：Opus 5.5 把「强制工具调用」移除、thinking 恒为自适应，旧代码里 require tool / fixed thinking budget 的参数会直接 400 报错；迁移时改用 structured outputs 拿 JSON、用 prompt+effort 引导思考，并在 harness 里捕获工具未命中后重试，再按 cost/quality 决定是否替换 Opus 5 路由。"
+        },
+        {
+          "title": "GPT-6 Sol 与 Luna 正式开放（OpenAI + Amazon Bedrock）",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna",
+          "why_picked": "GPT-6 家族两档新模型 GA，Sol 面向复杂专业/长程编码，Luna 主打高并发 agentic 低成本，同日在 Bedrock 与 Vercel AI Gateway 可用",
+          "so_what": "如果你在做多模型路由或成本敏感的 agentic workflow：把 Sol 当作复杂任务主力、Luna 当作高频批量档，按任务复杂度分层调用；先在 Bedrock/网关同一计费链路内跑 A/B，对比 GPT-6 Astra 的单价与事实性，再决定哪些流量下沉到 Luna。"
+        },
+        {
+          "title": "xAI Grok 4.7 上线：主打长任务与专业工作",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://x.ai/news/grok-4-7",
+          "why_picked": "更大基座 + 更长 RL，原生长时间执行/自检能力，API 维持 $2/$6 每百万 token，已进入 Cursor 与 Grok API",
+          "so_what": "如果你在评估 coding agent 或长流程工具调用：Grok 4.7 在 CursorBench 4.0 拿到 46.3%、Terminal Bench 4.0 升至 38.0%，价格与 4.6 持平，适合当作性价比候选接进路由；但综合仍不及 Fable 5.1 Max，建议只在价格/长任务敏感的场景灰度，别整体切换。"
+        },
+        {
+          "title": "OpenAI 为 GPT-6 推出改进版 prompt caching",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://openai.com/index/better-prompt-caching-for-gpt-6",
+          "why_picked": "针对长会话与多轮工具调用的缓存优化，直接降低重复前缀成本",
+          "so_what": "如果你在做 RAG 管线或长会话 Agent：把稳定不变的前缀（system prompt、工具 schema、few-shot、检索到的固定文档）排到消息最前并保持逐字节不变，最大化缓存命中；用缓存读取价重算每条请求成本，再决定是否值得塞入更大上下文。"
+        },
+        {
+          "title": "OpenAI 拟在研发早期引入第三方安全评估",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/priorities-principles-third-party-assessments",
+          "why_picked": "把第三方安全审查从发布前前移到训练与评估等高风险环节，可能允许外部评估者接触最敏感工作",
+          "so_what": "如果你在做 Agent 安全或合规：这意味着未来模型卡可能附带「训练期已评估」的第三方结论，企业采购可把外部评估报告纳入选型清单；现在可先按此思路自查自家 Agent 的权限边界与红队记录，为对接第三方审计做准备。"
+        },
+        {
+          "title": "Vercel Sandbox Drives 进入公测：Agent 沙箱持久化工作目录",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/drives-for-vercel-sandbox-are-now-in-public-beta",
+          "why_picked": "Agent 代码执行沙箱获得持久化目录，跨调用保留生成文件与状态，减少每次重建环境",
+          "so_what": "如果你在做代码执行类 Agent：Drives 让沙箱拥有可持久化的 workspace，可把编译产物、依赖缓存、中间文件留在跨步调用间，避免每步重装依赖；适合长任务或多步 build/test 循环，配合短期 token 权限控制读写范围。"
+        },
+        {
+          "title": "Together AI Canary rollouts：生产环境零停机换模型",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/canary-rollouts-upgrade-models-in-production-without-downtime",
+          "why_picked": "按流量比例灰度新模型，先对比质量与成本再逐步放量",
+          "so_what": "如果你在做 LLM 服务上线或模型升级：用 canary 按 1%→10%→100% 分流量切换新模型，在真实流量上对比质量、延迟与成本曲线，出问题可秒级回滚，替代一次性全量切换；可与 prompt caching、路由策略联合做灰度实验。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-22",
       "items": [
         {
@@ -1547,43 +1608,6 @@
           "url": "https://www.36kr.com/p/3951916130499972",
           "why_picked": "OpenAI 推出 Computer History 功能，通过 macOS 辅助功能权限记录用户操作（非截屏），保留 48 小时后生成摘要。从 Recall/Rewind 的截屏失败中吸取教训。",
           "so_what": "如果你在设计 Agent 的记忆系统，Computer History 展示了一条可行路径：记录「过程数据」而非完整内容，在隐私和能力之间找到平衡——你的 Agent 可以知道用户「做了什么」而非「看到了什么」。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-23",
-      "items": [
-        {
-          "title": "Linus Torvalds 公开承认 AI 帮助调试 Linux 内核驱动",
-          "category": "观点",
-          "source": "Blog",
-          "url": "https://simonwillison.net/2026/Aug/22/linus-torvalds/",
-          "why_picked": "Linux 之父首次公开将 AI 视为调试伙伴，AI 多次判定「不可能解决」但在他坚持下完成了大量 grunt work",
-          "so_what": "如果你在做 coding agent 落地：Torvalds 的案例说明 agent 的价值不在于「自动修复」，而在于「持续生成调试代码 + 分析结果」的耐力。提示词设计应鼓励 agent 在遇到困难时继续尝试而非放弃——这比模型能力本身更关键。"
-        },
-        {
-          "title": "DeepSeek API 周末统一按低谷价计费",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8vnzbrok6Kx",
-          "why_picked": "DeepSeek 自 8/23 起周末全天按低谷价计费，反映 API 定价策略从峰谷差异化转向时段简化",
-          "so_what": "如果你在用 DeepSeek API 跑批量任务或 cron 作业：周末跑可省 50% 成本。建议将非实时推理任务（embedding、批量评测、backlog 消费）调度到周末，同时关注 Meta/OpenAI 同期降价趋势做多 provider 比价。"
-        },
-        {
-          "title": "Simon Willison：使用 coding agent 的关键技能不只是 code review",
-          "category": "观点",
-          "source": "Blog",
-          "url": "https://simonwillison.net/2026/Aug/22/more-than-just-code-review/",
-          "why_picked": "指出 AI 时代开发者的核心能力是「精准指令 + 自信验证」，而非逐行 review 代码——这对 agent 工作流设计有直接指导意义",
-          "so_what": "如果你在设计 agent 工作流：与其让 agent 逐行改代码，不如教它「先写测试 → 改代码 → 跑测试 → 报告结果」的闭环。验证方式应从「人工逐行 review」转向「自动化测试 + 行为验证」，这才是规模化使用 agent 的正确路径。"
-        },
-        {
-          "title": "GitHub Trending：Strix — 开源 AI 渗透测试 Agent",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/usestrix/strix",
-          "why_picked": "登上 GitHub Trending 第一的开源安全 Agent，将 AI 能力聚焦于渗透测试这一高价值垂直场景",
-          "so_what": "如果你在做 AI 安全或红队工具：Strix 展示了 agent 在安全领域的垂直化趋势——专用 agent 比通用 agent 在特定场景下更有效。可借鉴其 tool-use 设计模式，但注意合规使用。"
         }
       ]
     }
