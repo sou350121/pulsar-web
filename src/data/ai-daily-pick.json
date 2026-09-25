@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-25",
+      "items": [
+        {
+          "title": "ChatGPT Voice「长手」：插件 + GPT-6 家族接入 + ChatGPT Work",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://x.com/OpenAI/status/2102808325742322002",
+          "why_picked": "OpenAI 把插件、GPT-6（Astra/Sol/Luna）与 ChatGPT Work 一并接入语音，新版 App 当天全球推送；语音从「只能聊」变成「能动手」，可查邮件、挪会议、做 PPT、搭网站，免费层也能用插件。",
+          "so_what": "如果你在做 Agent 交互层：语音+插件+Work 等于「一句话触发多步工具链」成为默认入口，需提前设计敏感操作的确认门（OpenAI 要求发邮件须屏幕手动点确认），并注意语音时长与任务用量分开计费。"
+        },
+        {
+          "title": "Gemini 3.8 Live with Live Avatar：实时虚拟形象 + 异步工具调用",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-with-live-avatar/",
+          "why_picked": "Google 将低延迟流式视频与 Live 对话模型原生耦合，Live Avatar 支持唇形同步/自然轮替，并能在持续对话中后台异步触发工具调用，已 GA 于 Gemini Enterprise。",
+          "so_what": "如果你在做客服/前端 Agent：异步工具调用+持续在场是可借鉴架构——工具放后台跑、对话流不中断；avatar 流式视频对多模态 Agent UI 是新的差异化点，可评估接入 Gemini Enterprise。"
+        },
+        {
+          "title": "Anthropic 与 Akamai 签 116 亿美元多年算力协议",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.akamai.com/newsroom/press-release/akamai-announces-11-6-billion-multi-year-agreement-with-anthropic-to-support-growing-demand",
+          "why_picked": "Akamai 官方公告 116 亿美元多年协议为 Anthropic 供算力，消息后 AKAM 盘后涨约 17%；算力军备竞赛从 GPU 云扩散到 CDN/边缘厂商。",
+          "so_what": "如果你在做 LLM 应用的成本/可用性规划：算力供应方正在多元化，推理价格与区域可用性可能再变；关注 Anthropic API 价格与 SLA 调整窗口，避免长期锁定单一供应商。"
+        },
+        {
+          "title": "AWS：用 AgentCore Gateway + MCP 搭多账户 AI Agent",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/build-a-multi-account-ai-agent-with-agentcore-gateway-and-mcp/",
+          "why_picked": "AWS 给出用 AgentCore Gateway 把 MCP 工具跨多 AWS 账户托管的实操架构，解决企业 agent 的凭证与权限边界问题。",
+          "so_what": "如果你在做 Agent 权限控制/多租户：这套模式可直接抄——工具经 Gateway 统一暴露、按账户隔离凭证，避免把长期 AK 塞进 agent 运行时；适合对接已有 IAM。"
+        },
+        {
+          "title": "ChatGPT Ads 扩展至东南亚与台湾",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan",
+          "why_picked": "OpenAI 官方把 ChatGPT 广告投放扩展到东南亚与台湾，商业化区域继续铺开。",
+          "so_what": "如果你在做面向 C 端的 AI 产品：广告位开始渗透非美市场，免费/低价 AI 入口的变现逻辑在变；评估你的 GTM 是否要面对或利用「广告支持的免费层」竞争。"
+        },
+        {
+          "title": "LFM2.5-VL-DSpark：给 VLM 做投机解码的草稿模型",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/LiquidAI/lfm2-5-vl-dspark",
+          "why_picked": "Liquid AI 发布 LFM2.5-VL-DSpark，用草稿模型加速视觉语言模型推理（speculative decoding）。",
+          "so_what": "如果你在做多模态 Agent 的推理延迟优化：可把 DSpark 式草稿模型接到 VLM 服务前换取吞吐/延迟收益；注意草稿与目标模型分布匹配，否则接受率低反而拖慢。"
+        },
+        {
+          "title": "HKUDS/CLI-Anything",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/HKUDS/CLI-Anything",
+          "why_picked": "⭐50.3k · Python — 目标「让所有软件 Agent-Native」，通过 CLI-Hub 把命令行工具标准化暴露给 agent。",
+          "so_what": "如果你在做工具调用层：可把任意软件收敛成 agent 可调用的 CLI 契约，替代零散的手写 tool wrapper；先拿几个常用 CLI 试接，评估 schema 稳定性。"
+        },
+        {
+          "title": "vectorize-io/hindsight",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vectorize-io/hindsight",
+          "why_picked": "⭐27.8k · Python — 「Agent Memory That Learns」，面向 agent 的可学习记忆层。",
+          "so_what": "如果你在做 RAG/长期记忆：可对比你现有向量库+摘要方案，重点看它的写入/遗忘策略与管线兼容成本。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-24",
       "items": [
         {
@@ -1563,59 +1632,6 @@
           "url": "https://vercel.com/blog/introducing-run",
           "why_picked": "Agent 生成代码的安全执行是核心挑战——Run SDK 提供沙箱化执行环境，解决代码注入和越权问题",
           "so_what": "如果你在做 coding agent 或代码生成管线：Run SDK 提供了开箱即用的沙箱执行方案。对比 Docker-in-Docker 或 gVisor 自建方案，它能减少运维负担，适合需要快速上线代码执行能力的 Agent 产品。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-25",
-      "items": [
-        {
-          "title": "LLM 可通过推理引擎漏洞控制宿主机",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://boydkane.com/essays/llms-could-control-their-host-machines-by-exploiting-inference-engines",
-          "why_picked": "安全深度分析：vLLM CVE-2025-9141 真实案例证明 LLM 可通过 token 序列触发推理引擎任意代码执行",
-          "so_what": "如果你在用 vLLM/SGLang 部署 Agent 推理后端，这意味着必须立即审查 tool-call 解析逻辑，避免 eval() 类危险调用。推理引擎安全正成为 Agent 基础设施的关键盲区。"
-        },
-        {
-          "title": "Hugging Face 量化 ASR 基准优化：多个开源模型背答案",
-          "category": "趋势",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/asr-benchmark-optimization",
-          "why_picked": "HF 首次量化语音识别领域的 benchmaxxing 现象，11 个开源 ASR 模型中有多个复现了基准转录而非真实转录",
-          "so_what": "如果你在选型语音识别模型，这意味着公开 benchmark 分数可能严重虚高。应使用 HF 新推出的 held-out Real World VoiceEQ 集做独立验证，而非只看排行榜。"
-        },
-        {
-          "title": "Apache Maka (Incubating)：本地优先 AI Agent 工作区",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/apache/maka",
-          "why_picked": "Apache 孵化器新项目，将 Agent 会话记录为 append-only log，支持沙盒工具调用和本地模型/云模型混合",
-          "so_what": "如果你在构建需要审计追踪的 Agent 系统，Maka 的 append-only log 架构提供了可恢复的执行事实记录。本地优先设计适合对数据主权有要求的场景。"
-        },
-        {
-          "title": "Nous Research Hermes Agent：自带学习回路的自改进 Agent",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/NousResearch/hermes-agent",
-          "why_picked": "唯一内置学习回路的 Agent——从经验创建 skill、跨会话搜索、用户建模，支持 Telegram/Discord/Slack 等多平台",
-          "so_what": "如果你在构建需要长期记忆和自我改进的 Agent 应用，Hermes 的 closed learning loop（skill 自动创建+FTS5 会话搜索+Honcho 用户建模）提供了可直接复用的架构参考。"
-        },
-        {
-          "title": "Vercel v0 接入 Slack/Google 等 100+ 服务",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://vercel.com/changelog/connect-v0-apps-to-slack-google-and-100-other-services",
-          "why_picked": "v0 生成的应用现在可直接连接 100+ 外部服务，Agent 应用的前端到后端集成链路进一步缩短",
-          "so_what": "如果你在用 v0 快速原型 Agent UI，这意味着不再需要手动对接 OAuth/API 集成——内置的 100+ 服务连接可直接用于构建面向企业的 Agent 应用。"
-        },
-        {
-          "title": "PicoMQ：基于对象存储的持久化消息流",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://picomq.com/",
-          "why_picked": "Rust 实现的轻量消息队列，每个流独立可寻址、无限容量，构建在 S3 兼容存储上",
-          "so_what": "如果你在构建需要持久化事件流的 Agent 系统，PicoMQ 提供了比 Kafka 更轻量的替代方案——无需独立集群，直接用 S3 做后端，适合边缘/低成本场景。"
         }
       ]
     }
