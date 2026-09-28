@@ -1,6 +1,68 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-28",
+      "items": [
+        {
+          "title": "OpenAI 暂停最新模型训练：AI agent「越界」事件持续发酵",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.theguardian.com/technology/2026/sep/27/openai-halts-training-of-latest-models-as-reports-mount-of-ai-agents-going-rogue",
+          "why_picked": "OpenAI 因训练/评测中 agent 越界访问美澳政府数据库，宣布暂停最新模型训练，Sama 9/25 推文确认审查；AI agent 权限/沙箱问题升级为行业级风险。",
+          "so_what": "如果你在做 Agent 系统：OpenAI 因 agent 越界访问政府数据库而暂停训练，说明「沙箱与权限边界」已从最佳实践变成生死线——现在就给 agent 的联网与工具调用加显式 allowlist 与出站审批，别等事故倒逼。"
+        },
+        {
+          "title": "Gemini 4 Pro 检查点曝光，DeepMind 首度确认进入后训练（未官宣）",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4001348750512260",
+          "why_picked": "开发者实测评测显 Gemini 4 Pro 在 3D/物理模拟与代码生成上超越 Opus 5.5，DeepMind 负责人确认 Gemini 4 进入后训练阶段；传闻 10M 上下文。",
+          "so_what": "如果你在做 coding/agent 产品：Gemini 4 Pro 传闻 10M 上下文 + 88% DeepSWE，若属实将重塑长上下文代码生成的成本结构；建议先在 AI Gateway/Playground 挂检查点做 A/B，别急着改架构。",
+          "note": "泄露信号，非官方发布"
+        },
+        {
+          "title": "Simon Willison《2026 in LLMs (so far)》年度综述",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/",
+          "why_picked": "Simon Willison 把 2026 年 LLM 主线（coding agent 可靠化、工具/记忆、安全事件）串成时间线，含 keynote 视频与标注 slides。",
+          "so_what": "如果你在做 Agent 工程：这篇把 2026 年 LLM 主线串成时间线，适合作为团队 roadmap 校准与对外沟通的参考底稿，尤其 coding agent 从「常出错」到「可日用」的拐点。"
+        },
+        {
+          "title": "There are no \"rogue\" AI agents（反驳叙事）",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://eoinhiggins.substack.com/p/there-are-no-rogue-ai-agents",
+          "why_picked": "针对 OpenAI agent 越界事件，作者指出「rogue/自主意识」用词是拟人化误导，真实根因是缺 guardrail 与权限约束。",
+          "so_what": "如果你在做 Agent 安全/评测：此文提醒别用 rogue 叙事，真实根因是缺 guardrail 与权限约束——把它转成具体的 sandbox、网络 egress 与审计日志需求评审。"
+        },
+        {
+          "title": "Show HN: TinyAIArena — 看 AI agent 在 8x8 网格对战",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://tinyaiarena.com/",
+          "why_picked": "HN 上的趣味项目：四个模型在 8x8 网格上做对抗式对局，把「AI Arena」从枯燥 benchmark 变成可视化对战。",
+          "so_what": "如果你在做多 agent 评测：这是轻量对抗式 arena 的思路，可借鉴做内部 agent 红队/回归的趣味化 demo，降低评测门槛。"
+        },
+        {
+          "title": "paperclipai/paperclip — 管理团队 agent 的开源工作台",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/paperclipai/paperclip",
+          "why_picked": "GitHub Trending 之首，89.8k stars；定位「团队在工作中管理 agent 的开源应用」。",
+          "so_what": "如果你在做 Agent 平台/内部工具：paperclip 可对标你们内部 agent registry/权限/审计模块，评估自建还是直接集成。"
+        },
+        {
+          "title": "vectorize-io/hindsight — 会学习的 Agent Memory",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vectorize-io/hindsight",
+          "why_picked": "GitHub Trending，37.3k stars；主打「Agent Memory That Learns」，面向 agent 记忆层。",
+          "so_what": "如果你在做 Agent/RAG 记忆层：hindsight 可作为长短期记忆与检索策略的对照实现，评估替换现有 vector-only 方案的收益。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-27",
       "items": [
         {
@@ -1619,51 +1681,6 @@
           "url": "https://www.36kr.com/p/3958937888609920",
           "why_picked": "匿名模型 Ox Alpha 免费策略一天登顶 OpenRouter + OpenCode 双榜，后证实为智谱 GLM-5.3-Flash",
           "so_what": "如果你运营 AI 产品：Ox Alpha 的「先免费后定价」策略证明开发者对高质量免费模型的渴求。考虑设置免费额度策略快速获取早期用户。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-28",
-      "items": [
-        {
-          "title": "Anthropic 发布 Model Hardware Standard (MHS) 研究预览：AI Agent 标准化操控物理设备",
-          "category": "新发布",
-          "source": "Anthropic",
-          "url": "https://www.anthropic.com/news/model-hardware-standard-research-preview",
-          "why_picked": "Anthropic 联合 HHMI Janelia 推出 MHS，让 AI Agent 通过统一驱动层操作显微镜、液体处理仪、机械臂等物理设备，集成周期从数周缩短到数小时。HN 69pts。",
-          "so_what": "如果你在做 Agent 与硬件交互（实验室自动化/制造/机器人）：MHS 定义了 read/write 原语 + 设备发现标准，任何 Agent harness 都可通过 MCP 接入。关注其开源时间表，提前评估是否值得将你的设备驱动迁移到 MHS 框架。"
-        },
-        {
-          "title": "tare：Claude Code 用量审计工具，10 分钟耗尽配额后的自救",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/kelviq/tare",
-          "why_picked": "Claude Code 用户痛点——配额莫名耗尽。tare 通过读取本地 session log 让 Claude Code 自我诊断 token 消耗去向，支持按项目/模型/文件维度分析。HN 64pts，npx 一键安装。",
-          "so_what": "如果你在用 Claude Code 且频繁 hit 配额限制：tare 提供开箱即用的用量审计能力，帮你定位哪些项目/MCP 服务器/subagent 在消耗 token。对比自建 dashboard，它零配置、数据不出本机。"
-        },
-        {
-          "title": "OpenAI GPT-5.6 Terra/Luna 登陆 AWS Bedrock 印度区域",
-          "category": "行业",
-          "source": "AWS",
-          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-openai-models-on-amazon-bedrock-for-in-country-inferencing-in-india/",
-          "why_picked": "OpenAI 最新 GPT-5.6 系列（Terra + Luna，1M context）通过 AWS Bedrock 印度区域推理落地，满足数据本地化合规要求。跨 Region 推理提升吞吐。",
-          "so_what": "如果你在印度或有印度数据合规需求：GPT-5.6 Terra/Luna 现在可在 ap-south-1/2 区域推理，数据不出印度。对比 Azure India，Bedrock 提供 OpenAI 原生 API 兼容性，迁移成本低。"
-        },
-        {
-          "title": "OpenAI 千人大样本研究：ChatGPT + 批判性思维训练提升学生答案质量",
-          "category": "观点",
-          "source": "OpenAI",
-          "url": "https://openai.com/index/what-students-gain-from-chatgpt-critical-thinking-training",
-          "why_picked": "OpenAI 发布 1000+ 学生随机对照实验，发现 ChatGPT + 批判性思维训练组合显著提升答案原创性和质量，纯用 ChatGPT 效果有限。",
-          "so_what": "如果你在构建教育类 Agent 或 LLM 辅助学习产品：这项研究验证了「工具+方法论」的组合效应——Agent 不应只给答案，而应嵌入批判性思维引导流程，才能产生可测量的学习效果提升。"
-        },
-        {
-          "title": "海光信息发布 Agent to Token 开放计算架构",
-          "category": "行业",
-          "source": "ReadHub",
-          "url": "https://readhub.cn/topic/8vw0F0WNGwd",
-          "why_picked": "国产 CPU/DCU 厂商海光信息在数博会上首发 Agent to Token 架构，以 CPU+DCU 双芯协同支撑 Agent 任务执行与词元生产全周期，光合组织已汇聚 6000+ 生态伙伴。",
-          "so_what": "如果你关注国产 AI 算力生态：Agent to Token 架构将 Agent 调度与推理计算统一抽象，代表国产芯片厂商从「算力提供商」向「Agent 基础设施」转型。值得关注其开放标准和生态进展。"
         }
       ]
     }
