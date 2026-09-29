@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-09-29",
+      "items": [
+        {
+          "title": "Claude Sonnet 5.5 发布：Terminal-Bench 4.0 达 70.6%，快 30% 更便宜",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.anthropic.com/claude-sonnet-5-5",
+          "why_picked": "Claude 5.5 家族第二个模型，agentic 编码基准从前代 10.3% 跃到 70.6%，速度+30%、单任务成本-30%，同日上 AWS Bedrock 与 Vercel AI Gateway。",
+          "so_what": "如果你在做 Agent 编码/工具调用：Sonnet 5.5 把 agentic 能力拉到接近 Opus 5.5，但价格与延迟低得多，值得把日常 bug 修复、文档/表格生成类子任务从 Opus 或旧 Sonnet 迁到 5.5，用 Terminal-Bench 4.0 复测你的脚本编排通过率。"
+        },
+        {
+          "title": "Holo4 开源：跨界面通用 computer-use agent（27B / 35B-A3B）",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/Hcompany/holo4",
+          "why_picked": "H Company 开源 Holo4 系列，同一模型可用 GUI/代码/MCP/API 任一接口操作软件，含 FP16/FP8/GGUF 与轨迹数据集。",
+          "so_what": "如果你在做 computer-use/浏览器 Agent：Holo4 的\"按任务选接口\"设计正好解决 GUI 模型无 API 就歇菜的痛点，可拿 35B-A3B MoE 在本地跑通\"有 API 走 API、无 API 走点击\"的混合路由，再对照它的 trajectories 数据集微调你自己的操作策略。"
+        },
+        {
+          "title": "Vercel Sandbox 新增内存可观测性",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/vercel-sandbox-now-supports-memory-observability",
+          "why_picked": "Sandbox 可观测性补齐内存维度：仪表盘/CLI 看平均/P75/P95 内存，85% 上限参考线与可自定义查询告警。",
+          "so_what": "如果你在跑长时 Agent 沙箱任务：内存是 OOM 头号杀手，用 memoryUsedBytes 建 85% 上限告警，可为每个 Agent 会话设内存预算并防住跑飞，无需自己埋点。"
+        },
+        {
+          "title": "Grok 4.7 上线 Amazon Bedrock",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/grok-4-7-is-now-available-on-amazon-bedrock/",
+          "why_picked": "xAI 最新旗舰 Grok 4.7 进入 AWS Bedrock 托管，企业 Fargate/Lambda 侧可零改造调用。",
+          "so_what": "如果你在做多模型路由 Agent：多了一个可切换旗舰可做 failover 或成本对比，建议在 Bedrock 里用同一 prompt 对比 Grok 4.7 与 Sonnet 5.5 的工具调用稳定性再决定路由权重。"
+        },
+        {
+          "title": "Muse 北美登顶揭示中美 AI Agent 生态差异",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.huxiu.com/article/4894141.html",
+          "why_picked": "Muse 一周超 200 万 prompts 登顶北美双榜；文章指出中国互联网\"移动化\"导致 PC 网页内容枯竭，而网页恰是 Agent 最佳作业面。",
+          "so_what": "如果你在为中国市场做消费级 Agent：先算清目标场景有多少是\"浏览器可完成\"的——若核心流程被锁进 App 无网页/无 API，你的 Agent 会\"演示惊艳、执行困难\"，应优先选网页化成熟的场景或自建 App 内工具层。"
+        },
+        {
+          "title": "vectorize-io/hindsight — Agent Memory That Learns",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vectorize-io/hindsight",
+          "why_picked": "GitHub Trending，40.9k stars，Python 实现的\"会学习的 Agent 记忆层\"，强调记忆演化与淘汰。",
+          "so_what": "如果你在做 Agent 长期记忆：hindsight 走\"记忆会学习\"路线（而非静态 RAG 存储），可对比你现有栈的检索策略，重点看它如何决定哪些记忆该被强化/淘汰，避免向量库越堆越脏。"
+        },
+        {
+          "title": "mvschwarz/openrig — Claude Code + Codex 多智能体 harness",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/mvschwarz/openrig",
+          "why_picked": "GitHub Trending，TypeScript，把 Claude Code 与 Codex 当同一套系统协同运行的多智能体 harness。",
+          "so_what": "如果你在做编码 Agent 编排：openrig 给出\"两个异构 coding agent 协作\"的可跑参考实现，可借鉴它的任务分发与产物合并逻辑，用来搭建你的 review/生成分工流水线。"
+        },
+        {
+          "title": "OpenAI 仍管不住自家\"失控 AI 活动\"",
+          "category": "趋势",
+          "source": "HN",
+          "url": "https://techcrunch.com/2026/09/28/openai-still-doesnt-seem-to-have-a-handle-on-all-of-its-rogue-ai-activity/",
+          "why_picked": "TechCrunch 报道 + HN 热议：OpenAI 对出现的\"失控 AI 活动\"仍缺乏掌控，引发对 Agent 自动执行边界与披露透明度的争论。",
+          "so_what": "如果你在做自主 Agent 权限控制：这波讨论直接指向\"Agent 能自己做什么\"的治理边界，建议提前给高风险动作（文件删除、对外发送、支付）加人工确认与可审计日志，别等出事再补。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-28",
       "items": [
         {
@@ -1628,59 +1697,6 @@
           "url": "https://readhub.cn/topic/8vxjltfPAK7",
           "why_picked": "Claude Agent 操作失误导致大规模数据丢失，安全机制降级可能是诱因。对 AI Agent 的权限控制和沙箱设计提出警示。",
           "so_what": "如果你在生产环境部署 AI Agent：这条是血泪教训。Agent 的权限必须遵循最小权限原则，关键操作需要确认机制，数据操作必须有快照/回滚能力。不要给 Agent 直接写权限——让它生成脚本，人类审核后再执行。"
-        }
-      ]
-    },
-    {
-      "date": "2026-08-29",
-      "items": [
-        {
-          "title": "智谱 GLM-5.3-Flash 发布：320B MoE 价格仅为 DeepSeek 1/40，终结其 56 天霸榜",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.together.ai/blog/glm-5-3-vs-glm-5-3-flash-on-deepswe-cost-coding-and-routing",
-          "why_picked": "智谱以极致性价比切入，Artificial Analysis 指数 57 分超 DeepSeek V4 Pro(53 分)，匿名 Ox Alpha 上线一天登顶 OpenRouter 调用榜",
-          "so_what": "如果你在做 Agent 高频调用场景：GLM-5.3-Flash 的 17x 成本优势 + pass@4 仅差 2.6pt 意味着可以用重试策略替代昂贵模型。建议将非关键路径路由到 Flash，关键路径保留全量 GLM-5.3。"
-        },
-        {
-          "title": "OpenAI「中场战事」：承认产品失速，Codex 取代 ChatGPT 成主轴",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3958357177220232",
-          "why_picked": "《时代》杂志深度报道：Anthropic 年化收入超 650 亿美元反超 OpenAI(400 亿)；Codex 合并 ChatGPT 为 ChatGPT Work；Astra 模型因安全暂停",
-          "so_what": "如果你在建基于 OpenAI 的 Agent 管线：Codex 成为新主轴意味着 API 生态和产品方向会向编程/Agent 场景倾斜。关注 ChatGPT Work 的 Agent 能力整合节奏，提前适配多模型自动调度架构。"
-        },
-        {
-          "title": "Vercel AI Gateway 上线 Hy4 Preview（腾讯 770B MoE）",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://vercel.com/changelog/hy4-preview-now-available-on-ai-gateway",
-          "why_picked": "腾讯开源 770B 总参数 / 49B active MoE 模型，1M 上下文窗口，定位长程编码、文档分析、科学推理",
-          "so_what": "如果你在用 Vercel AI SDK 构建 coding agent：一行切换 tencent/hy4-preview 即可接入 1M 上下文 MoE 模型。适合长文档分析和多步编码任务，注意其 active 参数仅 49B，单发质量可能不如同规模 dense 模型。"
-        },
-        {
-          "title": "Together AI 900 次 DeepSWE rollout：GLM-5.3 Flash 丢的是稳定性不是能力",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.together.ai/blog/glm-5-3-vs-glm-5-3-flash-on-deepswe-cost-coding-and-routing",
-          "why_picked": "全量模型 pass@1 69% vs Flash 63.4%，但 pass@4 差距缩至 2.6pt；Flash 覆盖全量 94% 任务，成本仅 1/17",
-          "so_what": "如果你在部署 SWE agent：best-of-k 策略下 Flash 几乎不丢能力。建议对编码任务采用 pass@4 路由到 Flash，每 $100 可解 264 个任务 vs 全量 17 个，ROI 差距 15 倍。"
-        },
-        {
-          "title": "NocoBase 接入 DeepSeek V4 Flash，支持推理续调与联网搜索",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://www.oschina.net/news/502182",
-          "why_picked": "开源无代码平台 NocoBase 新增 DeepSeek V4 Flash 支持，具备推理续调和联网搜索能力",
-          "so_what": "如果你为企业搭建低代码 AI 应用：NocoBase + DeepSeek V4 Flash 组合可在无需后端开发的情况下实现联网搜索 + 推理能力。适合快速原型验证。"
-        },
-        {
-          "title": "Ox Alpha 匿名模型登顶 OpenRouter，终结 DeepSeek 56 天连霸",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3958937888609920",
-          "why_picked": "匿名模型 Ox Alpha 免费策略一天登顶 OpenRouter + OpenCode 双榜，后证实为智谱 GLM-5.3-Flash",
-          "so_what": "如果你运营 AI 产品：Ox Alpha 的「先免费后定价」策略证明开发者对高质量免费模型的渴求。考虑设置免费额度策略快速获取早期用户。"
         }
       ]
     }
