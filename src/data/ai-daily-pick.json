@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-01",
+      "items": [
+        {
+          "title": "OpenAI 发布 dots：24/7 常驻 always-on agent",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-dots",
+          "why_picked": "OpenAI 把 agent 从工具升级为常驻同事：自带云电脑、4000+ 应用插件、跨 ChatGPT/Slack/Teams，随时间学习偏好。",
+          "so_what": "如果你在做 agent 产品的留存/记忆层：dots 把「持久记忆 + 多通道常驻 + 插件市场」做成了默认形态，建议对照检查你的 session 记忆与工具接入是否还停留在一次性调用。"
+        },
+        {
+          "title": "OpenAI GPT-6.1 Sol：接近 Astra 智能，价格 1/5",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-gpt-6-1-sol",
+          "why_picked": "官方称 agentic coding/computer use/专业文档逼近 Astra，标准价仅 1/5，缓存输入 $0.10/M（低 95%）。",
+          "so_what": "如果你在做 coding agent / RAG 管线：缓存输入降 95% 意味着「固定长前缀 + 多轮复用」的 prompt 架构性价比飙升，值得重算你的模型路由与 context 复用策略（可先切 openai/gpt-6.1-sol 做 A/B）。"
+        },
+        {
+          "title": "DeepSeek 开源昇腾版基础设施组件（TileLang/DeepGEMM/DeepEP/FlashMLA）",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/deepseek-ai/DeepGEMM-Ascend",
+          "why_picked": "与 NVIDIA 侧一一对应地开源了昇腾算子/通信库，训练算子已在昇腾 950 128 卡超节点接近硬件上限。",
+          "so_what": "如果你在做推理/训练基础设施且考虑国产算力：这套仓库让昇腾迁移从「重写算子」变成「对齐已有实现」，建议先验证 DeepGEMM-Ascend + FlashMLA 在你的长上下文场景下的吞吐。"
+        },
+        {
+          "title": "HF 博客：MCP Agent 的「来源感知」验证",
+          "category": "观点",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/MultiverseComputingCAI/getting-the-source-right-not-just-the-fact-source",
+          "why_picked": "提出 agent 除校验事实正确外，还需校验证据「来源」，为 MCP 工具调用设计可溯源链。",
+          "so_what": "如果你在做带 MCP 工具的 RAG/Agent：把「事实校验」升级为「来源校验」能挡掉工具投毒与错误引用，建议在工具返回结果里强制携带 provenance 字段并在生成前做来源一致性检查。"
+        },
+        {
+          "title": "Vercel Sandbox 支持 Secure Compute",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/vercel-sandbox-now-supports-secure-compute",
+          "why_picked": "agent 生成代码的执行沙箱可在私有网络内运行，避免把不可信代码直接暴露到公网。",
+          "so_what": "如果你在做 code-execution agent 的执行层：私有网络沙箱是默认安全基线，建议把「代码生成 → 沙箱执行」链路的网络出口收敛到 VPC 内，并加白名单出站。"
+        },
+        {
+          "title": "OpenAI 重启 $200 Pro、额度减半引开发者不满",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8wqERkdxaWY",
+          "why_picked": "官方用「未来 API 降价」解释当下额度缩水，开发者逐条反驳并要求对标 Claude Opus 5.5 的每美元价值。",
+          "so_what": "如果你在用 $200 档订阅跑高吞吐 agent：订阅等效额度被削代表单位成本上升，建议把重负载迁移到 API + 缓存计价，并做多供应商（OpenAI/Anthropic）成本对照。"
+        },
+        {
+          "title": "NVIDIA/OpenShell",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/NVIDIA/OpenShell",
+          "why_picked": "NVIDIA 开源的自主 agent 安全私有运行时，提供沙箱与权限边界，今日 GitHub Trending。",
+          "so_what": "如果你在做 agent 权限控制：OpenShell 给了现成的「最小权限执行层」参考实现，建议对比你当前的 tool 调用沙箱，重点看它的权限边界与逃逸防护设计。"
+        },
+        {
+          "title": "mksglu/context-mode",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/mksglu/context-mode",
+          "why_picked": "Coding agent 上下文优化：沙箱化工具输出（宣称减少 98% token）+ 持久 session 记忆 + MCP/hooks 跨 17 平台路由。",
+          "so_what": "如果你在做 coding agent 的 context 管理：工具输出常是 token 黑洞，context-mode 的「输出沙箱化 + 按需回取」思路可直接压低成本，建议在 tool 层先落地输出截断/摘要再谈模型降级。"
+        }
+      ]
+    },
+    {
       "date": "2026-09-30",
       "items": [
         {
