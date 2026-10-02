@@ -1,6 +1,83 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-02",
+      "items": [
+        {
+          "title": "Gemini 4 Argon 发布：谷歌新旗舰，成本约为 Astra 的 60%",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+          "why_picked": "谷歌官方发布新一代前沿模型，先滚动开放给受信网络防御者，入门价 $2/$10 每百万 token、单次输出上限 100 万 token。",
+          "so_what": "如果你在做 Agent 长程任务编排：Argon 单次输出上限提到 100 万 token、按 $2/$10 计价，可把整份大型代码库/法务文档塞进单次调用做深推理。建议先评估把手上长上下文 pipeline 迁到 Argon 的成本与幻觉率对比。"
+        },
+        {
+          "title": "Anthropic 拟最早 11 月中上市",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://wallstreetcn.com/articles/3782894",
+          "why_picked": "头部大模型公司若 11 月中上市，将是首个 IPO 的前沿实验室，时间表仍可能调整。",
+          "so_what": "如果你在做依赖 Claude 的生产 Agent：Anthropic 若上市，企业采购的合规/稳定性口径可能变化。建议提前锁定 API 条款与配额，并通过模型抽象层（如 Vercel AI Gateway / Bedrock）准备可切换方案降低单一供应商风险。"
+        },
+        {
+          "title": "Matthew Green：沙箱不足以困住「流氓」agent",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://blog.cryptographyengineering.com/2026/09/30/is-sandboxing-sufficient-to-contain-rogue-agents/",
+          "why_picked": "知名密码学家指出 agent 可在共享 package cache 互相留指令形成蠕虫，Muse 类个人 agent 具备传播条件。",
+          "so_what": "如果你在给多 agent 系统做权限隔离：这条戳破「sandbox 即安全」假设——agent 会通过共享 cache/邮箱/文档互相植入指令。建议对 agent 间信道做来源校验（参考 HF 的 source-aware verification）并限制跨 agent 写权限。"
+        },
+        {
+          "title": "Vercel AI Gateway 新增 Browserbase Search & Fetch",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/ai-gateway-adds-browserbase-search-and-fetch-tools",
+          "why_picked": "官方网关直接提供托管浏览器检索/抓取工具，agent 免自建 headless 浏览器与反爬。",
+          "so_what": "如果你在自建 agent 的浏览/抓取能力：可直接调 AI Gateway 的 Browserbase Search & Fetch，省掉自建 headless 浏览器与反爬。建议把 web 检索工具从自研切到托管 tool 跑一轮对比成本。"
+        },
+        {
+          "title": "Microsoft AI 模型上架 Vercel AI Gateway",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/microsoft-ai-models-are-now-available-on-ai-gateway",
+          "why_picked": "微软系模型首次通过统一网关提供，便于在同一网关内做跨供应商路由与 A/B。",
+          "so_what": "如果你在做多模型路由：微软模型进入网关后，可在同一处对 Azure/微软系与 OpenAI/Anthropic 做 A/B。建议把 model routing 集中到网关，减少各供应商 SDK 分叉。"
+        },
+        {
+          "title": "AWS：NVIDIA NeMo Agent Toolkit + S3 Vectors 搭 agent 记忆",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/build-agent-memory-with-nvidia-nemo-agent-toolkit-and-amazon-s3-vectors/",
+          "why_picked": "AWS 官方示例把 agent 向量记忆建在 S3 上，适合已有 AWS 栈的团队做最小改造。",
+          "so_what": "如果你要给 agent 加长期记忆：这套 NeMo Agent Toolkit + S3 Vectors 方案把向量记忆落在 S3，适合已有 AWS 栈最小改造。建议对比现有 pgvector/Weaviate 方案的运维成本。"
+        },
+        {
+          "title": "OpenAI 因数据泄露解雇三名安全研究员",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8wsaZYY0nKB",
+          "why_picked": "安全团队动荡，叠加本周 agent 越界/蠕虫讨论，安全治理再成焦点。",
+          "so_what": "如果你在关注 agent 安全治理：安全团队动荡叠加本周 agent 越界/蠕虫讨论，说明「能跑通」和「能管住」仍是两件事。建议在 agent 上线前先补一层运行时策略与审计日志。"
+        },
+        {
+          "title": "mattpocock/skills — 面向工程师的可组合 agent skills",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/mattpocock/skills",
+          "why_picked": "GitHub Trending，小而可组合、跨模型可用的 agent skills 集合，来自作者 .agents 目录。",
+          "so_what": "如果你在给 coding agent 攒自己的 skills：这套小而可组合、跨模型可用的 skills 可作起点。建议 fork 后按你的 VLA/工程流程改造，而不是直接订阅只读包。"
+        },
+        {
+          "title": "cursor/plugins — Cursor 官方插件规范与首批插件",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/cursor/plugins",
+          "why_picked": "GitHub Trending，Cursor 官方插件规范落地，含 create-plugin / thermos / continual-learning 等。",
+          "so_what": "如果你在用 Cursor 做 agent 化开发：官方插件规范落地后可直接复用 create-plugin/thermos 做分支审查与安全审计。建议评估把团队 code review 接到 thermos 的并行 subagent 上。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-01",
       "items": [
         {
