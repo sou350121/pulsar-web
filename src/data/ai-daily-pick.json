@@ -1,6 +1,91 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-03",
+      "items": [
+        {
+          "title": "OpenAI《用 GPT-6 构建应用实践指南》",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://openai.com/index/practical-guide-building-gpt-6",
+          "why_picked": "官方首次系统给出 GPT-6 家族（Astra/Sol/Luna/6.1 Sol）的能力与定价定位，是开发者的选型与成本基线。",
+          "so_what": "如果你在做多模型 Agent 路由：这份官方指南给出 GPT-6 家族的能力与定价定位，可据此把高难推理压给 Astra、批量与低延迟任务交给 Sol。建议按现有 prompt 失败率做 A/B，把成本敏感链路先切到 6.1 Sol。"
+        },
+        {
+          "title": "Vercel AI Gateway 上架 Laya 决策模型（System One），10/31 前免费",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/laya-decision-model-now-available-on-ai-gateway-free-through-october-31",
+          "why_picked": "Jev 的 decision model 可经 Vercel 单 key 调用、10/31 前免费，主打直接产出可执行决策的异构形态。",
+          "so_what": "如果你在做 Agent 决策/工具选择层：决策模型（System One）主打以更低成本直接产出可执行决策，适合放在 routing/planning 热点。10/31 前免费，建议用 Vercel AI Gateway 单 key 把它接到 tool-call 路由器上跑基准。"
+        },
+        {
+          "title": "AWS：用 Bedrock AgentCore Gateway 给 Claude Desktop 加安全 Web Search",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/add-secure-web-search-to-claude-desktop-with-amazon-bedrock-agentcore/",
+          "why_picked": "给桌面 Agent 接联网的完整链路，重点是用 JWT 作用域把搜索工具鉴权收口。",
+          "so_what": "如果你在给桌面/企业 Agent 加联网：这篇给出用 Bedrock AgentCore Gateway + JWT 把 Web Search 接入 Claude Desktop 的完整链路，可作 MCP 工具鉴权参考。建议照搬其 JWT 作用域设计，别把搜索工具直接暴露给终端用户。"
+        },
+        {
+          "title": "AWS：在 SageMaker AI 用多轮 RL 微调搜索 Agent",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/fine-tune-a-search-agent-with-multi-turn-rl-on-amazon-sagemaker-ai/",
+          "why_picked": "用回合级奖励（答案正确 + 命中引文）替代纯 SFT，改善多跳检索 Agent。",
+          "so_what": "如果你在做 RAG/搜索 Agent 的后训练：这篇演示用多轮 RL 以答案正确 + 引文命中为奖励，改善多跳检索。建议复用其 SageMaker 训练脚本，把 reward 显式绑定到最终答案与引用。"
+        },
+        {
+          "title": "HF/ServiceNow：AutoSynthData 为企业 Agent 合成训练数据",
+          "category": "工具",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ServiceNow-AI/autosynthdata",
+          "why_picked": "用真实企业流程自动生成 tool-calling / instruction 样本，解决垂直 Agent 冷启动无标注。",
+          "so_what": "如果你在为垂直 Agent 造训练数据：AutoSynthData 用真实企业流程自动合成 instruction / tool-calling 样本，解决冷启动无标注。建议按你要接入的 SaaS 工具 schema 生成工具调用数据集，再走 LoRA 微调。"
+        },
+        {
+          "title": "Weaviate 发布高危安全补丁（Google 模块凭据泄露）",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://weaviate.io/blog/weaviate-security-release-googlemodules-2026",
+          "why_picked": "生产若用 Weaviate 的 Google 模块需立即升级并轮换凭据。",
+          "so_what": "如果你在生产用 Weaviate 的 Google 模块：这是凭据泄露高危修复，必须升级。建议核对版本、轮换相关 API key，并排查日志中该模块的异常出站请求。"
+        },
+        {
+          "title": "pbakaus/impeccable — 让 AI harness 更懂设计的「设计语言」",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/pbakaus/impeccable",
+          "why_picked": "把设计规范变成 agent 可读的设计语言，让 Claude Code 等 harness 产出的 UI 不再土味。",
+          "so_what": "如果你在做 Agent+UI 生成：impeccable 把设计规范封装成 agent 可读的设计语言，可直接喂给 Claude Code 等 harness 提升产 UI 质量。建议把它作为 design skill 接入前端生成流水线做对比。"
+        },
+        {
+          "title": "Panniantong/Agent-Reach — 一个 CLI 让 Agent 读取全网社交平台",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Panniantong/Agent-Reach",
+          "why_picked": "一个 CLI 让 Agent 读取/搜索 Twitter、Reddit、YouTube、GitHub、B站、小红书，零 API 费。",
+          "so_what": "如果你在给 Agent 接外部数据源：一个 CLI 打通 Twitter/Reddit/YouTube/GitHub/B站/小红书且零 API 费，适合做社交情报采集。建议先小流量测其反爬与稳定性，再决定是否用作生产级抓取层。"
+        },
+        {
+          "title": "HN：AI 首次在隐藏信息博弈 Stratego 击败史上最强人类玩家",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/",
+          "why_picked": "低成本 AI 在不完全信息博弈上击败人类冠军，引发对对抗决策泛化性的讨论。",
+          "so_what": "如果你在做对抗/不完全信息决策：这个低成本 agent 在隐藏信息博弈上击败人类冠军，说明 RL + 搜索仍有红利。建议借鉴其预算分配思路，用于你的 planning/eval 场景。"
+        },
+        {
+          "title": "HN：Redis 作者 antirez 发布本地 LLM 运行器 ds4",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://dwarfstar.sh/",
+          "why_picked": "antirez 新项目，一行命令跑本地 LLM，对私有 RAG/内网推理有参考价值。",
+          "so_what": "如果你在搭私有化/RAG 推理：antirez 的 ds4 一行命令跑本地 LLM，适合做数据不出内网的实验底座。建议对比 llama.cpp 的吞吐与量化支持，再决定生产选型。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-02",
       "items": [
         {
