@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-04",
+      "items": [
+        {
+          "title": "Microsoft × Hugging Face 发布 ThinkingBox：按 Agent 留下的数据库终态评分",
+          "category": "趋势",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/microsoft/thinkingbox",
+          "why_picked": "不再只看 tool call，而是核对 agent 留下的后端终态与副作用，并要求连续 20 次一致复现。",
+          "so_what": "如果你在做 Agent 评估：该评测把评分口径从说了什么改成数据库/后端留下了什么状态，并强制 20 次连续复现来暴露不稳定。建议把现有 function-call 断言换成终态断言加幂等性测试，用 MCP 隔离 session 跑回归。"
+        },
+        {
+          "title": "Simon Willison：按量计费服务需要默认硬预算上限",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/",
+          "why_picked": "agent 降低起服务的门槛，软上限（只发警告邮件）挡不住半夜烧掉上千美元。",
+          "so_what": "如果你在做 Agent 基础设施：coding/personal agent 会自动创建付费资源，必须在网关层加硬性 spend cap（超限直接报错而非告警邮件）。建议给每个 agent 会话绑定预算配额，并在工具调用层做成本熔断。"
+        },
+        {
+          "title": "Cloudflare 开源 cloudflare-os：构建 Agent 工作台的开源底座",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/cloudflare/cloudflare-os",
+          "why_picked": "基于 Workers 的 agent 工作台，含 chat UI、沙箱建应用与 Gatekeepers 护栏，今日 Trending。",
+          "so_what": "如果你在做 Agent 权限控制或 Runtime：cloudflare-os 把沙箱、UI 与护栏打包成可自托管的 Workers 底座。建议先跑它的 Gatekeepers 护栏逻辑，评估能否复用到你的工具调用审批链路。"
+        },
+        {
+          "title": "北大李欣意批评硅谷大厂 AI 解题方式伤害数学共同体",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.huxiu.com/article/4895278.html",
+          "why_picked": "一线数学家指出 AI 解题是被解决但没被理解，25 位菲尔兹奖得主联名公开信呼应，直指 PR 与科研伦理。",
+          "so_what": "如果你在评估 LLM 的科研能力：benchmark 上的解题不等于产出可被人类消化的理论。建议在做 agentic research 工具时区分可验证结果与可传承知识，别把刷榜当能力证明。"
+        },
+        {
+          "title": "thedotmack/claude-mem：为任意 Agent 提供跨会话持久记忆",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/thedotmack/claude-mem",
+          "why_picked": "捕获 agent 会话全过程并跨会话注入上下文，star 涨势凶猛。",
+          "so_what": "如果你在做 Agent 记忆：claude-mem 是即插即用的跨会话记忆层，可对比 funes/hindsight 的取舍。建议先测其召回精度与 token 开销，再决定接它还是自建。"
+        },
+        {
+          "title": "JuliusBrussee/caveman：用原始人语法压缩 coding agent 输出 65% token",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/JuliusBrussee/caveman",
+          "why_picked": "把叙述性文字压成极简，代码/命令/报错原文不动，砍 65% token，Trending。",
+          "so_what": "如果你在优化 Agent token 成本：caveman 只压缩 prose、保留代码与报错原文，可作为 output 层压缩器接到现有 harness。建议在长对话/审查任务上 A/B 它对成本与可读性的影响。"
+        },
+        {
+          "title": "DietrichGebert/ponytail：让 Agent 像最懒的资深工程师那样少写代码",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/DietrichGebert/ponytail",
+          "why_picked": "用最懒资深 dev 的策略抑制过度生成，能一行不写两行，Trending 第一梯队。",
+          "so_what": "如果你在调 Agent 的代码行为：ponytail 用最懒资深 dev 的 prompt 策略抑制过度生成，适合接入 coding agent 的 system prompt。建议在 review/refactor 任务上对比产出量与原方案。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-03",
       "items": [
         {
