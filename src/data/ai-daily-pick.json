@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-05",
+      "items": [
+        {
+          "title": "Strata：消费级显卡本地跑 Qwen3.8-Flash-Next 125B",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Niko1221/Strata",
+          "why_picked": "HN 576 分 / 278 评论登顶，一键在 Windows/Linux 用 12GB 显存跑 125B 模型，并在 localhost 暴露 OpenAI/Anthropic 兼容 API。",
+          "so_what": "如果你在做 Agent 的本地/私有部署：Strata 把 125B 压到 12GB 显存并在 localhost 暴露 OpenAI/Anthropic 兼容端点，可直接替换远程 API 做离线工具调用。建议先用它跑一遍你的 agent loop 验证显存与吞吐（Q2_0 约 94 tok/s），再决定是否把敏感数据链路迁到本地。"
+        },
+        {
+          "title": "DeepSeek Harness v0.2.1-alpha.1 新增实验性 Claude Code Mods 兼容层",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.1",
+          "why_picked": "官方称 Claude Code Mods API 基本是 DeepSeek Harness 插件 API 的子集，编程 Agent 插件生态开始打通。",
+          "so_what": "如果你在做 coding agent 插件/工具生态：官方确认 Claude Code Mods API 基本是 Harness 插件的子集，同一套插件有机会跨 harness 复用。建议现在抽出与 harness 无关的工具/插件接口层，待兼容层稳定后低成本横跨 Claude Code 与 DeepSeek Harness。"
+        },
+        {
+          "title": "earthtojake/text-to-cad：给 Agent 装上 CAD 能力",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/earthtojake/text-to-cad",
+          "why_picked": "把 CAD 建模封装成 agent 可调用工具（⭐16.8k，10-05 仍在推送），垂直专业技能 skill 化的又一案例。",
+          "so_what": "如果你在做 Agent 工具链：text-to-cad 把 CAD 建模暴露成 agent 可调用工具，是「专业技能 skill 化」的又一实例。建议参考它的工具 schema 设计，评估把你领域的垂直能力（如有限元/电路）做成 agent skill 的收益。"
+        },
+        {
+          "title": "michael-denyer/pstack-claude：跨 harness 复用的 agent 工作流",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/michael-denyer/pstack-claude",
+          "why_picked": "把同一套严谨流程移植到 Claude Code / Codex / Gemini / OpenCode，验证 harness 中立的流程资产可行。",
+          "so_what": "如果你在做多 harness 的 agent 工作流：pstack 把同一套流程移植到 Claude Code/Codex/Gemini/OpenCode，说明 harness 无关的 prompt/workflow 资产可行。建议把提示词与流程抽成 harness 中立层，避免绑定单一 CLI。"
+        },
+        {
+          "title": "garrytan/gstack：Garry Tan 的 Claude Code 实战配置（⭐135k）",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/garrytan/gstack",
+          "why_picked": "Trending 仓库，23 个工具按 CEO / 设计 / 工程 / QA 等角色划分，展示角色化的 Claude Code 配置。",
+          "so_what": "如果你在做 Claude Code / agent skills 落地：gstack 展示了一个把 23 个工具按角色（CEO/设计/QA）编排的实战配置。建议对照它的权限与工具边界设计，检查你的 agent 是否缺角色化约束。"
+        },
+        {
+          "title": "calesthio/OpenMontage：开源 agentic 视频生产系统（⭐63k）",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/calesthio/OpenMontage",
+          "why_picked": "12 条流水线、100+ 工具、700+ skill 文件，是「大规模 skill 资产库」的样板。",
+          "so_what": "如果你在做 agentic 应用/多流水线编排：OpenMontage 用 100+ 工具与 700+ skill 文件把视频生产 agent 化，是「大规模 skill 资产库」的样板。建议研究它的 pipeline 与 skill 分层方式，复用到你的垂直 agent 编排。"
+        },
+        {
+          "title": "Show HN: SCM — macOS 本地 AI 搜图 / 逐帧搜视频",
+          "category": "工具",
+          "source": "HN",
+          "url": "https://news.ycombinator.com/item?id=49952111",
+          "why_picked": "HN 135 分 / 64 评论，本地视觉模型 + Whisper + OCR 对照片与视频逐帧建索引，全程离线。",
+          "so_what": "如果你在评估本地优先的 RAG/多模态检索：SCM 用本地视觉模型 + Whisper + OCR 对照片和视频逐帧建索引，全程离线。建议测试它的场景切分 + 时间码检索思路，用于你自己的视频/截图知识库。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-04",
       "items": [
         {
