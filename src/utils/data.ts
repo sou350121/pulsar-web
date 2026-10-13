@@ -10,6 +10,7 @@
 import fs   from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isSuccessfulVLARun } from './pipeline-health.ts';
 
 // Resolve src/data — try import.meta.url first, fall back to process.cwd()
 // (Astro SSG build may run utils from a temp location where import.meta.url differs)
@@ -190,7 +191,13 @@ export type DriftMetricsFile = DriftMetricsEntry[];
 // Drift state
 export interface DriftStateFile {
   last_check:  string;   // ISO date
-  drift_active: boolean;
+  drift_active?: boolean;
+  metrics?: Record<string, {
+    streak?: number;
+    ratio?: number | null;
+    sustained_degradation?: boolean;
+    evaluated_on?: string;
+  }>;
   streaks?: {
     vla?:    number;
     ai_app?: number;
@@ -406,6 +413,18 @@ export function loadAIDailyPicks(n: number = 7): DailyPickDay[] {
 // vla-daily-rating-out-YYYY-MM-DD.json files synced into src/data/.
 // Returns DailyPickDay[] — used by non-VLA-detail pages (index, dashboard, daily).
 // ---------------------------------------------------------------------------
+export function loadLatestVLARunDate(): string | undefined {
+  try {
+    const files = fs.readdirSync(DATA_DIR)
+      .filter(file => /^vla-daily-rating-out-\d{4}-\d{2}-\d{2}\.json$/.test(file))
+      .sort().reverse();
+    for (const file of files) {
+      if (isSuccessfulVLARun(readJson<unknown>(file))) return file.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+    }
+  } catch { /* Missing source data cannot establish freshness. */ }
+  return undefined;
+}
+
 export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
   let files: string[];
   try {

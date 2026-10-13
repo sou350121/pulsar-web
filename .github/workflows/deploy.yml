@@ -42,6 +42,12 @@ jobs:
           # which broke our CI starting 2026-05-08.
           version: 10
 
+      - name: Verify isolated data sync
+        run: |
+          python3 -B scripts/test_sync_data.py -v
+          bash -n scripts/ci-sync-data.sh scripts/test-ci-sync-data.sh
+          bash scripts/test-ci-sync-data.sh
+
       - name: Sync pipeline data via SSH
         id: ssh_sync
         env:
@@ -50,40 +56,13 @@ jobs:
           SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
         if: ${{ env.SSH_KEY != '' }}
         continue-on-error: true   # fallback: use committed src/data/ if SSH fails
+        run: bash scripts/ci-sync-data.sh
+
+      - name: Report pipeline data fallback
+        if: ${{ steps.ssh_sync.outcome != 'success' }}
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          SSH_OPTS="-i ~/.ssh/deploy_key -p 22222 -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ServerAliveInterval=15 -o ServerAliveCountMax=10"
-          # Retry SSH up to 3 times (sshd MaxStartups may drop connections under brute-force load)
-          for attempt in 1 2 3; do
-            echo "SSH attempt $attempt/3..."
-            if ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" \
-                "cd /home/admin/clawd && sudo -u admin git pull --rebase origin main 2>&1 | tail -3; \
-                 cd /home/admin/clawd/pulsar-web && sudo -u admin git pull --rebase origin main 2>&1 | tail -3 && \
-                 sudo timeout 90 python3.11 /home/admin/clawd/scripts/fetch-ai-github.py 2>&1 | tail -3 && \
-                 sudo timeout 30 python3.11 /home/admin/clawd/scripts/build-graph-data.py 2>&1 | tail -5 && \
-                 sudo timeout 30 python3.11 /home/admin/clawd/pulsar-web/scripts/build-atlas-data.py 2>&1 | tail -5 && \
-                 ( DDATE=\$(TZ=Asia/Shanghai date +%Y-%m-%d); [ -f /home/admin/clawd/memory/funnel-diagnostic-\${DDATE}.md ] || sudo timeout 240 python3.11 /home/admin/clawd/scripts/diagnose-funnel.py --llm 2>&1 | tail -5 ) || true; \
-                 sudo python3.11 /home/admin/clawd/pulsar-web/scripts/sync-data.py --verbose 2>&1 && \
-                 sudo python3.11 /home/admin/clawd/scripts/push-data-to-web.py --verbose 2>&1 | tail -10; \
-                 sudo timeout 60 python3.11 /home/admin/clawd/scripts/fix-theory-root-files.py --apply 2>&1 | tail -5 || true; \
-                 cd /home/admin/clawd/pulsar-web && tar czf /tmp/pulsar-data.tar.gz src/data/"; then
-              echo "SSH sync succeeded on attempt $attempt"
-              break
-            fi
-            [ $attempt -lt 3 ] && { echo "Retrying in 15s..."; sleep 15; }
-          done
-          # Pull the tarball (also with retry)
-          for attempt in 1 2 3; do
-            if scp $SSH_OPTS "$SSH_USER@$SSH_HOST:/tmp/pulsar-data.tar.gz" /tmp/pulsar-data.tar.gz; then
-              tar xzf /tmp/pulsar-data.tar.gz
-              echo "Data sync complete."
-              break
-            fi
-            [ $attempt -lt 3 ] && { echo "SCP retry $attempt in 15s..."; sleep 15; }
-          done
+          echo "::warning::Fresh server data export was unavailable. Building with committed data and available GitHub reports; source dates remain authoritative."
+          echo "Fresh server export unavailable (${{ steps.ssh_sync.outcome }}). This build uses committed data and available GitHub reports. Check displayed source dates." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Restore force-committed data files
         run: |

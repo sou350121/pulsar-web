@@ -126,7 +126,7 @@ pnpm build    # Build to dist/ (57 pages)
 pnpm preview  # Preview built site
 ```
 
-The site renders with mock/empty-state data before syncing.
+The site shows empty states before syncing. Pipeline health uses source dates and validated receipts; rebuilding alone does not make old data current.
 
 ## Deployment
 

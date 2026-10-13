@@ -16,9 +16,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import DigestFeed from '../components/DigestFeed.astro';
 import ActivityPulse from '../components/ActivityPulse.astro';
+import { assessPipelineHealth, eligibleSocialDate, shanghaiTimestamp, sourceDate } from '../utils/pipeline-health';
 import {
   loadAIDailyPicks,
   loadVLADailyPicks,
+  loadLatestVLARunDate,
   loadDriftMetrics,
   loadEntityIndex,
   loadSocialIntel,
@@ -37,6 +39,8 @@ import {
 // ---------------------------------------------------------------------------
 // Load data
 // ---------------------------------------------------------------------------
+const healthNow     = new Date();
+const healthAsOf    = shanghaiTimestamp(healthNow);
 const recentPicks   = loadAIDailyPicks(1);
 const recentVLA     = loadVLADailyPicks(3);  // 3 days for weekend fallback
 const { state: driftState, metrics: driftMetrics } = loadDriftMetrics();
@@ -50,10 +54,25 @@ const topMethodsHome = Object.values(entityIndex.entities)
   .sort((a, b) => b.signals.length - a.signals.length)
   .slice(0, 5);
 // Load up to 5 social files, pick the first with real content (skip empty stubs)
-const aiSocial      = loadSocialIntel('ai',  5).filter(s => s.content.length > 150).slice(0, 1);
-const vlaSocial     = loadSocialIntel('vla', 5).filter(s => s.content.length > 150).slice(0, 1);
+const aiSocial      = loadSocialIntel('ai',  5).filter(s => s.content.trim().length > 150).slice(0, 1);
+const vlaSocial     = loadSocialIntel('vla', 5).filter(s => s.content.trim().length > 150).slice(0, 1);
 const biweekly      = loadBiweeklyReports(1);
 const crossDomain   = loadCrossDomainInsights(30);
+const latestDriftMetrics = driftMetrics.filter(metric => typeof metric?.date === 'string')
+  .sort((a, b) => a.date.localeCompare(b.date)).at(-1);
+const aiSourceDate = recentPicks[0]?.items.length ? recentPicks[0].date : undefined;
+const vlaSourceDate = loadLatestVLARunDate();
+const pipelineHealth = assessPipelineHealth({
+  aiDate: aiSourceDate,
+  vlaDate: vlaSourceDate,
+  aiSocialDate: eligibleSocialDate(aiSocial),
+  vlaSocialDate: eligibleSocialDate(vlaSocial),
+  lastCheck: driftState?.last_check,
+  driftMetricsDate: latestDriftMetrics?.date,
+  driftSnapshot: latestDriftMetrics,
+  driftMetrics: driftState?.metrics,
+  driftActive: driftState?.drift_active,
+}, healthNow);
 
 // Deep dive — recent 3 days
 const DEEP_DIVE_DAYS = 3;
@@ -140,96 +159,34 @@ const kbTotal    = kbVlaTotal + kbAiTotal;
 const realDeepDiveCount = aiDeepDiveRaw.length + vlaTheoryRaw.length;
 
 // ---------------------------------------------------------------------------
-// Mock fallbacks
+// Resolve available sources; missing data remains empty.
 // ---------------------------------------------------------------------------
-const MOCK_PICKS: DailyPickDay = {
-  date: '2026-03-01',
-  items: [
-    {
-      title: 'Flow Matching for Robot Learning: A Unified Framework',
-      url: 'https://arxiv.org/abs/2501.00001',
-      summary: '本文提出統一的流匹配框架，用於機器人學習中的多模態動作分佈建模。與擴散模型相比，訓練速度提升3倍，推理延遲降低40%。在RLBench上超越當前SOTA。',
-      rating: '⚡', source: 'arxiv', domain: 'vla',
-    },
-    {
-      title: 'Scaling Language Models for Embodied Reasoning',
-      url: 'https://arxiv.org/abs/2501.00002',
-      summary: '探索大型語言模型在具身推理任務中的縮放規律。7B到70B參數範圍的實驗顯示，推理能力在30B+出現湧現，但動作精度仍需視覺-運動訓練。',
-      rating: '🔧', source: 'arxiv', domain: 'vla',
-    },
-    {
-      title: 'Karpathy: Software 3.0 時代的意圖驅動開發',
-      url: 'https://karpathy.ai/blog/software3',
-      summary: 'Karpathy 在最新文章中提出 Software 3.0 框架——開發範式從「寫語法」轉向「編排意圖」。AI coding agent 將成為主要生產力工具。',
-      rating: '⚡', source: 'blog', domain: 'ai',
-    },
-    {
-      title: 'DeepSeek-V3 在代碼生成基準測試中的表現分析',
-      url: 'https://ithome.com/0/abc123',
-      summary: '第三方分析顯示 DeepSeek-V3 在 HumanEval 和 MBPP 基準上達到 GPT-4o 水準，但長上下文推理仍有差距。開源成本優勢顯著。',
-      rating: '🔧', source: 'ithome', domain: 'ai',
-    },
-    {
-      title: 'World Models for Long-Horizon Planning in Manipulation',
-      url: 'https://arxiv.org/abs/2501.00003',
-      summary: '介紹基於世界模型的長時域操作規劃方法，在模擬到真實遷移上取得顯著進展。背景閱讀：與 DreamerV3 的比較分析。',
-      rating: '📖', source: 'arxiv', domain: 'vla',
-    },
-    {
-      title: 'Cursor 月活突破 200 萬：Vibe Coding 浪潮重塑技術棧選型',
-      url: 'https://36kr.com/placeholder',
-      summary: 'AI IDE 賽道進入爆發期，Lovable、Bolt 等產品相繼宣布百萬用戶里程碑，傳統 IDE 廠商加速整合 AI 功能。',
-      rating: '📖', source: '36kr', domain: 'ai',
-    },
-  ],
-};
-
-const MOCK_SOCIAL = [
-  { entity: 'AI App · 03-01', event: 'OpenAI 与美国国防部达成协议，引发 Cancel ChatGPT 运动；Qwen3.5 122B 声称达到 Sonnet 4.5 性能；Gemini CLI 解除 Antigravity 禁令后开源社区热议不断。', date: '2026-03-01', domain: 'ai', tag: 'AI App' },
-  { entity: 'VLA 情報 · 03-01', event: 'Physical Intelligence Pi0.5 开放 API 访问，覆盖 7 种机器人形态；Google DeepMind 公布 Gemini Robotics Q2 路线图；VLA SOTA 基准 Bidex 刷新纪录。', date: '2026-03-01', domain: 'vla', tag: 'VLA' },
-  { entity: 'AI App · 02-28', event: 'Yann LeCun 转发 WorldModelBench 论文：「评估标准缺失是具身 AI 进展缓慢的根本原因」；Ilya Sutskever SSI 博客暗示探索 Transformer 替代架构。', date: '2026-02-28', domain: 'ai', tag: 'AI App' },
-];
-
-// ---------------------------------------------------------------------------
-// Resolve: real vs mock
-// ---------------------------------------------------------------------------
-const todayPicks  = recentPicks[0]  ?? MOCK_PICKS;
-// Use the most recent date across AI and VLA (VLA may update on days AI doesn't)
-// Use today's Shanghai date if we have any data (social/AI/VLA) from today
-const shanghaiToday = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
-const displayDate = [todayPicks.date, recentVLA[0]?.date, shanghaiToday].filter(Boolean).sort().pop() ?? todayPicks.date;
-// Show most recent VLA data (within 3 days for weekend fallback)
-const todayVLA    = (() => {
-  const v = recentVLA[0];
-  if (!v) return undefined;
-  const diff = Math.abs(new Date(shanghaiToday).getTime() - new Date(v.date).getTime());
-  return diff <= 3 * 86400000 ? v : undefined;
-})();
-// arXiv schedule (CST): new papers arrive Tue–Sat mornings (from Mon–Fri US announcements).
-// Sunday and Monday CST = no new papers (no Sat/Sun US announcements).
-// On Sun/Mon, accept the most recent VLA data (up to 2 days old) as non-stale.
-const noNewVLAPapers = !todayVLA || todayVLA.date !== shanghaiToday;
-const isVLAStale = (() => {
-  if (!todayVLA) return true;
-  if (todayVLA.date === shanghaiToday) return false;
-  const dow = new Date(Date.now() + 8 * 3600000).getUTCDay(); // Shanghai day-of-week (0=Sun)
-  const isArxivOff = dow === 0 || dow === 1; // Sun, Mon only (Sat HAS papers from Fri US)
-  if (isArxivOff) {
-    const diffMs = new Date(shanghaiToday).getTime() - new Date(todayVLA.date).getTime();
-    return diffMs > 2 * 86400000; // stale only if older than 2 days
-  }
-  return true; // weekday but date doesn't match today → stale
-})();
+const todayPicks: DailyPickDay = recentPicks[0] ?? { date: '', items: [] };
+// A rebuild must not replace the actual source date with today's date.
+const displayDate = [aiSourceDate, vlaSourceDate]
+  .map(date => sourceDate(date, healthNow)).filter(Boolean).sort().pop() ?? '待確認';
+const isVLAStale = pipelineHealth.sources.vla.status !== 'fresh';
+const todayVLA = isVLAStale ? undefined : recentVLA.find(day => day.date === vlaSourceDate);
+const vlaStatusLabel = pipelineHealth.sources.vla.status === 'stale'
+  ? `資料過期（最新成功報告 ${pipelineHealth.sources.vla.date}）`
+  : pipelineHealth.sources.vla.status === 'unknown' ? '資料未確認'
+  : todayVLA?.items.length ? `資料日期 ${vlaSourceDate}`
+  : `最新成功報告 ${vlaSourceDate} · 暫無可展示論文`;
+const vlaEmptyTitle = pipelineHealth.sources.vla.status === 'stale' ? 'VLA 資料過期'
+  : pipelineHealth.sources.vla.status === 'unknown' ? 'VLA 資料待確認' : '本期暫無可展示論文';
+const vlaEmptySummary = pipelineHealth.sources.vla.date
+  ? `最新可驗證的成功採集報告日期為 ${pipelineHealth.sources.vla.date}。${isVLAStale ? '目前資料未達本次採集時效要求。' : '目前沒有可展示的評級項目。'}`
+  : '尚未取得可驗證的成功採集報告，無法判定是否有新論文。';
 
 const heroAI  = todayPicks.items[0];
-const heroVLA = (isVLAStale || noNewVLAPapers) ? undefined
+const heroVLA = isVLAStale ? undefined
              : (todayVLA?.items.find(i => i.rating === '⚡')
              ?? todayVLA?.items.find(i => i.rating === '🔧')
              ?? todayVLA?.items[0]
              ?? undefined);
 
 // Entity stats
-const driftOk     = !driftState?.drift_active;
+const driftOk     = pipelineHealth.driftOk;
 const entityCount = Object.keys(entityIndex.entities).length;
 const labCount    = Object.values(entityIndex.entities).filter(e => e.type === 'lab').length;
 const methodCount = Object.values(entityIndex.entities).filter(e => e.type === 'method').length;
@@ -239,7 +196,7 @@ const base        = import.meta.env.BASE_URL;
 const digestAiItems = todayPicks.items
   .filter(i => i.domain === 'ai')
   .map(i => ({ ...i, domain: 'ai' as const, deepDiveUrl: aiDeepDiveLookup.get(i.url) }));
-const digestVlaItems = (todayVLA?.items ?? todayPicks.items.filter(i => i.domain === 'vla'))
+const digestVlaItems = (todayVLA?.items ?? [])
   .map(i => ({ ...i, domain: 'vla' as const, deepDiveUrl: vlaTheoryLookup.get(i.url) }));
 
 // Extract top bullet points from social intel markdown for digest display
@@ -266,7 +223,7 @@ function extractSocialBullets(md: string, maxItems: number = 50): string {
 
 const digestSocialItems = [
   ...aiSocial.map(s => ({
-    title:   `AI App · ${s.date.slice(5)}`,
+    title:   `AI App · ${s.date}`,
     summary: extractSocialBullets(s.content, 50),
     rating:  '📡',
     source:  'social',
@@ -274,7 +231,7 @@ const digestSocialItems = [
     domain:  'ai' as const,
   })),
   ...vlaSocial.map(s => ({
-    title:   `VLA · ${s.date.slice(5)}`,
+    title:   `VLA · ${s.date}`,
     summary: extractSocialBullets(s.content, 50),
     rating:  '📡',
     source:  'social',
@@ -316,30 +273,25 @@ const sparkMaxAI  = Math.max(1, ...spark7.map(d => d.ai));
 // Fixed social intel — proper entity names from domain + date
 const realSocial = [
   ...aiSocial.map(s => ({
-    entity: `AI App · ${s.date.slice(5)}`,
+    entity: `AI App · ${s.date}`,
     event:  extractMarkdownSummary(s.content, 230),
     date:   s.date,
     domain: 'ai',
     tag:    'AI App',
   })),
   ...vlaSocial.map(s => ({
-    entity: `VLA 情報 · ${s.date.slice(5)}`,
+    entity: `VLA 情報 · ${s.date}`,
     event:  extractMarkdownSummary(s.content, 230),
     date:   s.date,
     domain: 'vla',
     tag:    'VLA',
   })),
 ].filter(s => s.event.length > 20);
-const socialItems = realSocial.length >= 2 ? realSocial : MOCK_SOCIAL;
+const socialItems = realSocial;
 // Compute how old the newest social data is (for staleness badge on homepage)
 const socialNewestDate = realSocial.length > 0
   ? realSocial.map(s => s.date).sort().pop()!
   : null;
-const socialDaysOld = socialNewestDate
-  ? Math.round((Date.now() - new Date(socialNewestDate + 'T00:00:00+08:00').getTime()) / 86400000)
-  : Infinity;
-const socialIsStale = socialDaysOld > 3;
-
 // Biweekly
 const latestReport  = biweekly[0] ?? null;
 const reportSummary = latestReport
@@ -392,10 +344,10 @@ const RULE_LABELS: Record<string, string> = {
       <div class="ticker-inner">
         <span class="ticker-label">⚡ PULSAR</span>
         <span class="ticker-text">
-          {displayDate} 已更新&ensp;·&ensp;
+          資料日期 {displayDate}&ensp;·&ensp;{pipelineHealth.label}（截至 {healthAsOf}）&ensp;·&ensp;
           AI <span data-tc>精選</span><span data-sc>精选</span> {todayAICount || '?'} 條&ensp;·&ensp;
-          VLA <span data-tc>論文</span><span data-sc>论文</span> {noNewVLAPapers ? `今日無新論文（最新 ${todayVLA?.date?.slice(5) || '?'}）` : `${todayVLACount || '—'} 篇`}&ensp;·&ensp;
-          <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {driftOk ? '正常 ✓' : '注意 ⚠'}&ensp;·&ensp;
+          VLA <span data-tc>論文</span><span data-sc>论文</span> {todayVLACount > 0 ? `${todayVLACount} 篇 · ${vlaStatusLabel}` : vlaStatusLabel}&ensp;·&ensp;
+          <span data-tc>品質漂移</span><span data-sc>品质漂移</span> {pipelineHealth.driftLabel}&ensp;·&ensp;
           <span data-tc>追蹤</span><span data-sc>追踪</span> {entityCount || '—'} <span data-tc>實體</span><span data-sc>实体</span> · {labCount || '—'} <span data-tc>機構</span><span data-sc>机构</span> · {methodCount || '—'} 方法&ensp;·&ensp;
           <span data-tc>跨域訊號</span><span data-sc>跨域讯号</span> {crossDomainCount} 條&ensp;·&ensp;
           <span data-tc>近 3 日精選</span><span data-sc>近 3 日精选</span> {realDeepDiveCount} 篇 · <span data-tc>知識庫</span><span data-sc>知识库</span> {kbTotal} 篇&ensp;·&ensp;
@@ -416,7 +368,8 @@ const RULE_LABELS: Record<string, string> = {
         deepDiveItems={digestDeepDiveItems}
         socialItems={digestSocialItems}
         vlaStale={isVLAStale}
-        vlaDataDate={todayVLA?.date}
+        vlaDataDate={pipelineHealth.sources.vla.date ?? undefined}
+        vlaStatusLabel={vlaStatusLabel}
       />
     </div>
   </section>
@@ -468,7 +421,7 @@ const RULE_LABELS: Record<string, string> = {
   <!-- ═══════════════════════════════════════════════════════════════
        2.7. ACTIVITY PULSE — live indicator + subscribe CTA
        ═══════════════════════════════════════════════════════════════ -->
-  <ActivityPulse />
+  <ActivityPulse current={pipelineHealth.healthy} statusLabel={`${pipelineHealth.label}（建置時）`} />
 
   <!-- ═══════════════════════════════════════════════════════════════
        3. HERO — stat strip + two featured cards
@@ -477,9 +430,9 @@ const RULE_LABELS: Record<string, string> = {
     <div class="container">
 
       <div class="hero-meta fade-in-1">
-        <span class="hero-date">{displayDate} · PULSAR</span>
+        <span class="hero-date">資料 {displayDate} · 狀態截至 {healthAsOf}</span>
         <span class="hero-sep" aria-hidden="true"></span>
-        <span class="live-dot">Pipeline 已更新</span>
+        <span class:list={['live-dot', !pipelineHealth.healthy && 'pipeline-not-current']}>{pipelineHealth.label}</span>
       </div>
 
       <div class="hero-headline fade-in-2">
@@ -505,7 +458,7 @@ const RULE_LABELS: Record<string, string> = {
         </div>
         <div class="hp-stat-div"></div>
         <div class="hp-stat">
-          <span class={`hp-stat-num ${driftOk ? 'hp-ok' : 'hp-warn'}`}>{driftOk ? '✓ 正常' : '⚠ 注意'}</span>
+          <span class={`hp-stat-num ${driftOk ? 'hp-ok' : 'hp-warn'}`}>{pipelineHealth.driftLabel}</span>
           <span class="hp-stat-label"><span data-tc>品質漂移</span><span data-sc>品质漂移</span></span>
         </div>
         <div class="hp-stat-div hp-stat-div--hide-mobile"></div>
@@ -525,6 +478,7 @@ const RULE_LABELS: Record<string, string> = {
 
         <article class="hero-card hero-card-ai" aria-labelledby="hero-ai-title">
           <div class="hero-card-label"><span><span data-tc>今日 AI 精選</span><span data-sc>今日 AI 精选</span></span></div>
+          {heroAI ? <Fragment>
           <span class={getRatingClass(heroAI.rating)} set:html={`${[...heroAI.rating][0]} ${getRatingLabel(heroAI.rating)}`}></span>
           <h2 class="hero-card-title" id="hero-ai-title">{heroAI.title}</h2>
           <p class="hero-card-summary">{heroAI.summary}</p>
@@ -535,16 +489,14 @@ const RULE_LABELS: Record<string, string> = {
             </div>
             <a href={heroAI.url} target="_blank" rel="noopener noreferrer" class="btn btn-amber">閱讀全文 →</a>
           </div>
+          </Fragment> : <Fragment>
+            <h2 class="hero-card-title" id="hero-ai-title">尚無可用的 AI 精選</h2>
+            <p class="hero-card-summary">尚未取得可展示的精選資料。</p>
+          </Fragment>}
         </article>
 
         <article class="hero-card hero-card-vla" aria-labelledby="hero-vla-title">
-          <div class="hero-card-label"><span>{
-            isVLAStale
-              ? `VLA 論文 (${todayVLA?.date ?? '—'})`
-              : todayVLA && todayVLA.date !== shanghaiToday
-                ? `VLA 論文 (${todayVLA.date})`
-                : '今日 VLA 論文'
-          }</span></div>
+          <div class="hero-card-label"><span>VLA 論文 · {pipelineHealth.sources.vla.date ?? '日期未確認'}</span></div>
           {heroVLA ? (
             <Fragment>
               <span class={getRatingClass(heroVLA.rating)} set:html={`${[...heroVLA.rating][0]} ${getRatingLabel(heroVLA.rating)}`}></span>
@@ -560,8 +512,8 @@ const RULE_LABELS: Record<string, string> = {
             </Fragment>
           ) : (
             <Fragment>
-              <h2 class="hero-card-title" id="hero-vla-title"><span data-tc>今日無新論文</span><span data-sc>今日无新论文</span></h2>
-              <p class="hero-card-summary"><span data-tc>arXiv 於中國時間週日、週一不發布新論文（美國週末無公告）。最新論文於週二早上更新。</span><span data-sc>arXiv 于中国时间周日、周一不发布新论文（美国周末无公告）。最新论文于周二早上更新。</span></p>
+              <h2 class="hero-card-title" id="hero-vla-title">{vlaEmptyTitle}</h2>
+              <p class="hero-card-summary">{vlaEmptySummary}</p>
             </Fragment>
           )}
         </article>
@@ -687,20 +639,18 @@ const RULE_LABELS: Record<string, string> = {
            aria-expanded="true" aria-controls="collapse-social-intel">
         <div class="collapse-header-left">
           <span class="section-label section-number">05 — <span data-tc>動態追蹤</span><span data-sc>动态追踪</span></span>
-          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>社交情報 · 過去 24 小時</span><span data-sc>社交情报 · 过去 24 小时</span></h2>
-          {socialIsStale && socialNewestDate && (
-            <span class="hp-social-stale-tag"><span data-tc>最新數據</span><span data-sc>最新数据</span>：{socialNewestDate.slice(5)}（{socialDaysOld}<span data-tc>天前</span><span data-sc>天前</span>）</span>
-          )}
+          <h2 id="social-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>社交情報 · 最新可用報告</span><span data-sc>社交情报 · 最新可用报告</span></h2>
+          <span class="hp-social-stale-tag">{socialNewestDate ? `最新報告日期：${socialNewestDate}` : '未取得可用報告'}</span>
         </div>
         <div class="collapse-header-right">
-          <span class="collapse-summary"><span data-tc>最新社群動態</span><span data-sc>最新社群动态</span></span>
+          <span class="collapse-summary">{socialItems.length} 份可用報告</span>
           <a href={`${base}/social`} class="section-link btn btn-outline collapse-link" onclick="event.stopPropagation()">完整情報 →</a>
           <span class="collapse-chevron" aria-hidden="true"></span>
         </div>
       </div>
 
       <div class="collapse-body collapse-body--open" id="collapse-social-intel">
-      <div class="social-scroll-wrapper fade-in-2">
+      {socialItems.length > 0 ? <div class="social-scroll-wrapper fade-in-2">
         <div class="social-scroll-container" role="list" aria-label="Social intelligence feed">
           <div class="social-strip">
             {socialItems.map(item => (
@@ -710,7 +660,7 @@ const RULE_LABELS: Record<string, string> = {
                     {item.domain === 'vla' ? '🤖' : '🧠'}
                   </span>
                   <span class="social-entity">{item.entity}</span>
-                  <span class="social-time">{item.date.slice(5)}</span>
+                  <span class="social-time">{item.date}</span>
                 </div>
                 <p class="social-content">{item.event}</p>
                 <span class={`social-tag hp-social-tag ${item.domain === 'vla' ? 'hp-social-tag--vla' : 'hp-social-tag--ai'}`}>
@@ -720,7 +670,7 @@ const RULE_LABELS: Record<string, string> = {
             ))}
           </div>
         </div>
-      </div>
+      </div> : <p class="empty-state">尚無可用的社交情報報告。</p>}
 
       </div><!-- /collapse-body social-intel -->
     </div>
@@ -742,7 +692,7 @@ const RULE_LABELS: Record<string, string> = {
           <h2 id="dashboard-title"><span class="accent-line" aria-hidden="true"></span><span data-tc>管道儀表板</span><span data-sc>管道仪表板</span></h2>
         </div>
         <div class="collapse-header-right">
-          <span class="collapse-summary"><span data-tc>管線正常 ✓</span><span data-sc>管线正常 ✓</span></span>
+          <span class="collapse-summary" style={!pipelineHealth.healthy ? 'color:var(--accent-amber)' : undefined}>{pipelineHealth.label}</span>
           <a href={`${base}/dashboard`} class="section-link btn btn-outline collapse-link" onclick="event.stopPropagation()">詳細儀表板 →</a>
           <span class="collapse-chevron" aria-hidden="true"></span>
         </div>
@@ -756,7 +706,7 @@ const RULE_LABELS: Record<string, string> = {
           <div class="dash-card-header">
             <span class="dash-card-title"><span data-tc>品質漂移監測</span><span data-sc>品质漂移监测</span></span>
             <span class:list={['status-badge', driftOk ? 'status-ok' : 'status-warn']}>
-              {driftOk ? '正常 ✓' : '注意 ⚠'}
+              {pipelineHealth.driftLabel}
             </span>
           </div>
 
@@ -799,7 +749,7 @@ const RULE_LABELS: Record<string, string> = {
             <div style="text-align:right;">
               <div class="spark-label"><span data-tc>漂移狀態</span><span data-sc>漂移状态</span></div>
               <div class="spark-value" style={driftOk ? 'color:#00C060;' : 'color:var(--accent-amber);'}>
-                {driftOk ? '正常' : '注意'}
+                {pipelineHealth.driftLabel}
               </div>
             </div>
           </div>
@@ -859,33 +809,34 @@ const RULE_LABELS: Record<string, string> = {
           </div>
         </div>
 
-        <!-- Pipeline health — dynamic status derived from driftState + crossDomain -->
+        <!-- Source dates, not the build date or schedule, determine freshness. -->
         <div class="dash-card">
           <div class="dash-card-header">
             <span class="dash-card-title">管道健康</span>
-            <span class:list={['status-badge', driftState ? (driftState.drift_active ? 'status-warn' : 'status-ok') : 'status-muted']}>
-              {driftState ? (driftState.drift_active ? '⚠ 漂移' : '正常 ✓') : '待確認'}
+            <span class:list={['status-badge', pipelineHealth.healthy ? 'status-ok' : 'status-warn']}>
+              {pipelineHealth.label}
             </span>
           </div>
           <div class="pipeline-meta">
-            <span class="pipeline-date">更新：{driftState?.last_check ?? '—'}</span>
+            <span class="pipeline-date">檢查資料日期：{pipelineHealth.sources.drift.date ?? '未確認'} · 狀態截至 {healthAsOf}</span>
             <span class="pipeline-xd">跨域訊號 {crossDomain.length} 條</span>
           </div>
           <div class="health-list">
             {[
-              { name: '<span data-tc>VLA 論文採集</span><span data-sc>VLA 论文采集</span>',    time: '09:00', ok: true  },
-              { name: 'AI App <span data-tc>日報</span><span data-sc>日报</span>',     time: '07:00', ok: true  },
-              { name: '<span data-tc>社交情報採集</span><span data-sc>社交情报采集</span>',    time: '09:30', ok: true  },
-              { name: '<span data-tc>品質漂移檢查</span><span data-sc>品质漂移检查</span>',    time: '10:10', ok: driftOk },
-              { name: '<span data-tc>語義索引重建</span><span data-sc>语义索引重建</span>',    time: '11:15', ok: true  },
-              { name: '<span data-tc>跨域規則引擎</span><span data-sc>跨域规则引擎</span>',    time: '10:20', ok: true  },
-              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '00:50', ok: true  },
+              { name: '<span data-tc>VLA 論文採集</span><span data-sc>VLA 论文采集</span>', time: pipelineHealth.sources.vla.date ?? '未確認', state: pipelineHealth.sources.vla.status },
+              { name: 'AI App <span data-tc>日報</span><span data-sc>日报</span>', time: pipelineHealth.sources.ai.date ?? '未確認', state: pipelineHealth.sources.ai.status },
+              { name: 'AI <span data-tc>社交情報</span><span data-sc>社交情报</span>', time: pipelineHealth.sources.aiSocial.date ?? '未確認', state: pipelineHealth.sources.aiSocial.status },
+              { name: 'VLA <span data-tc>社交情報</span><span data-sc>社交情报</span>', time: pipelineHealth.sources.vlaSocial.date ?? '未確認', state: pipelineHealth.sources.vlaSocial.status },
+              { name: '<span data-tc>品質漂移檢查</span><span data-sc>品质漂移检查</span>', time: pipelineHealth.sources.drift.date ?? '未確認', state: driftOk ? 'fresh' : pipelineHealth.sources.drift.status === 'unknown' ? 'unknown' : 'stale' },
+              { name: '<span data-tc>語義索引重建</span><span data-sc>语义索引重建</span>', time: '排程 11:15', state: 'unknown' },
+              { name: '<span data-tc>跨域規則引擎</span><span data-sc>跨域规则引擎</span>', time: '排程 10:20', state: 'unknown' },
+              { name: '<span data-tc>上游 arxiv 監測</span><span data-sc>上游 arxiv 监测</span>', time: '排程 00:50', state: 'unknown' },
             ].map(item => (
               <div class="health-item">
-                <span class:list={['health-icon', item.ok ? 'health-ok' : 'health-warn']}>
-                  {item.ok ? '✓' : '⚠'}
+                <span class:list={['health-icon', item.state === 'fresh' ? 'health-ok' : item.state === 'stale' ? 'health-warn' : '']}>
+                  {item.state === 'fresh' ? '✓' : item.state === 'stale' ? '⚠' : '?'}
                 </span>
-                <span class="health-name" style={!item.ok ? 'color:var(--accent-amber);' : ''} set:html={item.name}></span>
+                <span class="health-name" style={item.state === 'stale' ? 'color:var(--accent-amber);' : ''} set:html={item.name}></span>
                 <span class="health-time">{item.time}</span>
               </div>
             ))}
@@ -1029,6 +980,12 @@ const RULE_LABELS: Record<string, string> = {
 </BaseLayout>
 
 <style>
+.live-dot.pipeline-not-current { color: var(--accent-amber); }
+.live-dot.pipeline-not-current::before {
+  background: var(--accent-amber);
+  animation: none;
+  box-shadow: none;
+}
 /* ================================================================
    Homepage-specific styles (scoped to this page)
    Extend/override BaseLayout globals where needed.

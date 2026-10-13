@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node --experimental-strip-types scripts/build-ontology-py.ts && node --experimental-strip-types scripts/verify-feeds.ts && node --experimental-strip-types scripts/smoke-talent.ts && node --experimental-strip-types scripts/smoke-ontology.ts",
+    "build": "node --experimental-strip-types --test scripts/pipeline-health.test.ts scripts/activity-calendar.test.ts && astro build && node --experimental-strip-types scripts/build-ontology-py.ts && node --experimental-strip-types scripts/verify-feeds.ts && node --experimental-strip-types scripts/smoke-talent.ts && node --experimental-strip-types scripts/smoke-ontology.ts",
+    "test:freshness": "node --experimental-strip-types --test scripts/pipeline-health.test.ts scripts/activity-calendar.test.ts",
     "build-ontology-py": "node --experimental-strip-types scripts/build-ontology-py.ts",
     "preview": "astro preview",
     "sync-data": "python3.11 scripts/sync-data.py",

@@ -6,15 +6,16 @@ Copies (or symlinks) relevant pipeline data files from
 /home/admin/clawd/memory/ into src/data/ so Astro can read them at build time.
 
 Usage:
-    python3.11 scripts/sync-data.py [--symlink] [--dry-run] [--verbose]
+    python3.11 scripts/sync-data.py [--data-dir PATH] [--symlink] [--dry-run] [--verbose]
 
 Options:
     --symlink   Create symlinks instead of copying (faster; requires permissions).
     --dry-run   Print what would be done without touching any files.
     --verbose   Print every file operation.
+    --data-dir  Override the output directory (for an isolated CI export).
 
 The script handles:
-  - JSON files: copied/linked directly.
+  - JSON files: parsed before an atomic replacement of the destination.
   - Markdown files with date patterns: the N most recent are selected.
   - Permission errors: runs via sudo if plain copy fails.
 
@@ -30,6 +31,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -110,46 +112,75 @@ def log(msg: str, verbose: bool = False, is_verbose: bool = False):
     print(msg, flush=True)
 
 
+def _validate_json(path: Path):
+    def reject_constant(_value):
+        raise ValueError("Non-finite JSON number")
+
+    with path.open(encoding="utf-8-sig") as handle:
+        json.load(handle, parse_constant=reject_constant)
+
+
+def _copy_to_stage(src: Path, stage: Path):
+    try:
+        shutil.copy2(src, stage)
+    except PermissionError:
+        # Keep elevated writes confined to the same staging file. Never copy
+        # over the current destination, and never expose subprocess stderr.
+        result = subprocess.run(
+            ["sudo", "cp", "-p", str(src), str(stage)],
+            capture_output=True, text=True,
+        )
+        if result.returncode:
+            raise PermissionError("sudo copy failed")
+        result = subprocess.run(
+            ["sudo", "chown", f"{os.getuid()}:{os.getgid()}", str(stage)],
+            capture_output=True, text=True,
+        )
+        if result.returncode:
+            raise PermissionError("staging ownership repair failed")
+
+
 def copy_file(src: Path, dst: Path, dry_run: bool, symlink: bool, verbose: bool):
-    """Copy or symlink src → dst. Falls back to sudo cp on permission error."""
+    """Stage, validate JSON, then atomically replace dst; failures retain old dst."""
     if dry_run:
         action = "SYMLINK" if symlink else "COPY"
         log(f"  [dry-run] {action}: {src.name} → {dst}", verbose)
         return True
 
-    dst.parent.mkdir(parents=True, exist_ok=True)
-
-    if dst.exists() or dst.is_symlink():
-        dst.unlink()
-
-    if symlink:
-        try:
-            dst.symlink_to(src)
-            log(f"  LINK: {src.name}", is_verbose=True, verbose=verbose)
-            return True
-        except OSError as e:
-            log(f"  WARN: symlink failed ({e}), falling back to copy")
-
-    # Try plain copy first
+    stage = None
     try:
-        shutil.copy2(src, dst)
-        log(f"  COPY: {src.name}", is_verbose=True, verbose=verbose)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, name = tempfile.mkstemp(prefix=f".{dst.name}.", suffix=".tmp", dir=dst.parent)
+        os.close(descriptor)
+        stage = Path(name)
+        linked = False
+        if symlink:
+            if src.suffix.lower() == ".json":
+                _validate_json(src)
+            if src.resolve() == dst.absolute():
+                raise OSError("refusing a self-referential symlink")
+            stage.unlink()
+            try:
+                stage.symlink_to(src.resolve())
+                linked = True
+            except OSError as error:
+                log(f"  WARN: symlink unavailable ({type(error).__name__}), falling back to staged copy")
+        if not linked:
+            _copy_to_stage(src, stage)
+            if src.suffix.lower() == ".json":
+                _validate_json(stage)
+        os.replace(stage, dst)
+        log(f"  {'LINK' if linked else 'COPY'}: {src.name}", is_verbose=True, verbose=verbose)
         return True
-    except PermissionError:
-        # Try sudo cp
-        result = subprocess.run(
-            ["sudo", "cp", "-p", str(src), str(dst)],
-            capture_output=True, text=True
-        )
-        if result.returncode == 0:
-            # Fix ownership so Astro build (non-root) can read it
-            subprocess.run(["sudo", "chown", f"{os.getuid()}:{os.getgid()}", str(dst)],
-                           capture_output=True)
-            log(f"  SUDO COPY: {src.name}", is_verbose=True, verbose=verbose)
-            return True
-        else:
-            log(f"  ERROR: could not copy {src.name}: {result.stderr.strip()}")
-            return False
+    except (OSError, ValueError) as error:
+        log(f"  ERROR: could not sync {src.name} ({type(error).__name__}); previous destination retained")
+        return False
+    finally:
+        if stage is not None:
+            try:
+                stage.unlink(missing_ok=True)
+            except OSError:
+                pass
 
 
 def select_recent_md(memory_dir: Path, prefix: str, n: int, max_age_days: int) -> list[Path]:
@@ -182,16 +213,40 @@ def select_recent_md(memory_dir: Path, prefix: str, n: int, max_age_days: int) -
     return selected
 
 
-def write_manifest(data_dir: Path, copied: list[str], dry_run: bool):
-    """Write a manifest JSON so the build can verify what was synced."""
+def write_manifest(data_dir: Path, copied: list[str], dry_run: bool,
+                   errors: list[str] | None = None, missing: list[str] | None = None):
+    """Atomically record this transfer run; synced_at is not source freshness."""
     manifest = {
-        "synced_at": datetime.now().isoformat(),
+        "synced_at": datetime.now().astimezone().isoformat(),
         "files": sorted(copied),
+        "errors": sorted(errors or []),
+        "missing": sorted(missing or []),
     }
     manifest_path = data_dir / "_manifest.json"
-    if not dry_run:
-        manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False))
+    if dry_run:
+        log(f"[dry-run] Manifest planned: {len(copied)} files")
+        return True
+    stage = None
+    try:
+        data_dir.mkdir(parents=True, exist_ok=True)
+        descriptor, name = tempfile.mkstemp(prefix="._manifest.json.", suffix=".tmp", dir=data_dir)
+        stage = Path(name)
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            json.dump(manifest, handle, indent=2, ensure_ascii=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(stage, manifest_path)
+    except (OSError, ValueError) as error:
+        log(f"ERROR: manifest update failed ({type(error).__name__}); previous manifest retained")
+        return False
+    finally:
+        if stage is not None:
+            try:
+                stage.unlink(missing_ok=True)
+            except OSError:
+                pass
     log(f"Manifest written: {len(copied)} files")
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -202,27 +257,32 @@ def main():
     parser.add_argument("--symlink",  action="store_true", help="Use symlinks instead of copy")
     parser.add_argument("--dry-run",  action="store_true", help="Print actions without executing")
     parser.add_argument("--verbose",  action="store_true", help="Verbose output")
+    parser.add_argument("--data-dir", type=Path, default=DATA_DIR, help="Output directory (default: src/data/)")
     args = parser.parse_args()
+    data_dir = args.data_dir
 
     if not MEMORY_DIR.exists():
         log(f"ERROR: MEMORY_DIR does not exist: {MEMORY_DIR}")
         log("Run with sudo, or check the path.")
         sys.exit(1)
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    log(f"Syncing {MEMORY_DIR} → {DATA_DIR}")
+    if not args.dry_run:
+        data_dir.mkdir(parents=True, exist_ok=True)
+    log(f"Syncing {MEMORY_DIR} → {data_dir}")
     if args.dry_run:
         log("[DRY RUN MODE — no files will be written]")
 
     copied: list[str] = []
     errors: list[str] = []
+    missing: list[str] = []
 
     # ── 1. JSON files ──────────────────────────────────────────────────────
     log("\nJSON files:")
     for filename in JSON_FILES:
         src = MEMORY_DIR / filename
-        dst = DATA_DIR   / filename
+        dst = data_dir / filename
         if not src.exists():
+            missing.append(filename)
             log(f"  SKIP (not found): {filename}", is_verbose=True, verbose=args.verbose)
             continue
         ok = copy_file(src, dst, args.dry_run, args.symlink, args.verbose)
@@ -255,7 +315,7 @@ def main():
             # healthy markdown (>=min_bytes) down to a thin source. Catches the
             # case where dest was hand-backfilled but the upstream src on the
             # server is still the broken stub.
-            dst = DATA_DIR / src.name
+            dst = data_dir / src.name
             if (
                 min_bytes > 0
                 and dst.exists()
@@ -283,7 +343,7 @@ def main():
         else:
             log(f"  vla-daily-rating-out-* — {len(vla_rating_files)} file(s)")
             for src in vla_rating_files:
-                dst = DATA_DIR / src.name
+                dst = data_dir / src.name
                 ok = copy_file(src, dst, args.dry_run, args.symlink, args.verbose)
                 if ok:
                     copied.append(src.name)
@@ -293,17 +353,18 @@ def main():
         log(f"  SKIP (tmp dir not found): {MEMORY_TMP_DIR}", is_verbose=True, verbose=args.verbose)
 
     # ── 4. Manifest ────────────────────────────────────────────────────────
-    write_manifest(DATA_DIR, copied, args.dry_run)
+    if not write_manifest(data_dir, copied, args.dry_run, errors, missing):
+        errors.append("_manifest.json")
 
     # ── 5. Fix ownership ──────────────────────────────────────────────────
     # When run via sudo, files are root-owned. Fix to admin:admin so
     # non-root processes (CI tar, Astro build) can read them.
-    if os.getuid() == 0 and not args.dry_run:
+    if getattr(os, "getuid", lambda: -1)() == 0 and not args.dry_run:
         import pwd
         try:
             pw = pwd.getpwnam("admin")
-            for f in DATA_DIR.iterdir():
-                if f.stat().st_uid == 0:
+            for f in data_dir.iterdir():
+                if not f.is_symlink() and f.stat().st_uid == 0:
                     os.chown(f, pw.pw_uid, pw.pw_gid)
         except (KeyError, OSError):
             pass  # non-admin system, skip

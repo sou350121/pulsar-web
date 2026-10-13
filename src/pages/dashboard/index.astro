@@ -4,12 +4,14 @@
  * Mission Control — pipeline health, quality drift, entity stats, upstream signals.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { assessPipelineHealth, eligibleSocialDate, shanghaiDate, shanghaiTimestamp, sourceDate } from '../../utils/pipeline-health';
 import {
   loadDriftMetrics,
   loadEntityIndex,
   loadUpstreamSignals,
   getTopEntities,
   loadVLADailyPicks,
+  loadLatestVLARunDate,
   loadAIDailyPicks,
   loadVLASOTA,
   loadLatestCalibration,
@@ -20,6 +22,7 @@ import {
   loadAICategoryDistribution,
   loadAIDeepDive,
   loadVLATheory,
+  loadSocialIntel,
   type DriftMetricsFile,
   type VLASOTAEntry,
   type DailyPickDay,
@@ -36,21 +39,24 @@ const topMethods    = getTopEntities(10, 'method');
 const entityCount   = Object.keys(entityIndex.entities).length;
 const labCount      = topLabs.length;
 const methodCount   = topMethods.length;
-const driftActive   = driftState?.drift_active ?? false;
 const lastCheck     = driftState?.last_check ?? '—';
+const healthNow = new Date();
 
-const driftHistory: Array<{ date: string; vla: number; ai: number }> = (
+const driftHistory: Array<{ date: string; vla: number | null; ai: number | null }> = (
   Array.isArray(driftMetrics) ? driftMetrics : []
 )
-  .map((entry: any) => ({
-    date: entry.date ?? '',
-    vla:  entry.vla_papers_scanned  ?? 0,
-    ai:   entry.aiapp_items_scanned ?? 0,
-  }))
+  .flatMap(entry => {
+    const date = sourceDate(entry?.date, healthNow);
+    if (!date) return [];
+    const count = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
+    const vla = count(entry.vla_papers_scanned);
+    const ai = count(entry.aiapp_items_scanned);
+    return vla === null && ai === null ? [] : [{ date, vla, ai }];
+  })
   .sort((a, b) => a.date.localeCompare(b.date));
 const last14 = driftHistory.slice(-14);
-const maxVLA = Math.max(1, ...last14.map(d => d.vla));
-const maxAI  = Math.max(1, ...last14.map(d => d.ai));
+const maxVLA = Math.max(1, ...last14.map(d => d.vla ?? 0));
+const maxAI  = Math.max(1, ...last14.map(d => d.ai ?? 0));
 
 const kwCounts: Record<string, number> = {};
 for (const sig of upstream) {
@@ -64,25 +70,23 @@ const topKeywords = Object.entries(kwCounts)
   .slice(0, 10);
 const maxKwCount = Math.max(1, ...topKeywords.map(([, c]) => c));
 
-// Placeholder data
-const placeholderBars = [65,70,68,72,60,75,80,78,82,71,68,74,77,79];
-const placeholderKw = [
-  ['flow matching',18],['world model',14],['embodied',12],
-  ['Mamba / SSM',10],['scaling law',9],['reasoning',8],
-  ['RLHF',7],['diffusion',6],['benchmark',5],['agent',4],
-] as [string, number][];
-const placeholderLabs = [
-  'CMU Robotics Lab','Google DeepMind','Stanford IRIS',
-  'UC Berkeley RAIL','Meta FAIR Robotics','ETH Zurich RSL','MIT CSAIL','OpenAI Robotics',
-];
-const placeholderMethods = [
-  ['FlowMatching',18],['DiffusionPolicy',14],['DreamerV3',10],
-  ['JEPA',8],['ACT',7],['RT-2',6],['GR00T',5],['Pi0',5],['RDT',4],['OpenVLA',4],
-] as [string, number][];
-
 // ── New panel data ────────────────────────────────────────────────
 const vlaDailyPicks = loadVLADailyPicks(3);   // last 3 days
 const aiDailyPicks  = loadAIDailyPicks(2);    // last 2 days
+const healthAsOf = shanghaiTimestamp(healthNow);
+const latestDriftMetrics = driftMetrics.filter(metric => typeof metric?.date === 'string')
+  .sort((a, b) => a.date.localeCompare(b.date)).at(-1);
+const pipelineHealth = assessPipelineHealth({
+  aiDate: aiDailyPicks[0]?.items.length ? aiDailyPicks[0].date : undefined,
+  vlaDate: loadLatestVLARunDate(),
+  aiSocialDate: eligibleSocialDate(loadSocialIntel('ai', 5)),
+  vlaSocialDate: eligibleSocialDate(loadSocialIntel('vla', 5)),
+  lastCheck: driftState?.last_check,
+  driftMetricsDate: latestDriftMetrics?.date,
+  driftSnapshot: latestDriftMetrics,
+  driftMetrics: driftState?.metrics,
+  driftActive: driftState?.drift_active,
+}, healthNow);
 const vlaSota       = loadVLASOTA(10);
 const calibration   = loadLatestCalibration();
 
@@ -189,21 +193,21 @@ const entitySignals7d = Object.values(entityIndex.entities)
     <!-- ══ PAGE HEADER ══════════════════════════════════════════════ -->
     <header class="db-header">
       <div class="db-header-left">
-        <div class="db-sys-label">
-          <span class="db-sys-dot"></span>
-          SYS:ONLINE
+        <div class="db-sys-label" style={!pipelineHealth.healthy ? 'color:var(--accent-amber);text-shadow:none' : undefined}>
+          <span class:list={['db-sys-dot', !pipelineHealth.healthy && 'db-sys-dot--warn']}></span>
+          SYS:{pipelineHealth.healthy ? 'CURRENT' : pipelineHealth.status.toUpperCase()}
         </div>
         <h1 class="db-title">MISSION CONTROL</h1>
-        <p class="db-subtitle">Pulsar · <span data-tc>Pipeline 監控面板</span><span data-sc>Pipeline 监控面板</span></p>
+        <p class="db-subtitle">Pulsar · <span data-tc>Pipeline 監控面板</span><span data-sc>Pipeline 监控面板</span> · 靜態狀態截至 {healthAsOf}</p>
       </div>
       <div class="db-header-right">
         <div class="db-status-block">
           <span class="db-status-key">LAST CHECK</span>
           <span class="db-status-val">{lastCheck}</span>
         </div>
-        <div class={`db-status-block ${driftActive ? 'db-status--warn' : 'db-status--ok'}`}>
+        <div class={`db-status-block ${pipelineHealth.driftOk ? 'db-status--ok' : 'db-status--warn'}`}>
           <span class="db-status-key">QUALITY DRIFT</span>
-          <span class="db-status-val">{driftActive ? '⚠ ACTIVE' : '✓ NOMINAL'}</span>
+          <span class="db-status-val">{pipelineHealth.driftLabel}</span>
         </div>
       </div>
     </header>
@@ -230,8 +234,8 @@ const entitySignals7d = Object.values(entityIndex.entities)
         <span class="db-metric-label">UPSTREAM SIG</span>
       </div>
       <div class="db-metric-sep"></div>
-      <div class={`db-metric ${driftActive ? 'db-metric--warn' : 'db-metric--ok'}`}>
-        <span class="db-metric-num">{driftActive ? 'WARN' : 'OK'}</span>
+      <div class={`db-metric ${pipelineHealth.driftOk ? 'db-metric--ok' : 'db-metric--warn'}`}>
+        <span class="db-metric-num">{{ healthy: 'OK', stale: 'STALE', drift: 'WARN', unknown: 'UNKNOWN' }[pipelineHealth.driftStatus]}</span>
         <span class="db-metric-label">DRIFT STATUS</span>
       </div>
       <div class="db-metric-sep"></div>
@@ -248,7 +252,7 @@ const entitySignals7d = Object.values(entityIndex.entities)
       <div class="db-panel db-panel--spark">
         <div class="db-panel-header">
           <span class="db-panel-title"><span data-tc>品質趨勢</span><span data-sc>品质趋势</span></span>
-          <span class="db-panel-meta">近 14 天</span>
+          <span class="db-panel-meta">最近 14 筆快照</span>
         </div>
         <div class="db-legend">
           <span class="db-legend-dot db-legend-dot--cyan"></span>
@@ -257,23 +261,19 @@ const entitySignals7d = Object.values(entityIndex.entities)
           <span class="db-legend-text"><span data-tc>AI 條目</span><span data-sc>AI 条目</span></span>
         </div>
 
-        <div class="db-spark">
-          {(last14.length > 0 ? last14 : placeholderBars.map((v, i) => ({
-            date: `day-${i}`,
-            vla: v,
-            ai: Math.round(v * 0.6),
-          }))).map((d, i) => {
-            const vlaPct  = Math.max(4, Math.round((('vla' in d ? d.vla : d) as number) / maxVLA * 100));
-            const aiPct   = Math.max(4, Math.round((('ai'  in d ? d.ai  : d) as number) / maxAI  * 100));
-            const isToday = i === (last14.length || placeholderBars.length) - 1;
+        {last14.length > 0 ? <div class="db-spark">
+          {last14.map(d => {
+            const vlaPct  = d.vla === null || d.vla === 0 ? 0 : Math.max(4, Math.round(d.vla / maxVLA * 100));
+            const aiPct   = d.ai === null || d.ai === 0 ? 0 : Math.max(4, Math.round(d.ai / maxAI * 100));
+            const isToday = d.date === shanghaiDate(healthNow);
             return (
               <div class={`db-bar-col ${isToday ? 'db-bar-col--today' : ''}`}>
-                <div class="db-bar db-bar--vla" style={`height:${vlaPct}%`} title={`${'date' in d ? d.date : ''} VLA: ${'vla' in d ? d.vla : d}`}></div>
-                <div class="db-bar db-bar--ai"  style={`height:${aiPct}%`}  title={`${'date' in d ? d.date : ''} AI: ${'ai' in d ? d.ai : Math.round((d as number)*0.6)}`}></div>
+                {d.vla !== null && <div class="db-bar db-bar--vla" style={`height:${vlaPct}%`} title={`${d.date} VLA: ${d.vla}`}></div>}
+                {d.ai !== null && <div class="db-bar db-bar--ai" style={`height:${aiPct}%`} title={`${d.date} AI: ${d.ai}`}></div>}
               </div>
             );
           })}
-        </div>
+        </div> : <p class="db-empty"><span data-tc>尚無可用的品質趨勢快照</span><span data-sc>尚无可用的品质趋势快照</span></p>}
       </div>
 
       <!-- Upstream keyword bars -->
@@ -303,7 +303,7 @@ const entitySignals7d = Object.values(entityIndex.entities)
           <div class="db-empty-state">
             <span class="db-empty-icon">📡</span>
             <p class="db-empty-text"><span data-tc>資料待同步</span><span data-sc>资料待同步</span></p>
-            <p class="db-empty-sub"><span data-tc>上游 arxiv 監測尚未產出資料</span><span data-sc>上游 arxiv 监测尚未产出资料</span><br/><span data-tc>預計 08:50 自動更新</span><span data-sc>预计 08:50 自动更新</span></p>
+            <p class="db-empty-sub"><span data-tc>尚無可用的上游關鍵字資料</span><span data-sc>尚无可用的上游关键字资料</span></p>
           </div>
         )}
       </div>
@@ -314,12 +314,11 @@ const entitySignals7d = Object.values(entityIndex.entities)
           <span class="db-panel-title"><span data-tc>活躍實驗室</span><span data-sc>活跃实验室</span></span>
           <span class="db-panel-meta">by signal count</span>
         </div>
-        <div class="db-rank-list">
-          {(topLabs.length > 0
-            ? topLabs.map(l => [l.name, l.signals.length] as [string, number])
-            : placeholderLabs.map((name, i) => [name, 18 - i * 2] as [string, number])
-          ).map(([name, count], i) => {
-            const pct = Math.round(Number(count) / (topLabs.length > 0 ? topLabs[0].signals.length : 18) * 100);
+        {topLabs.length > 0 ? <div class="db-rank-list">
+          {topLabs.map((lab, i) => {
+            const name = lab.name;
+            const count = lab.signals.length;
+            const pct = Math.round(count / Math.max(1, topLabs[0].signals.length) * 100);
             return (
               <div class="db-rank-row">
                 <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
@@ -331,7 +330,7 @@ const entitySignals7d = Object.values(entityIndex.entities)
               </div>
             );
           })}
-        </div>
+        </div> : <p class="db-empty"><span data-tc>尚無可用的實驗室訊號資料</span><span data-sc>尚无可用的实验室讯号资料</span></p>}
       </div>
 
       <!-- Top Methods -->
@@ -340,13 +339,11 @@ const entitySignals7d = Object.values(entityIndex.entities)
           <span class="db-panel-title"><span data-tc>熱門方法</span><span data-sc>热门方法</span></span>
           <span class="db-panel-meta">by frequency</span>
         </div>
-        <div class="db-rank-list">
-          {(topMethods.length > 0
-            ? topMethods.map(m => [m.name, m.signals.length] as [string, number])
-            : placeholderMethods
-          ).map(([name, count], i) => {
-            const maxC = topMethods.length > 0 ? topMethods[0].signals.length : 18;
-            const pct = Math.round(Number(count) / maxC * 100);
+        {topMethods.length > 0 ? <div class="db-rank-list">
+          {topMethods.map((method, i) => {
+            const name = method.name;
+            const count = method.signals.length;
+            const pct = Math.round(count / Math.max(1, topMethods[0].signals.length) * 100);
             return (
               <div class="db-rank-row">
                 <span class={`db-rank-pos ${i < 3 ? 'db-rank-pos--top' : ''}`}>{i + 1}</span>
@@ -358,7 +355,7 @@ const entitySignals7d = Object.values(entityIndex.entities)
               </div>
             );
           })}
-        </div>
+        </div> : <p class="db-empty"><span data-tc>尚無可用的方法訊號資料</span><span data-sc>尚无可用的方法讯号资料</span></p>}
       </div>
 
       <!-- Today's VLA Signals -->
@@ -845,6 +842,12 @@ html.dark .db-sys-label {
   background: currentColor;
   box-shadow: 0 0 6px currentColor;
   animation: db-pulse 2s ease-in-out infinite;
+}
+
+.db-sys-dot--warn {
+  background: var(--accent-amber);
+  box-shadow: none;
+  animation: none;
 }
 
 @keyframes db-pulse {

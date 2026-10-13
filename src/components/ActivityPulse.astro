@@ -15,6 +15,13 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { summarizeActivity, type ActivityFreshness } from '../utils/activity-calendar';
+import { shanghaiTimestamp } from '../utils/pipeline-health';
+
+interface Props {
+  current?: boolean;
+  statusLabel?: string;
+}
 
 const base = import.meta.env.BASE_URL;
 
@@ -55,28 +62,6 @@ function weeklyDates(): string[] {
 // Metric computation
 // ---------------------------------------------------------------------------
 const today = new Date();
-const todayStr = today.toISOString().slice(0, 10);
-const TZ_OFFSET_MS = 8 * 3600 * 1000; // display in Beijing time
-
-function startOfDay(d: Date): number {
-  const copy = new Date(d);
-  copy.setUTCHours(0, 0, 0, 0);
-  return copy.getTime();
-}
-
-function countOnDate(dates: string[], targetDate: string): number {
-  return dates.filter((d) => d === targetDate).length;
-}
-
-function countInLast7Days(dates: string[]): number[] {
-  const bins: number[] = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(today.getTime() - i * 86400000);
-    const dstr = d.toISOString().slice(0, 10);
-    bins.push(countOnDate(dates, dstr));
-  }
-  return bins;
-}
 
 function sparkline(bins: number[]): string {
   const chars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
@@ -84,31 +69,9 @@ function sparkline(bins: number[]): string {
   return bins.map((v) => (v === 0 ? '·' : chars[Math.min(Math.floor((v / max) * (chars.length - 1)), chars.length - 1)])).join('');
 }
 
-function latestDate(dates: string[]): string | null {
-  if (!dates.length) return null;
-  return dates.slice().sort().reverse()[0];
-}
-
-function relativeAgo(dateStr: string | null): string {
-  if (!dateStr) return '—';
-  const then = new Date(dateStr + 'T12:00:00Z').getTime();
-  const now = Date.now();
-  const diffHr = Math.floor((now - then) / 3600_000);
-  if (diffHr < 1) return '刚刚';
-  if (diffHr < 24) return `${diffHr}h ago`;
-  const days = Math.floor(diffHr / 24);
-  if (days < 7) return `${days}d ago`;
-  const weeks = Math.floor(days / 7);
-  return `${weeks}w ago`;
-}
-
-function freshnessClass(dateStr: string | null): 'fresh' | 'ok' | 'stale' {
-  if (!dateStr) return 'stale';
-  const then = new Date(dateStr + 'T12:00:00Z').getTime();
-  const diffDays = (Date.now() - then) / 86_400_000;
-  if (diffDays <= 1.5) return 'fresh';
-  if (diffDays <= 5) return 'ok';
-  return 'stale';
+function activityFields(dates: string[]) {
+  const { bins, ...summary } = summarizeActivity(dates, today);
+  return { ...summary, spark: sparkline(bins) };
 }
 
 // ---------------------------------------------------------------------------
@@ -137,7 +100,8 @@ interface StreamMetric {
   total: number;
   spark: string;
   lastDate: string | null;
-  fresh: 'fresh' | 'ok' | 'stale';
+  fresh: ActivityFreshness;
+  agoLabel: string;
   href: string;
   feedHref: string;
 }
@@ -146,50 +110,35 @@ const streams: StreamMetric[] = [
   {
     emoji: '🧠',
     label: 'VLA 新文章',
-    todayDelta: countOnDate(theoryDates, todayStr),
-    total: theoryDates.length,
-    spark: sparkline(countInLast7Days(theoryDates)),
-    lastDate: latestDate(theoryDates),
-    fresh: freshnessClass(latestDate(theoryDates)),
+    ...activityFields(theoryDates),
     href: `${base}/vla-deepdive`,
     feedHref: `${base}/rss/vla-theory.xml`,
   },
   {
     emoji: '⚡',
     label: 'VLA 每日信号',
-    todayDelta: countOnDate(hotspotDates, todayStr),
-    total: hotspotDates.length,
-    spark: sparkline(countInLast7Days(hotspotDates)),
-    lastDate: latestDate(hotspotDates),
-    fresh: freshnessClass(latestDate(hotspotDates)),
+    ...activityFields(hotspotDates),
     href: `${base}/daily`,
     feedHref: `${base}/rss/vla-daily.xml`,
   },
   {
     emoji: '📘',
     label: 'AI 每日',
-    todayDelta: countOnDate(aiAllDates, todayStr),
-    total: aiAllDates.length,
-    spark: sparkline(countInLast7Days(aiAllDates)),
-    lastDate: latestDate(aiAllDates),
-    fresh: freshnessClass(latestDate(aiAllDates)),
+    ...activityFields(aiAllDates),
     href: `${base}/ai-deepdive`,
     feedHref: `${base}/rss/ai-daily.xml`,
   },
   {
     emoji: '📚',
     label: '周/双周报告',
-    todayDelta: 0, // weekly granularity — use 7d count instead
-    total: weeklyAllDates.length,
-    spark: sparkline(countInLast7Days(weeklyAllDates)),
-    lastDate: latestDate(weeklyAllDates),
-    fresh: freshnessClass(latestDate(weeklyAllDates)),
+    ...activityFields(weeklyAllDates),
     href: `${base}/reports`,
     feedHref: `${base}/rss/weekly.xml`,
   },
 ];
 
-const overallFresh = streams.some((s) => s.fresh === 'fresh');
+const overallFresh = Astro.props.current === true;
+const activityLabel = Astro.props.statusLabel ?? '待確認';
 ---
 
 <section class="activity-pulse" aria-label="系统活性">
@@ -198,8 +147,8 @@ const overallFresh = streams.some((s) => s.fresh === 'fresh');
       <header class="pulse-header">
         <span class={`pulse-dot ${overallFresh ? 'live' : 'idle'}`} aria-hidden="true"></span>
         <span class="pulse-title">
-          <span data-tc>LIVE · Pulsar 照見 每日自動更新</span>
-          <span data-sc>LIVE · Pulsar 照见 每日自动更新</span>
+          <span data-tc>{activityLabel} · Pulsar 照見</span>
+          <span data-sc>{activityLabel} · Pulsar 照见</span>
         </span>
         <a class="pulse-subscribe" href={`${base}/subscribe`}>
           📡 <span data-tc>訂閱</span><span data-sc>订阅</span>
@@ -220,7 +169,7 @@ const overallFresh = streams.some((s) => s.fresh === 'fresh');
                 <span data-sc>总 {s.total}</span>
               </span>
               <span class="pulse-spark" title="last 7 days">{s.spark}</span>
-              <span class="pulse-ago">{relativeAgo(s.lastDate)}</span>
+              <span class="pulse-ago" title={s.lastDate ?? '待確認'}>{s.agoLabel}</span>
             </a>
             <a class="pulse-feed" href={s.feedHref} title="RSS feed" aria-label={`${s.label} RSS`}>
               RSS
@@ -231,8 +180,8 @@ const overallFresh = streams.some((s) => s.fresh === 'fresh');
 
       <footer class="pulse-footer">
         <span class="pulse-foot-text">
-          <span data-tc>每日自動更新 · 最後建置 {new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC</span>
-          <span data-sc>每日自动更新 · 最后建置 {new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC</span>
+          <span data-tc>每日排程 · 最後建置 {shanghaiTimestamp(today)}</span>
+          <span data-sc>每日排程 · 最后建置 {shanghaiTimestamp(today)}</span>
         </span>
         <a class="pulse-opml" href={`${base}/rss/opml.xml`}>
           <span data-tc>一鍵 OPML 導入全部 feed</span>
@@ -343,6 +292,7 @@ const overallFresh = streams.some((s) => s.fresh === 'fresh');
   .pulse-row--fresh .pulse-ago { color: #16a34a; }
   .pulse-row--ok    .pulse-ago { color: var(--text-secondary); }
   .pulse-row--stale .pulse-ago { color: #dc2626; font-weight: 500; }
+  .pulse-row--unknown .pulse-ago { color: var(--text-tertiary); }
 
   .pulse-feed {
     font-size: 0.7rem;
