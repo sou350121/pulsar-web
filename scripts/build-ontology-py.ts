@@ -126,7 +126,7 @@ Public API:
       Per-title pick: highest match_precedence wins ties; among equals,
       highest keyword-hit count wins. Mirrors TS rankMethodFamiliesV2.
 
-Generated at: ${new Date().toISOString()}
+Generated from: src/data/ontology/{vla,ai}.json (deterministic build)
 """
 
 ONTOLOGY = {
