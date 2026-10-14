@@ -1,82 +1,74 @@
 {
-  "last_check": "2026-10-13",
+  "last_check": "2026-10-14",
   "metrics": {
     "vla_papers_scanned": {
-      "streak": 1,
+      "streak": 2,
       "alerted_at_streak": 0,
-      "last_value": 1270,
-      "baseline": 2277.43,
-      "ratio": 0.558,
+      "last_value": 416,
+      "baseline": 2266.29,
+      "ratio": 0.184,
       "sustained_degradation": false,
-      "streak_before_day": 0,
-      "evaluated_on": "2026-10-13"
+      "streak_before_day": 1,
+      "evaluated_on": "2026-10-14"
     },
     "vla_final_in_report": {
-      "streak": 0,
+      "streak": 1,
       "alerted_at_streak": 0,
-      "last_value": 30,
+      "last_value": 1,
       "baseline": 30.43,
-      "ratio": 0.986,
+      "ratio": 0.033,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-13"
+      "evaluated_on": "2026-10-14"
     },
     "vla_sources_active": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 15,
-      "baseline": 14.57,
-      "ratio": 1.029,
+      "last_value": 12,
+      "baseline": 14.71,
+      "ratio": 0.816,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-13"
+      "evaluated_on": "2026-10-14"
     },
     "aiapp_items_scanned": {
-      "streak": 0,
+      "streak": 1,
       "alerted_at_streak": 0,
-      "last_value": 7194,
-      "baseline": 1163.71,
-      "ratio": 6.182,
-      "sustained_degradation": true,
-      "streak_before_day": 3,
-      "evaluated_on": "2026-10-13"
+      "last_value": 261,
+      "baseline": 2141.43,
+      "ratio": 0.122,
+      "sustained_degradation": false,
+      "streak_before_day": 0,
+      "evaluated_on": "2026-10-14"
     },
     "aiapp_items_report": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 7,
+      "last_value": 8,
       "baseline": 5.86,
-      "ratio": 1.195,
+      "ratio": 1.366,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-13"
+      "evaluated_on": "2026-10-14"
     },
     "vla_upstream_count": {
-      "streak": 2,
+      "streak": 3,
       "alerted_at_streak": 0,
-      "last_value": 46,
-      "baseline": 77.0,
-      "ratio": 0.597,
+      "last_value": 0,
+      "baseline": 78.71,
+      "ratio": 0.0,
       "sustained_degradation": false,
-      "streak_before_day": 1,
-      "evaluated_on": "2026-10-13"
+      "streak_before_day": 2,
+      "evaluated_on": "2026-10-14"
     }
   },
   "last_remediation": {
-    "vla_final_in_report": "2026-10-05",
+    "vla_final_in_report": "2026-10-14",
     "vla_papers_scanned": "2026-09-10",
     "aiapp_items_report": "2026-08-03",
     "aiapp_items_scanned": "2026-10-13"
   },
   "remediation_log": [
-    {
-      "date": "2026-08-19",
-      "key": "aiapp_items_scanned",
-      "label": "AI RSS 重跑",
-      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
-      "ok": true,
-      "detail": "[progress] ai-app-rss-collect start: 2026-08-19\n[progress] already collected, skip"
-    },
     {
       "date": "2026-08-20",
       "key": "aiapp_items_scanned",
@@ -308,7 +300,15 @@
       "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
       "ok": true,
       "detail": "[progress] ai-app-rss-collect start: 2026-10-13\n[progress] already collected, skip"
+    },
+    {
+      "date": "2026-10-14",
+      "key": "vla_final_in_report",
+      "label": "VLA 評級重跑",
+      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
+      "ok": false,
+      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
     }
   ],
-  "drift_active": false
+  "drift_active": true
 }
