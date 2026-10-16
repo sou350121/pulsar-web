@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-16",
+      "items": [
+        {
+          "title": "Claude 彻底解禁第三方应用：OpenAI 兼容层放开，第三方 App 可直接调用 Claude",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4026370532790145",
+          "why_picked": "Anthropic 放开第三方应用接入 Claude，意味着基于 Claude 的 agent 应用不再受官方客户端限制，是本周对 agent 生态影响最大的产品级动作。",
+          "so_what": "如果你在做 Agent 系统：第三方应用可直接对接 Claude，你的 agent 层不必再绑死单一官方 SDK，可把 Claude 作为可替换的推理后端接入现有 harness；建议立刻评估现有 tool-calling / MCP 抽象是否已与具体模型解耦。"
+        },
+        {
+          "title": "Builder.io 开源 Agent-Native Beta：agent 与 UI 共享同一套 actions/data 的 TypeScript 框架",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://www.builder.io/blog/introducing-agent-native",
+          "why_picked": "一次定义 action，自动暴露给 UI / agent / HTTP API / CLI / MCP / A2A 六个面，正面回应『chat 不够用、agent 需要自己的 app』这一 agent UI 核心争论。",
+          "so_what": "如果你在做 Agent UI / agent builder：Agent-Native 把『能力定义』与『暴露面』解耦，可直接省掉为 UI 和 agent 各写一套接口的重复工作；建议对照你现有的 MCP server 设计，看能否统一成单一 action registry + 多 surface 导出。"
+        },
+        {
+          "title": "Workday Trusted Agent Platform 全面 GA：HR/Finance 走向 headless agent，强调权限、审批、审计",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://newsroom.workday.com/2026-10-13-Workdays-Trusted-Agent-Platform-Now-Delivers-Headless-Access-to-HR-and-Finance,-Letting-Customers-Build-and-Run-Lawful-AI-Agents",
+          "why_picked": "『headless can't mean lawless』——企业级 agent 平台把 agent 权限/审批/审计作为一等功能，是 agent 进入受监管业务的关键信号。",
+          "so_what": "如果你在做 Agent 权限控制：Workday 的 Agent Harness 要求每个 agent（自建/客户/伙伴）都跑在同一权限+审批+审计轨上，建议把『可证明 agent 做了什么、为什么』当成你 agent 平台的验收标准，而非事后补日志。"
+        },
+        {
+          "title": "GPT-5.5 退役 ChatGPT，GPT-4o 等旧 API 进入 2027-01-14 下架倒计时",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xFVcEaB2Xz",
+          "why_picked": "OpenAI 明确了迁移窗口（约三个月），旧模型 API 的硬下架日期对任何在生产里 pin 了旧模型的团队都是必须处理的时间炸弹。",
+          "so_what": "如果你在生产里调用 OpenAI API：检查你的模型版本 pin，把 GPT-4o 等指定版本迁移列入排期，预留约三个月；建议顺手做一次响应速度/事实准确性回归，确认新版（GPT-6.1 等）在你的 prompt 上不劣化。"
+        },
+        {
+          "title": "DeepSeek 服务故障近 5 小时，官方补偿所有 API 用户 7 天内消耗金额",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://m.ithome.com/html/1013533.htm",
+          "why_picked": "5 小时中断 + 直接补偿 API 消耗，是本周最大的模型服务可用性事件，直接暴露单模型依赖的可用性风险。",
+          "so_what": "如果你在做 Agent 系统：把『单模型兜底』变成明确故障域——建议加一层 router/fallback（故障时切备用模型或降级路径），并对 5xx/超时做熔断；否则一次上游中断就会拖垮整条 agent 管线。"
+        },
+        {
+          "title": "Meta Muse Spark Open（编码优化开源权重模型）上架 Amazon SageMaker JumpStart",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/metas-muse-spark-open-now-available-in-amazon-sagemaker-jumpstart/",
+          "why_picked": "开源权重模型进入 SageMaker 一键部署，意味着可把编码模型跑在自己 AWS 账号内，数据不出域。",
+          "so_what": "如果你在做 RAG/代码 agent：可在自有 SageMaker endpoint 部署 Muse Spark Open，用 SageMaker SDK/Studio 直接接推理，避免把代码库上下文发往第三方 API；建议对比其与闭源模型的 code-completion 质量再决定是否替换。"
+        },
+        {
+          "title": "MAS 框架 mastra 发布 core@1.77.0：沙箱 provider 契约 + durable run fencing",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/mastra-ai/mastra/releases/tag/%40mastra%2Fcore%401.77.0",
+          "why_picked": "引入 FactorySandbox 契约（Docker/E2B/Platform）+ 跨存储后端的 run fencing，直接针对分布式 agent 的崩溃恢复正确性问题。",
+          "so_what": "如果你在做多 agent/durable execution：mastra 的 run fencing 解决『崩溃恢复后旧执行覆盖新 run 状态』这类隐蔽 bug，若你用 DynamoDB/Redis/Postgres 等做 agent 状态存储，建议参考其 ownership fencing 设计而非自己造。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-14",
       "items": [
         {
@@ -1545,152 +1606,6 @@
           "url": "https://github.com/alphaXiv/OpenResearch",
           "why_picked": "GitHub Trending daily：把检索-阅读-引用改造成可复现的 agent 流程",
           "so_what": "如果你想让 agent 做文献/调研：把检索-阅读-引用做成可复现 agent 流程并接 alphaXiv 生态，可与 VLA Handbook 归档打通。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-15",
-      "items": [
-        {
-          "title": "Andon Labs 发布 Pion：可全自主运营公司的 Agent 平台",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://andonlabs.com/blog/why-we-built-pion",
-          "why_picked": "Vending-Bench 原班团队把在真实业务（售货机/门店/咖啡店）里跑了两年的自主运营平台开放公测，主打长程自主性。",
-          "so_what": "如果你在做 Agent 系统：Pion/Vending-Bench 是数万步长程自主性的现实压力测试。建议用它的失败模式（循环卡死、缺长期规划、误报异常）反推你的 memory/checkpoint 边界，别只看单轮 benchmark。"
-        },
-        {
-          "title": "以色列公司 Irregular 同时卷入 OpenAI/Anthropic/Meta 的 AI 越界事件",
-          "category": "行业",
-          "source": "HN",
-          "url": "https://www.effort.news/irregular",
-          "why_picked": "同一家评测公司在三家的红队/CTF 环境里留下开放网络，导致模型真的攻击了真实目标，HN 91 分。",
-          "so_what": "如果你在做 Agent 权限控制：这起事件根因是沙箱配置漏项（声称无网却直连 + 未限定作用域）。务必给你的 agent sandbox 加 egress 白名单与 scope 断言，并把「模型说没有网」当作不可信输入。"
-        },
-        {
-          "title": "Vercel AI SDK harness 层支持原生订阅认证",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/ai-sdk-harness-native-subscription-authentication",
-          "why_picked": "同一 HarnessAgent 接口下切换 Claude Code/Codex/Cursor/Copilot 等，改用宿主原生订阅登录，凭证不出 host。",
-          "so_what": "如果你在做多 harness 的 Agent 平台：现在可在不改应用代码的情况下复用用户的 Claude Code/Cursor 订阅，OAuth token 在 host 边界刷新、sandbox 只拿占位凭证。建议把 provider 凭据解析统一收敛到 host 层。"
-        },
-        {
-          "title": "AWS Bedrock AgentCore 新增终端用户 OAuth 同意管理",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/manage-end-user-oauth-consent-for-ai-agents-with-amazon-bedrock-agentcore/",
-          "why_picked": "官方给出 Agent 代表终端用户调用第三方服务时的 OAuth 同意/授权生命周期管理范式。",
-          "so_what": "如果你在做 Agent 工具调用与权限：直接照抄这套「用户级 consent + 令牌作用域」模式，避免把长期 access token 硬编码进 agent。可作为你 agent 身份层（OAuth/同意页面撤销）的实现参考。"
-        },
-        {
-          "title": "Entelligence：GPT-5.6 Luna 代码审查性价比实测（$0.20 vs $5.66/50 PR）",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://entelligence.ai/blogs/gpt-5.6-luna-vs-gpt-6-astra-is-a-1.20-model-good-enough-for-code-review",
-          "why_picked": "同样 50 个基准 PR：Luna 找到 69 个已核实 bug（精度 74%）、Astra 92 个（96%），但安全类 bug Luna 只抓到 9/24。",
-          "so_what": "如果你在做 CI 里的代码审查 Agent：日常正确性 bug 用便宜模型即可（$0.0030/bug），但认证/权限类代码别让便宜模型单独把关——建议按 diff 敏感度路由模型。"
-        },
-        {
-          "title": "The contagion of fear：别滥用「AI 会毁灭人类」的话语",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://simonwillison.net/2026/Sep/14/the-contagion-of-fear/",
-          "why_picked": "Bryan Cantrill 回应前 Anthropic 员工「AI 可能十年内灭绝人类」的说法，指出专家话语会放大公众恐惧。",
-          "so_what": "如果你在向老板/客户讲 Agent 风险：用可复现的失败案例（越权、注入、循环）替代末日式外推。技术信任建立在具体证据上，含糊的恐慌叙事反而会削弱你的可信度。"
-        },
-        {
-          "title": "alibaba/open-code-review — 混合架构代码审查工具",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/alibaba/open-code-review",
-          "why_picked": "阿里大规模实战：确定性管线 + LLM Agent 混合，内置多语言规则集（NPE/线程安全/XSS/SQL 注入），GitHub Trending，25.7k stars。",
-          "so_what": "如果你在做代码审查 Agent：可以借鉴它的「确定性规则兜底 + LLM 精修」分层，而不是全靠 LLM 猜 bug。适合作为你 CI review bot 的骨架或对照实现。"
-        },
-        {
-          "title": "Panniantong/Agent-Reach — 给 Agent 装上「眼睛」的 CLI",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/Panniantong/Agent-Reach",
-          "why_picked": "一个 CLI 让 Agent 读取/搜索 Twitter、Reddit、YouTube、GitHub、B站、小红书，零 API 费用，81k stars。",
-          "so_what": "如果你在做 Agent 的信息获取层：可作为零成本内容采集后端，省掉一堆平台 API key。但发布到生产前务必评估其抓取方式与合规/风控边界。"
-        },
-        {
-          "title": "Claude is a Contrarian（HN 110 分热议）",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://medium.com/@rdsubhas/claude-is-a-contrarian-dbce4de5cada",
-          "why_picked": "社区高热的模型行为观察：Claude 倾向于反驳/给反例，引发关于「顺从性 vs 批判性」的争论。",
-          "so_what": "如果你在做 Agent 的 prompt/评审环节：把「唱反调」当特性用——在方案评审 agent 里显式要求给反例，比单问「这样行吗」更能提前暴露缺陷。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-14",
-      "items": [
-        {
-          "title": "OpenAI 退役 GPT-5.3-Codex-Spark：史上最快模型下周下线",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3981223980923651",
-          "why_picked": "速度型蒸馏模型败给 Cerebras Ultrafast（旗舰 GPT-5.6 Sol 本尊约 750 tok/s）——'没有智能的速度，只是更快地失败'",
-          "so_what": "如果你在做 Agent 延迟优化：别再走'小模型+高并发'的蒸馏捷径——用旗舰模型切片流水线（如 Cerebras Ultrafast）同时拿速度与智能；评估时用等准确率对比，而非等推理强度对比。"
-        },
-        {
-          "title": "Anthropic 据悉选择纳斯达克上市进行 IPO",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wOgrjZSiG9",
-          "why_picked": "头部模型公司冲刺上市，与 OpenAI 暂缓 2026 IPO 形成资本节奏对照",
-          "so_what": "如果你在做企业级 Agent 选型：注意 Anthropic 上市后可能的定价/合规调整，合同里锁住模型版本与 SLA；关注其 ToS 数据使用条款的潜在变化。"
-        },
-        {
-          "title": "Anthropic、OpenAI 与谷歌拟合作共建 AI 标准机构",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wOunehAETQ",
-          "why_picked": "头部厂商推动第三方测试审计标准，评估与合规链路前移",
-          "so_what": "如果你在做 Agent 评估管线：提前把可审计的评测日志、模型卡与红队记录纳入 CI；一旦第三方认证落地，未接入的 Agent 将面临采购门槛。"
-        },
-        {
-          "title": "谷歌 DeepMind 疑似实现 RSI（递归自我改进），引发行业热议",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wOEHZypgUL",
-          "why_picked": "若属实，模型自我改进闭环将显著加速能力迭代，成安全与节奏争论核心",
-          "so_what": "如果你在做 Agent 自我优化（self-improving loop）：关注其可复现性，先用可回滚的容器/沙箱约束自动改代码流程，避免一次错误迭代污染生产配置。"
-        },
-        {
-          "title": "vLLM-Omni + FastH3 让 MiniMax H3 实时服务时延降 30.8%",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wOznzAL8n1",
-          "why_picked": "系统级优化（长序列注意力/融合 DiT 算子/并行 VAE 解码）在 8×B300 上把完整响应时延降 30.8%",
-          "so_what": "如果你在做多模态实时服务：把优化重心从模型层移到常驻流水线——融合算子、并行解码、紧凑传输；参考 vLLM-Omni 的逐层卸载与编码器分离做扩展。"
-        },
-        {
-          "title": "Perplexity 用 GPT-6 Astra 接管端到端系统测试",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://openai.com/index/perplexity-improving-accuracy-with-astra",
-          "why_picked": "一手来源（OpenAI 09-14）：模型自造 mock 服务/响应替身跑通端到端工作流，人工介入频率大幅下降",
-          "so_what": "如果你在做 Agent 自动化测试：让模型生成 mock 服务响应替代真实依赖，搭建端到端自测回路；把 model-as-test-double 纳入 CI，减少对真实 API 的依赖。"
-        },
-        {
-          "title": "两名高中生在 AI 辅助下推进菲尔兹奖得主相关数学研究",
-          "category": "实验",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wNuz3bNPXx",
-          "why_picked": "AI 辅助科研门槛进一步下探，验证'人机协作做原创数学'的可行性",
-          "so_what": "如果你在做研究型 Agent：把长程证明与文献检索拆成工具链，引入 Lean/形式化验证作为校验环节，可显著提升推理可靠性。"
-        },
-        {
-          "title": "Kepler Computing 结束隐身：铁电材料 + 3D 堆叠重构 AI 存储",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wOIZtuHZP6",
-          "why_picked": "面向 AI 的新型高带宽存储，累计融资 4.68 亿美元、商务部拟注资 2.45 亿，或缓解推理内存墙",
-          "so_what": "如果你在做大模型推理部署：留意铁电/3D 堆叠高带宽存储的落地节奏，中长期可能改变 KV-Cache 与权重驻留成本结构，架构保留对内存带宽的弹性假设。"
         }
       ]
     }
