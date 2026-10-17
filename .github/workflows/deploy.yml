@@ -45,6 +45,7 @@ jobs:
       - name: Verify isolated data sync
         run: |
           python3 -B scripts/test_sync_data.py -v
+          python3 -B scripts/test_theory_inventory.py -v
           bash -n scripts/ci-sync-data.sh scripts/test-ci-sync-data.sh
           bash scripts/test-ci-sync-data.sh
 
