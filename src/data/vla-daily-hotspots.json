@@ -1,6 +1,104 @@
 {
   "reported_papers": [
     {
+      "title": "Test-Time Compute for Humanoid Behavior Foundation Models",
+      "url": "https://arxiv.org/abs/2610.14896v1",
+      "arxiv_id": "2610.14896",
+      "authors": [
+        "Xie, Weiji",
+        "Wu, Junsong",
+        "Zhou, Zibo",
+        "Chen, Yueru",
+        "Wang, Xingyi",
+        "Xiong, Zhenhua",
+        "Zhang, Weinan",
+        "Bai, Chenjia"
+      ],
+      "published": "2026-10-10",
+      "abstract_snippet": "Humanoid Behavior Foundation Models (BFMs) can execute impressive motions, but downstream applications such as loco-manipulation demand high whole-body positional accuracy. Existing BFMs suffer from a systematic command-execution gap, where executed motions deviate from desired ones. We show that additional test-time compute can improve execution without retraining the BFM. First, we introduce Test-Time Command Optimization (TTCO), which adapts the input command to the specific BFM to produce an executed trajectory closer to the desired motion. TTCO finds such commands by sampling-based optimization through closed-loop simulations of the BFM and robot dynamics. Across three BFMs on the AMASS dataset, TTCO reduces mean global body-position error by 79-84% in simulation. Second, we analyze test-time compute scaling and derive an approximate compute-optimal strategy that can sustain performance gains as the compute budget increases. Third, TTCO can generate BFM-specific action labels from recorded robot trajectories without requiring the original teleoperation body-motion commands. Simulation and real-robot experiments show that these labels are effective for training high-level loco-manipulation policies. This method also supports reusing existing demonstrations across BFMs.",
+      "source": "arxiv_verified_recovery",
+      "match_level": "B",
+      "keywords_matched": [
+        "robot"
+      ],
+      "recovered_at": "2026-10-17T05:27:03.952470+00:00",
+      "source_sha256": "f5bc49a984780f2b197c08dd435dc37e556652ed83ed7fa626e341764ab21364",
+      "rating": "🔧",
+      "reason": "提出测试时命令优化 TTCO：保持人形 BFM 权重不变，利用闭环仿真采样优化输入命令。摘要报告，在 AMASS 的三个 BFM 仿真实验中，全局体位误差降低 79–84%；也可从已记录的机器人轨迹生成 BFM 专属动作标签，供高层 loco-manipulation 策略训练。摘要包含仿真与真机实验，但未说明所有标签来源轨迹均为真机数据；这里未独立复现实验。",
+      "date": "2026-10-17",
+      "submission_date": "2026-10-10",
+      "first_publication_date": null,
+      "tag": "actionable",
+      "repo_url": "",
+      "recovery_note": "2026-10-17 历史补收；2026-10-10 为提交日期，首次公开日期未核定。"
+    },
+    {
+      "title": "Design and Evaluation of a Collaborative Teleoperation Interface for Multi-Operator Multi-Robot Systems in Challenging Environments",
+      "url": "https://arxiv.org/abs/2610.15001v1",
+      "arxiv_id": "2610.15001",
+      "authors": [
+        "Kenan, Alperen",
+        "Cárdenas, Juan José García",
+        "Tapus, Adriana",
+        "Bremner, Paul",
+        "Giuliani, Manuel"
+      ],
+      "published": "2026-10-10",
+      "abstract_snippet": "Multi-robot systems that combine the complementary capabilities of specialised platforms are critical for complex missions in challenging, inaccessible environments. Current deployments assign an operator or operator team to each robot, with collaboration relying on operator-to-operator communication to manually coordinate heterogeneous platforms with incompatible interfaces. This operator-dependent approach increases cognitive load and limits scalability across robots from different manufacturers. This study designs and evaluates a shared-visualisation collaborative teleoperation interface to improve operator coordination, situational awareness, and the task performance in multi-operator, multi-robot systems. A comparative user study with 16 participants compared three teleoperation conditions: co-located operators with a shared interface, remote operators with a shared interface, and co-located operators with individual interfaces. Participants controlled two simulated robots in a nuclear power plant digital twin to complete disaster response tasks. Performance metrics, physiological data, and behavioural measures were recorded to assess task performance, cognitive load, and operator awareness across conditions. The co-located shared-interface condition achieved the fastest mission completion (292.8 s), outperforming remote operation (351.6 s) and individual interfaces (385.1 s), with the fewest collisions (0.9 per trial) and highest situational awareness accuracy (91.1 %). Physical co-presence was associated with reduced cognitive load, with NASA-TLX scores increasing from 38.2 in co-located to 57.7 in remote operation, supported by consistent physiological indicators. These results demonstrate that co-presence and shared interfaces provide complementary benefits, supporting workload regulation and mutual awareness respectively in multi-operator, multi-robot teleoperation.",
+      "source": "arxiv_verified_recovery",
+      "match_level": "B",
+      "keywords_matched": [
+        "robot"
+      ],
+      "recovered_at": "2026-10-17T05:27:04.373178+00:00",
+      "source_sha256": "26e30b4f45f7bfcc4776bbb838f9a06bb0ca7b07fae872ddee7c63030c3d6f29",
+      "rating": "📖",
+      "reason": "以 16 人用户实验比较三种条件：同地共享界面、远程共享界面、同地独立界面。任务在核电站数字孪生中控制两台模拟机器人；同地共享条件的完成时间为 292.8 秒、碰撞为每试次 0.9 次、态势感知准确率为 91.1%。结果适用于该仿真人因实验；未测试远程独立界面，也未评估 VLA 策略性能。",
+      "date": "2026-10-17",
+      "submission_date": "2026-10-10",
+      "first_publication_date": null,
+      "tag": "read-only",
+      "repo_url": "",
+      "recovery_note": "2026-10-17 历史补收；2026-10-10 为提交日期，首次公开日期未核定。"
+    },
+    {
+      "title": "Remembering What Matters for Long-Horizon Robotic World Models",
+      "url": "https://arxiv.org/abs/2610.14583v1",
+      "arxiv_id": "2610.14583",
+      "authors": [
+        "Wu, Hao",
+        "Shao, Tianyu",
+        "Qian, Shengju",
+        "Zhao, Yizhou",
+        "Zhang, Fan",
+        "Zhao, Penghao",
+        "Wang, Weiyan",
+        "Huang, Yufei",
+        "Xu, Fan",
+        "Wang, Kun",
+        "Wang, Xin",
+        "Yang, Ming-Hsuan",
+        "Liang, Yuxuan"
+      ],
+      "published": "2026-10-10",
+      "abstract_snippet": "Autoregressive robot video world models based on discrete visual tokens remain unreliable over long rollout horizons. Retaining the entire generated history does not necessarily improve prediction quality. We investigate a possible memory-role conflict in Full Context decoding: persistent scene information, recent visual-action states, and stale generated history compete for attention despite their different predictive roles. This perspective motivates ReCAP (Receding Context with Anchor Preservation), a training-free context-scheduling method for long-horizon robot video world models. ReCAP keeps the pretrained tokenizer, world model, and visual decoder frozen. It preserves the initial scene anchor and a contiguous window of recent complete visual-action blocks while evicting older generated history. The schedule preserves within-block structure and temporal order, requires no additional modules or parameter updates, and bounds active-context growth independently of rollout length. We evaluate ReCAP on RT-1, BridgeV2, LIBERO-90, and CALVIN using frozen autoregressive world models. Across evaluated environments and horizons, ReCAP improves visual fidelity, action-conditioned consistency, and robot structure preservation relative to Full Context. On BridgeV2, it reduces LPIPS by 63.3%. In the system benchmark at H=64, it reduces the logical KV footprint by 73.3% and p50 latency by 6.51%. Attention analyses show increased attention to retained recent states, while history interventions associate larger amounts of stale context with higher prediction error. These observations are consistent with the memory-role-conflict hypothesis, although they do not isolate it from context-length and position-handling effects. Our results support inference-time context scheduling as a practical approach to improving long-horizon robot video prediction and computational efficiency without retraining.",
+      "source": "arxiv_verified_recovery",
+      "match_level": "B",
+      "keywords_matched": [
+        "robot"
+      ],
+      "recovered_at": "2026-10-17T05:27:04.528761+00:00",
+      "source_sha256": "0ad9fc98c5bdf8c09bb1693b94a554b11007ae27eb7107128d09f11e341d7b5d",
+      "rating": "🔧",
+      "reason": "ReCAP 是免训练的机器人视频世界模型上下文调度方法：保留初始场景锚点和最近完整视觉-动作块，移除较旧生成历史。摘要报告 BridgeV2 的 LPIPS 降低 63.3%，H=64 系统测试中的逻辑 KV 占用降低 73.3%、p50 时延降低 6.51%；这些是论文实验结果，尚未独立复现。摘要未报告下游闭环策略成功率，且注意力分析未排除上下文长度与位置处理的影响。",
+      "date": "2026-10-17",
+      "submission_date": "2026-10-10",
+      "first_publication_date": null,
+      "tag": "actionable",
+      "repo_url": "",
+      "recovery_note": "2026-10-17 历史补收；2026-10-10 为提交日期，首次公开日期未核定。"
+    },
+    {
       "title": "Do VLAs Really Follow Instructions? Diagnosing How-Level Instruction Following in Vision-Language-Action Models",
       "date": "2026-10-16",
       "url": "https://arxiv.org/abs/2610.21251",
@@ -20153,5 +20251,5 @@
     }
   ],
   "last_report_date": "2026-02-21",
-  "last_updated": "2026-10-16T14:45:01.786572+08:00"
+  "last_updated": "2026-10-17T06:15:37.696582+00:00"
 }
