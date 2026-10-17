@@ -1,6 +1,83 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-17",
+      "items": [
+        {
+          "title": "Meta 发布 Muse Spark Open：816B 开放权重模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.techrepublic.com/article/news-meta-muse-spark-open-apple-mac-studio/",
+          "why_picked": "开放权重阵营对闭源旗舰的正面冲击，两台 Mac Studio 可本地跑",
+          "so_what": "如果你在做 Agent 系统的模型选型：816B 开放权重意味着可用两台 Mac Studio 本地部署，把编码/agent 推理从 API 成本转为一次性硬件成本；建议把 Muse Spark Open 与现有闭源模型在 agentic coding 任务上做 A/B，重点看长链路工具调用的稳定性。"
+        },
+        {
+          "title": "Reflection AI 开源 Beam：501B MoE agentic coding 模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://reflection.ai/blog/beam-is-available",
+          "why_picked": "Apache 2.0 权重 + 开源 harness，40+ 提供方，开源 agent 编码模型进入 500B 级",
+          "so_what": "如果你在做 coding agent 或自建工具调用栈：Beam 提供 Apache 2.0 权重与开源 harness，可直接接入自托管推理；注意 501B/23B 激活的显存开销远超 dense 23B，建议先用 FP8/NVFP4 量化在 SageMaker JumpStart 上验证吞吐再决定自建。"
+        },
+        {
+          "title": "OpenAI 将 GPT-Rosalind 开放给学术研究实验室",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/bringing-gpt-rosalind-to-academic-research-labs/",
+          "why_picked": "科研场景开放更强模型访问，利好研究型 agent",
+          "so_what": "如果你在做研究型 agent（文献推理、实验设计）：GPT-Rosalind 对学术实验室开放，可用来替代通用模型做长文档推理；建议申请后对比其在检索增强与多步推理任务上的引用准确性。"
+        },
+        {
+          "title": "Vercel Shop × Shopify GA：agent 成为一等购物者",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/blog/vercel-and-shopify-make-agents-first-class-shoppers",
+          "why_picked": "通用电商协议 UCP + MCP，agent 可直接搜商品建购物车",
+          "so_what": "如果你在做 Agent 的对外工具调用：Vercel Shop 把商品页做成机器可读内容并接入 UCP+MCP，agent 可直接 search/cart/checkout；建议按 UCP 规范重构你的电商工具 schema，避免为每个商家写定制抓取。"
+        },
+        {
+          "title": "Stack Overflow for Agents 借 ChatGPT 插件流量翻三倍",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/stack-overflow-for-agents/",
+          "why_picked": "面向 agent 的问答层成为生态新入口，注册量 3 倍增长",
+          "so_what": "如果你在搭 Agent 的知识/工具检索层：说明「带工具的问答目录」正成为 agent 的新入口，可考虑把你的内部工具以插件/目录形式暴露，让上游 agent 主动拉取而非你逐个对接。"
+        },
+        {
+          "title": "Google Research：把 AI agent 接入自动驾驶湿实验室",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://research.google/blog/grounding-ai-agents-in-biological-reality-building-blocks-for-autonomous-wet-labs/",
+          "why_picked": "agent + 真实物理仪器的落地范式",
+          "so_what": "如果你在做 agent 与真实世界设备交互：Google 给出的湿实验室基建可借鉴其控制/容错分层，把「物理仪器」当作带约束的工具来设计 agent 动作空间与回滚。"
+        },
+        {
+          "title": "Anthropic 季度营收近 168 亿美元、同比近 +50%（IPO 前）",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Oct/15/anthropic-ipo/",
+          "why_picked": "头部 labs 商业化提速，影响 agent 定价预期",
+          "so_what": "如果你在做 Agent 成本预算：头部 labs 营收与效率快速攀升，预示着 API 定价与能力迭代节奏会更快；建议把模型成本做成可替换抽象层，避免被单一供应商的定价变动绑定。"
+        },
+        {
+          "title": "morluto/rea — 用 agent 逆向一切",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/morluto/rea",
+          "why_picked": "GitHub 今日热榜第 1，逆向工程量产化信号",
+          "so_what": "如果你在做 agent 驱动的安全/逆向工程：rea 把应用行为到原生二进制的逆向流程 agent 化，可用于自动化漏洞与协议分析；建议先在隔离环境验证其对目标二进制的稳定复现率再入生产。"
+        },
+        {
+          "title": "mksglu/context-mode — coding agent 上下文窗口优化",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/mksglu/context-mode",
+          "why_picked": "沙盒工具输出 -98%、跨 17 平台 MCP+hook 强制路由",
+          "so_what": "如果你在做长会话 coding agent：context-mode 通过沙盒化工具输出大幅压缩上下文并把会话记忆持久化；建议将其 hook 接入你的 agent 循环，优先解决工具返回噪声吃掉上下文的问题。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-16",
       "items": [
         {
@@ -1537,75 +1614,6 @@
           "url": "https://simonwillison.net/2026/Sep/16/mustafa-suleyman/",
           "why_picked": "模型拟人化边界之争，影响 agent 人格化产品设计取向",
           "so_what": "如果你在设计 Agent 人格/UX：这波争论直接影响拟人化话术的边界（避免暗示模型有情感/权利）。建议在产品文案与系统提示里明确「工具」定位，规避用户情感依赖与合规风险。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-16",
-      "items": [
-        {
-          "title": "Google 发布 Gemini 3.8 Live 与 Live Extended Thinking 实时语音模型",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-gemini-3-8-live-extended-thinking/",
-          "why_picked": "实时语音-语音模型进入并行推理阶段：Speech-to-Speech Quality Index 82.6 登顶，τ-Voice 68.6%，支持边说话边跑多步推理",
-          "so_what": "如果你在做语音 Agent：立刻在 AI Gateway 灰度 gemini-3.8-live，用 realtime API 的 thinkingLevel 控制 Extended Thinking 档位；延迟敏感的会话默认关深度推理，复杂工单再按需开。"
-        },
-        {
-          "title": "Gemini 3.8 Live 上线 Vercel AI Gateway，AI SDK 实时 API 可直连",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/gemini-3-8-live-models-now-available-on-ai-gateway",
-          "why_picked": "官方给出 WebSocket realtime adapter + 短期 token，接语音 Agent 不用自搭音频管线",
-          "so_what": "如果你在做实时语音接入：用 @ai-sdk/gateway 的 experimental_realtime.getToken 换短期 token，30 行内起 WebSocket 会话；outputModalities 设 [audio]，Extended Thinking 的 thinkingLevel/thinkingBudget 只能二选一。"
-        },
-        {
-          "title": "IBM Research × HuggingFace：Agent 一致性评测——一次通过 ≠ 稳定复现",
-          "category": "趋势",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/ibm-research/altk-evolve-consistency",
-          "why_picked": "ReAct+GPT-4.1 在 AppWorld 平均 77.4%，但 5 次全过仅 53.0%，24.4pp 一致性缺口；Consistency Analyzer 单条 trace 定位易翻车决策点，指南把缺口砍半到 12.0pp",
-          "so_what": "如果你在做 Agent 可靠性：把 Mean@k 换成 Pass^k 当 CI 门槛，k=5 重采样回归；对 flaky 步骤注入 consistency guideline，别只堆 few-shot。技术报告 arXiv:2609.08832。"
-        },
-        {
-          "title": "AWS Bedrock prompt caching：重复上下文输入成本最高省 90%",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/optimizing-cost-and-latency-with-amazon-bedrock-prompt-caching/",
-          "why_picked": "六个 Converse API 缓存场景，明确缓存命中边界与成本/延迟数据",
-          "so_what": "如果你在做 RAG/长 system prompt 的 Agent：把稳定前缀（工具 schema、系统提示）放缓存段、易变内容后置，避免每次全量计费；先按 AWS 六场景对照自查命中率再上线。"
-        },
-        {
-          "title": "OpenAI 拟 IPO 前融资，估值目标 1.2 万亿美元",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wSOyCGMYPf",
-          "why_picked": "估值从 3 月 8520 亿跃至 1.2 万亿，年化收入破 400 亿；Altman 称上市不早于 2027",
-          "so_what": "如果你在做 API 成本规划：头部模型供给方资本充裕、短期降价压力小，长期要防被单一供应商绑定；在调用层做 provider 抽象，便于随价切换。"
-        },
-        {
-          "title": "404 Media：AI agents 已经在「毁掉互联网」",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://www.404media.co/theres-a-100-chance-ai-agents-are-already-ruining-the-internet/",
-          "why_picked": "HN 206 分热议：agent 拿到账号/权限后无护栏地抓取与操作，骚扰与规模已实打实发生，争论从『是否毁灭人类』转向『谁来治理』",
-          "so_what": "如果你要给 Agent 放开写权限：默认最小权限 + 速率限制 + 可审计操作日志，抓取类遵守 robots/限流；高风险动作（支付、发布、外部写）前加人类审批。"
-        },
-        {
-          "title": "pacifio/atlas — 多 coding agent 的『源代码管理』层",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/pacifio/atlas",
-          "why_picked": "GitHub Trending daily：让多个 coding agent 并行改同一仓库，集中追踪改动并统一查询",
-          "so_what": "如果你在跑多个 coding agent：用它给每个 agent 的改动做隔离与可追溯，避免并行改冲突；先小仓库试点再上主力 repo。"
-        },
-        {
-          "title": "alphaXiv/OpenResearch — 把 coding agent 变成 research agent",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/alphaXiv/OpenResearch",
-          "why_picked": "GitHub Trending daily：把检索-阅读-引用改造成可复现的 agent 流程",
-          "so_what": "如果你想让 agent 做文献/调研：把检索-阅读-引用做成可复现 agent 流程并接 alphaXiv 生态，可与 VLA Handbook 归档打通。"
         }
       ]
     }
