@@ -1,0 +1,393 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "total": 23,
+  "counts": {
+    "⚡": 0,
+    "🔧": 5,
+    "📖": 17,
+    "❌": 1
+  },
+  "parse_error": "",
+  "parse_failed": false,
+  "papers": [
+    {
+      "title": "Large-scale iontronic skins with neural-hierarchical processing architecture",
+      "authors": "Zhibin Li et al.",
+      "url": "https://www.nature.com/articles/s42256-026-01325-6",
+      "source": "Nature-MI",
+      "match_level": "J",
+      "keywords_matched": [
+        "LLM-journal-screen"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Nature Machine Intelligence, Published online: 16 October 2026; doi:10.1038/s42256-026-01325-6 Li et al. introduce a neural-hierarchical skin that combines high-density iontronic sensor array, fast readout and data compression, enabling humanoid robots to perceive fine textures, manipulate delicate objects and respond to nociceptive stimuli.",
+      "pub_date": "2026-10-16",
+      "rating": "📖",
+      "reason": "提出高密度离子电子皮肤阵列配神经分层处理架构，把快速读出与数据压缩前置到传感端，实现人形机器人精细纹理感知与轻柔操作。属触觉硬件与信号处理层，尚未接入 VLA 策略训练，但为触觉 VLA 提供上游感知基础。",
+      "affiliation": ""
+    },
+    {
+      "title": "Do VLAs Really Follow Instructions? Diagnosing How-Level Instruction Following in Vision-Language-Action Models",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2610.21251",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Vision-language-action (VLA) models are expected to follow instructions like their language backbones, yet prior work has focused on What-level instructions that specify the task rather than How-level instructions that specify how to carry it out. Through our diagnoses, we find that How-level instructions do not help current VLAs and lower task success. We hypothesize that pairing each training episode with a single instruction limits How-level instruction following, and show that training with",
+      "pub_date": "2026-10-15",
+      "rating": "🔧",
+      "reason": "系统诊断 VLA 对 How 级指令（指定执行方式而非任务目标）的遵循能力，发现语言骨干的细粒度指令能力在动作端大量丢失。可作为指令泛化评测与指令数据构造的复用工具，弥补现有只测 What 级任务的评测盲区。",
+      "affiliation": ""
+    },
+    {
+      "title": "REKI: Registering Knowledge in VLAs",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2610.22178",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "We introduce REKI, a 2.4B vision-language-action model (VLA) pretrained exclusively on public data that sets a new Pareto frontier between performance and model size: on LIBERO-Plus, RoboTwin Clean2Rand and RoboCasa365, it is outperformed only by models about twice its size. REKI consists of a vision-language model (VLM) followed by a flow-matching action expert, and is pretrained on a curated mixture of public robot, egocentric human and vision-language data. Additionally, we endow it with a me",
+      "pub_date": "2026-10-15",
+      "rating": "🔧",
+      "reason": "2.4B 纯公开数据预训练的 VLA，在 LIBERO-Plus、RoboTwin Clean2Rand 与 RoboCasa365 上以约一半参数量对标大模型，给出性能-规模的新 Pareto 前沿。其知识注册式视觉-语言→动作迁移设计与公开数据配方对小模型落地有直接参考价值。",
+      "affiliation": "[LIBERO Team]"
+    },
+    {
+      "title": "TGrasp6D: Task-Informed Vision-Language Priors and Pose Refinement enable Zero-Shot Task-Oriented 6DoF Grasping",
+      "authors": "Manav Kulshrestha et al.",
+      "url": "https://arxiv.org/abs/2610.20901",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2610.20901v1 Announce Type: cross Abstract: Task-Oriented Grasping (TOG) has emerged as an important skill for purposeful robotic manipulation. Given the task of using a knife to \"slice bread,\" a robot must choose to grasp from the handle, whereas for \"hand[ing] the knife over,\" it is preferable for the handle to remain unobstructed for safe handoff. Current approaches for TOG either focus on 2D planar grasping, remain limited by their reliance on task-agnostic grasp generators, or are con",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "用 VLM 任务先验推断该抓哪里（切面包抓刀柄、递刀抓刀身），再结合 6DoF 位姿精修做零样本任务导向抓取。属抓取前端模块，可作为 VLA 流水线中的低层抓取提议器，但本身不涉及操作策略学习。",
+      "affiliation": ""
+    },
+    {
+      "title": "LTM: Latent Transition Based In-Context Memory for Vision-Language-Action Models",
+      "authors": "Qixin Sun et al.",
+      "url": "https://arxiv.org/abs/2610.21362",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2610.21362v1 Announce Type: cross Abstract: Robotic manipulation often requires remembering interactions that are no longer visible. We introduce Latent Transition Memory (LTM), which stores history as compact latent transitions between consecutive observations. Instantiated on $\\pi_{0.5}$ as LTM-$\\pi$, our method uses a frozen latent action encoder, a lightweight adapter, and causal KV caching for incremental inference without memory-specific semantic annotations or external reasoning-mod",
+      "pub_date": "2026-10-17",
+      "rating": "🔧",
+      "reason": "把历史存成相邻观测间的紧凑隐状态转移，作为上下文记忆注入策略，并在 π0.5 上实例化，解决目标被遮挡后仍需回忆交互的问题。记忆模块与训练方式可直接移植到现有 VLA，是即插即用的长时序改造方案。",
+      "affiliation": ""
+    },
+    {
+      "title": "Cross-Embodiment Causal Transfer from Human Videos to Robot Manipulation",
+      "authors": "Xingyu Zhang et al.",
+      "url": "https://arxiv.org/abs/2610.21798",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation",
+        "robot learning"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2610.21798v1 Announce Type: cross Abstract: Scaling robot manipulation models requires large amounts of interaction data, yet collecting diverse real-robot experience remains costly. Human manipulation videos, in contrast, provide abundant and diverse task experience that could potentially benefit robot learning. However, differences in morphology, action spaces, and control mechanisms make human motions unsuitable as direct supervision for robot actions, raising a scientific question: wha",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "尝试从海量人类操作视频中提取可跨本体迁移的因果因素，以缓解真实机器人交互数据昂贵的问题。方向属于 VLA 数据规模化的关键路径，但摘要只给出动机与因果分解思路，缺少策略层面的实验与量化结果。",
+      "affiliation": ""
+    },
+    {
+      "title": "Memory as Weights: Internalizing Long-Term History for Streaming Videos",
+      "authors": "Zhuoming Liu et al.",
+      "url": "https://arxiv.org/abs/2610.22070",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.22070v1 Announce Type: cross Abstract: Streaming vision-language models (VLMs) must continuously integrate information from the past while remaining responsive to current observations and user queries. Existing memory mechanisms typically compress, retrieve, or cache historical observations and reintroduce them into the input context, forcing historical memory and current observations to compete for limited context. We propose MaLoW, a streaming memory framework that instead internali",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "将长期历史内化进模型权重而非压缩/检索/缓存，使流式 VLM 在保持实时响应的同时累积过去信息。属长视频理解侧的记忆机制创新，未涉及机器人操作或具身决策，仅可作为 VLA 记忆设计的远距离参考。",
+      "affiliation": ""
+    },
+    {
+      "title": "LIBERO-PeRM: Benchmarking Personalized Robotic Manipulation",
+      "authors": "Zhixu Li et al.",
+      "url": "https://arxiv.org/abs/2610.22372",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "robotic manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2610.22372v1 Announce Type: cross Abstract: Personalization is essential for general-purpose robots to transition into household environments and achieve true practicality. While general robotic manipulation has been extensively studied, personalized robotic manipulation (PeRM) lacks a controlled benchmark for separating task completion from preference satisfaction. We introduce LIBERO-PeRM, a benchmark for preference learning in embodied agents. LIBERO-PeRM studies five questions: 1) how",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "指出现有操作 benchmark 缺少个性化维度，构建按用户偏好执行任务的评测基准。评测视角新增（同一任务不同偏好），对家用机器人落地有参考，但贡献在评测而非方法，非紧急精读项。",
+      "affiliation": "[LIBERO Team]"
+    },
+    {
+      "title": "LIBERO-Industry: Benchmarking Robotic Manipulation under Industrial Process Constraints",
+      "authors": "Ming Shin Cindy Sung et al.",
+      "url": "https://arxiv.org/abs/2610.16782",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action",
+        "robotic manipulation",
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.16782v2 Announce Type: replace Abstract: Industrial manipulation in flexible manufacturing, e.g., high-mix, low-volume (HMLV) electronics assembly, requires robot policies to adapt to changing products and production conditions. Such settings impose industrial process constraints, including product variants, moving material flows, finite execution windows, and tight geometric tolerances. However, existing evaluation frameworks do not systematically capture these constraints when asses",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "针对高混合低产量电子装配场景，把工艺顺序、公差等工业过程约束纳入操作 benchmark，弥补 LIBERO 系列缺少过程约束的空白。属评测基础设施，对有工业落地需求的团队有用但不紧急。",
+      "affiliation": "[LIBERO Team]"
+    },
+    {
+      "title": "RMBench: Memory-Dependent Robotic Manipulation Benchmark with Insights into Policy Design",
+      "authors": "Tianxing Chen et al.",
+      "url": "https://arxiv.org/abs/2603.01229",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2603.01229v4 Announce Type: replace-cross Abstract: Robotic manipulation policies have made rapid progress in recent years, yet most existing approaches give limited consideration to memory capabilities. Consequently, they struggle to solve tasks that require reasoning over historical observations and maintaining task-relevant information over time, which are common requirements in real-world manipulation scenarios. Although several memory-aware policies have been proposed, systematic eval",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "构建需要历史观测推理的记忆依赖操作 benchmark，并量化现有策略在记忆任务上的系统性失败，给出策略设计层面的分析结论。可作为记忆型 VLA（如 LTM 类工作）的评测基准。",
+      "affiliation": ""
+    },
+    {
+      "title": "EmbodiedMidtrain: Bridging the Gap between Vision-Language Models and Vision-Language-Action Models via Mid-training",
+      "authors": "Yiyang Du et al.",
+      "url": "https://arxiv.org/abs/2604.20012",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2604.20012v2 Announce Type: replace-cross Abstract: Vision-Language-Action Models (VLAs) inherit their visual and linguistic capabilities from Vision-Language Models (VLMs), yet most VLAs are built from off-the-shelf VLMs that are not adapted to the embodied domain, limiting their downstream performance. In this work, we propose EmbodiedMidtrain to bridge the gap between VLMs and VLAs. We first characterize the data distribution gap between them, showing that VLA data occupy compact region",
+      "pub_date": "2026-10-17",
+      "rating": "🔧",
+      "reason": "提出在通用 VLM 与 VLA 后训练之间插入 embodied mid-training 阶段，用具身数据把视觉-语言表征对齐到机器人域，再下接动作学习。给出了训练阶段划分与数据配比的可复现范式，可直接用于改造现有 VLM 底座。",
+      "affiliation": ""
+    },
+    {
+      "title": "ValueFormer: Stage-Aware Value Labels for Online Failure Detection and VLA Post-Training",
+      "authors": "Inkyu Sa et al.",
+      "url": "https://arxiv.org/abs/2608.02958",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2608.02958v2 Announce Type: replace-cross Abstract: Generalist vision-language-action (VLA) policies now transfer to new scenes with little task-specific training, but they still fail silently: from the action stream alone, a collapsing rollout looks much like one making clean progress, because imitation supplies no notion of progress. The cheap alternative, a terminal success / failure bit, is learnable in principle yet too sparse to say when a rollout went wrong. We argue that the per-fr",
+      "pub_date": "2026-10-17",
+      "rating": "🔧",
+      "reason": "用阶段感知的价值标签从动作流中在线识别「看似顺利实则崩溃」的静默失败，并把该信号回灌到 VLA 后训练。可直接作为后训练/RL 阶段的自动数据筛选与早停器，工程落地性强。",
+      "affiliation": ""
+    },
+    {
+      "title": "Evaluating Multimodal LLMs as Generalist Vision-Language-Action Agents for Drone Control: Commanding, Approaching, Tracking and Searching",
+      "authors": "Jaewoo Park et al.",
+      "url": "https://arxiv.org/abs/2609.01404",
+      "source": "cs.AI",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2609.01404v2 Announce Type: replace-cross Abstract: Multimodal large language models (MLLMs) are increasingly used to make decisions for drones, but existing evaluations are mostly limited to simulation, to a single drone, and to targets that are visible from the start and do not move. We present DroneCATS, a benchmark in which the MLLM alone controls the drone through four actions, and evaluate ten MLLMs from frontier models to small open models. The benchmark varies target visibility, ta",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "把多模态 LLM 当作无人机通用 agent，在真实多机、目标可移动的场景下评测指令解析、接近、跟踪与搜索四类能力，突破以往纯仿真单机评测。属空中具身 agent 评测，与机械臂操作 VLA 的关键技术不可直接复用。",
+      "affiliation": ""
+    },
+    {
+      "title": "A high-dimensional population code in the bat motor cortex during natural dexterous flight",
+      "authors": "Boaz Styr et al.",
+      "url": "https://www.cell.com/cell/fulltext/S0092-8674(26)01131-1?rss=yes",
+      "source": "Cell-InPress",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Bats use their hand-like wings to reproduce natural flights with wingbeat-level precision. Rather than mainly tracking the wingbeat cycle, the wing motor cortex generates sparse, distinct population states with little shared variance across wingbeats, resulting in a high-dimensional code distinct from that typically observed in constrained tasks.",
+      "pub_date": "2026-10-13",
+      "rating": "❌",
+      "reason": "蝙蝠自然飞行中运动皮层高维群体编码的神经科学研究，与机器人操作、VLA 架构无实质关联。",
+      "affiliation": ""
+    },
+    {
+      "title": "Learning Intrinsic Dynamics in Latent World Models",
+      "authors": "Jiamin Shi et al.",
+      "url": "https://arxiv.org/abs/2610.21612",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.21612v1 Announce Type: new Abstract: Learning intrinsic dynamics---the relationship between actions and their consequences---is essential for world models. However, visual variations unrelated to the underlying control process can obscure this relationship in learned representations. We investigate the connection between action predictability, defined as the ability to reconstruct an action from consecutive latent states, and the preservation of intrinsic dynamics. Our central hypothe",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "指出与动作无关的视觉变化会污染潜空间中的动作-后果关系，提出分离内在动力学的表征学习目标。对世界模型/视频预测有方法论价值，但验证偏仿真，未接入真实机器人策略。",
+      "affiliation": ""
+    },
+    {
+      "title": "CoWorld Reasoner: Agentic Multimodal Reasoning with the Evolving Video World Model-Driven Harness",
+      "authors": "Dongjie Cheng et al.",
+      "url": "https://arxiv.org/abs/2610.21910",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.21910v1 Announce Type: new Abstract: As Vision-Language Models (VLMs) advance, they are increasingly expected to perform spatiotemporal reasoning over motion, actions, and view changes beyond what the input images show. Video World Models (VWMs) provide a natural unified engine for visual imagination by generating task-relevant visual content as additional evidence. However, existing approaches typically invoke a VWM through fixed pipelines centered on a predefined form of visual imag",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "用视频世界模型作为统一引擎，驱动 agent 对运动、动作与视角变化做时空推理，超越输入帧可见内容。属通用多模态 agent 推理框架，未涉及机器人操作闭环，暂不构成 VLA 可复用组件。",
+      "affiliation": ""
+    },
+    {
+      "title": "Whole-Body Dexterity",
+      "authors": "Conor Mc Gartoll et al.",
+      "url": "https://arxiv.org/abs/2610.22184",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "whole-body"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.22184v1 Announce Type: cross Abstract: Current humanoid dexterous manipulation remains largely confined to end-effectors and simple grasps, falling short of humans' ability to engage the entire body by bracing and sliding bulky objects against the arms and torso. We introduce Whole-Body Dexterity (WBD), a general framework that uses the robot's body and appendages as contact surfaces to grasp and manipulate objects. Our sim-to-real pipeline first generates a dataset of feasible whole-",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "主张人形灵巧操作不应局限于末端执行器，提出用前臂与躯干支撑、滑动大体积物体的全身操作范式。切中灵巧操作瓶颈，但摘要未给出策略架构与实验量化，需读正文才能判断可复用性。",
+      "affiliation": ""
+    },
+    {
+      "title": "GeoState: Learning View-Decoupled Geometry States for 3D World Modeling",
+      "authors": "Hongchang Liu et al.",
+      "url": "https://arxiv.org/abs/2610.22343",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.22343v1 Announce Type: cross Abstract: Recent 3D world models increasingly use features from geometry foundation models (GFMs) as predictive world states, benefiting from their rich geometric priors. However, the view dependence of these features entangles scene dynamics with camera-induced variation, making the resulting state evolution harder to predict. We propose GeoState, a view-decoupled geometry representation for predictive 3D world modeling that separates scene-state evolutio",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "针对几何基础模型特征的视角依赖问题，把场景动力学与相机引起的表观变化解耦，得到视角无关的 3D 世界状态。对具身世界模型的表征质量有提升，但未验证于机器人操作策略。",
+      "affiliation": ""
+    },
+    {
+      "title": "T2-z: Test-Time Optimization of Environment Latents for Robotic World Models",
+      "authors": "Chenyuan Zhou et al.",
+      "url": "https://arxiv.org/abs/2610.22364",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.22364v1 Announce Type: cross Abstract: Predicting how the world responds to an action requires more than what can be seen: robots must account for environmental factors that are neither directly observable nor explicitly specified, from physical properties such as friction and mass to human-defined environmental rules. We introduce T2-Z for test-time optimization of environment latents, which augments a robotic world model with a learnable environment latent to condition world predict",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "在测试时在线优化环境隐变量，补偿摩擦、质量、人类干扰等不可观测因素，提升机器人世界模型的动作后果预测。与世界模型驱动的策略规划互补，但当前贡献集中在前向预测精度。",
+      "affiliation": ""
+    },
+    {
+      "title": "RAP-WAM: Learning World-Action Models through Predictive Rehearsal and Action Perturbations",
+      "authors": "Yuanpeng He et al.",
+      "url": "https://arxiv.org/abs/2610.16443",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world-action model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.16443v2 Announce Type: replace Abstract: Recent world action models draw on video generation priors to jointly predict future observations and robot actions. Adapting these priors to control requires determining how future predictions should guide policy learning. RAP-WAM combines predictive Rehearsal and Action Perturbations (RAP) with future-supervised queries and Coupled Action Projection for policy learning. Predictive rehearsal trains on model-generated inputs while retaining rec",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "把预测性演练与动作扰动结合，解决视频生成先验如何有效指导策略学习的问题，属 world-action model 训练方法。方向与 VLA 规划侧高度相关，但摘要未给出基准对比，暂按值得了解处理。",
+      "affiliation": ""
+    },
+    {
+      "title": "Play2Perfect: What Matters in Dexterous Play Pretraining for Precise Assembly?",
+      "authors": "Tyler Ga Wei Lum et al.",
+      "url": "https://arxiv.org/abs/2606.26428",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2606.26428v4 Announce Type: replace-cross Abstract: Multi-fingered robots promise the speed and dexterity of human hands, yet challenging problems such as precise assembly have remained out of reach. These tasks are contact-rich, making data collection for imitation learning difficult, and sparse-reward, making direct exploration with reinforcement learning (RL) intractable. Consequently, prior work has made progress by structuring the problem with specialized grippers, tool attachments, a",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "系统消融多指灵巧手「玩耍式」预训练对精密装配任务的影响因素，回应接触丰富任务数据难采集的问题。属灵巧操作数据侧的实证研究，对做多指 VLA 的团队有经验参考，但非 VLA 架构贡献。",
+      "affiliation": ""
+    },
+    {
+      "title": "World Modeling through Spectral Alignment",
+      "authors": "Holger Molin et al.",
+      "url": "https://arxiv.org/abs/2610.15429",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.15429v2 Announce Type: replace-cross Abstract: How do we tell a world model what information to preserve? We study this question through the lens of spectral representation learning. We introduce SpecWM, a JEPA framework that explicitly specifies desired relationships between observations through a target similarity kernel and trains the encoder to reproduce those relationships in its embedding geometry. Different kernels provide different supervision, ranging from physical state info",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "从谱表示学习角度提出 SpecWM，显式指定观测之间应保持的关系，从而控制 JEPA 世界模型保留哪些信息。提供了「告诉世界模型该记住什么」的新接口，但当前验证停留在表征层面。",
+      "affiliation": ""
+    },
+    {
+      "title": "DexMimic: A Generalist Dexterous Hand-Object Tracking Policy via Value-Guided Reset Allocation",
+      "authors": "Zhexi Luo et al.",
+      "url": "https://arxiv.org/abs/2610.19089",
+      "source": "cs.AI",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.19089v2 Announce Type: replace-cross Abstract: Achieving human-like dexterous manipulation remains a central challenge in robotics. Learning from human hand-object interaction (HOI) datasets offers a promising pathway to diverse dexterous skills, yet existing physics-based approaches train specialist policies for individual trajectories, thereby limiting skill reuse at scale. We introduce DexMimic, a generalist dexterous hand-object tracking policy jointly trained across diverse HOI t",
+      "pub_date": "2026-10-17",
+      "rating": "📖",
+      "reason": "从人类手-物交互数据训练通用灵巧跟踪策略，用值函数引导 reset 分配以提升物理仿真中的课程式学习效率。面向动作重定向与跟踪而非视觉-语言条件策略，可作为灵巧 VLA 的低层动作先验。",
+      "affiliation": ""
+    }
+  ]
+}
