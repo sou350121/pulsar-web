@@ -1,102 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-09-18",
-      "config_version": 16,
-      "items": [
-        {
-          "title": "OpenAI for Law 发布：Astra 切入法律垂直场景",
-          "url": "https://openai.com/index/astra-for-law",
-          "source": "openai.com（OpenAI 官方）",
-          "category": "垂直应用",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "legal",
-            "vertical-app",
-            "enterprise"
-          ],
-          "direction_note_prefix": "",
-          "why": "前沿模型配定制工作流与法律级管控，垂直行业产品化"
-        },
-        {
-          "title": "Selecting a vector store for Amazon Bedrock Knowledge Bases",
-          "url": "https://aws.amazon.com/blogs/machine-learning/selecting-a-vector-store-for-amazon-bedrock-knowledge-bases/",
-          "source": "aws.amazon.com（AWS ML Blog）",
-          "category": "RAG 工具链",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "rag",
-            "vector-db",
-            "bedrock"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "横向对比三种向量库的 RAG 性能与成本，选型可参考"
-        },
-        {
-          "title": "Implementing defense-in-depth authorization for MCP tools on Amazon Quick",
-          "url": "https://aws.amazon.com/blogs/machine-learning/implementing-defense-in-depth-authorization-for-mcp-tools-on-amazon-quick/",
-          "source": "aws.amazon.com（AWS ML Blog）",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "mcp",
-            "security",
-            "authorization"
-          ],
-          "direction_note_prefix": "",
-          "why": "MCP 工具多层授权范式，agent 权限治理可直接复用"
-        },
-        {
-          "title": "Self-generated prompt injections in compaction summaries（續報）",
-          "url": "https://simonwillison.net/2026/Sep/17/compaction-summaries/",
-          "source": "simonwillison.net",
-          "category": "其他",
-          "importance": "actionable",
-          "developer": "—",
-          "labels": [
-            "agent-security",
-            "prompt-injection",
-            "context"
-          ],
-          "direction_note_prefix": "",
-          "why": "上下文压缩会自生成注入，长上下文 agent 需防污染"
-        },
-        {
-          "title": "Run Terminal-Bench and other Harbor evals on Vercel Sandbox",
-          "url": "https://vercel.com/changelog/run-terminal-bench-and-other-harbor-evals-on-vercel-sandbox",
-          "source": "vercel.com（Vercel Changelog）",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Vercel",
-          "labels": [
-            "sandbox",
-            "evals",
-            "infra"
-          ],
-          "direction_note_prefix": "",
-          "why": "沙箱内直跑 Terminal-Bench，agent 评测环境标准化"
-        },
-        {
-          "title": "How Cooley is accelerating IPO work with ChatGPT",
-          "url": "https://openai.com/index/cooley-gopublic",
-          "source": "openai.com（OpenAI 官方）",
-          "category": "垂直应用",
-          "importance": "read-only",
-          "developer": "OpenAI",
-          "labels": [
-            "enterprise",
-            "legal",
-            "chatgpt-work"
-          ],
-          "direction_note_prefix": "",
-          "why": "ChatGPT Work 落地 IPO 流程，企业级部署案例"
-        }
-      ]
-    },
-    {
       "date": "2026-09-19",
       "config_version": 16,
       "items": [
@@ -2482,6 +2386,92 @@
           ],
           "direction_note_prefix": "",
           "why": "AI 算力开始债性融资定价，直接决定明年 Claude 系 API 的容量与单价走势"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "config_version": 20,
+      "items": [
+        {
+          "title": "Google Research 开源 Harness²：冻结模型权重，递归优化 agent harness",
+          "url": "https://github.com/google-research/harness2",
+          "source": "GitHub (google-research)",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "google-research",
+          "labels": [
+            "agent-harness",
+            "orchestration",
+            "benchmark"
+          ],
+          "direction_note_prefix": "",
+          "why": "不改权重只改 harness，官方报告单步最高 +11.5 分（Apache-2.0）",
+          "note": "Propose–Probe–Compose 任务级递归 + 经验沉淀为 improvement harness；支持 OpenCode / Codex executor"
+        },
+        {
+          "title": "Vercel AI Gateway 日志新增 Sessions 视图",
+          "url": "https://vercel.com/changelog/ai-gateway-logs-now-show-session-affinity",
+          "source": "Vercel Changelog",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "vercel",
+          "labels": [
+            "observability",
+            "gateway",
+            "cost"
+          ],
+          "direction_note_prefix": "",
+          "why": "按会话归并请求，看清 Claude Code/Codex/Cursor 谁在花多少",
+          "note": "含成本/模型/provider/每轮缓存命中率；session affinity 默认对 text/chat 生效，可用 x-session-id 自定义分组"
+        },
+        {
+          "title": "DeepSeek 开放自研搜索 Search & Fetch API",
+          "url": "https://api-docs.deepseek.com/guides/search/",
+          "source": "DeepSeek API Docs",
+          "category": "RAG 工具链",
+          "importance": "actionable",
+          "developer": "deepseek",
+          "labels": [
+            "rag",
+            "web-search",
+            "tool-api"
+          ],
+          "direction_note_prefix": "[RAG]",
+          "why": "自研搜索引擎开放，fetch 直出 Markdown，与主 API 共用 Bearer",
+          "note": "POST /v1/tools/search（count 1–50、need_content、localization）+ /v1/tools/fetch；按成功请求计费"
+        },
+        {
+          "title": "MiniCPM-V 4.7 (35B-A3B) 开源：手机端 3GB 内存跑 MoE 多模态",
+          "url": "https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B",
+          "source": "Hugging Face (OpenBMB)",
+          "category": "模型发布",
+          "importance": "actionable",
+          "developer": "openbmb",
+          "labels": [
+            "multimodal",
+            "on-device",
+            "moe"
+          ],
+          "direction_note_prefix": "",
+          "why": "iPhone 17 Pro Max 上 13+ tok/s，Apache-2.0 可商用",
+          "note": "LES 专家调度 + 分层量化 + DSpark 投机采样；day-0 适配 Rockchip/Houmo/Intel/AMD/Arm，支持 GGUF/AWQ/GPTQ/FP8"
+        },
+        {
+          "title": "Anthropic：内部 agent 工时已是员工的 6 倍",
+          "url": "https://www.anthropic.com/research/employment-at-anthropic",
+          "source": "Anthropic Research",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "anthropic",
+          "labels": [
+            "agent-ops",
+            "workflow",
+            "evaluation"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "效率红利之外，非技术员工被迫做大量 meta-work",
+          "note": "招聘重心从技术专长转向自主性与判断力（发布于 2026-10-16）"
         }
       ]
     }
