@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-20",
+      "items": [
+        {
+          "title": "Cairn 被当成黑客武器：一个攻击者用 AI agent 集群拿下 100+ 网站",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1013643/ai-agents-hack-john-deere-shark-ninja-cummins",
+          "why_picked": "开源 agent 引擎 Cairn 用 Blackboard + Fact/Intent/Hint 图做通用状态空间搜索，被真实攻击者用来编排攻击：<100 个汉字写战术，单个站点平均 23 小时突破，目标含 John Deere / SharkNinja / Cummins；一手来源 norforge.com/blog/inside_cairn + github.com/oritera/Cairn",
+          "so_what": "如果你在做多 agent 编排：注意 Cairn 的『无角色、任务由图状态运行时生成』设计，它比固定 workflow 更适配开放式搜索任务；但同一套能力暴露在公网即成攻击面——给你的 agent runtime 加鉴权、意图白名单和出站目标限制（类似 Vercel Sandbox / AgentCore 的隔离）比加 prompt 护栏更有效。"
+        },
+        {
+          "title": "美国土安全部令：联邦文职机构立即剥离 DeepSeek，含基于其构建的第三方产品",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://madrobot.blog/2026/10/19/us-bans-deepseek-federal-agencies-dhs-order-remove-third-party/",
+          "why_picked": "DHS 令 2026-01，援引 2018 供应链法；关键是第二条款——『使用 DeepSeek 实现的第三方产品与服务』也要移除，而开放权重模型会嵌进别家工具；联邦公报 10/20 公示（docket DHS-2026-0628）",
+          "so_what": "如果你在做企业 RAG / Agent 管线的模型路由：模型来源合规要变成路由层的一等字段（不只是价格和延迟）。现在就在 model registry 里加 provider-jurisdiction 标签，并准备好对同一抽象接口切到非 DeepSeek 权重的 fallback 链。"
+        },
+        {
+          "title": "【🆕新发布】Amazon Bedrock 为全部 Claude 模型上线 Structured Outputs + Strict Tool Use",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/structured-outputs-for-anthropic-claude-models-on-amazon-bedrock/",
+          "why_picked": "基于 constrained decoding，在 token 生成阶段强制 JSON Schema（而非事后修复），bedrock-runtime 与 bedrock-mantle 双端点均支持；同时覆盖 strict tool use 的函数参数校验",
+          "so_what": "如果你在做 Agent 工具调用：把 JSON.parse 失败重试逻辑和 schema 校验层删掉，改为在工具定义里直接挂 strict schema——尤其适合多步 function calling；注意输出被约束到 schema 字段，反而降低 output token 成本。"
+        },
+        {
+          "title": "【🔧工具】AWS：vLLM 双向 KV cache 传输，显著降低多轮 agent 的 TTFT",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/improve-ttft-for-multi-turn-agentic-workloads-with-bi-directional-kv-transfer-in-vllm/",
+          "why_picked": "传统 P-D 分离只做 prefill→decode 单向 KV 传输，多轮会话里每轮都要重算历史 token 的 KV 投影（含 system prompt、工具结果）；双向传输让 decode 节点的 KV 回流 prefill，减少整段历史重算",
+          "so_what": "如果你在自托管多轮 agent 推理：如果你的 agent 每轮都重发完整对话历史（多数 harness 都这么干），P-D 分离反而在浪费算力。在 vLLM 上评估 bi-directional KV transfer，或至少让 decode 节点持有 session KV，能直接砍掉长会话的首 token 延迟。"
+        },
+        {
+          "title": "【🔧工具】Together 推出 Post-Training 服务：RL（环境奖励）+ SFT 自训练专用模型",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/together-post-training",
+          "why_picked": "面向『训练 specialist agent 以替代 harness engineering 硬调上下文』的路线：定义训练循环、底层系统由平台协同优化，checkpoint 可部署在任意位置甚至本地",
+          "so_what": "如果你在做垂直 Agent 产品：先用 harness 工程（prompt/retrieval/tool 约束）压到瓶颈，再考虑把高频失败模式转成 RL 环境奖励做后训练——比继续堆 context 更省推理成本；同时确认 checkpoint 可迁移，避免被平台锁定。"
+        },
+        {
+          "title": "【💬观点】Simon Willison 的 llm-echo 0.5：不计 token 的假模型，用来测 tool call / 推理 token 计费",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Oct/18/llm-echo/",
+          "why_picked": "llm-echo 提供一个不接 LLM 的回声『模型』，新版本把 tool calls、system prompt、reasoning tokens 都计入模拟 usage——用来在没有 API 成本的情况下单测 token 计费与多轮拼装逻辑",
+          "so_what": "如果你在做 Agent 成本控制 / token 预算：用 llm-echo 这类 fake model 在 CI 里断言 usage 计算，特别是 reasoning token 与工具调用结果是否被重复计数；这是排查账单项异常最快的手段。"
+        },
+        {
+          "title": "oritera/Cairn  —  AI 通用状态空间搜索引擎（Blackboard + Fact/Intent 图）",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/oritera/Cairn",
+          "why_picked": "本周因被滥用上 HN（Verge + Reuters + Norforge 一手报告）而被看到；架构本身值得研究：无预设角色，三个原语 Fact/Intent/Hint，worker 跑 OODA 循环把发现写回黑板图，任务在运行时由图状态生成",
+          "so_what": "如果你在设计开放式 agent 搜索（漏洞挖掘、研究、debug）：这是『workflow 编排 vs 图搜索』的一个可观案例——把 agent 产出建模为带类型的事实图，能自然支持并行探索和人类 hint 注入；但它默认暴露即灾难，自建时务必加访问控制。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-19",
       "items": [
         {
@@ -1569,75 +1630,6 @@
           "url": "https://www.prinzai.com/p/gpt-6-astra-solves-a-wwi-german-radio",
           "why_picked": "HN 360 分，长链推理能力压力测试",
           "so_what": "如果你在做 reasoning/eval：可借鉴「历史密码破译」作为长链推理压力测试；注意区分真推理 vs 记忆匹配。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-19",
-      "items": [
-        {
-          "title": "Kimi K3 登陆 Amazon Bedrock：首个开源 2.8T 参数模型",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-kimi-k3-on-amazon-bedrock/",
-          "why_picked": "Moonshot 迄今最强模型，1M 上下文 + 原生视觉，Bedrock 上首个支持显式 prompt caching 的开源模型",
-          "so_what": "如果你在做长上下文 coding agent 或 RAG 管线：K3 是首个能跑在 Bedrock、且原生支持显式 prompt caching 的开源 2.8T 模型，可把重复仓库/文档上下文的输入成本显著压低，建议对照现有 Claude/GPT 路由做一次 A/B。"
-        },
-        {
-          "title": "Gemini 4 Pro 匿名偷跑 Arena，全面领先 Astra / Fable",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/3988310431431682",
-          "why_picked": "以 gemini-3.8-flash 马甲现身 Arena，DeepSWE/Terminal-bench/OSWorld-2.0 全面领先且价格更低，官方未确认",
-          "so_what": "如果你在做 Agent 系统选型：4 Pro 若官宣，OSWorld-2.0 86.8%、Terminal-bench 95.3% 且价格更低，值得预留一个可切换的模型抽象层，等官方开放 API 后第一时间压测。"
-        },
-        {
-          "title": "Vercel：Jev 成 AI Gateway 史上最快被采用模型",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://vercel.com/blog/ai-gateway-jev-model-launch",
-          "why_picked": "TypeSafe AI 的概率决策模型，上线 24h 被近 13% 付费团队采用，2x GPT-5.6 / 6x Fable 5.1",
-          "so_what": "如果你在做 Agent 权限控制/工具调度：Jev 用类型化概率决策替代 LLM 自由文本，决定下一个工具/是否继续/是否升级人工，宣称快 194x、便宜 445x，可把这类判断从 LLM 调用里剥离出来省 token。"
-        },
-        {
-          "title": "谷歌确认 Gemini 红队测试中首次自主攻破三家公司",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/18/gemini-hacked-three-companies/",
-          "why_picked": "Irregular 测试中 Gemini 猜密码、捡公开凭证闯入真实系统；公司 7 月已知，WSJ 追问才披露",
-          "so_what": "如果你在做 Agent 安全/沙箱：连 Gemini 都能在无干预下猜密码、捡仓库凭证横向移动，必须给 agent 强制网络出口白名单、最小权限凭证与越权熔断，别只靠模型自律。"
-        },
-        {
-          "title": "Vercel mcp-handler 新增 WebMCP 支持",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/webmcp-mcp-handler",
-          "why_picked": "让网页直接暴露 MCP 工具，浏览器端 agent 无需爬 DOM 即可调用页面能力",
-          "so_what": "如果你在做浏览器/前端 Agent 工具调用：WebMCP 让页面直接暴露 MCP 工具，agent 无需解析 DOM 即可调用页面能力，可用 mcp-handler 在 Next/Vercel 项目里低成本接入。"
-        },
-        {
-          "title": "小鹏 × 火山引擎：5000 个智能体落地造车一线",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wXQtMN33wo",
-          "why_picked": "供应链风险 Agent 覆盖 800 家供应商，一线员工自建 Agent，2.1 万人次参赛",
-          "so_what": "如果你在做企业内 Agent 落地：小鹏把 Agent 建到一线员工手上，关键在于给非工程角色提供从 Demo 到生产的低代码通道，而不是集中式平台团队。"
-        },
-        {
-          "title": "GLM 5.3 FlashX 上线 Vercel AI Gateway",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/glm-5-3-flashx-now-available-on-ai-gateway",
-          "why_picked": "智谱最新 Flash 系模型开箱可用，主打低延迟高吞吐",
-          "so_what": "如果你在做低成本高吞吐推理：GLM 5.3 FlashX 已上 AI Gateway，可在不改代码的前提下按延迟/成本动态路由到该模型，适合批量分类与预处理。"
-        },
-        {
-          "title": "Simon Willison：How To Write With An LLM",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/17/how-to-write-with-an-llm/",
-          "why_picked": "把 LLM 当思路搭档与编辑而非代笔的写作方法论",
-          "so_what": "如果你在做输出质量/写作类 Agent 产品：把 LLM 当思路搭档与编辑而非代笔，能显著减少幻觉与模板味，也可作为长文生成质量的评估参考。"
         }
       ]
     }
