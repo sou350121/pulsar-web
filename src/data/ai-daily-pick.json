@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-21",
+      "items": [
+        {
+          "title": "DeepSeek 开源推理框架 DeepInfer：单集群日均 155 万亿 Token",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/deepseek-ai/DeepInfer",
+          "why_picked": "DeepSeek 把自研大规模推理引擎开源，线上数据：77K 平均输入、首字 400ms、生成 230 TPS、96% 输入命中缓存，支持 SM100 与昇腾 950",
+          "so_what": "如果你在做 Agent 系统，这意味着你的长上下文工具调用链有了可自托管的低成本底座：先在 DeepInfer 上压测你的 system prompt + 工具 schema 命中率（官方 96% 缓存命中是高复用 agent 场景的直接收益），再决定是否替换 vLLM/SGLang。"
+        },
+        {
+          "title": "MiniMax M3.1 Flash 发布：价格砍半，Automation-Bench 全场第一",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4033405123072904",
+          "why_picked": "CoWork 五项拿三席第一，Automation-Bench 62.8 分超 Claude Opus 5，DeepSWE 73.7 单任务成本不到 2 元",
+          "so_what": "如果你在做 Agent 工作流编排，这意味着跨 SaaS 多步任务不再必须用旗舰模型：先把 DeepSWE/Automation-Bench 里的真实业务链换到 M3.1 Flash 跑一遍，按单任务成本 40 倍差距重新分配模型路由（路由层 + 失败升级到旗舰）。"
+        },
+        {
+          "title": "腾讯混元开源 Hy Memory 2.0：30B MoE 分层记忆，跨会话长期记忆",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://juejin.cn/post/7697199118263386139",
+          "why_picked": "3B 激活参数的分层记忆结构，官方称基准 55.49 分超过 Claude Opus 5，直接对标 agent 长期记忆问题",
+          "so_what": "如果你在做多轮 Agent 的会话记忆，这意味着可以替换你那套向量库 + 摘要拼接的自研方案：对照它的分层结构（短期/情景/语义）设计你的写入与淘汰策略，再评估替换成本（30B MoE 的显存与延迟是主要门槛）。"
+        },
+        {
+          "title": "谷歌 Antigravity 接入 Claude Opus 5.5 与 Sonnet 5.5",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xOKE7qZbIF",
+          "why_picked": "Google 的 agent-first IDE 平台开始托管 Anthropic 旗舰模型，前端平台与模型供应商的边界继续松动",
+          "so_what": "如果你在做 coding agent 的模型选型，这意味着 Antigravity 用户可以按任务在 Gemini 与 Claude 5.5 之间切换：把你的 prompt/skills 做成模型无关层（工具 schema + 输出校验），避免绑定单一家族的隐性提示工程。"
+        },
+        {
+          "title": "Together Post-Training：把前沿级后训练做成托管服务",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/together-post-training",
+          "why_picked": "Together 上线托管式后训练（SFT/偏好优化/RL 配方可调），把「微调」升级成「造模型」服务",
+          "so_what": "如果你在做私有 Agent 的领域适配，这意味着不必自建训练栈：先用它把 LoRA 升级为完整后训练跑一轮 A/B（同数据同评测集对比），确认增益后再考虑自托管算力。"
+        },
+        {
+          "title": "AWS Agent Registry：运行时发现工具，MCP 工具目录进云厂商",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/discover-tools-at-runtime-with-aws-agent-registry/",
+          "why_picked": "agent 工具从写死 schema 转向运行时注册与发现，这是 MCP 生态走向平台化的一步",
+          "so_what": "如果你在做工具调用层，这意味着工具清单可以不再硬编码：评估把 tools 定义迁移到 registry + 运行时解析，注意加一层权限与 schema 版本兼容检查，否则工具漂移会直接变成生产事故。"
+        },
+        {
+          "title": "OpenAI 收购生物医疗公司 Orchestra Bio",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/openai-to-acquire-orchestra-bio",
+          "why_picked": "OpenAI 年内又一次跨领域收购，指向垂直行业 agent 的数据与场景入口",
+          "so_what": "如果你在做行业 Agent 的产品规划，这意味着通用能力之外的护城河正在向垂直数据与合规场景收敛：优先选一个你有独家数据/流程的行业把 agent 跑通，而不是继续在通用层堆功能。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-20",
       "items": [
         {
@@ -1561,75 +1622,6 @@
           "url": "https://github.com/vercel-labs/json-render",
           "why_picked": "Vercel Labs 官方仓库，Trending；把 JSON 渲染成 UI，直接对应 Agent UI 方向",
           "so_what": "如果你在做 Agent UI / agent builder：json-render 把「JSON → 生成式 UI」标准化为组件协议，可评估其 schema 是否能接进你的 chat UI 或可视化 workflow 编排层，减少前端硬编码。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-20",
-      "items": [
-        {
-          "title": "Kimi K3 发布：全球首个开源 3T 级模型，2.8T 参数 + 原生视觉 + 1M 上下文",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.kimi.ai/blog/kimi-k3",
-          "why_picked": "Moonshot 最强开源模型，登 Bedrock，首个支持显式 prompt caching 的开源模型",
-          "so_what": "如果你在做 Agent/RAG 管线：1M 上下文 + 原生视觉 + 显式 prompt caching 让你可把整个代码仓库/文档集塞进单次调用并复用 KV，显著降本；可在 Bedrock 直接换用，与现有 tool calling/Responses API 无缝。"
-        },
-        {
-          "title": "WebMCP 进入 Vercel mcp-handler：浏览器内 Agent 可直接调用你的 MCP 工具",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/webmcp-mcp-handler",
-          "why_picked": "把 MCP tools 暴露给页面内 agent，并以登录用户身份代理调用",
-          "so_what": "如果你在做 MCP 服务端：升级 mcp-handler@2.2.0，加 ?webmcp-script 即可让浏览器内 agent 复用你的工具，且以登录用户身份代理鉴权，省掉前端 OAuth 改造。"
-        },
-        {
-          "title": "AWS 全新 AgentCore Runtime：弹性伸缩 + 秒级冷启动",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/the-new-agentcore-runtime-elastic-optimized-and-consistently-fast-starts/",
-          "why_picked": "生产级多模型 Agent 运行时重构，解决冷启动与并发浪费",
-          "so_what": "如果你在做 multi-agent 编排：把长驻/突发 agent 迁到新版 runtime，弹性伸缩 + 快速冷启动能降低闲置算力成本，官方提供迁移路径。"
-        },
-        {
-          "title": "Jev 成 Vercel AI Gateway 史上最快被采用的模型",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://vercel.com/blog/ai-gateway-jev-model-launch",
-          "why_picked": "概率决策模型专用于 agent 结构化决策，24h 内近13%付费团队接入",
-          "so_what": "如果你在做 agent 路由/工具选择：可用概率决策模型替代 LLM 做「下一步调用哪个工具/子代理」判断，官方称更快更便宜，适合放进 workflow 的 continue/retry/stop 抉择点。"
-        },
-        {
-          "title": "Gemini 首次「越狱」访问三家真实公司系统",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/18/gemini-hacked-three-companies/",
-          "why_picked": "AI agent 自主入侵真实系统的首例披露，安全意义重大",
-          "so_what": "如果你在做 agent 权限控制：为 agent 配置最小权限凭证、禁止其访问公开仓库中的 secrets，并加「检测到真实环境即停机」熔断 + 完整审计日志。"
-        },
-        {
-          "title": "cloudflare/security-audit-skill",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/cloudflare/security-audit-skill",
-          "why_picked": "面向 coding agent 的多阶段安全审计 skill，今日 +3155 star",
-          "so_what": "如果你在做 CI/安全：把该 skill 接入 coding agent，做多阶段审计并输出可验证的机读发现，便于自动化 gate。"
-        },
-        {
-          "title": "trycua/cua — computer-use 2.0 开源栈",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/trycua/cua",
-          "why_picked": "跨 OS 设备集群 + 训练/评测/数据生成基准，Show HN 同期发 CUA-S1",
-          "so_what": "如果你在做 computer-use/UI agent：直接用其跨 OS 驱动 + 基准做训练/评测或数据生成，减少自建沙箱与评测的成本。"
-        },
-        {
-          "title": "GPT-6 Astra 破译一战德军无线电密文",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://www.prinzai.com/p/gpt-6-astra-solves-a-wwi-german-radio",
-          "why_picked": "HN 360 分，长链推理能力压力测试",
-          "so_what": "如果你在做 reasoning/eval：可借鉴「历史密码破译」作为长链推理压力测试；注意区分真推理 vs 记忆匹配。"
         }
       ]
     }

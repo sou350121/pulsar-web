@@ -1,102 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-09-20",
-      "config_version": 16,
-      "items": [
-        {
-          "title": "CUA-S1 / trycua/cua：开源 computer-use 驱动、跨系统云端桌面 + 专用决策模型与基准",
-          "url": "https://github.com/trycua/cua",
-          "source": "GitHub / HN Show",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "trycua",
-          "labels": [
-            "computer-use",
-            "agent",
-            "sandbox"
-          ],
-          "direction_note_prefix": "",
-          "why": "开源桌面自动化驱动 + CUA-S1 决策模型 + 评测基准，agent 操控 GUI 更可控"
-        },
-        {
-          "title": "AWS 新版 Amazon Bedrock AgentCore runtime：弹性伸缩、稳定冷启动、按会话用量计费",
-          "url": "https://aws.amazon.com/blogs/machine-learning/the-new-agentcore-runtime-elastic-optimized-and-consistently-fast-starts/",
-          "source": "AWS ML Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "agent-runtime",
-            "serverless",
-            "infra"
-          ],
-          "direction_note_prefix": "",
-          "why": "会话结束即回收内存、冷启动不随容器/并发变化，长任务 agent 托管更省"
-        },
-        {
-          "title": "Amazon SageMaker HyperPod Inference Gateway：GPU 感知路由，首 token 延迟最高降 82%",
-          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-amazon-sagemaker-hyperpod-inference-gateway/",
-          "source": "AWS ML Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "inference",
-            "gateway",
-            "routing"
-          ],
-          "direction_note_prefix": "",
-          "why": "一个 EKS 插件替代轮询路由，消除 GPU 空转、压低首 token 延迟"
-        },
-        {
-          "title": "DeepSeek API 计费更新：调休上班周末与中国法定节假日全天按空闲时段价",
-          "url": "https://api-docs.deepseek.com/quick_start/pricing",
-          "source": "DeepSeek API Docs（官方）",
-          "category": "基础设施",
-          "importance": "read-only",
-          "developer": "DeepSeek",
-          "labels": [
-            "pricing",
-            "api",
-            "cost"
-          ],
-          "direction_note_prefix": "",
-          "why": "V4 系模型周末/节假日全天走低谷价，调用成本更可预测"
-        },
-        {
-          "title": "Anthropic：Claude 加速生物分子建模（30+ 开源模型提速约 4x）+ 蛋白质设计公开赛",
-          "url": "https://www.anthropic.com/research/claude-uplifts-biomolecular-modeling",
-          "source": "Anthropic Research",
-          "category": "垂直应用",
-          "importance": "read-only",
-          "developer": "Anthropic",
-          "labels": [
-            "science",
-            "vertical",
-            "agents"
-          ],
-          "direction_note_prefix": "",
-          "why": "科学垂类成 Claude 落地样板；比赛条款排除中国参赛者，值得留意"
-        },
-        {
-          "title": "ChatGPT for Word 上线：全套餐（含 Free）可用，支持修订痕迹/批注/Skills",
-          "url": "https://www.36kr.com/p/3989804522912774",
-          "source": "36氪（OpenAI 官方插件发布）",
-          "category": "UI/UX 工具",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "chat-ui",
-            "office",
-            "integration"
-          ],
-          "direction_note_prefix": "",
-          "why": "免费档也能在 Word 内直接改稿，OpenAI 把 AI 入口铺进 Office 三件套"
-        }
-      ]
-    },
-    {
       "date": "2026-09-21",
       "config_version": 17,
       "items": [
@@ -2472,6 +2376,158 @@
           ],
           "direction_note_prefix": "",
           "why": "多 agent 事故归因的现成结构：实体图谱替代逐层翻日志"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "config_version": 20,
+      "items": [
+        {
+          "title": "DeepSeek 开源生产推理框架 DeepInfer（Apache 2.0）",
+          "url": "https://github.com/deepseek-ai/DeepInfer",
+          "source": "GitHub / DeepSeek 官方 X",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "deepseek-ai",
+          "labels": [
+            "inference",
+            "cost",
+            "open-source"
+          ],
+          "direction_note_prefix": "",
+          "why": "生产栈开源：投机解码+SM100/Ascend 950，自托管成本可直接下降"
+        },
+        {
+          "title": "腾讯混元开源 Hy Memory 2.0 记忆框架 + MemHub 桌面端",
+          "url": "https://github.com/Tencent-Hunyuan/Hy-Memory",
+          "source": "GitHub / 腾讯混元",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "Tencent-Hunyuan",
+          "labels": [
+            "agent-memory",
+            "sdk",
+            "desktop"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "跨 Claude Code/Cursor 的统一本地记忆层，带桌面端与 CLI"
+        },
+        {
+          "title": "IBM ALTK-Evolve：学习式 playbook 让 GPT-4.1 登顶 τ²-bench 零售",
+          "url": "https://huggingface.co/blog/ibm-research/altk-evolve-bc",
+          "source": "Hugging Face Blog (IBM Research)",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "AgentToolkit",
+          "labels": [
+            "evals",
+            "agent-memory",
+            "prompt"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "不改权重、只改 system prompt 的可学习 playbook，复现成本极低"
+        },
+        {
+          "title": "OpenAI 收购 Orchestra Bio，把 agent 接进药物研发流程",
+          "url": "https://openai.com/index/openai-to-acquire-orchestra-bio",
+          "source": "OpenAI Blog",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "life-sciences",
+            "workflow-agent",
+            "m&a"
+          ],
+          "direction_note_prefix": "",
+          "why": "Rosalind 从模型走向编排层，生物医药成为 agent 主战场"
+        },
+        {
+          "title": "Smartsheet MCP Server 正式可用：40+ 工具打通项目管理",
+          "url": "https://aws.amazon.com/blogs/machine-learning/work-management-context-for-ai-agents-with-smartsheet-mcp-on-aws/",
+          "source": "AWS ML Blog",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "Smartsheet",
+          "labels": [
+            "mcp",
+            "work-management"
+          ],
+          "direction_note_prefix": "",
+          "why": "协作工具全面 MCP 化，agent 可直接改任务与排期"
+        },
+        {
+          "title": "Amazon Quick × Bedrock AgentCore：供应链对话式决策",
+          "url": "https://aws.amazon.com/blogs/machine-learning/from-data-to-decisions-conversational-supply-chain-intelligence-with-amazon-quick-and-amazon-bedrock-agentcore/",
+          "source": "AWS ML Blog",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "mcp",
+            "agentcore",
+            "enterprise"
+          ],
+          "direction_note_prefix": "",
+          "why": "MCP 组合工具层 + 人工审批关卡的企业 agent 参考架构"
+        },
+        {
+          "title": "ChatGPT Work 落地独立加盟商：现金对账时间减少 94%",
+          "url": "https://openai.com/index/ted-taylor-restaurant",
+          "source": "OpenAI Blog",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "enterprise",
+            "workflow"
+          ],
+          "direction_note_prefix": "",
+          "why": "非技术小企业的真实 agent 落地样本，比 demo 更有说服力"
+        },
+        {
+          "title": "FairStress：把 LLM 决策公平性测到「改变答案的难易度」",
+          "url": "https://huggingface.co/blog/allenai/fairstress",
+          "source": "Hugging Face Blog (AllenAI)",
+          "category": "其他",
+          "importance": "actionable",
+          "developer": "allenai",
+          "labels": [
+            "evals",
+            "fairness",
+            "benchmark"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "新公平性基准已并入 Olmo-eval，风控/招聘类 agent 可即用"
+        },
+        {
+          "title": "eMudhra 中间 CA 私钥泄露：所有信任包需紧急更新",
+          "url": "https://simonwillison.net/2026/Oct/20/emudhra-certificates/",
+          "source": "simonwillison.net",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "eMudhra",
+          "labels": [
+            "security",
+            "supply-chain"
+          ],
+          "direction_note_prefix": "",
+          "why": "8 个中间 CA 沦陷，pip/uv 已发版，agent 沙箱镜像须重建"
+        },
+        {
+          "title": "MiniMax M3.1 Flash 发布：200+ TPS，价格砍到 1/2",
+          "url": "https://www.36kr.com/p/4032947936662665",
+          "source": "36氪",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "MiniMax",
+          "labels": [
+            "model-release",
+            "cost"
+          ],
+          "direction_note_prefix": "",
+          "why": "高吞吐低价 Flash 档位竞争加剧，agent 高频调用成本再降"
         }
       ]
     }
