@@ -1,6 +1,59 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-22",
+      "items": [
+        {
+          "title": "Anthropic 开启 Claude Duet 研究预览：能主动找上门的 agent",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://claude.com/resources/articles/claude-duet",
+          "why_picked": "proactive agent 首次由一线厂商以独立 App 形态交付，安全设计值得抄",
+          "so_what": "如果你在做Agent权限控制：Duet 的凭据隔离走 Managed Agents 而非把 token 塞进上下文，动作前过 auto-mode 分类器，值得对照你现在的 tool-call 审批链；主动触发意味着要给 agent 加「打扰预算」与早报式批量汇总，避免逐条打断。"
+        },
+        {
+          "title": "Patch the Planet 首战：agent 找到 PHP 级漏洞",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities",
+          "why_picked": "AI 找漏洞已成立，瓶颈转到补丁与人审链路",
+          "so_what": "如果你在做Agent安全评估：把「发现→验证→移交给维护者」拆成三段落，类比 Patch the Planet 的工程师先复核再触达模式，能把 agent 产出转成可采纳工单而非噪声；顺手跑一下他们开源的 php2shell-checker Codex skill 做版本自查。"
+        },
+        {
+          "title": "ALTK-Evolve：GPT-4.1 靠学来的 playbook 登顶 τ²-bench 客服榜",
+          "category": "实验",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ibm-research/altk-evolve-bc",
+          "why_picked": "证明 prompt 级经验蒸馏可替代换更强模型，成本账完全变了",
+          "so_what": "如果你在做Agent工具调用/客服类流程：用同一模型跑失败轨迹后蒸馏成短规则 append 到 system prompt，比换 GPT-5.5 这类推理模型便宜得多；先在 τ²-bench retail 复现 67.5% Pass^4 再迁移到自有域，注意规则要按域维护否则会互相打架。"
+        },
+        {
+          "title": "OpenAI 把安全要求延伸到经伙伴分发的模型",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://openai.com/index/broad-access-through-consistent-standards",
+          "why_picked": "多跳分发下的合规责任第一次被官方写清",
+          "so_what": "如果你在做Agent平台的模型接入层：别只拿 API 条款当合规凭据，要确认托管/转售方与 OpenAI 安全政策一致；封装的 GPT-6 Astra 服务在采购或上架前需要补一层一致性声明。"
+        },
+        {
+          "title": "Terminal X：用 agent 承载投研的记忆债，Eval Agent 打分",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/terminal-x",
+          "why_picked": "agent 从 demo 走进带审计诉求的专业工作流",
+          "so_what": "如果你在做Agent评估：学它把评判标准显式编码成独立 Eval Agent（占位约 25% 抓偏离、同流程便宜约 30%），比人工抽检稳定；forward-deploy 到客户自有云的模式也适合受监管行业的 RAG/投研管线。"
+        },
+        {
+          "title": "GPT-Rosalind 数千 agent 32 分钟扫数百万小鼠脑细胞",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://openai.com/index/scaling-ai-research-for-complex-biological-data",
+          "why_picked": "大规模并行 agent 做数据解释的可复用范式，而非单 agent 长跑",
+          "so_what": "如果你在做Agent编排：把「海量切片+文献关联」拆给上千个短任务 agent 并行，再由一个汇总层做交叉验证，比单 agent 超长上下文便宜且可审计；任务边界与去重要在分发前定死，否则会重复烧 token。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-21",
       "items": [
         {
@@ -1569,59 +1622,6 @@
           "url": "https://github.com/akitaonrails/ai-memory",
           "why_picked": "为 coding agent CLI 提供长期记忆与跨厂商交接，Rust 实现登 Trending",
           "so_what": "如果你在做 coding agent 工作流：ai-memory 把会话记忆外置，可在 Claude Code 与 Codex 等不同 agent 间交接上下文，值得评估能否替代你自己拼的 memory 或 RAG 层。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-21",
-      "items": [
-        {
-          "title": "AX：Google 工程师开源的声明式 agentic 编排器（基于 Agent Substrate）",
-          "category": "新发布",
-          "source": "HN",
-          "url": "https://agentexecutor.io",
-          "why_picked": "HN 热榜，Google 工程师开源；把 agent 任务声明成 K8s 风格 task.yaml，一条 ax apply 批量运行，背靠 Agent Substrate 做到亚秒级挂起/恢复",
-          "so_what": "如果你在搭 Agent 运行时/编排层：AX 把 sandbox、workspace、网络围栏声明成 CRD（task.yaml + ax apply），支持亚秒级挂起/恢复与密集多路复用；可直接对照你现有的 sandbox 方案（Vercel Sandbox / E2B），评估是否该把编排从代码搬到声明式控制面。"
-        },
-        {
-          "title": "llm-keys-ui 0.1：手机远程驱动 coding agent 的密钥管理 UI",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/20/llm-keys-ui/",
-          "why_picked": "Simon Willison 新发布的小工具，从手机端配置/轮换 agent 的 API key，把密钥从本地明文配置剥离",
-          "so_what": "如果你在给 coding agent 做密钥/凭据管理：llm-keys-ui 提供手机端 UI 远程配置与轮换 API key，把密钥从明文配置里剥离；对你正在处理的 Agent 凭证 sprawl 是一条轻量可借鉴的实践。"
-        },
-        {
-          "title": "Amazon SageMaker HyperPod Inference Gateway 上线：GPU 感知路由，首 token 延迟最高降 82%",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-amazon-sagemaker-hyperpod-inference-gateway/",
-          "why_picked": "AWS 官方博客，GPU 感知路由显著降低首 token 延迟，面向多模型 agent 推理",
-          "so_what": "如果你在自建推理服务：GPU 感知路由 + 首 token 延迟最高降 82%，值得对照你现有的 vLLM/路由层；对多模型 agent 的低延迟 tool-calling 收益明显，可优先在冷启动敏感的网关处试点。"
-        },
-        {
-          "title": "voxium：大公司里「万物皆由 Claude Code 生成」的一线现场",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/20/voxium/",
-          "why_picked": "一线工程师吐槽：specs/code/PRD/报告全由 Claude Code 产出，L1 到 L7 只负责按 enter、无人 review",
-          "so_what": "如果你在评估把 agent 写代码引入团队：这条一线吐槽点出「人类只按 enter、无人 review」的失控风险；建议在 CI 里加人类审查闸门与变更可归属（谁批的、为什么），避免交付物堆量但无人负责。"
-        },
-        {
-          "title": "affaan-m/ECC：agent harness 性能优化系统（Trending 榜首）",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/affaan-m/ECC",
-          "why_picked": "GitHub Trending 榜首，把 skills/instincts/memory/security/research-first 打包成 harness 优化层，覆盖 Claude Code、Codex、Cursor",
-          "so_what": "如果你在用 Claude Code/Codex 等 agent harness：ECC 把 skills/memory/security/research 打包成可复用的 harness 优化层，可作为你现有 agent 工程配置的对照集，挑其 memory 与 security 模块试挂。"
-        },
-        {
-          "title": "vercel-labs/json-render：生成式 UI 框架（JSON → UI）",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/vercel-labs/json-render",
-          "why_picked": "Vercel Labs 官方仓库，Trending；把 JSON 渲染成 UI，直接对应 Agent UI 方向",
-          "so_what": "如果你在做 Agent UI / agent builder：json-render 把「JSON → 生成式 UI」标准化为组件协议，可评估其 schema 是否能接进你的 chat UI 或可视化 workflow 编排层，减少前端硬编码。"
         }
       ]
     }

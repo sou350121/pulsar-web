@@ -1,72 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-09-21",
-      "config_version": 17,
-      "items": [
-        {
-          "title": "AX：Google 工程师开源的声明式 agentic 编排器（基于 Agent Substrate）",
-          "url": "https://agentexecutor.io",
-          "source": "Hacker News / agentexecutor.io",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "—（Google 员工个人开源项目）",
-          "labels": [
-            "orchestration",
-            "sandbox",
-            "agent-infra"
-          ],
-          "direction_note_prefix": "",
-          "why": "把 agent 当新工作负载：声明式任务 + 沙箱 + 亚秒恢复"
-        },
-        {
-          "title": "Prompts aren't Real：生产级 agent 的失败模式与评测盲区",
-          "url": "https://evaluation.club",
-          "source": "evaluation.club",
-          "category": "其他",
-          "importance": "read-only",
-          "developer": "—",
-          "labels": [
-            "evals",
-            "agents",
-            "production"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "一线工程师复盘：提示词不是可靠原语，评测要看行为"
-        },
-        {
-          "title": "llm-keys-ui 0.1：手机远程驱动 coding agent 的密钥管理 UI",
-          "url": "https://simonwillison.net/2026/Sep/20/llm-keys-ui/",
-          "source": "simonwillison.net",
-          "category": "UI/UX 工具",
-          "importance": "read-only",
-          "developer": "simonw",
-          "labels": [
-            "coding-agent",
-            "keys",
-            "plugin"
-          ],
-          "direction_note_prefix": "",
-          "why": "避免把 API key 粘进 agent 会话，改用本地 UI 写入"
-        },
-        {
-          "title": "voxium：大公司里「万物皆由 Claude Code 生成」的一线现场",
-          "url": "https://simonwillison.net/2026/Sep/20/voxium/",
-          "source": "simonwillison.net",
-          "category": "其他",
-          "importance": "read-only",
-          "developer": "—",
-          "labels": [
-            "vibe-coding",
-            "coding-agent",
-            "culture"
-          ],
-          "direction_note_prefix": "",
-          "why": "代码量非瓶颈，工程师 12 小时只是「按回车」"
-        }
-      ]
-    },
-    {
       "date": "2026-09-22",
       "config_version": 17,
       "items": [
@@ -2528,6 +2462,132 @@
           ],
           "direction_note_prefix": "",
           "why": "高吞吐低价 Flash 档位竞争加剧，agent 高频调用成本再降"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "config_version": 20,
+      "items": [
+        {
+          "title": "Claude Duet：Anthropic 首个主动式个人 Agent（iOS/Android + claude.ai）",
+          "url": "https://claude.com/es/resources/articles/claude-duet",
+          "source": "anthropic.com",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "agent-ui",
+            "proactive-agent",
+            "safety"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "主动式 agent 从 API 走进消费级 App，安全层成为产品设计前置"
+        },
+        {
+          "title": "OpenAI 模型与 Codex agentic 工作流进 Google Cloud Model Garden",
+          "url": "https://openai.com/index/openai-models-google-cloud",
+          "source": "openai.com",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "cloud",
+            "governance",
+            "codex"
+          ],
+          "direction_note_prefix": "",
+          "why": "首次进 Google 云，企业可凭既有治理与配额采购 OpenAI 模型"
+        },
+        {
+          "title": "OpenAI 12 小时 prompt caching 上线 Responses API（写入 2.5x）",
+          "url": "https://developers.openai.com/api/docs/changelog",
+          "source": "developers.openai.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "OpenAI",
+          "labels": [
+            "prompt-caching",
+            "cost",
+            "agent-memory"
+          ],
+          "direction_note_prefix": "",
+          "why": "长任务 agent 可复用工具体系达 12 小时，缓存命中降价 90%"
+        },
+        {
+          "title": "AWS Deep Insight：生产级多智能体系统五大挑战与拆解",
+          "url": "https://aws.amazon.com/blogs/machine-learning/5-production-challenges-in-multi-agent-systems-and-how-deep-insight-solved-them/",
+          "source": "aws.amazon.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "multi-agent",
+            "orchestration",
+            "context-engineering"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "七角色 agent 链路开源可跑，是最接近生产的多智能体样板"
+        },
+        {
+          "title": "AAIF：用 1B SLM 做路由、前沿模型只兜底的边缘 agent 架构",
+          "url": "https://aws.amazon.com/blogs/machine-learning/adaptive-agentic-intelligence-framework-using-strands-agents/",
+          "source": "aws.amazon.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "model-routing",
+            "edge",
+            "strands"
+          ],
+          "direction_note_prefix": "",
+          "why": "本地 SLM 分流 + 云端兜底，把 agent 推理成本压到边缘设备"
+        },
+        {
+          "title": "OpenAI 发布企业访问的「一致标准」规范（模型准入与用途边界）",
+          "url": "https://openai.com/index/broad-access-through-consistent-standards",
+          "source": "openai.com",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "policy",
+            "enterprise",
+            "compliance"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "企业采购 agent 时可直接引用其分级准入话术"
+        },
+        {
+          "title": "Bedrock AgentCore + Quick 的对话式供应链决策示例",
+          "url": "https://aws.amazon.com/blogs/machine-learning/securing-quick-access-from-corporate-networks-with-aws-privatelink/",
+          "source": "aws.amazon.com",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "AWS",
+          "labels": [
+            "enterprise",
+            "privatelink",
+            "governance"
+          ],
+          "direction_note_prefix": "",
+          "why": "企业内网接入 agent 助手的安全基线参考"
+        },
+        {
+          "title": "Claude Code Hooks 入门：自动格式化、跑测试、拦敏感文件",
+          "url": "https://juejin.cn/post/7697150457639092278",
+          "source": "juejin.cn",
+          "category": "UI/UX 工具",
+          "importance": "actionable",
+          "developer": "Anthropic (社区实践)",
+          "labels": [
+            "coding-agent",
+            "harness",
+            "hooks"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "用 hooks 把编码 agent 的护栏做成可复制的配置模板"
         }
       ]
     }

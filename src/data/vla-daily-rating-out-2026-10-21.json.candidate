@@ -4,8 +4,8 @@
   "total": 30,
   "counts": {
     "⚡": 0,
-    "🔧": 3,
-    "📖": 26,
+    "🔧": 5,
+    "📖": 24,
     "❌": 1
   },
   "parse_error": "",
@@ -24,8 +24,8 @@
       "abstract_snippet": "arXiv:2610.27040v1 Announce Type: new Abstract: General-purpose multimodal models, including GPT-6 Astra and Claude Opus 5.5, demonstrate broad capabilities in embodied manipulation. Our analysis indicates that this generality is accompanied by strong spatial perception, as Astra can determine where to interact with task-relevant entities amid visual distractors. Because spatial perception connects high-level reasoning to the physical scene, we investigate scaling visual grounding to strengthen",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "面向具身基础模型的空间 grounding 规模化训练方案，摘要以通用多模态模型的空间判断能力作动机分析，但未给出操作 benchmark 与 VLA 策略层面的对比结果。",
-      "affiliation": "[上海AI Lab|Mu]"
+      "reason": "分析通用多模态模型在具身操作中的强空间感知能力，并据此扩展以空间定位为核心的物理基础模型 ACE-Brain-0.6；属能力分析与版本迭代报告，摘要未见可直接复用的训练配方或多 benchmark 对比。",
+      "affiliation": "[上交|Mu]"
     },
     {
       "title": "What Would Removing This Corruption Change? Failure Attribution for Vision-Language-Action Models",
@@ -42,8 +42,8 @@
       "abstract_snippet": "arXiv:2610.27277v1 Announce Type: new Abstract: Vision-language-action (VLA) models are sensitive to visual corruptions, but knowing that a corruption is typically harmful does not establish whether removing it would benefit the current episode. Furthermore, when several corruptions co-occur, deciding what to correct requires understanding which ones contribute to failure risk and how much their removal would help. We define this problem as failure attribution. Detecting corruption presence alon",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "",
-      "affiliation": ""
+      "reason": "用反事实扰动做 VLA 失败归因：判断去掉某个视觉 corruption 是否真能改善当前 episode，并处理多 corruption 共存时的归因歧义；提供有原理支撑的失效诊断工具，但不改策略架构。",
+      "affiliation": "[MIT|Fan]"
     },
     {
       "title": "HATCH: Hardware-Attested Task Chains for Verifiable Manipulation",
@@ -58,7 +58,7 @@
       "abstract_snippet": "arXiv:2610.27485v1 Announce Type: new Abstract: Capability claims in robot manipulation are unverifiable, and existing leaderboards are each closed, simulated, or gameable. We propose HATCH, a robot escape room: an openly specified, physically replicable, sensor-scored, and unrehearsable benchmark. Tasks span five skill categories at three difficulty levels and are chained so that the sensor confirming one task's completion unlocks the next, turning a room into a single long-horizon evaluation.",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "",
+      "reason": "提出机器人“密室逃脱”式可验证操作 benchmark：物理可复现、传感器自动评分、不可预演，针对现有排行榜封闭/仿真/可刷分的问题；单作者，评测协议能否被社区采纳待观察。",
       "affiliation": ""
     },
     {
@@ -74,7 +74,7 @@
       "abstract_snippet": "arXiv:2610.27496v1 Announce Type: new Abstract: Foundation models now serve as reasoning layers for robot teams, but it remains unclear whether embodiment-specialized vision-language models (VLMs) preserve the social-reasoning capabilities of general-purpose VLMs. We evaluate Gemini Robotics-ER on SHREC, a benchmark of real human-robot social interactions, and compare it with published general-purpose VLM baselines. Robotics-ER outperforms GPT-4o-mini on error/competence detection but performs w",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "评测具身专用 VLM（Gemini Robotics-ER）在社会推理上是否丢失了通用 VLM 的能力，属 VLM 能力测评，与操作策略训练无直接接口。",
+      "reason": "评测 Gemini Robotics-ER 等具身专用 VLM 在社会推理上是否相对通用 VLM 出现能力退化，结论对多机协作规划选型有参考；但与操作策略学习无直接关系。",
       "affiliation": ""
     },
     {
@@ -92,7 +92,7 @@
       "abstract_snippet": "arXiv:2610.27657v1 Announce Type: new Abstract: Vision-Language-Action (VLA) models generate robot actions from visual observations and language instructions, but effective manipulation also requires anticipating how the environment will change. Existing world-action models explore future image prediction and latent dynamics modeling. However, generating complete future images can be computationally expensive, while highly compressed latent representations may obscure local changes. To address t",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "用 patch 级未来隐变量增量替代整图未来预测来条件化动作生成，减少 world-action 模型对无关区域的冗余预测；与世界模型分支多篇同期工作思路接近。",
+      "reason": "把 world-action model 的监督从“预测未来图像”改为 patch 级未来隐特征变化，减少与动作无关的像素级预测冗余；对世界模型式 VLA 有参考价值，但摘要未给出多 benchmark 的量化对比。",
       "affiliation": ""
     },
     {
@@ -108,8 +108,8 @@
       "abstract_snippet": "arXiv:2610.27736v1 Announce Type: new Abstract: Human-collected real-world robotic manipulation demonstrations often contain mixed-quality trajectories, including hesitant, indirect, or inefficient action segments. While diffusion- and flow-based policies can model such multimodal data, standard behavior cloning (BC) assigns equal likelihood to all demonstrated actions and may therefore reproduce suboptimal modes. Offline RL value estimates offer a natural signal for biasing policies toward high",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "针对真实示范中的犹豫、绕路等低质片段，用 advantage 加权在隐空间引导一步生成策略，免去多步去噪；本质是 AWR+隐空间蒸馏的组合。",
-      "affiliation": "[A*STAR]"
+      "reason": "针对真机演示中混杂犹豫/低效片段的问题，用 advantage 加权在隐空间引导单步生成策略，避开 diffusion/flow 的多步采样开销；对混合质量数据的训练权重设计有借鉴意义。",
+      "affiliation": ""
     },
     {
       "title": "Multi-View Latent Action Pretraining for Cross-Embodiment Robot Learning from Videos",
@@ -124,7 +124,7 @@
       "abstract_snippet": "arXiv:2610.27794v1 Announce Type: new Abstract: Action-free videos are an appealing substitute for costly teleoperated data. Latent action models (LAMs) turn videos into a supervision signal by inferring abstract actions between frames. Existing LAMs observe a single camera view, which resolves 6D robot actions only ambiguously missing out-of-plane movements and potential occlusions. We propose a LAM that ingests synchronized multi-camera views using cross-attention to resolve depth and occlusio",
       "pub_date": "2026-10-21",
       "rating": "🔧",
-      "reason": "用多视角视频做 latent action 预训练，解决单视角 LAM 无法消解 6D 旋转歧义的问题，把无标注人类视频转成跨本体动作监督；可直接嵌入现有视频预训练流程。",
+      "reason": "用多视角视频做隐动作预训练，消解单视角 LAM 对 6D 动作的歧义，使 action-free 视频成为可用的跨体态监督信号。可复用点：把现有单视角隐动作模型换成多视角预训练即可接入 VLA 预训练流程。",
       "affiliation": "[TUM|Schoellig]"
     },
     {
@@ -141,7 +141,7 @@
       "abstract_snippet": "arXiv:2610.27861v1 Announce Type: new Abstract: Vision-language-action (VLA) robustness is commonly summarized by aggregate task success, which obscures how individual executions change under distribution shifts and where failures emerge in long-horizon tasks. We introduce \\textbf{RoboCasa-Shift}, a diagnostic robustness benchmark built on RoboCasa365 that combines controlled single-factor shifts, matched clean-perturbed rollouts in which each pair shares the same underlying settings and differs",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "把长程家务任务的成功率按阶段拆开，定位分布偏移下失败发生在哪一步，替代单一聚合成功率；评测类工作，可作为鲁棒性诊断表使用。",
+      "reason": "在 RoboCasa 长程家务任务上做分阶段鲁棒性评测，揭示聚合成功率掩盖的失败发生位置与分布漂移响应曲线；属评测协议贡献，不提出新策略。",
       "affiliation": ""
     },
     {
@@ -158,7 +158,7 @@
       "abstract_snippet": "arXiv:2610.27917v1 Announce Type: new Abstract: History-dependent robotic manipulation requires task context and interaction history, as the current observation alone is insufficient to determine the next action. Hierarchical frameworks use task memory for high-level subgoal reasoning and low-level policies for execution. However, memory updates require accurate completion assessment: similar observations may correspond to different execution phases, and prematurely recording completion can misl",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "用事件触发而非每步刷新高层任务记忆，只在上下文实质变化时更新子目标，降低历史依赖任务中的重复推理开销；分层记忆工程改进。",
+      "reason": "用事件触发式记忆更新维护任务上下文，解决历史依赖操作中当前观测不足以决定动作的问题；分层记忆框架，但未与主流 VLA 主干结合验证收益。",
       "affiliation": ""
     },
     {
@@ -175,7 +175,7 @@
       "abstract_snippet": "arXiv:2610.28019v1 Announce Type: new Abstract: Vision-language-action (VLA) policies are commonly deployed with asynchronous inference in real-world settings, where the next action chunk is generated while the robot is still executing the previous one. By the time the new chunk is committed, the robot and scene have changed, so the chunk is conditioned on a stale observation and task success drops sharply as this inference delay grows. Generating multiple candidate chunks could let newer observ",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "",
+      "reason": "针对异步推理中“动作块生成完时观测已过时”的问题，在提交前用新观测做投机式动作块校验；与同作者 DEFLECT 属同一问题设定的并行工作，差异需对照阅读。",
       "affiliation": ""
     },
     {
@@ -193,7 +193,7 @@
       "abstract_snippet": "arXiv:2610.28109v1 Announce Type: new Abstract: Vision-language-action (VLA) models have achieved strong performance on standard robotic manipulation benchmarks. However, their reliability can degrade substantially when task conditions deviate from the nominal setting. Perturbations in object positions and task instructions may lead to complete task failure. Existing VLA policies generally lack an explicit runtime mechanism for distinguishing these failure modes and selecting an appropriate reco",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "用多智能体闭环框架在物体位置等扰动下提升 VLA 可靠性，摘要仅给框架级描述，未见具体模块设计与量化对比，暂时难以判断可复用点。",
+      "reason": "用闭环多智能体框架提升 VLA 在物体位置与外观扰动下的鲁棒性；摘要停留在框架层面，缺少与单模型基线的量化对比与消融，工程组合成分偏重。",
       "affiliation": ""
     },
     {
@@ -209,7 +209,7 @@
       "abstract_snippet": "arXiv:2610.28164v1 Announce Type: new Abstract: Effective manipulation requires a policy to capture not only about the current scene geometry, but also about how that geometry will evolve under interaction. Existing approaches either augment policies with geometric information from current observations or introduce future prediction as auxiliary supervision, leaving open how predictive geometry should be represented for action generation. Therefore, we propose a two-stage framework, which learns",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "",
+      "reason": "学习“当前场景几何 + 几何随交互演化”的互补预测表征来辅助操作策略；属表征学习改进，需正文确认与 VLA 主干结合后的增益。",
       "affiliation": ""
     },
     {
@@ -225,9 +225,9 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2610.28166v1 Announce Type: new Abstract: Vision-Language-Action (VLA) policies increasingly reason before acting, but existing reasoning models compress this intermediate decision into a single representation. When several plans are valid, this commitment hides alternatives that could otherwise be selected or revised. We introduce the Generative Plan Latent (GPL), which represents the reasoning state as a low-dimensional conditional distribution over plans, such as which object, grasp, or",
       "pub_date": "2026-10-21",
-      "rating": "📖",
-      "reason": "",
-      "affiliation": ""
+      "rating": "🔧",
+      "reason": "把 reason-then-act VLA 的中间推理从单一隐向量改为生成式计划分布，保留多个可行方案供下游策略选择，缓解过早承诺导致的次优执行。可复用点：plan-latent 分布化可移植到任意分层/推理式 VLA。",
+      "affiliation": "[Stanford|Pavone]"
     },
     {
       "title": "Perceives but Doesn't Brake: A Perception-Action Binding Gap in Reasoning Driving VLAs",
@@ -243,7 +243,7 @@
       "abstract_snippet": "arXiv:2610.28184v1 Announce Type: new Abstract: Reasoning-augmented vision-language-action (VLA) driving models can perceive and reason about safety-critical hazards yet fail to translate that evidence into safe actions. We characterize this failure as a perception-action binding gap: hazard information is available inside the model but exerts insufficient control over trajectory generation. Using matched simulated counterfactuals and logged driving replay, we show that in-path hazards are actua",
       "pub_date": "2026-10-21",
       "rating": "❌",
-      "reason": "面向自动驾驶的 reasoning VLA 分析，指出模型能感知并推理危险却无法转化为制动动作；属自动驾驶场景，与机器人操作/VLA 操作策略无实质关联。",
+      "reason": "面向自动驾驶 VLA 的感知-动作绑定失效分析，研究 hazard 信息未能转成制动动作，属自动驾驶场景，与机器人操作无关。",
       "affiliation": "[Stanford|Pavone]"
     },
     {
@@ -259,7 +259,7 @@
       "abstract_snippet": "arXiv:2610.28259v1 Announce Type: new Abstract: Recent advances in visuospatial understanding and agentic reasoning enable direct robotic manipulation with general-purpose multimodal models, but their embodied capabilities remain poorly understood. This paper systematically evaluate GPT-6 Astra for closed-loop robotic manipulation using a lightweight agent execution framework. We first probe three fundamental embodied capabilities-depth perception, embodied in-context learning, and tactile under",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "系统评测 GPT-6 Astra 直接输出机器人动作的能力边界与失效模式，可作为通用多模态模型 embodied 能力的参照基线，本身不提出新方法。",
+      "reason": "系统摸底 GPT-6 Astra 这类通用多模态模型直接输出机器人动作的能力边界与失败模式；属评测研究，不提供可训练方法或数据集。",
       "affiliation": ""
     },
     {
@@ -275,7 +275,7 @@
       "abstract_snippet": "arXiv:2610.28470v1 Announce Type: new Abstract: While large-scale human motion capture datasets provide a rich source of demonstrations for humanoid robot learning, retargeting the diverse motions to different humanoid robots remains a nontrivial challenge. Existing kinodynamic trajectory optimization pipelines are computationally expensive and often require manual adjustments per motion. We present FRDV (Fast Retargeting with Dynamics Validation), a scalable framework consisting of rapid constr",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "把大规模人体动捕数据快速重定向到不同人形本体，绕开传统 kinodynamic 轨迹优化的耗时；属人形 RL 数据管线，与 VLA 策略学习路线不同。",
+      "reason": "提出快速运动重定向管线，把大规模人体 mocap 数据转成不同人形机器人可学的轨迹，替代昂贵的运动学-动力学优化；与 VLA 策略训练暂无直接接口。",
       "affiliation": "[UMass|Kim]"
     },
     {
@@ -307,7 +307,7 @@
       "abstract_snippet": "arXiv:2610.28613v1 Announce Type: new Abstract: Evaluating and post-training robot policies through physical interaction is costly and difficult to scale, motivating action-conditioned world models as interactive simulators. However, visually plausible predictions can misrepresent contact dynamics, providing unreliable feedback for policy evaluation and learning. We introduce PhysCanvas, a state-consistent visuo-tactile world model for contact-rich robot manipulation. PhysCanvas unifies multi-vi",
       "pub_date": "2026-10-21",
       "rating": "🔧",
-      "reason": "用视觉-触觉联合 world model 当交互模拟器，显式校验接触动力学而非只看渲染是否逼真，用于策略评估与后训练；触觉方向可直接复用其评估-后训练闭环。",
+      "reason": "构建视觉-触觉世界模型作为可交互仿真器，用于策略评估与后训练，直指纯视觉预测“看起来对但接触动力学错”的痛点。可复用点：触觉条件世界模型可当 policy eval 与 post-train 的廉价替代环境。",
       "affiliation": ""
     },
     {
@@ -322,9 +322,9 @@
       "already_covered": false,
       "abstract_snippet": "arXiv:2610.28626v1 Announce Type: new Abstract: Motivated by the human ability to integrate experience across language, perception, and action, we introduce UniWALM, a unified world-action-language model that learns video, action, and language in a single shared representation, where each modality is both a conditioning signal and a supervision target. We ask: can jointly generating language enrich this shared representation, improving manipulation and supporting memory-dependent behavior? Unlik",
       "pub_date": "2026-10-21",
-      "rating": "📖",
-      "reason": "把视频、动作、语言映射到同一共享表征，联合训练 world-action-language 模型；与近期多篇 world-action model 方向高度重叠，摘要未给出相对 SOTA 的量化差异。",
-      "affiliation": "[MERL|Romeres]"
+      "rating": "🔧",
+      "reason": "将视频、动作、语言映射到单一共享表征，做统一的世界-动作-语言建模，让三模态在同一 latent 空间互促。可复用点：世界模型与策略联合训练的共享表征设计，便于迁移到现有 VLA 主干。",
+      "affiliation": "[NVIDIA]"
     },
     {
       "title": "Physical AI: Concepts, Techniques, and Challenges",
@@ -339,8 +339,8 @@
       "abstract_snippet": "arXiv:2610.27045v1 Announce Type: cross Abstract: In recent years, physical artificial intelligence (physical AI) has experienced rapid development, capturing significant attention in academia and industry. However, the field has yet to reach consensus on its definition, technical landscape, and core challenges. To address this gap, this monograph seeks to define physical AI, present its technical landscape, and examine each key technical subfield in depth. In doing so, it establishes a unified",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "梳理 physical AI 的定义、技术版图与挑战，属领域综述；适合新人建立框架，但无新方法或数据产出。",
-      "affiliation": "[上交|Zhang]"
+      "reason": "梳理 physical AI 的定义、技术版图与开放挑战，指出领域尚未形成共识；适合作为新人入门与选题地图，非新方法。",
+      "affiliation": "[上交]"
     },
     {
       "title": "CLOSER: Evidence-Aware Active Visual Verification for Embodied Object-Goal Navigation",
@@ -355,7 +355,7 @@
       "abstract_snippet": "arXiv:2610.28476v1 Announce Type: cross Abstract: Object-goal navigation (ObjectNav) requires an embodied agent to find an instance of a specified category in an unseen environment and stop near it. The agent typically relies on an object detector but must judge online from a limited egocentric video stream, sometimes a single frame, whether a detected candidate is the target. Detectors often confidently mistake similar objects, such as a sofa for a bed, and stopping at a false positive fails th",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "在 ObjectNav 中让智能体主动收集证据判断检测到的实例是否真属目标类，改进停止决策；属导航任务，不在操作/VLA 主线。",
+      "reason": "让 ObjectNav 智能体用有限第一视角主动判断目标检测证据是否充分并决定是否继续验证；属具身导航任务，与操作策略无关。",
       "affiliation": ""
     },
     {
@@ -373,7 +373,7 @@
       "abstract_snippet": "arXiv:2603.19233v4 Announce Type: replace Abstract: A fine-tuned Vision-Language-Action (VLA) policy can easily place the alphabet soup in the basket on command, just as it saw during fine-tuning. However, if the basket is shifted five centimeters to the left, it drops the soup off the table. We developed an interpretability pipeline to investigate what such a policy is computing. Injecting task A's activations into the action expert while the policy looks at task B's scene makes pi0.5 execute t",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "从机制层面拆解 VLA 内部特征，解释为何物体平移 5cm 就抓空，指出哪些特征承载空间泛化；可读性强，但属分析而非方法。",
+      "reason": "用机制可解释性方法拆解微调后 VLA 对物体位置变化的特征依赖，解释“篮子左移 5cm 就失手”的成因；对失效诊断与数据增广有启发，但不提出新方法。",
       "affiliation": "[Physical Intelligence]"
     },
     {
@@ -390,7 +390,7 @@
       "abstract_snippet": "arXiv:2605.19294v3 Announce Type: replace Abstract: Vision-Language-Action (VLA) policies increasingly rely on asynchronous inference to hide model latency behind ongoing robot motion. During inference, the robot continues executing its current action chunk while the next chunk is generated from the observation available at inference start. By the time the new chunk is executed, the robot or scene may have changed, so an action that fits the prediction-time state can be misaligned with the execu",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "针对异步推理的动作块延迟，用时间反事实偏好学习训练延迟鲁棒策略；与同组 PACT-VLA 处理同一问题、解法不同，建议合并阅读。",
+      "reason": "用时序反事实偏好学习训练对推理延迟鲁棒的异步 VLA；与同作者 PACT-VLA 同一问题设定，属该线工作的迭代版本。",
       "affiliation": ""
     },
     {
@@ -407,7 +407,7 @@
       "abstract_snippet": "arXiv:2606.10180v2 Announce Type: replace Abstract: We introduce flow control of vision-language-action (VLA) models, a simple and effective way to steer VLA actions in real time through generic inputs, such as a keyboard. This method can be used out-of-the-box and does not require retraining or fine-tuning VLAs. It enables relatively crude user inputs to steer a VLA to align with user intent. Flow control writes the user input into the initial condition of the VLA's flow matching action expert.",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "",
+      "reason": "用键盘等通用输入在推理期实时“操控” VLA 动作流，无需重训或微调，部署即用；方法本身简单，适合做遥操作干预与失败恢复的兜底手段。",
       "affiliation": ""
     },
     {
@@ -423,7 +423,7 @@
       "abstract_snippet": "arXiv:2606.19340v3 Announce Type: replace Abstract: We present ZeroDex, a zero-shot framework for long-horizon dexterous manipulation that grounds language instructions into executable 3D task plans from calibrated multi-view RGB images. Our framework builds on the grounding ability that vision-language models (VLMs) already exhibit in 2D and lifts their predictions into 3D through multi-view fusion, which extends VLM grounding beyond image-space keypoints to the metric 3D quantities that manipu",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "多视角 RGB 标定后把语言指令接成 3D 可执行任务计划，实现零样本长程灵巧操作；属 VLM 规划+解析式执行，不训练操作策略。",
+      "reason": "用标定多视角 RGB 把语言指令 grounding 成 3D 可执行任务计划，零样本完成长程灵巧操作；本质是 VLM 规划 + 原语执行，非端到端 VLA 训练。",
       "affiliation": ""
     },
     {
@@ -439,7 +439,7 @@
       "abstract_snippet": "arXiv:2607.18840v3 Announce Type: replace Abstract: World Action Models (WAMs) offer a promising paradigm for robotic manipulation by jointly modeling visual state transitions and robot actions. However, existing WAMs are constrained by limited temporal context, coarse episode-level language supervision, and predominantly text-only conditioning, which hinder task-progress tracking and fine-grained language-video-action grounding while limiting visual-context reasoning and cross-embodiment transf",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "给 world action model 加上推理增强的长期记忆与 in-context 学习，缓解时序上下文过短、语言监督过粗的问题；版本迭代为主，世界模型赛道已相当拥挤。",
+      "reason": "给世界动作模型加入推理增强记忆与上下文学习，缓解时序上下文过短与语言监督粒度粗的问题；属该系列 v3 迭代，架构范式未变。",
       "affiliation": ""
     },
     {
@@ -456,7 +456,7 @@
       "abstract_snippet": "arXiv:2609.25625v2 Announce Type: replace Abstract: Most minimally invasive surgery is still performed with hand-held laparoscopic instruments, and the surgeon's instrument kinematics are lost when the operation ends; only the endoscope video is kept. This paper presents an end-to-end pipeline that captures this motion in the operating room and uses it to train a surgical robot policy, validated on live animals. We introduce a surgical instrument-state logger that mounts on the shaft of a standa",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "从器械上的运动学记录+内窥镜视频学双臂腹腔镜手术操作，无需机器人采集示范；属手术机器人专项管线，与通用 VLA 路线差异较大。",
+      "reason": "仅用内窥镜视频与器械端运动学学习双臂腹腔镜阑尾切除流程，绕开机器人采集演示；医疗手术专用栈，与通用 VLA 操作管线差异大。",
       "affiliation": ""
     },
     {
@@ -472,7 +472,7 @@
       "abstract_snippet": "arXiv:2610.18118v2 Announce Type: replace Abstract: In contact-rich manipulation, actions that appear equally plausible from vision can produce different contact outcomes, while reactive control based on current tactile feedback may respond too late to prevent failure. We present ForeTac, a predictive contact-guidance framework organized as a represent-predict-evaluate-guide loop. ForeTac encodes the current tactile state, predicts future tactile latent trajectories conditioned on candidate acti",
       "pub_date": "2026-10-21",
       "rating": "🔧",
-      "reason": "预测未来接触状态来引导生成式策略，在接触真正发生前就修正动作，弥补纯反应式触觉反馈的滞后；可叠加到现有 diffusion/flow 策略上做接触丰富任务。",
+      "reason": "针对接触丰富操作中“视觉上同样合理但接触结果不同”“反应式触觉反馈太晚”的问题，用预测性触觉引导把未来接触预期注入生成式策略。可复用点：该触觉预测模块可挂到 diffusion/flow 策略上。",
       "affiliation": ""
     },
     {
@@ -491,8 +491,8 @@
       "abstract_snippet": "arXiv:2610.22146v2 Announce Type: replace Abstract: Vision-Language-Action (VLA) models present a promising paradigm for general-purpose robot manipulation, but closed-loop deployment is often limited by inference efficiency: at each timestep, high-resolution, often multi-view images are encoded into hundreds of visual tokens that dominate transformer computation and latency. Token compression via attention is a natural solution but is challenging for VLA control because (1) decision-critical to",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "按任务条件与时序动态压缩多视角高分辨率视觉 token，降低闭环推理的编码开销；部署向加速工作，思路与已有多篇 VLA 视觉 token 剪枝接近。",
-      "affiliation": "[Texas A&M|Tu]"
+      "reason": "用任务条件化与时序自适应的视觉 token 压缩，降低 VLA 闭环推理中多视角高分辨率编码的开销；思路通用，但速度-成功率折衷需在真机确认。",
+      "affiliation": ""
     },
     {
       "title": "NestedVLA: Learning to Consolidate and Generate Skills for Vision-Language-Action Models",
@@ -508,7 +508,7 @@
       "abstract_snippet": "arXiv:2610.23271v3 Announce Type: replace Abstract: Vision-language-action (VLA) models can learn a wide range of robotic skills, but combining separately trained skills remains challenging. The original training data may be unavailable for joint retraining, while directly merging model weights can cause interference. We propose NestedVLA, which consolidates independently fine-tuned VLA policies without access to their original training data. Instead of merging all updates into one checkpoint, a",
       "pub_date": "2026-10-21",
       "rating": "📖",
-      "reason": "解决分别训练的技能难以合并的问题，在原始训练数据不可得时做技能巩固与生成；技能合并方向已有较多数值/参数融合工作，需正文验证增益。",
+      "reason": "在原始训练数据不可得时，通过嵌套式技能整合与生成合并多个分别训练的 VLA 技能，避免直接权重合并的能力退化；切中技能组合痛点，但缺摘要级量化证据。",
       "affiliation": ""
     }
   ]
