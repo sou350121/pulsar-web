@@ -1,6 +1,91 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-23",
+      "items": [
+        {
+          "title": "Anthropic 把 Agent Skills 捐给 AAIF（Linux Foundation）",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation",
+          "why_picked": "1M skills、70+ 平台接入的事实标准移交中立基金会，agent 互操作格局重排",
+          "so_what": "如果你在做 Agent 系统：skills 目录（SKILL.md + scripts）即将有正式版本化发布、提案流程与安装安全指南，现在就把内部 skill 打包成标准格式，别自造 loader 私有协议，等规范冻结再迁移成本更低。"
+        },
+        {
+          "title": "AAIF 一天收进四个项目：Agent Skills / Open Responses / OpenEnv / OpenSandbox",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.linuxfoundation.org/press/agentic-ai-foundation-announces-four-new-projects-agent-skills-open-responses-openenv-and-opensandbox",
+          "why_picked": "Anthropic/OpenAI/HF/Alibaba 各捐一层，agent 栈四层标准化一次成型",
+          "so_what": "如果你在做 Agent 系统：Open Responses 有望统一跨厂模型调用格式，OpenSandbox 是执行隔离的事实参考实现。评估工具调用抽象层时优先对齐这两者，而不是绑定某家 SDK 的私有 message schema。"
+        },
+        {
+          "title": "Claude Duet 研究预览：会主动汇报的个人 agent（Opus 5.5）",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.techtarget.com/ai/news/366652530/Anthropic-rolls-out-Claude-Duet-but-enterprises-arent-ready",
+          "why_picked": "四大前沿厂商全部入局个人主动式 agent，Anthropic 选了最保守的路线",
+          "so_what": "如果你在做 Agent 权限控制：Duet 的敏感信息分类器 + 禁止转账/证券交易的硬拦截是可直接抄的护栏范式——把高危动作做成分类器级拒绝，而不是只在 prompt 里写「不要做」。"
+        },
+        {
+          "title": "Claude API v2026-10-21 + SDK 大版本升级（Python 2.0 / TS 1.0 / Go 2.0）",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview",
+          "why_picked": "SDK 全系破版本，许可证改 Apache 2.0，含与 API 版本无关的 breaking changes",
+          "so_what": "如果你在做 Agent 系统：升级前先读 migration-2026-10-21 的 SDK changes 一节，注意许可证从 MIT 变 Apache 2.0 对企业法务审批的影响；工具调用相关字段变更要和你的 function-calling adapter 一起回归测试。"
+        },
+        {
+          "title": "Claude API 上线 Google Cloud（Anthropic 自营，IAM 鉴权 + Marketplace 计费）",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed",
+          "why_picked": "多云合规部署路径打通，Opus 5.5 Fast mode 同步可用",
+          "so_what": "如果你在做 RAG 管线且跑在 GCP：现在可以用项目 IAM + Marketplace 账单直连 Claude，不必再走 Vertex 分叉接口，能统一鉴权和成本归因；Fast mode 适合低延迟检索重排环节。"
+        },
+        {
+          "title": "Microsoft ThinkingBox：把数据库判分变成 RL 奖励后训练 agent",
+          "category": "实验",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/microsoft/thinkingbox-training",
+          "why_picked": "用可验证执行结果替代 LLM-as-judge 做 reward，是 agent 后训练主流方向",
+          "so_what": "如果你在做 Agent 后训练/评测：可验证 reward（SQL 执行正确性、单元测试、schema 校验）比模型打分便宜且稳，优先把评测集改造成可执行断言，再接 RL/DPO，而不是继续堆 judge prompt。"
+        },
+        {
+          "title": "Armin Ronacher：过去 30 年的烂软件，正在被 AI 安全研究惩罚",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Oct/22/armin-ronacher/",
+          "why_picked": "一句话点破 agent 放大历史技术债的现实",
+          "so_what": "如果你在做工具调用：agent 会把每个隐性权限、每个未校验输入放大成可利用面，先做最小权限和输入校验基础工程，再谈 agent 能力扩展。"
+        },
+        {
+          "title": "Graphify-Labs/graphify",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Graphify-Labs/graphify",
+          "why_picked": "GitHub Trending，13.3 万星，本地确定性代码知识图谱",
+          "so_what": "如果你在做代码 RAG：确定性 AST 解析 + 每条边可解释、不用向量库，适合替代 chunk-embed 检索解决「跨文件调用链」类问题，可先在其 CLI 上跑一遍自有仓库比召回。"
+        },
+        {
+          "title": "cloudflare/security-audit-skill",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/cloudflare/security-audit-skill",
+          "why_picked": "Cloudflare 官方出品的 agent skill，多阶段安全审计 + 机器可读发现",
+          "so_what": "如果你在做 Agent 安全：可直接接入 Claude Code / Codex 作为审计步骤，其「独立验证的机器可读发现」格式值得作为你内部安全 gate 的输出 schema 参考。"
+        },
+        {
+          "title": "Anthropic 版权诉讼 + 「借安全之名抢超级智能」论战",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xQCifJvqb8",
+          "why_picked": "主动延迟发布（雪藏 Mythos 级模型 4 个月）是否真安全，成为社区核心争论",
+          "so_what": "如果你在做 Agent 合规：厂商安全叙事会直接影响采购与被审计口径，建议在内部风险登记里单独跟踪「模型延迟发布/能力裁剪」条款，避免上线节奏被上游策略变化卡死。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-22",
       "items": [
         {
@@ -1553,75 +1638,6 @@
           "url": "https://www.together.ai/blog/canary-rollouts-upgrade-models-in-production-without-downtime",
           "why_picked": "按流量比例灰度新模型，先对比质量与成本再逐步放量",
           "so_what": "如果你在做 LLM 服务上线或模型升级：用 canary 按 1%→10%→100% 分流量切换新模型，在真实流量上对比质量、延迟与成本曲线，出问题可秒级回滚，替代一次性全量切换；可与 prompt caching、路由策略联合做灰度实验。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-22",
-      "items": [
-        {
-          "title": "xAI Grok 4.6 上线 Amazon Bedrock：500K 上下文 + 四档推理强度",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/xais-grok-4-6-is-now-available-in-amazon-bedrock/",
-          "why_picked": "Grok 4.6 面向长时运行 agent，500K 上下文与 4 档 reasoning effort，直接在 Bedrock 上可用",
-          "so_what": "如果你在做长时运行的 Agent 系统：Grok 4.6 的 500K 上下文加可调 reasoning effort 适合把整个代码库或长会话塞进单次调用，可在 Bedrock 上复用同一 IAM 与计费链路替换现有多模型路由，先测 reasoning effort 的 cost/latency 曲线再决定哪档接生产。"
-        },
-        {
-          "title": "Higgsfield AI 用 GPT-6 Astra 一天上线新视频功能",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/higgsfield-from-prompt-to-production-with-astra",
-          "why_picked": "小团队借助 GPT-6 Astra 一天内把视频生成功能推上线",
-          "so_what": "如果你在做 Agent 加视频或多模态管线：这条说明把生成模型接到既有产品的工作量已压到天级，值得评估用托管多模态 API 替代自建 diffusion 服务，重点测端到端 latency 与单位成本是否撑得住批量广告或短视频场景。"
-        },
-        {
-          "title": "Vercel AI Gateway 支持 TypeSafe clients 与 Jev HTTP API",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/ai-gateway-now-supports-typesafe-clients-and-http-api-for-jev",
-          "why_picked": "AI Gateway 新增 TypeSafe 客户端与 Jev 的 HTTP API，降低接入门槛",
-          "so_what": "如果你在做多模型网关或工具调用：TypeSafe 客户端可在编译期校验 provider 参数，减少运行时 schema 报错；可把 Jev 以 HTTP API 接入自建路由，统一鉴权与重试策略，避免每个模型单独适配。"
-        },
-        {
-          "title": "Simon Willison：Jev 代表新模型形态 Decision Models",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/21/jev/",
-          "why_picked": "Simon Willison 提出 decision models（System One）作为 LLM 之外的新模型类别",
-          "so_what": "如果你在做 Agent 的决策或规划层：decision models 主张把快速直觉式决策从大 LLM 中拆出，可考虑用专用小模型负责 tool selection 与路由，把大模型留给需要推理的步骤，从而降本降延迟。"
-        },
-        {
-          "title": "HF Blog：把 LLM 剪枝当作 Ising 优化问题",
-          "category": "实验",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/MultiverseComputingCAI/pruning-llms-like-a-physicist-block-removal-as-an",
-          "why_picked": "将 LLM 层剪枝形式化为 Ising 优化，给出物理启发的块移除方法",
-          "so_what": "如果你在做模型压缩或本地部署：可把块剪枝当作组合优化问题搜索最优移除集合，比逐层贪心更能保住精度；适合在显存受限的自托管 Agent 上做一次离线剪枝再评估任务成功率。"
-        },
-        {
-          "title": "OpenAI 发布全球 AI 标准路线图",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/building-standards-next-phase-ai",
-          "why_picked": "OpenAI 呼吁协同评测、上报与治理的全球 AI 标准",
-          "so_what": "如果你在做合规或评测体系：提前对齐跨厂商评测与上报口径，可把 model card、失准上报、eval 结果做成可导出的标准字段，未来接企业采购或监管审查时不用返工。"
-        },
-        {
-          "title": "BuilderIO/agent-native：构建 agentic 应用的框架",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/BuilderIO/agent-native",
-          "why_picked": "BuilderIO 开源构建 agentic 应用的框架，登今日 GitHub Trending",
-          "so_what": "如果你在做 Agent 应用前端或编排：agent-native 提供一套把 LLM 调用与 UI 状态绑定的框架，可对比你现有 LangGraph 或自研循环，看能否减少手写 tool-loop 与流式渲染样板。"
-        },
-        {
-          "title": "akitaonrails/ai-memory：coding agent CLI 的长期记忆层",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/akitaonrails/ai-memory",
-          "why_picked": "为 coding agent CLI 提供长期记忆与跨厂商交接，Rust 实现登 Trending",
-          "so_what": "如果你在做 coding agent 工作流：ai-memory 把会话记忆外置，可在 Claude Code 与 Codex 等不同 agent 间交接上下文，值得评估能否替代你自己拼的 memory 或 RAG 层。"
         }
       ]
     }
