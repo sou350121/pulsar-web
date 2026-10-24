@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "total": 2,
+  "counts": {
+    "⚡": 0,
+    "🔧": 1,
+    "📖": 0,
+    "❌": 1
+  },
+  "parse_error": "",
+  "parse_failed": false,
+  "papers": [
+    {
+      "title": "DRILL: Training World Models to Improve Policies, Not Predict Pixels",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2610.30814",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "World models are increasingly used to reduce environment interaction when post-training vision-language-action (VLA) policies with reinforcement learning. Yet they are typically trained to predict pixels one step ahead, even though their role here is not merely to render visually faithful videos but to produce learning signals from imagined rollouts that improve the policy. We show that this mismatch is substantial: lower pixel MSE can produce worse policy gradients, and a world model trained fo",
+      "pub_date": "2026-10-22",
+      "rating": "🔧",
+      "reason": "指出用世界模型辅助 VLA 强化学习后训练时，按「单步预测像素」训练目标错位，改为直接以「提升下游策略表现」为目标训练世界模型（DRILL），从而减少真实环境交互。对做 world-model-based RL 精调 VLA 的团队可直接复用其训练目标与 rollout 设计。",
+      "affiliation": ""
+    },
+    {
+      "title": "A high-dimensional population code in the bat motor cortex during natural dexterous flight",
+      "authors": "Boaz Styr et al.",
+      "url": "https://www.cell.com/cell/fulltext/S0092-8674(26)01131-1?rss=yes",
+      "source": "Cell-InPress",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Bats use their hand-like wings to reproduce natural flights with wingbeat-level precision. Rather than mainly tracking the wingbeat cycle, the wing motor cortex generates sparse, distinct population states with little shared variance across wingbeats, resulting in a high-dimensional code distinct from that typically observed in constrained tasks.",
+      "pub_date": "2026-10-13",
+      "rating": "❌",
+      "reason": "蝙蝠飞行时翼部运动皮层群体编码的神经科学研究，属系统神经科学，无机器人平台、无 VLA 或 embodied 控制实验，与机器人操作研究无实质关联。",
+      "affiliation": ""
+    }
+  ]
+}

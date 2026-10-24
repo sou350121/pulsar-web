@@ -1,6 +1,91 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-24",
+      "items": [
+        {
+          "title": "Kimi K3.1 Pro 发布：3T 级开源权重、100 万上下文，权重 11/04 前放出",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.kimi.ai/blog/kimi-k3-1-pro",
+          "why_picked": "Terminal-Bench 4.0 65.7%，超 GPT-6 Astra、逼近 Opus 5.5",
+          "so_what": "如果你在做长程 coding agent：Kimi K3.1 Pro 的 1M 上下文 + 65.7% Terminal-Bench 已经可以直接替换 Opus 5.5 做出货模型的成本对手，建议先用 Kimi API 跑一遍自己的 agent eval 再决定是否切换，11/04 权重放出后可自建推理降本。"
+        },
+        {
+          "title": "Anthropic 详解 Claude Code auto mode：分类器代替 93% 的人工批准",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.anthropic.com/engineering/claude-code-auto-mode",
+          "why_picked": "prompt-injection 探针 + 动作分类器的双层权限架构",
+          "so_what": "如果你在做 Agent 权限控制：照抄这套两层设计——输入端扫工具输出防注入、动作端用分类器判越权，比为每个 capability 配沙箱维护成本低得多，也是替代 --dangerously-skip-permissions 的唯一可上生产方案。"
+        },
+        {
+          "title": "Kimi K3.1 Pro Highspeed 同步上线：同等智能、输出 2-3 倍速",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Oct/23/kimi-k31-pro/",
+          "why_picked": "高速版与 Pro 同智能，交互延迟大幅下降",
+          "so_what": "如果你做交互式 Agent UI：把 Highspeed 版放到前端流式链路、Pro 版留给离线批处理，是当下最直接的延迟/质量分层做法。"
+        },
+        {
+          "title": "OpenAI 认为现有安全措施足以支持重启前沿强化学习训练",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://openai.com/index/openai-nask-ai-safety-security-partnership",
+          "why_picked": "前沿 RL 从暂停转向监控式训练",
+          "so_what": "如果你在做 RL 后训练：头部实验室对 egress/监控栈的信心在上升，团队可以重新评估此前因安全顾虑搁置的前沿 RL 训练路线。"
+        },
+        {
+          "title": "DeepSeek 完成约 1000 亿元新一轮融资，宁德时代拟跟投 100 亿",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://m.cnfin.com/gs-lb//zixun/20261023/4485706_1.html",
+          "why_picked": "产业资本入局，国产开源算力约束打开",
+          "so_what": "如果你在做模型选型：国产开源模型后续迭代节奏和推理降价概率显著上升，采购策略上建议保留 DeepSeek 路线的可切换性。"
+        },
+        {
+          "title": "科大讯飞 1024 开发者节：星火 X2.6、SparkAudio1.0 与 Agent OS",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xSTaEBNBaj",
+          "why_picked": "Agent OS 智能体协同平台 + 开发工作台",
+          "so_what": "如果你在评估国内 Agent 落地平台：讯飞 Agent OS 提供协同编排 + 语音基座组合，适合语音/端侧场景，值得和 AgentCore 做能力对照。"
+        },
+        {
+          "title": "Simon Willison：一句 prompt 让 Claude 用 canvas 几秒重绘照片成油画",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Oct/23/quick-study-painter/",
+          "why_picked": "纯前端 artifact 展示创意型长输出稳定性",
+          "so_what": "如果你在做生成式前端：这个 canvas 绘制思路可复用为多模态 agent 的轻交互 demo 模板。"
+        },
+        {
+          "title": "用 Claude 给小米电视去广告（社区热帖）",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4037841110422403",
+          "why_picked": "用户侧 agent 改造智能硬件的民间样本",
+          "so_what": "如果你在做端侧 Agent：硬件 UI 流程的自动化改造是真实需求缺口，也提示 agent 权限边界必须在设备侧先把住。"
+        },
+        {
+          "title": "vercel/eve — filesystem-first agent 框架",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vercel/eve",
+          "why_picked": "目录结构即 agent 定义，一行 init 起项目",
+          "so_what": "如果你在做 Agent 工程化：eve 把 channel/cron/tools 变成文件夹约定，比 LangGraph 的代码编排更易 review 和 diff，适合团队协作型 agent 项目起步。"
+        },
+        {
+          "title": "PrimeIntellect-ai/prime-agent — 自改进 RLM coding agent",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/PrimeIntellect-ai/prime-agent",
+          "why_picked": "/refine 带回滚快照的自改进 + daemon 会话",
+          "so_what": "如果你在做长时任务 Agent：RLM 把上下文当变量、子 agent 当函数调用的抽象，加上快照回滚，是可参考的自我修改安全范式。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-23",
       "items": [
         {
@@ -1577,67 +1662,6 @@
           "url": "https://madradavid.com/claudes-load-bearing-seams/",
           "why_picked": "社区讨论把过多工程负载压在 Claude 身上的结构性脆弱面，引发 40 条评论。",
           "so_what": "如果你重度依赖 Claude 做开发：此文提醒在设计 agent 时增加降级路径与人工复核，避免单点依赖导致整条流水线失效。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-23",
-      "items": [
-        {
-          "title": "Claude Opus 5.5 发布：多数任务追平 Fable 5.1，典型成本降 40%",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.anthropic.com/news/claude-opus-5-5",
-          "why_picked": "Anthropic 首款 Claude 5.5 系列模型，agentic coding 与长程任务大幅提升，成本较 Opus 5 降 40%，并经 METR 等外部评估",
-          "so_what": "如果你在做长程 Agent 或编码 Agent：Opus 5.5 把「强制工具调用」移除、thinking 恒为自适应，旧代码里 require tool / fixed thinking budget 的参数会直接 400 报错；迁移时改用 structured outputs 拿 JSON、用 prompt+effort 引导思考，并在 harness 里捕获工具未命中后重试，再按 cost/quality 决定是否替换 Opus 5 路由。"
-        },
-        {
-          "title": "GPT-6 Sol 与 Luna 正式开放（OpenAI + Amazon Bedrock）",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna",
-          "why_picked": "GPT-6 家族两档新模型 GA，Sol 面向复杂专业/长程编码，Luna 主打高并发 agentic 低成本，同日在 Bedrock 与 Vercel AI Gateway 可用",
-          "so_what": "如果你在做多模型路由或成本敏感的 agentic workflow：把 Sol 当作复杂任务主力、Luna 当作高频批量档，按任务复杂度分层调用；先在 Bedrock/网关同一计费链路内跑 A/B，对比 GPT-6 Astra 的单价与事实性，再决定哪些流量下沉到 Luna。"
-        },
-        {
-          "title": "xAI Grok 4.7 上线：主打长任务与专业工作",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://x.ai/news/grok-4-7",
-          "why_picked": "更大基座 + 更长 RL，原生长时间执行/自检能力，API 维持 $2/$6 每百万 token，已进入 Cursor 与 Grok API",
-          "so_what": "如果你在评估 coding agent 或长流程工具调用：Grok 4.7 在 CursorBench 4.0 拿到 46.3%、Terminal Bench 4.0 升至 38.0%，价格与 4.6 持平，适合当作性价比候选接进路由；但综合仍不及 Fable 5.1 Max，建议只在价格/长任务敏感的场景灰度，别整体切换。"
-        },
-        {
-          "title": "OpenAI 为 GPT-6 推出改进版 prompt caching",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://openai.com/index/better-prompt-caching-for-gpt-6",
-          "why_picked": "针对长会话与多轮工具调用的缓存优化，直接降低重复前缀成本",
-          "so_what": "如果你在做 RAG 管线或长会话 Agent：把稳定不变的前缀（system prompt、工具 schema、few-shot、检索到的固定文档）排到消息最前并保持逐字节不变，最大化缓存命中；用缓存读取价重算每条请求成本，再决定是否值得塞入更大上下文。"
-        },
-        {
-          "title": "OpenAI 拟在研发早期引入第三方安全评估",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/priorities-principles-third-party-assessments",
-          "why_picked": "把第三方安全审查从发布前前移到训练与评估等高风险环节，可能允许外部评估者接触最敏感工作",
-          "so_what": "如果你在做 Agent 安全或合规：这意味着未来模型卡可能附带「训练期已评估」的第三方结论，企业采购可把外部评估报告纳入选型清单；现在可先按此思路自查自家 Agent 的权限边界与红队记录，为对接第三方审计做准备。"
-        },
-        {
-          "title": "Vercel Sandbox Drives 进入公测：Agent 沙箱持久化工作目录",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/drives-for-vercel-sandbox-are-now-in-public-beta",
-          "why_picked": "Agent 代码执行沙箱获得持久化目录，跨调用保留生成文件与状态，减少每次重建环境",
-          "so_what": "如果你在做代码执行类 Agent：Drives 让沙箱拥有可持久化的 workspace，可把编译产物、依赖缓存、中间文件留在跨步调用间，避免每步重装依赖；适合长任务或多步 build/test 循环，配合短期 token 权限控制读写范围。"
-        },
-        {
-          "title": "Together AI Canary rollouts：生产环境零停机换模型",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://www.together.ai/blog/canary-rollouts-upgrade-models-in-production-without-downtime",
-          "why_picked": "按流量比例灰度新模型，先对比质量与成本再逐步放量",
-          "so_what": "如果你在做 LLM 服务上线或模型升级：用 canary 按 1%→10%→100% 分流量切换新模型，在真实流量上对比质量、延迟与成本曲线，出问题可秒级回滚，替代一次性全量切换；可与 prompt caching、路由策略联合做灰度实验。"
         }
       ]
     }

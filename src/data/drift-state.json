@@ -1,55 +1,55 @@
 {
-  "last_check": "2026-10-23",
+  "last_check": "2026-10-24",
   "metrics": {
     "vla_papers_scanned": {
-      "streak": 0,
+      "streak": 1,
       "alerted_at_streak": 0,
-      "last_value": 1379,
-      "baseline": 1942.86,
-      "ratio": 0.71,
+      "last_value": 419,
+      "baseline": 2080.43,
+      "ratio": 0.201,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-23"
+      "evaluated_on": "2026-10-24"
     },
     "vla_final_in_report": {
-      "streak": 0,
+      "streak": 1,
       "alerted_at_streak": 0,
-      "last_value": 30,
-      "baseline": 25.29,
-      "ratio": 1.186,
+      "last_value": 2,
+      "baseline": 29.43,
+      "ratio": 0.068,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-23"
+      "evaluated_on": "2026-10-24"
     },
     "vla_sources_active": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 16,
-      "baseline": 15.0,
-      "ratio": 1.067,
+      "last_value": 12,
+      "baseline": 15.57,
+      "ratio": 0.771,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-23"
+      "evaluated_on": "2026-10-24"
     },
     "aiapp_items_scanned": {
-      "streak": 7,
+      "streak": 0,
       "alerted_at_streak": 0,
       "last_value": 350,
-      "baseline": 1486.14,
-      "ratio": 0.236,
-      "sustained_degradation": false,
-      "streak_before_day": 6,
-      "evaluated_on": "2026-10-23"
+      "baseline": 323.86,
+      "ratio": 1.081,
+      "sustained_degradation": true,
+      "streak_before_day": 7,
+      "evaluated_on": "2026-10-24"
     },
     "aiapp_items_report": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 6,
-      "baseline": 7.57,
-      "ratio": 0.792,
+      "last_value": 7,
+      "baseline": 7.0,
+      "ratio": 1.0,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-10-23"
+      "evaluated_on": "2026-10-24"
     },
     "vla_upstream_count": {
       "streak": 0,
@@ -63,28 +63,12 @@
     }
   },
   "last_remediation": {
-    "vla_final_in_report": "2026-10-14",
+    "vla_final_in_report": "2026-10-24",
     "vla_papers_scanned": "2026-09-10",
     "aiapp_items_report": "2026-08-03",
-    "aiapp_items_scanned": "2026-10-23"
+    "aiapp_items_scanned": "2026-10-24"
   },
   "remediation_log": [
-    {
-      "date": "2026-08-25",
-      "key": "aiapp_items_scanned",
-      "label": "AI RSS 重跑",
-      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
-      "ok": true,
-      "detail": "[progress] ai-app-rss-collect start: 2026-08-25\n[progress] already collected, skip"
-    },
-    {
-      "date": "2026-08-26",
-      "key": "aiapp_items_scanned",
-      "label": "AI RSS 重跑",
-      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
-      "ok": true,
-      "detail": "[progress] ai-app-rss-collect start: 2026-08-26\n[progress] already collected, skip"
-    },
     {
       "date": "2026-08-27",
       "key": "aiapp_items_scanned",
@@ -308,6 +292,22 @@
       "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
       "ok": true,
       "detail": "[progress] ai-app-rss-collect start: 2026-10-23\n[progress] already collected, skip"
+    },
+    {
+      "date": "2026-10-24",
+      "key": "vla_final_in_report",
+      "label": "VLA 評級重跑",
+      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
+      "ok": false,
+      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
+    },
+    {
+      "date": "2026-10-24",
+      "key": "aiapp_items_scanned",
+      "label": "AI RSS 重跑",
+      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
+      "ok": true,
+      "detail": "[progress] ai-app-rss-collect start: 2026-10-24\n[progress] already collected, skip"
     }
   ],
   "drift_active": true
