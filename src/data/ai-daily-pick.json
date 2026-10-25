@@ -1,6 +1,83 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-25",
+      "items": [
+        {
+          "title": "Kimi K3.1 Pro 上线：AA 智能指数 55 分，距前沿只差 3 分",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.kimi.ai/blog/kimi-k3-1-pro",
+          "why_picked": "Terminal-Bench 4.0 67% 冲第一，GDPval-AA 第三，2.8T/104B 激活，/0 定价，11/4 前放开权重",
+          "so_what": "如果你在做 Agent 系统的模型选型：Terminal-Bench 67% 意味着多步 shell/文件操作类 agent 终于有开源可选项，可把规划层留在 Opus 5.5、执行层换成 K3.1 Pro 做成本分层。注意权重 11/4 才放，短期只能走 API，先做 A/B 再决定是否自托管。"
+        },
+        {
+          "title": "Thariq Shihipar 离职 Anthropic：称大模型智力已过剩",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://officechai.com/ai/thariq-shihipar-anthony-morris-announce-theyre-leaving-anthropic-weeks-before-its-ipo/",
+          "why_picked": "Claude Code 核心作者，提出强模型可砍 80% 系统提示词",
+          "so_what": "如果你在维护长系统提示词：该信号值得做一次 ablation——把 prompt 从 3k token 砍到 600 token 在 Opus 5.5 上重测 pass rate，很可能效果不变而延迟和成本双降。同时注意 Claude Code 后续版本的工具调用行为可能随团队变动漂移，锁定版本号。"
+        },
+        {
+          "title": "NVIDIA OpenShell：内核级沙箱给 agent 舰队上政策",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/NVIDIA/OpenShell",
+          "why_picked": "开源 runtime + BlueField-4 Sentry 毫秒级隔离，100+ 机构在用",
+          "so_what": "如果你在做 Agent 权限控制：OpenShell 的思路是把校验放到 agent 控制之外（agent 不能监控自己），可直接借鉴到自研沙箱——凭据不进 agent 上下文，由 runtime 代理注入；越界检测放在宿主机外部而非同进程。JPMorgan/Anthropic 已在用，可作为内部立项的背书案例。"
+        },
+        {
+          "title": "Moonshot 开放前删减网络攻击训练数据",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://thenextweb.com/news/moonshot-kimi-k3-1-pro-open-weight-cyber",
+          "why_picked": "首个发布方在开放权重前主动做能力削减，漏洞利用从 90.5% 降到 81%",
+          "so_what": "如果你在做模型能力评估：这说明公开 benchmark 分数已无法代表真实上限，未删减版差距达 9.5 个百分点。内部评测要补一版「攻击性能力」用例，别只看 Terminal-Bench。开源权重不可回收，合规评审时需把「发布方是否裁剪」纳入供应商问卷。"
+        },
+        {
+          "title": "AWS Agent Toolkit：官方 MCP servers + skills + plugins",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/aws/agent-toolkit-for-aws",
+          "why_picked": "把 AWS 各服务的 MCP 接入与 skills 打包成统一入口",
+          "so_what": "如果你在用 MCP 接云资源：以前每个 AWS 服务要自己包一层 MCP server，现在官方统一入口可以省掉这层胶水，把精力放在多账户授权和审计上。建议先在非生产账号接入验证 tool schema 稳定性，再灰度。"
+        },
+        {
+          "title": "Nutlope/hallmark：反 AI slop 的前端设计 skill",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/Nutlope/hallmark",
+          "why_picked": "Hassan 出品，专门约束 coding agent 生成的 UI 审美",
+          "so_what": "如果你在用 Cursor/Claude Code 生成前端：这类 skill 补的是「视觉一致性」这一层缺失约束，适合放进 project rules。做法是把它和现有 design token 文件对齐，避免 skill 的默认审美覆盖你自己的品牌色。"
+        },
+        {
+          "title": "TRAE 1024 大赏：开发者最爱的 10 个 MCP Server",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://juejin.cn/post/7699244622958084122",
+          "why_picked": "基于近一个月真实使用数据而非 GitHub star",
+          "so_what": "如果你在选 MCP 工具：这是中国开发者实际调用量榜单，比 GitHub trending 更贴近落地场景。可用作内部 MCP 目录的候选池，但要自己核一遍各 server 的授权粒度和数据外发范围。"
+        },
+        {
+          "title": "OpenAI 再表态前沿模型短期不开源",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/broad-access-through-consistent-standards",
+          "why_picked": "与 NVIDIA 开源安全平台、Moonshot 裁剪后开放形成三种开放叙事",
+          "so_what": "如果你在做模型供应链规划：不要再假设「等开源追上来」是唯一路线——闭源方明确以网络安全为由不开放，开源方则在裁剪能力后开放。多模型路由要同时保留闭源与开源两条路径，避免单点依赖。"
+        },
+        {
+          "title": "Show HN：CVE-2022-22706 拿到 TCL Android TV root",
+          "category": "实验",
+          "source": "HN",
+          "url": "https://news.ycombinator.com/item?id=50220042",
+          "why_picked": "50 分 / 17 评论，Mali 内核漏洞通用性讨论",
+          "so_what": "如果你在给 agent 搭自托管硬件：提醒一件事——长期不更新的设备内核就是攻击面。Agent 跑在边缘设备上时，沙箱要假设底层内核可能已被攻破，凭据隔离不能只依赖 OS 权限。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-24",
       "items": [
         {
@@ -1585,83 +1662,6 @@
           "url": "https://github.com/vectorize-io/hindsight",
           "why_picked": "⭐27.8k · Python — 「Agent Memory That Learns」，面向 agent 的可学习记忆层。",
           "so_what": "如果你在做 RAG/长期记忆：可对比你现有向量库+摘要方案，重点看它的写入/遗忘策略与管线兼容成本。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-24",
-      "items": [
-        {
-          "title": "OpenAI 发布 GPT-6 Sol 与 Luna：Astra 核心能力下放，API 价格腰斩",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
-          "why_picked": "GPT-6 家族扩张，Sol 面向复杂代码/长链路 Agent 工作流、Luna 面向高频批量任务，价格较 GPT-5.6 促销价直降 50%，进入 DeepSeek 价格带。",
-          "so_what": "如果你在做 Agent 系统：Sol 打长链路规划与代码重构、Luna 打高频批量抽取；价格腰斩后应把『单任务成本』作为路由指标——难的走 Sol、量大的走 Luna，并按任务计价重测成本曲线。"
-        },
-        {
-          "title": "Anthropic 发布 Claude Opus 5.5：对标 Fable 5.1，成本较 Opus 5 降 40%",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.anthropic.com/news/claude-opus-5-5",
-          "why_picked": "Claude 5.5 家族首款模型，官方称多数任务达到 Fable 5.1 水平、运行成本降 40%，一次 68 万行代码迁移不到一天完成。",
-          "so_what": "如果你在做 RAG 管线或代码迁移：Opus 5.5 可优先替换 agent 的『难 case 兜底』与代码重构环节，但要按 token 成本重算 unit economics，再决定是否换主力模型。"
-        },
-        {
-          "title": "Claude 自主发现类 CRISPR 的新型酶系统（Anthropic 新生命科学实验室）",
-          "category": "实验",
-          "source": "Web",
-          "url": "https://www.anthropic.com/news/claude-discovers-novel-enzyme-system",
-          "why_picked": "Anthropic 建自有实验室，Claude 在高层指导下自主发现带 DNA 重复序列的新型酶系统，属性类似可编程的 CRISPR，HN 437 分。",
-          "so_what": "如果你在做 Agent 工具链：这是『AI 自主科研 agent』的强信号——长时程假设生成+实验闭环已跑通；可借鉴其 agent 全流程协作模式设计你的长任务编排与人在回路检查点。"
-        },
-        {
-          "title": "Google 发布 Gemini 3.8 Flash TTS 与 Flash-Lite TTS",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/",
-          "why_picked": "2000+ 音色库、30 秒语音克隆、多说话人对话脚本与逐句表演控制，Flash-Lite 面向高吞吐配音。",
-          "so_what": "如果你在做语音 Agent：新版 TTS 可直接用于角色化语音前端（多说话人对话+30 秒克隆），成本极低（1 分 18 秒音频约 2.74 美分），适合实时语音交互层。"
-        },
-        {
-          "title": "Sam Altman 在联合国安理会发言：AI 必须始终受人类控制",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://openai.com/index/sam-altman-un-security-council-remarks",
-          "why_picked": "Altman 在安理会强调 AI 安全、人类控制与国际合作，呼应同期 Anthropic 呼吁『放慢前沿』。",
-          "so_what": "如果你在做企业级 Agent 合规：监管压力上行，建议提前给 agent 加审计日志、可中断控制与人审闸门，为即将到来的认证/合规要求做准备。"
-        },
-        {
-          "title": "AWS：用 Strands Agents SDK 编排 agentic 视频情报",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/agentic-conversational-video-intelligence-built-on-aws/",
-          "why_picked": "单个 Strands Agents SDK agent 在运行时编排 Bedrock、Rekognition、Transcribe，构成对话式视频理解参考架构。",
-          "so_what": "如果你在做多模态 Agent：这是可直接抄的参考架构——把视频理解拆成 ASR/视觉/推理三路工具调用，避免自研胶水层。"
-        },
-        {
-          "title": "google/ax — Google 开源 agentic 编排 runtime",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/google/ax",
-          "why_picked": "Google 官方开源 agentic orchestration runtime，登上 GitHub 每日 Trending。",
-          "so_what": "如果你在做 agent 编排：这是 LangGraph/CrewAI 之外带大厂背书的选项，重点看其与 Gemini/Vertex 的原生集成与生产部署能力。"
-        },
-        {
-          "title": "strands-agents/harness-sdk — 生产级 Agent Harness SDK",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/strands-agents/harness-sdk",
-          "why_picked": "开源 SDK，Python & TypeScript，支持任意模型/云，端到端控制 agent harness，GitHub Trending。",
-          "so_what": "如果你在做生产级 agent：harness SDK 提供双栈、model/cloud 无关的抽象，适合把工具调用、循环控制、可观测性标准化，减少自研脚手架。"
-        },
-        {
-          "title": "Claude's Load-Bearing Seams（HN 97）",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://madradavid.com/claudes-load-bearing-seams/",
-          "why_picked": "社区讨论把过多工程负载压在 Claude 身上的结构性脆弱面，引发 40 条评论。",
-          "so_what": "如果你重度依赖 Claude 做开发：此文提醒在设计 agent 时增加降级路径与人工复核，避免单点依赖导致整条流水线失效。"
         }
       ]
     }
