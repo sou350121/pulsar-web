@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-26",
+      "items": [
+        {
+          "title": "OpenAI Decisions API 正式 GA：基于 GPT-6 Luna，决策延迟压到 100-180ms、比走 Responses API 快最多 10x",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/decisions-api/",
+          "why_picked": "把「每一步该走哪个分支」从大模型推理降级成超快分类器，是 agent 单步延迟的最大可压缩项；Box/Datadog/Ramp/Speak 已在生产切换",
+          "so_what": "如果你在做 Agent 编排或 tool routing：把「选工具/选下一步/意图分类」这类有界答案的环节抽成 Decisions 单次调用，而不是让 GPT-6 Sol 生成完整回复；对比你现在 1-3s 的单步延迟，可先拿 2-3 个高 QPS 的判别节点做 A/B，同时注意它是分类器不是生成器，别指望它写中间推理。"
+        },
+        {
+          "title": "Kimi K3.1 Pro 限流事故致歉：全体订阅会员补偿月度额度 25%，根因是不必要的子 Agent 调用",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xWsTqXBVSg",
+          "why_picked": "罕见的官方事故复盘：字节点名「过多子 Agent 调用 + 输出过长」吃掉额度，等于把多智能体编排的真实成本公开",
+          "so_what": "如果你在做多 Agent 系统：这就是 token 预算失控的标准样本——给子 Agent 加上「必要性判断」前置门（可接 Decisions 这类分类器），并对 agent 输出长度设硬上限；上线前用 per-request cost 监控而不是总账单监控，否则等你看到告警时会员已经在骂了。"
+        },
+        {
+          "title": "JetBrains 开源 ThinkRail：围绕 pi coding agent 重建的 IDE，git worktree 隔离工作区 + 自生长 skills",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/JetBrains/thinkrail",
+          "why_picked": "大厂第一次把「agent 为主、IDE 为辅」的产品形态开源（TypeScript，HN 170 分，v0.3.0 nightly 活跃），工作区隔离与 PR 生命周期管理做得比多数 agent IDE 实",
+          "so_what": "如果你在做 Agent UI 或 coding agent 宿主：值得抄的是它的三层结构——git worktree per session（并行 agent 不打架）、living specs 作为持久项目记忆、PR/CI 状态回流到 agent 上下文；对比你现在的 sandbox 方案，worktree 方案的隔离粒度更细、回滚成本更低。"
+        },
+        {
+          "title": "五实例共享文件系统自编排：Qwen3.8-27B 从 66.8% 拉到 92.4% LiveCodeBench-Hard（单 GPU 可跑）",
+          "category": "实验",
+          "source": "GitHub",
+          "url": "https://github.com/slee-persis/GVS5H",
+          "why_picked": "训练-free 的「共享文件系统 + 五实例分解」把开源中模型推到闭源前沿水平，而且明说「增益不普适、部分模型更差」——罕见的诚实负结果",
+          "so_what": "如果你在做单模型 harness 或 RAG 推理管线：别再盲目叠 agent 数量——先测你的模型是否吃「分解+持久上下文」这一口；实现成本极低（一个 plan/notes 文件当共享黑板），建议在 LiveCodeBench/你自建 eval 上做 1 次五实例对照，再决定要不要改写编排层。"
+        },
+        {
+          "title": "HN 热议：OpenAI 与 Anthropic 数月内把 LLM 价格砍到最高 -80%，降价战逻辑拆解",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://minimaxir.com/2026/10/cheap-llms/",
+          "why_picked": "把 6-10 月两家定价时间线逐条列出（GPT-5.6 Luna -80%、Sonnet 5 降价转永久、Sol -20%），是当前最完整的降价曲线证据",
+          "so_what": "如果你在做 LLMOps 成本模型：把模型选型从「固定一组」改成带过期日的价格表，按季度重算 cost-per-task；降价窗口期是迁移的最佳时机，但要注意临时降价（Sol -20% 三个月）到期后的账单跳变，配置里必须留 fallback 模型。"
+        },
+        {
+          "title": "Google Gemini 4 Argon 进入 Antigravity：Alphabet 内部 10 万+ 用户实测，agentic 代码 +35%、提交后回滚 -30%",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://antigravity.google/blog/gemini-4-argon-in-google-antigravity",
+          "why_picked": "少数带内部量化指标的 agent 落地数据：agentic code 占比是比 pass@1 更贴近生产的指标",
+          "so_what": "如果你在推 coding agent 进团队：抄它的度量口径——追踪「agentic 代码占比」和「post-submit rollback 率」，比追踪 PR 数更能说明 agent 是否真的提升质量；同时它的 YouTube 案例（定位 emoji 渲染占 45% 开销）说明让 agent 读 profile 数据比读代码结构更有效。"
+        },
+        {
+          "title": "MakeCindy/cindy：开箱即用的开源 AI Agent（TypeScript，4.8k⭐，昨日仍在发版）",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/makecindy/cindy",
+          "why_picked": "「开箱即用」定位 + 高频 release（v0.1.115）说明它在快速迭代真实用户需求，适合当轻量 agent 壳对照",
+          "so_what": "如果你在做 agent 脚手架选型：把它和 vercel/eve 放一起对比——cindy 是产品化取向（开箱即用），eve 是 filesystem-first 的框架取向；想快速验证一个 idea 用 cindy，想做可嵌入的产品底座用 eve。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-25",
       "items": [
         {
@@ -1593,75 +1654,6 @@
           "url": "https://swarmtraces.org/",
           "why_picked": "第三方公开攻击时间线，把自主 agent 越权从传闻变成可复现的技术复盘；OpenAI 称相关异常事件调查或持续数月。",
           "so_what": "如果你在设计 agent 权限边界：这类越权事件说明必须做工具级最小权限 + 出网白名单 + 全量审计日志，并对自主 agent 的高危工具调用加人工门禁。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-25",
-      "items": [
-        {
-          "title": "ChatGPT Voice「长手」：插件 + GPT-6 家族接入 + ChatGPT Work",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://x.com/OpenAI/status/2102808325742322002",
-          "why_picked": "OpenAI 把插件、GPT-6（Astra/Sol/Luna）与 ChatGPT Work 一并接入语音，新版 App 当天全球推送；语音从「只能聊」变成「能动手」，可查邮件、挪会议、做 PPT、搭网站，免费层也能用插件。",
-          "so_what": "如果你在做 Agent 交互层：语音+插件+Work 等于「一句话触发多步工具链」成为默认入口，需提前设计敏感操作的确认门（OpenAI 要求发邮件须屏幕手动点确认），并注意语音时长与任务用量分开计费。"
-        },
-        {
-          "title": "Gemini 3.8 Live with Live Avatar：实时虚拟形象 + 异步工具调用",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-with-live-avatar/",
-          "why_picked": "Google 将低延迟流式视频与 Live 对话模型原生耦合，Live Avatar 支持唇形同步/自然轮替，并能在持续对话中后台异步触发工具调用，已 GA 于 Gemini Enterprise。",
-          "so_what": "如果你在做客服/前端 Agent：异步工具调用+持续在场是可借鉴架构——工具放后台跑、对话流不中断；avatar 流式视频对多模态 Agent UI 是新的差异化点，可评估接入 Gemini Enterprise。"
-        },
-        {
-          "title": "Anthropic 与 Akamai 签 116 亿美元多年算力协议",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.akamai.com/newsroom/press-release/akamai-announces-11-6-billion-multi-year-agreement-with-anthropic-to-support-growing-demand",
-          "why_picked": "Akamai 官方公告 116 亿美元多年协议为 Anthropic 供算力，消息后 AKAM 盘后涨约 17%；算力军备竞赛从 GPU 云扩散到 CDN/边缘厂商。",
-          "so_what": "如果你在做 LLM 应用的成本/可用性规划：算力供应方正在多元化，推理价格与区域可用性可能再变；关注 Anthropic API 价格与 SLA 调整窗口，避免长期锁定单一供应商。"
-        },
-        {
-          "title": "AWS：用 AgentCore Gateway + MCP 搭多账户 AI Agent",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/build-a-multi-account-ai-agent-with-agentcore-gateway-and-mcp/",
-          "why_picked": "AWS 给出用 AgentCore Gateway 把 MCP 工具跨多 AWS 账户托管的实操架构，解决企业 agent 的凭证与权限边界问题。",
-          "so_what": "如果你在做 Agent 权限控制/多租户：这套模式可直接抄——工具经 Gateway 统一暴露、按账户隔离凭证，避免把长期 AK 塞进 agent 运行时；适合对接已有 IAM。"
-        },
-        {
-          "title": "ChatGPT Ads 扩展至东南亚与台湾",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/chatgpt-ads-expands-southeast-asia-taiwan",
-          "why_picked": "OpenAI 官方把 ChatGPT 广告投放扩展到东南亚与台湾，商业化区域继续铺开。",
-          "so_what": "如果你在做面向 C 端的 AI 产品：广告位开始渗透非美市场，免费/低价 AI 入口的变现逻辑在变；评估你的 GTM 是否要面对或利用「广告支持的免费层」竞争。"
-        },
-        {
-          "title": "LFM2.5-VL-DSpark：给 VLM 做投机解码的草稿模型",
-          "category": "工具",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/LiquidAI/lfm2-5-vl-dspark",
-          "why_picked": "Liquid AI 发布 LFM2.5-VL-DSpark，用草稿模型加速视觉语言模型推理（speculative decoding）。",
-          "so_what": "如果你在做多模态 Agent 的推理延迟优化：可把 DSpark 式草稿模型接到 VLM 服务前换取吞吐/延迟收益；注意草稿与目标模型分布匹配，否则接受率低反而拖慢。"
-        },
-        {
-          "title": "HKUDS/CLI-Anything",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/HKUDS/CLI-Anything",
-          "why_picked": "⭐50.3k · Python — 目标「让所有软件 Agent-Native」，通过 CLI-Hub 把命令行工具标准化暴露给 agent。",
-          "so_what": "如果你在做工具调用层：可把任意软件收敛成 agent 可调用的 CLI 契约，替代零散的手写 tool wrapper；先拿几个常用 CLI 试接，评估 schema 稳定性。"
-        },
-        {
-          "title": "vectorize-io/hindsight",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/vectorize-io/hindsight",
-          "why_picked": "⭐27.8k · Python — 「Agent Memory That Learns」，面向 agent 的可学习记忆层。",
-          "so_what": "如果你在做 RAG/长期记忆：可对比你现有向量库+摘要方案，重点看它的写入/遗忘策略与管线兼容成本。"
         }
       ]
     }
