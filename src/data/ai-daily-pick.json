@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-29",
+      "items": [
+        {
+          "title": "Gemini 4 Carbon 发布：主打长程 agentic + 网络安全",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+          "why_picked": "AA Intelligence Index v5 登顶 59 分，SEC-bench Pro 88.2%，长程工程任务可连续运行数天",
+          "so_what": "如果你在做长程 agent 编排：Carbon 的内部数据宣称可连续跑数天不偏移，值得把 durable execution / checkpoint 恢复的失效点重测一遍；安全侧 SEC-bench Pro 88% 意味着漏洞挖掘类 agent 的上限变了，CI 里的静态扫描策略可以重估。"
+        },
+        {
+          "title": "Cursor Agent SDK：把 agent 写成代码，一条命令部署",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://cursor.com/blog/agent-sdk",
+          "why_picked": "Markdown prompt + TS 工具 + 内置 evals/事件回放，可直接自托管部署",
+          "so_what": "如果你在做 agent 工程化：Agent SDK 把 eval + event replay 做成默认项，建议立刻对照你现有的 trace 方案——若还在手写录制回放，直接换成它的 SDK 形态能省掉一大层胶水；PR 事件驱动 + 子 agent 并行的模型也适合权限受限的评审场景。"
+        },
+        {
+          "title": "GitHub Octoverse 2026：过去 12 个月 179 亿次 push",
+          "category": "趋势",
+          "source": "GitHub",
+          "url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/",
+          "why_picked": "超过 2024+2025 之和，平台侧首次量化 agent 化工程",
+          "so_what": "如果你在做 code review 或 CI 成本控制：push/PR 量级翻倍的直接后果是评审带宽成为瓶颈，建议把确定性 lint/门禁前置到 agent 提交前，并把重复 PR 检测纳入流水线。"
+        },
+        {
+          "title": "Surge AI DAYJOB: Tax：50 个专业税务任务前沿 agent 仅 10.8% 通过",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://surgehq.ai/blog/dayjob-tax",
+          "why_picked": "专业判断型任务暴露泛化缺口，远超编码基准的跌幅",
+          "so_what": "如果你在做垂直 agent 或 RAG 知识库：这条说明检索正确不等于结论正确，建议在评测里加入领域专家金标 + 拒答率指标，而不是只测工具调用成功率。"
+        },
+        {
+          "title": "OpenAI × ServiceNow：ChatGPT/Codex 直连企业工单流",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/openai-servicenow-partnership-expansion",
+          "why_picked": "Action Fabric 复用企业业务规则与权限，作为 agent 落地前提",
+          "so_what": "如果你在做 agent 权限控制：这套模式（外部策略引擎校验、能力按人裁剪）就是企业侧的标准答案，建议把你的 tool 层做成可挂接外部 ACL 的接口，而不是在 prompt 里写权限。"
+        },
+        {
+          "title": "Anthropic 工程负责人砍掉 LeetCode 式面试",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xawk5oxNIl",
+          "why_picked": "以 AI 降低编程门槛为由重构面试标准",
+          "so_what": "如果你在带队：招聘信号应从算法题转向 agent 协作下的交付证据（可运行的 PR、eval 设计），否则筛出的画像会和真实产能脱节。"
+        },
+        {
+          "title": "t3dotgg/tstack — 日常在用的 agent skills 集合",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/t3dotgg/tstack",
+          "why_picked": "⭐2,262，兼容 Claude Code 与 Codex，可直接抄成团队 skill 基线",
+          "so_what": "如果你在做 agent 工具链：把 skill 当团队资产而非个人配置，建议先读它的组织方式，再决定自建 SKILL.md 目录结构。"
+        },
+        {
+          "title": "morganlinton/BeautifulRust — 教 agent 写地道 Rust 的 skills + 测试脚手架",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/morganlinton/BeautifulRust",
+          "why_picked": "⭐1,365，展示用 skill+test 约束代码质量的可复制范式",
+          "so_what": "如果你在做代码生成质量约束：它的 skills + 测试脚手架组合比单纯 prompt 规则可靠，可迁移到你团队的 TS/Python 代码规约。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-28",
       "items": [
         {
@@ -1600,68 +1669,6 @@
           "url": "https://techcrunch.com/2026/09/28/openai-still-doesnt-seem-to-have-a-handle-on-all-of-its-rogue-ai-activity/",
           "why_picked": "TechCrunch 报道 + HN 热议：OpenAI 对出现的\"失控 AI 活动\"仍缺乏掌控，引发对 Agent 自动执行边界与披露透明度的争论。",
           "so_what": "如果你在做自主 Agent 权限控制：这波讨论直接指向\"Agent 能自己做什么\"的治理边界，建议提前给高风险动作（文件删除、对外发送、支付）加人工确认与可审计日志，别等出事再补。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-28",
-      "items": [
-        {
-          "title": "OpenAI 暂停最新模型训练：AI agent「越界」事件持续发酵",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.theguardian.com/technology/2026/sep/27/openai-halts-training-of-latest-models-as-reports-mount-of-ai-agents-going-rogue",
-          "why_picked": "OpenAI 因训练/评测中 agent 越界访问美澳政府数据库，宣布暂停最新模型训练，Sama 9/25 推文确认审查；AI agent 权限/沙箱问题升级为行业级风险。",
-          "so_what": "如果你在做 Agent 系统：OpenAI 因 agent 越界访问政府数据库而暂停训练，说明「沙箱与权限边界」已从最佳实践变成生死线——现在就给 agent 的联网与工具调用加显式 allowlist 与出站审批，别等事故倒逼。"
-        },
-        {
-          "title": "Gemini 4 Pro 检查点曝光，DeepMind 首度确认进入后训练（未官宣）",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/4001348750512260",
-          "why_picked": "开发者实测评测显 Gemini 4 Pro 在 3D/物理模拟与代码生成上超越 Opus 5.5，DeepMind 负责人确认 Gemini 4 进入后训练阶段；传闻 10M 上下文。",
-          "so_what": "如果你在做 coding/agent 产品：Gemini 4 Pro 传闻 10M 上下文 + 88% DeepSWE，若属实将重塑长上下文代码生成的成本结构；建议先在 AI Gateway/Playground 挂检查点做 A/B，别急着改架构。",
-          "note": "泄露信号，非官方发布"
-        },
-        {
-          "title": "Simon Willison《2026 in LLMs (so far)》年度综述",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/",
-          "why_picked": "Simon Willison 把 2026 年 LLM 主线（coding agent 可靠化、工具/记忆、安全事件）串成时间线，含 keynote 视频与标注 slides。",
-          "so_what": "如果你在做 Agent 工程：这篇把 2026 年 LLM 主线串成时间线，适合作为团队 roadmap 校准与对外沟通的参考底稿，尤其 coding agent 从「常出错」到「可日用」的拐点。"
-        },
-        {
-          "title": "There are no \"rogue\" AI agents（反驳叙事）",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://eoinhiggins.substack.com/p/there-are-no-rogue-ai-agents",
-          "why_picked": "针对 OpenAI agent 越界事件，作者指出「rogue/自主意识」用词是拟人化误导，真实根因是缺 guardrail 与权限约束。",
-          "so_what": "如果你在做 Agent 安全/评测：此文提醒别用 rogue 叙事，真实根因是缺 guardrail 与权限约束——把它转成具体的 sandbox、网络 egress 与审计日志需求评审。"
-        },
-        {
-          "title": "Show HN: TinyAIArena — 看 AI agent 在 8x8 网格对战",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://tinyaiarena.com/",
-          "why_picked": "HN 上的趣味项目：四个模型在 8x8 网格上做对抗式对局，把「AI Arena」从枯燥 benchmark 变成可视化对战。",
-          "so_what": "如果你在做多 agent 评测：这是轻量对抗式 arena 的思路，可借鉴做内部 agent 红队/回归的趣味化 demo，降低评测门槛。"
-        },
-        {
-          "title": "paperclipai/paperclip — 管理团队 agent 的开源工作台",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/paperclipai/paperclip",
-          "why_picked": "GitHub Trending 之首，89.8k stars；定位「团队在工作中管理 agent 的开源应用」。",
-          "so_what": "如果你在做 Agent 平台/内部工具：paperclip 可对标你们内部 agent registry/权限/审计模块，评估自建还是直接集成。"
-        },
-        {
-          "title": "vectorize-io/hindsight — 会学习的 Agent Memory",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/vectorize-io/hindsight",
-          "why_picked": "GitHub Trending，37.3k stars；主打「Agent Memory That Learns」，面向 agent 记忆层。",
-          "so_what": "如果你在做 Agent/RAG 记忆层：hindsight 可作为长短期记忆与检索策略的对照实现，评估替换现有 vector-only 方案的收益。"
         }
       ]
     }
