@@ -1,6 +1,67 @@
 {
   "daily_picks": [
     {
+      "date": "2026-10-31",
+      "items": [
+        {
+          "title": "OpenAI 新版 Model Spec：AI 不得阻挠人类关停，规范扩展到 agent 操作权限",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://openai.com/index/updated-model-spec",
+          "why_picked": "五价值观+六级指令权限+结构化自主范围，是 agent 权限设计的官方参考文本",
+          "so_what": "如果你在做 Agent 权限控制：把 Model Spec 的六级命令链映射成你自己的 policy 层，为每个工具声明「可自主子目标 / 成本上限 / 需人工确认触发点」，并在 system prompt 之外做硬校验——别只靠提示词约束越权。"
+        },
+        {
+          "title": "OpenAI 公开前沿模型失准检测体系（activation probe→调查 agent 四层）",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://openai.com/index/how-we-detect-frontier-model-misalignment",
+          "why_picked": "四层监控架构可直接借鉴；且公开承认误报导致值班覆盖不足",
+          "so_what": "如果你在做 Agent 可观测性：参考 Layer0 activation probe + Layer1 模型复核 + Layer2 调查 agent 的分层设计，但先算清误报预算——告警噪音会让人类值班形同虚设，建议按任务等级分级寻呼。"
+        },
+        {
+          "title": "DeepSeek 完成第二轮 1055 亿元融资，估值 6155 亿元",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://m.ithome.com/html/1020121.htm",
+          "why_picked": "国产模型最大单轮融资，投资方覆盖算力链与互联网巨头",
+          "so_what": "如果你在做模型选型与成本规划：国产替代的资本底座进一步坐实，可在路由层保留 DeepSeek 作为主力低价档，但注意上游供应与政策波动风险，别把单一 provider 做成硬依赖。"
+        },
+        {
+          "title": "小米开源 Xiaomi-OCR-0：0.8B OCR/VLM，输出 Markdown 与 JSON",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/xiaomi-research/Xiaomi-OCR-0",
+          "why_picked": "小参数可本地部署，直接服务文档解析与 RAG 摄取",
+          "so_what": "如果你在做 RAG 管线：把 Xiaomi-OCR-0 接到 PDF/截图入库前置步骤，用 JSON 输出直接映射结构化字段，替代高成本多模态大模型调用；小显存场景优先 GGUF 量化版。"
+        },
+        {
+          "title": "ScienceVision 评测：前沿大模型三维科学理解普遍不佳",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xeTm6gXR7x",
+          "why_picked": "66 位专家打造的跨域 3D 理解基准，戳破 CAD 生成视频的视觉幻觉",
+          "so_what": "如果你在做 Agent 评测：别用「生成结果肉眼像」当验收标准，给专业域任务加专家标注的细粒度 benchmark；对 CAD/BIM 类 agent 加几何与工程约束的硬检查。"
+        },
+        {
+          "title": "onehumanbeing/esp32-iphone-agent：7 美元 ESP32 让模型操作真 iPhone",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/onehumanbeing/esp32-iphone-agent",
+          "why_picked": "最便宜的 computer-use 真机环境，免越狱免开发者账号",
+          "so_what": "如果你在做 computer-use agent：可用它搭低成本真机回归环境，把 AirPlay 画面当视觉输入、USB HID 当动作输出，测真实 App 的点击/滚动鲁棒性，比模拟器更接近线上。"
+        },
+        {
+          "title": "wheresryan22/anatomy：画等轴测机械分解图的 agent skill",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/wheresryan22/anatomy",
+          "why_picked": "23k stars，skill 直接产出可交付视觉资产",
+          "so_what": "如果你在做 Agent 产物质量：把它当作「skill = 可交付物」的模板，把复杂系统的可视化说明外包给 skill，减少为每类图写一次性 prompt 的成本。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-30",
       "items": [
         {
@@ -1624,67 +1685,6 @@
           "url": "https://github.com/mksglu/context-mode",
           "why_picked": "Coding agent 上下文优化：沙箱化工具输出（宣称减少 98% token）+ 持久 session 记忆 + MCP/hooks 跨 17 平台路由。",
           "so_what": "如果你在做 coding agent 的 context 管理：工具输出常是 token 黑洞，context-mode 的「输出沙箱化 + 按需回取」思路可直接压低成本，建议在 tool 层先落地输出截断/摘要再谈模型降级。"
-        }
-      ]
-    },
-    {
-      "date": "2026-09-30",
-      "items": [
-        {
-          "title": "OpenAI DevDay 2026：GPT-6.1 Sol 发布，1/5 价格逼近 Astra",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/29/openai-devday-2026-live-blog/",
-          "why_picked": "旗舰级智能下放：号称 near-Astra level intelligence at a fifth of the price；同场还有 Ultrafast(8x/300 tok/s)、Pro 500 套餐与 Decisions API 预览",
-          "so_what": "如果你在做 Agent 成本优化：可把高强度多轮工具调用/子任务 fan-out 从 Astra 下沉到 Sol；交互式低延迟场景留给 Ultrafast，做成本-延迟分层路由"
-        },
-        {
-          "title": "Dots：OpenAI 全天候主动式 Agent 上线（GPT-6 Astra 驱动）",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://openai.com/index/introducing-dots",
-          "why_picked": "自带云电脑+浏览器、接入 4000+ 应用，Pro/Business/Enterprise 今日开滚；配套团队空间 ChatGPT Space",
-          "so_what": "如果你在做 Agent 权限控制：Dots 把 agent 自有云电脑、连接器与按舒适度授予责任做成默认能力，权限分级+可审计动作日志+Slack/Teams 内 agent 身份将成 agent 平台标配"
-        },
-        {
-          "title": "Codex CLI 焕新：语音对话 + /agents 多智能体视图",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wpNYekd7fm",
-          "why_picked": "可直接语音启动任务，并在一屏内把工作分给多个 agent、跟踪多任务进度，编辑提示词/恢复会话更顺",
-          "so_what": "如果你在做 Coding Agent 工作流：语音启动+/agents 视图说明 Codex 从单次补全升级为并行子任务调度面板，对照你的编排层是否需要同等粒度的任务分解/进度/恢复 UI"
-        },
-        {
-          "title": "OpenAI 开源 Codex harness，Codex 全面上云并推 Codex Security Cloud 与 Agents API(Computer Use)",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/29/openai-devday-2026-live-blog/",
-          "why_picked": "同场发布 Codex Security Cloud(定时扫描+自动去重)与支持 Computer Use 的 Agents API，把基础设施开源+云执行+安全扫描打包给开发者",
-          "so_what": "如果你在做 Agent 工具链：开源 harness+上云+Security Cloud 等于给出可自托管的执行-扫描-去重参考实现，可对齐自己的 CI 安全与 sandbox 策略"
-        },
-        {
-          "title": "ChatGPT Space 亮相：人和各自 Dot 共编的共享工作区",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Sep/29/openai-devday-2026-live-blog/",
-          "why_picked": "共享 artifacts + Notion 式 slash 菜单，Dot 在 Slack/Teams 有独立身份——团队级 agent 协作形态开始固定",
-          "so_what": "如果你在做协作型 Agent：Space 把共享 artifacts、多人编辑与多 agent 身份合到一处，可参考其人机共编同一工作区的数据模型来做 team-scoped 上下文隔离"
-        },
-        {
-          "title": "NVIDIA/OpenShell — 自主 AI Agent 的安全私有运行时",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/NVIDIA/OpenShell",
-          "why_picked": "内核级策略执行(文件/系统调用/网络) + 形式化验证策略变更，直击 agent 越界频发下的最小权限需求",
-          "so_what": "如果你在做 Agent 沙箱/权限控制：OpenShell 在内核层对文件/系统调用/网络做策略执行并对策略变更做形式化验证，可对比你现有容器/gVisor 方案补齐最小权限落地"
-        },
-        {
-          "title": "VectifyAI/PageIndex — Vectorless 推理式 RAG 索引",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/VectifyAI/PageIndex",
-          "why_picked": "用分层树索引 + LLM 推理替代向量相似度，针对长专业文档相似不等于相关的痛点",
-          "so_what": "如果你在做 RAG 管线：PageIndex 用分层树索引+LLM 推理替代向量检索，适合替换/补强 vector DB 检索层，尤其多跳与结构化长文档"
         }
       ]
     }

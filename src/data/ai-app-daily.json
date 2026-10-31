@@ -1,114 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-09-30",
-      "config_version": 18,
-      "items": [
-        {
-          "title": "OpenAI 发布 GPT-6.1 Sol：近 Astra 级能力、1/5 价格",
-          "url": "https://openai.com/index/introducing-gpt-6-1-sol",
-          "source": "OpenAI Blog",
-          "category": "模型发布",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "model-release",
-            "coding",
-            "computer-use"
-          ],
-          "direction_note_prefix": "",
-          "why": "近 Astra 能力打 1/5 价，coding/computer use 性价比拐点"
-        },
-        {
-          "title": "OpenAI DevDay 2026 Recap：20+ 项发布（GPT-6 Astra / Codex / API / 安全）",
-          "url": "https://openai.com/index/devday-2026-recap",
-          "source": "OpenAI Blog",
-          "category": "模型发布",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "devday",
-            "codex",
-            "api"
-          ],
-          "direction_note_prefix": "",
-          "why": "一场 keynote 定 Q4 开发生态基线，含 Astra/Codex/新工具"
-        },
-        {
-          "title": "GPT-6.1 Sol 上线 Vercel AI Gateway",
-          "url": "https://vercel.com/changelog/gpt-6-1-sol-now-available-on-ai-gateway",
-          "source": "Vercel Changelog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Vercel",
-          "labels": [
-            "gateway",
-            "model-routing"
-          ],
-          "direction_note_prefix": "",
-          "why": "旗舰模型一次接入多模型网关，可即时切换/降本"
-        },
-        {
-          "title": "GPT-6.1 Sol 登陆 Amazon Bedrock",
-          "url": "https://aws.amazon.com/blogs/machine-learning/bring-near-astra-intelligence-to-everyday-work-with-gpt-6-1-sol-on-amazon-bedrock/",
-          "source": "AWS ML Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "bedrock",
-            "model-hosting"
-          ],
-          "direction_note_prefix": "",
-          "why": "企业侧多一个可托管的旗舰模型选项"
-        },
-        {
-          "title": "AWS：用 Amazon Quick + Bedrock AgentCore 搭合同情报平台",
-          "url": "https://aws.amazon.com/blogs/machine-learning/building-an-ai-powered-contract-intelligence-platform-with-amazon-quick-and-amazon-bedrock-agentcore/",
-          "source": "AWS ML Blog",
-          "category": "RAG 工具链",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "rag",
-            "agentcore"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "RAG+agent 抽取并核验合同，附生产架构可复用"
-        },
-        {
-          "title": "Source-Aware Verification for MCP Agents",
-          "url": "https://huggingface.co/blog/MultiverseComputingCAI/getting-the-source-right-not-just-the-fact-source",
-          "source": "Hugging Face Blog",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "MultiverseComputing",
-          "labels": [
-            "mcp",
-            "evals",
-            "verification"
-          ],
-          "direction_note_prefix": "",
-          "why": "给 MCP agent 结果加来源级核验，直击可信落地"
-        },
-        {
-          "title": "Anthropic Frontier Red Team：前沿模型可自主开发漏洞利用",
-          "url": "https://simonwillison.net/2026/Sep/29/anthropic-frontier-red-team/",
-          "source": "Simon Willison",
-          "category": "其他",
-          "importance": "strategic",
-          "developer": "Anthropic",
-          "labels": [
-            "security",
-            "red-team",
-            "evals"
-          ],
-          "direction_note_prefix": "",
-          "why": "披露模型越权开发攻击链，部署需权限与沙箱约束"
-        }
-      ]
-    },
-    {
       "date": "2026-10-01",
       "config_version": 18,
       "items": [
@@ -2758,6 +2650,129 @@
           ],
           "direction_note_prefix": "🎯 agent-ui",
           "why": "一句话点明 MCP 化的产品设计取舍：无头给 agent，有头给人。"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "config_version": 21,
+      "items": [
+        {
+          "title": "Amazon Bedrock AgentCore Session Endpoints：coding agent 边改边预览线上 Web 应用",
+          "url": "https://aws.amazon.com/blogs/machine-learning/preview-web-apps-live-as-your-coding-agent-builds-them-with-amazon-bedrock-agentcore-runtime/",
+          "source": "blog-aws-ai",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "agent-runtime",
+            "sandbox",
+            "preview"
+          ],
+          "direction_note_prefix": "",
+          "why": "每 session 一条鉴权 URL 直通 agent 沙箱端口，改完刷新即见，省掉部署等待"
+        },
+        {
+          "title": "Vercel Data Cache 转正为 Runtime Cache：Next.js 缓存开始按读写计费",
+          "url": "https://vercel.com/changelog/data-cache-is-moving-to-runtime-cache",
+          "source": "blog-vercel",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "caching",
+            "pricing",
+            "nextjs"
+          ],
+          "direction_note_prefix": "",
+          "why": "Pro 项目独享 8 倍容量但读取 $0.40/百万起，AI 应用缓存成本需重新算"
+        },
+        {
+          "title": "Context Is a Pipeline, Not a Window：agent harness 截断工具输出才是准确率杀手",
+          "url": "https://arxiv.org/abs/2610.36114",
+          "source": "arxiv-cs.CL",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "—",
+          "labels": [
+            "agent-harness",
+            "context-engineering",
+            "evals"
+          ],
+          "direction_note_prefix": "",
+          "why": "720 次跑测中 1/3 工具结果被按长度切断成坏 JSON，成本以 43% 额外调用体现（arXiv）"
+        },
+        {
+          "title": "CASEL：按后果与可逆性给 agent 每次工具调用分配审查等级",
+          "url": "https://arxiv.org/abs/2610.36570",
+          "source": "arxiv-cs.CL",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "—",
+          "labels": [
+            "guardrail",
+            "agent-security",
+            "runtime"
+          ],
+          "direction_note_prefix": "",
+          "why": "有害副作用轨迹 14.75%→7.02%，且比纯后果排序少 45% 人工审批（arXiv）"
+        },
+        {
+          "title": "dbreunig/nesformer：把 NES 6502 模拟器焙进 Qwen3.5-4B 权重",
+          "url": "https://simonwillison.net/2026/Oct/30/nesformer/",
+          "source": "blog-simonwillison",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "dbreunig",
+          "labels": [
+            "weights-as-program",
+            "vibe-coding"
+          ],
+          "direction_note_prefix": "",
+          "why": "Opus 5.5 按提示自找一致性测试把模拟器写进权重，权重即程序的新玩法"
+        },
+        {
+          "title": "OpenAI：让网站更容易表达 AI 训练偏好",
+          "url": "https://openai.com/index/helping-websites-express-ai-training-preferences",
+          "source": "blog-openai",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "data-governance",
+            "policy"
+          ],
+          "direction_note_prefix": "",
+          "why": "抓取与训练边界从 robots.txt 扩展到显式偏好声明，RAG 语料合规要跟着改"
+        },
+        {
+          "title": "ChatGPT 桌面端可在 AWS GovCloud 接入 Bedrock",
+          "url": "https://aws.amazon.com/blogs/machine-learning/configure-the-chatgpt-desktop-app-with-amazon-bedrock-in-aws-govcloud-us/",
+          "source": "blog-aws-ai",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "AWS",
+          "labels": [
+            "enterprise",
+            "govcloud",
+            "chat-ui"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "受监管场景下桌面 AI 客户端走自家私有云，企业部署形态定型"
+        },
+        {
+          "title": "DeepSeek 第二轮融资 1055 亿元、估值 6155 亿元",
+          "url": "https://m.ithome.com/html/1020121.htm",
+          "source": "tophub-ithome",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "DeepSeek",
+          "labels": [
+            "funding",
+            "industry"
+          ],
+          "direction_note_prefix": "",
+          "why": "国产开源权重阵营获国资与终端厂商注资，模型选择格局重排"
         }
       ]
     }
