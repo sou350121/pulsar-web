@@ -1,6 +1,91 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-01",
+      "items": [
+        {
+          "title": "OpenAI 本轮融资目标下调 100 亿美元，缩至约 200 亿、估值 1.25 万亿",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.cnbc.com/amp/2026/10/31/openai-funding-target-cut-10-billion.html",
+          "why_picked": "公开市场 AI 板块抛售 + Anthropic 即将上市，投资者缩量认购，首次交割或不足 200 亿",
+          "so_what": "如果你在做Agent系统的供应商选型：这意味着2027年模型API的补贴价格战可能提前收口，OpenAI高额训练开支的续期压力会体现为API涨价或配额收紧。建议现在就把模型调用层做provider抽象（Vercel AI Gateway / LiteLLM），并在预算里预留20-30%的单价上调缓冲，别把单点依赖写成硬编码。"
+        },
+        {
+          "title": "DeepSeek Harness 发布 Super-agent 设计：Router/Worker 双层 + 事件驱动 + Watchdog",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://m.ithome.com/html/1020615.htm",
+          "why_picked": "官方一手设计文章（GitHub deepseek-ai/dsh-superagent-prototype），合成负载 p95 15.7min vs 单 session 29.5min",
+          "so_what": "如果你在做多任务Agent编排或常驻agent：Router 维护全局上下文并统一对外、Worker 会话隔离并发、Thread 订阅让后续事件绕过 Router 直送 Worker，这套结构可直接照搬进你的编排层。另一个可抄的细节是独立 Watchdog Session 用模型判断 Worker 是否取得实质进展（不只是看报错），以及把异步工具调用改成 start()/stop() 两步以释放前台对话。"
+        },
+        {
+          "title": "Parameter Labs 披露 ChatGPT 账户接管链：HTML Preview 沙箱 + MathLive postMessage 越界",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.parameter.ai/labs/we-found-a-gap-at-openai",
+          "why_picked": "完整攻击链公开：iframe→父页 postMessage→innerHTML→无 sandbox iframe→YouTube oEmbed 反射执行 JS",
+          "so_what": "如果你在做Agent渲染产物（HTML预览、artifact、可交互组件）：你的沙箱 iframe 只要允许向父页 postMessage，父页就必须校验 event.origin 并禁止用 innerHTML 渲染消息内容，还要显式限制哪些域可加载脚本——YouTube oEmbed 这类「内容域」就是绕过 CSP 的后门。建议做一次 CSP 审计，把 script-src 的第三方白名单压到最小。"
+        },
+        {
+          "title": "Claude 订阅改名：Max 20x→Ultra，验证账户取消 5 小时窗口限制",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4049021975886084",
+          "why_picked": "$200 档长跑任务的硬中断点消失（二手转述，一手 claude.com/pricing）",
+          "so_what": "如果你在用Claude跑长耗时的agent批处理（代码迁移、批量评测、文档生成）：5小时窗口取消后可以改成单次长跑而不是分段续跑，harness 里的 checkpoint/断点续跑逻辑可以简化，但也要自己加重试与成本护栏——没有窗口限制意味着跑飞时账单同样不设上限。"
+        },
+        {
+          "title": "Anthropic 公开 Claude 后台「自评」机制：多生成约 10 token 自审，开销 <2%",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xgJk95Q2I6",
+          "why_picked": "静默运行四个月，默认全开，不拦截只记风险等级并每日汇总高危报告",
+          "so_what": "如果你在做Agent安全与合规：这套「事后审计优于当场拦截」的思路值得抄进自己的工具调用日志——用 KV 缓存复用做低成本复检，生成几个 token 打风险分，避免用户察觉防线后绕过。注意企业零数据保留协议可豁免该机制，B端客户会拿这条问你数据流向。"
+        },
+        {
+          "title": "RSI 热潮下国产 Agentic Infra 把自迭代基础设施压到英伟达 GPU 物理极限",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xfiaJhBds7",
+          "why_picked": "自我迭代式 agent 训练把 Infra 优化推到硬件天花板，同期 DeepSeek 生态在 B 站一周内大规模 agent 化",
+          "so_what": "如果你在做Agent框架的长期技术选型：RSI 方向的 infra 投入会让「agent 自己写训练/评测代码」的工具链在明年变得常见，现在就可以把评测流水线做成可被 agent 调用的 CLI（确定性脚本 + 结构化输出），否则接入这类自迭代循环时会被非结构化输出卡住。"
+        },
+        {
+          "title": "deepseek-ai/dsh-superagent-prototype：Super-agent 双层架构官方开源原型",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/deepseek-ai/dsh-superagent-prototype",
+          "why_picked": "官方参考实现，含 Thread 订阅事件直通、Inline & Spill 上下文管理、链式召回",
+          "so_what": "如果你在做Agent框架/编排：这是少见的把「上下文预算管理」显式做成机制的代码——近期信息进窗口、超预算内容留在窗口外按需读取，再用 Trigger/Thread/Session 的引用 ID 链式召回历史。建议对照你自己的 memory 层看是否缺链式召回，多会话场景下这是 token 超支的主因。"
+        },
+        {
+          "title": "agent-labs-dev/fastbrowse：用页面控件索引 + 小选择模型替代截图式浏览器 agent",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/agent-labs-dev/fastbrowse",
+          "why_picked": "不依赖 selector、无法点不存在的元素，CLI/Py/Node/Go SDK + MCP server 齐发",
+          "so_what": "如果你在做浏览器Agent或Web自动化：截图+视觉定位的路线在长流程里会漂（坐标偏移、滚动后失效），控件索引 + 小选择模型把动作空间限定为真实存在的元素，天然更抗页面改版。建议把这条作为 Playwright 工具调用的替代层做 A/B 测试，重点看多步表单的完成率和 token 成本。"
+        },
+        {
+          "title": "HN 热议：ChatGPT 分享链接可被用来接管账户（item 50314699）",
+          "category": "观点",
+          "source": "HN",
+          "url": "https://news.ycombinator.com/item?id=50314699",
+          "why_picked": "讨论集中在沙箱内不可信 HTML 与父页 postMessage 的边界，HTML in iframe 的通用风险",
+          "so_what": "如果你在做Agent应用的安全评审：把「任何 iframe → 父页的消息通道」列为默认威胁模型的一等项，检查 event.origin 白名单、避免 innerHTML、限制 script-src 到自有域。同时注意 $5000 赏金与漏洞严重度的错配——这会影响你团队内部的漏洞上报激励设计。"
+        },
+        {
+          "title": "ChatGPT 教育/青少年安全：社区安全报告与新增保护措施",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://openai.com/index/community-safety-report-and-new-protections-for-teens",
+          "why_picked": "OpenAI 官方一手公告，面向青少年账号的默认保护策略调整",
+          "so_what": "如果你在做C端Agent产品的合规：青少年/未成年模式的默认限制正在成为行业基线（内容过滤、时长、数据保留），面向海外用户的agent产品应提前做年龄段分层与默认保守策略，别等监管要求再补。"
+        }
+      ]
+    },
+    {
       "date": "2026-10-31",
       "items": [
         {
@@ -1616,75 +1701,6 @@
           "url": "https://github.com/cursor/plugins",
           "why_picked": "GitHub Trending，Cursor 官方插件规范落地，含 create-plugin / thermos / continual-learning 等。",
           "so_what": "如果你在用 Cursor 做 agent 化开发：官方插件规范落地后可直接复用 create-plugin/thermos 做分支审查与安全审计。建议评估把团队 code review 接到 thermos 的并行 subagent 上。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-01",
-      "items": [
-        {
-          "title": "OpenAI 发布 dots：24/7 常驻 always-on agent",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://openai.com/index/introducing-dots",
-          "why_picked": "OpenAI 把 agent 从工具升级为常驻同事：自带云电脑、4000+ 应用插件、跨 ChatGPT/Slack/Teams，随时间学习偏好。",
-          "so_what": "如果你在做 agent 产品的留存/记忆层：dots 把「持久记忆 + 多通道常驻 + 插件市场」做成了默认形态，建议对照检查你的 session 记忆与工具接入是否还停留在一次性调用。"
-        },
-        {
-          "title": "OpenAI GPT-6.1 Sol：接近 Astra 智能，价格 1/5",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://openai.com/index/introducing-gpt-6-1-sol",
-          "why_picked": "官方称 agentic coding/computer use/专业文档逼近 Astra，标准价仅 1/5，缓存输入 $0.10/M（低 95%）。",
-          "so_what": "如果你在做 coding agent / RAG 管线：缓存输入降 95% 意味着「固定长前缀 + 多轮复用」的 prompt 架构性价比飙升，值得重算你的模型路由与 context 复用策略（可先切 openai/gpt-6.1-sol 做 A/B）。"
-        },
-        {
-          "title": "DeepSeek 开源昇腾版基础设施组件（TileLang/DeepGEMM/DeepEP/FlashMLA）",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/deepseek-ai/DeepGEMM-Ascend",
-          "why_picked": "与 NVIDIA 侧一一对应地开源了昇腾算子/通信库，训练算子已在昇腾 950 128 卡超节点接近硬件上限。",
-          "so_what": "如果你在做推理/训练基础设施且考虑国产算力：这套仓库让昇腾迁移从「重写算子」变成「对齐已有实现」，建议先验证 DeepGEMM-Ascend + FlashMLA 在你的长上下文场景下的吞吐。"
-        },
-        {
-          "title": "HF 博客：MCP Agent 的「来源感知」验证",
-          "category": "观点",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/MultiverseComputingCAI/getting-the-source-right-not-just-the-fact-source",
-          "why_picked": "提出 agent 除校验事实正确外，还需校验证据「来源」，为 MCP 工具调用设计可溯源链。",
-          "so_what": "如果你在做带 MCP 工具的 RAG/Agent：把「事实校验」升级为「来源校验」能挡掉工具投毒与错误引用，建议在工具返回结果里强制携带 provenance 字段并在生成前做来源一致性检查。"
-        },
-        {
-          "title": "Vercel Sandbox 支持 Secure Compute",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/vercel-sandbox-now-supports-secure-compute",
-          "why_picked": "agent 生成代码的执行沙箱可在私有网络内运行，避免把不可信代码直接暴露到公网。",
-          "so_what": "如果你在做 code-execution agent 的执行层：私有网络沙箱是默认安全基线，建议把「代码生成 → 沙箱执行」链路的网络出口收敛到 VPC 内，并加白名单出站。"
-        },
-        {
-          "title": "OpenAI 重启 $200 Pro、额度减半引开发者不满",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wqERkdxaWY",
-          "why_picked": "官方用「未来 API 降价」解释当下额度缩水，开发者逐条反驳并要求对标 Claude Opus 5.5 的每美元价值。",
-          "so_what": "如果你在用 $200 档订阅跑高吞吐 agent：订阅等效额度被削代表单位成本上升，建议把重负载迁移到 API + 缓存计价，并做多供应商（OpenAI/Anthropic）成本对照。"
-        },
-        {
-          "title": "NVIDIA/OpenShell",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/NVIDIA/OpenShell",
-          "why_picked": "NVIDIA 开源的自主 agent 安全私有运行时，提供沙箱与权限边界，今日 GitHub Trending。",
-          "so_what": "如果你在做 agent 权限控制：OpenShell 给了现成的「最小权限执行层」参考实现，建议对比你当前的 tool 调用沙箱，重点看它的权限边界与逃逸防护设计。"
-        },
-        {
-          "title": "mksglu/context-mode",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/mksglu/context-mode",
-          "why_picked": "Coding agent 上下文优化：沙箱化工具输出（宣称减少 98% token）+ 持久 session 记忆 + MCP/hooks 跨 17 平台路由。",
-          "so_what": "如果你在做 coding agent 的 context 管理：工具输出常是 token 黑洞，context-mode 的「输出沙箱化 + 按需回取」思路可直接压低成本，建议在 tool 层先落地输出截断/摘要再谈模型降级。"
         }
       ]
     }

@@ -1,128 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-01",
-      "config_version": 18,
-      "items": [
-        {
-          "title": "Gemini 4 Argon",
-          "url": "https://deepmind.google/blog/gemini-4-argon-our-next-era-of-frontier-intelligence/",
-          "source": "Google DeepMind Blog",
-          "category": "模型发布",
-          "importance": "strategic",
-          "developer": "Google DeepMind",
-          "labels": [
-            "model-release",
-            "frontier"
-          ],
-          "direction_note_prefix": "",
-          "why": "Google 新前沿模型，主打长程复杂工作流（含 agent 与网安防御）。"
-        },
-        {
-          "title": "Disrupting a coordinated model-distillation campaign",
-          "url": "https://openai.com/index/disrupting-a-coordinated-model-distillation-campaign/",
-          "source": "OpenAI Blog",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "security",
-            "distillation"
-          ],
-          "direction_note_prefix": "",
-          "why": "官方披露对抗性蒸馏攻击与对策，关乎模型 API 防滥用。"
-        },
-        {
-          "title": "AI Gateway adds Browserbase Search and Fetch tools",
-          "url": "https://vercel.com/changelog/ai-gateway-adds-browserbase-search-and-fetch-tools",
-          "source": "Vercel Changelog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Vercel",
-          "labels": [
-            "gateway",
-            "tool-calling",
-            "search"
-          ],
-          "direction_note_prefix": "",
-          "why": "网关内置 web search/fetch 工具，一键给任意支持 tool calling 的模型加检索。"
-        },
-        {
-          "title": "Vercel Agent now installs private packages from npm and custom registries",
-          "url": "https://vercel.com/changelog/vercel-agent-now-installs-private-packages-from-npm-and-custom-registries",
-          "source": "Vercel Changelog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Vercel",
-          "labels": [
-            "agent",
-            "supply-chain"
-          ],
-          "direction_note_prefix": "",
-          "why": "Agent 会话可装私有依赖，凭据存团队变量且隔离在沙箱外。"
-        },
-        {
-          "title": "Query claims in natural language with Amazon Bedrock Knowledge Bases",
-          "url": "https://aws.amazon.com/blogs/machine-learning/query-claims-in-natural-language-with-amazon-bedrock-knowledge-bases/",
-          "source": "AWS ML Blog",
-          "category": "RAG 工具链",
-          "importance": "read-only",
-          "developer": "AWS",
-          "labels": [
-            "rag",
-            "guardrail",
-            "citations"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "AgenticRetrieveStream + 引用式保险理赔问答的参考实现。"
-        },
-        {
-          "title": "Build a multi-agent music production pipeline on Amazon Bedrock AgentCore Runtime",
-          "url": "https://aws.amazon.com/blogs/machine-learning/build-a-multi-agent-music-production-pipeline-on-amazon-bedrock-agentcore-runtime-instances/",
-          "source": "AWS ML Blog",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "multi-agent",
-            "agentcore"
-          ],
-          "direction_note_prefix": "",
-          "why": "AgentCore Runtime Instances 跑多天会话+GPU 的三 agent 编排范例。"
-        },
-        {
-          "title": "Open TTS Leaderboard: Scalable Evaluation for Multilingual Text-to-Speech and Voice Cloning",
-          "url": "https://huggingface.co/blog/open-tts-leaderboard",
-          "source": "Hugging Face Blog",
-          "category": "基础设施",
-          "importance": "read-only",
-          "developer": "Hugging Face",
-          "labels": [
-            "evaluation",
-            "tts",
-            "voice-cloning"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "面向开源/多语种 TTS 的可扩展评估榜单，补齐 eval 空白。"
-        },
-        {
-          "title": "DeepSeek 开源面向华为昇腾平台的基础设施组件（TileLang/DeepGEMM/DeepEP 等）",
-          "url": "https://github.com/deepseek-ai/TileKernels",
-          "source": "GitHub / DeepSeek",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "DeepSeek",
-          "labels": [
-            "infra",
-            "ascend",
-            "open-source"
-          ],
-          "direction_note_prefix": "",
-          "why": "昇腾版 TileLang/DeepGEMM/DeepEP 等，与英伟达组件一一对应。"
-        }
-      ]
-    },
-    {
       "date": "2026-10-02",
       "config_version": 18,
       "items": [
@@ -2773,6 +2651,102 @@
           ],
           "direction_note_prefix": "",
           "why": "国产开源权重阵营获国资与终端厂商注资，模型选择格局重排"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "config_version": 21,
+      "items": [
+        {
+          "title": "DeepSeek Harness 开源 Super-agent 原型：Router/Worker 双层架构 + 事件驱动 + Watchdog",
+          "url": "https://github.com/deepseek-ai/dsh-superagent-prototype",
+          "source": "github-deepseek-ai",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "deepseek-ai",
+          "labels": [
+            "agent-arch",
+            "multi-session",
+            "harness"
+          ],
+          "direction_note_prefix": "",
+          "why": "把调度/缓存/存算分离/看门狗搬进 agent 架构，Router 批处理把单决定摊到 1.6s"
+        },
+        {
+          "title": "Claude 订阅改名：Max 5x→Max、Max 20x→Ultra，验证账户取消 5 小时限额",
+          "url": "https://claude.com/pricing",
+          "source": "claude.com",
+          "category": "模型发布",
+          "importance": "actionable",
+          "developer": "Anthropic",
+          "labels": [
+            "pricing",
+            "limits",
+            "claude-code"
+          ],
+          "direction_note_prefix": "",
+          "why": "$200 档 5 小时闸门消失、API credits 翻倍至 $200，长跑 agent 任务不再中断"
+        },
+        {
+          "title": "Anthropic 上线 Claude「自评」后台机制：多生成约 10 token 自审，开销 <2%",
+          "url": "https://www.indiatoday.in/technology/news/story/claude-can-now-flag-your-chats-to-anthropic-if-it-detects-indecent-behaviour-3028193-2026-10-30",
+          "source": "indiatoday",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "safety",
+            "guardrail",
+            "eval"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "Fable 5 拦下 78% 有害会话/94% 高危、误报 1%，默认全开，不拦截只记风险"
+        },
+        {
+          "title": "Parameter Labs 披露 ChatGPT 账户接管链：HTML Preview + MathLive 越沙箱执行 JS",
+          "url": "https://www.parameter.ai/labs/we-found-a-gap-at-openai",
+          "source": "parameter.ai",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Parameter Labs",
+          "labels": [
+            "sandbox",
+            "security",
+            "postMessage"
+          ],
+          "direction_note_prefix": "",
+          "why": "打开分享链接即可被接管账号；postMessage 需校验来源，$5000 赏金被认为太低"
+        },
+        {
+          "title": "Governor：为每个 agent 发独立 API key，内置消费上限、工具调用规则与签名审计日志",
+          "url": "https://governor.bsvkey.com/",
+          "source": "governor.bsvkey.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "BSVKey",
+          "labels": [
+            "gateway",
+            "agent-security",
+            "cost-control"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "改 base URL 即可接管三家常商；调用前预留成本、跑飞检测、单点 kill switch"
+        },
+        {
+          "title": "Fastbrowse：用页面控件索引 + 小选择模型点选，替代截图式浏览器 agent",
+          "url": "https://github.com/agent-labs-dev/fastbrowse",
+          "source": "github-agent-labs-dev",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "agent-labs-dev",
+          "labels": [
+            "browser-agent",
+            "computer-use",
+            "mcp"
+          ],
+          "direction_note_prefix": "",
+          "why": "无法点不存在的元素、无需维护 selector；CLI/Py/Node/Go SDK + MCP server 齐发"
         }
       ]
     }
