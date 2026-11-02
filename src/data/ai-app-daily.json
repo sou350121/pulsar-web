@@ -1,102 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-02",
-      "config_version": 18,
-      "items": [
-        {
-          "title": "AWS：用 NVIDIA NeMo Agent Toolkit + Amazon S3 Vectors 构建 agent 记忆层",
-          "url": "https://aws.amazon.com/blogs/machine-learning/build-agent-memory-with-nvidia-nemo-agent-toolkit-and-amazon-s3-vectors/",
-          "source": "AWS Machine Learning Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "AWS / NVIDIA",
-          "labels": [
-            "agent-memory",
-            "rag",
-            "infra"
-          ],
-          "direction_note_prefix": "",
-          "why": "把 S3 Vectors 接成 NAT 的持久记忆层，EKS 上多 agent 记忆工程范例。"
-        },
-        {
-          "title": "AWS：用 Amazon Bedrock AgentCore 规模化 agentic AI 云迁移",
-          "url": "https://aws.amazon.com/blogs/machine-learning/scaling-cloud-migrations-with-agentic-ai-on-amazon-bedrock-agentcore/",
-          "source": "AWS Machine Learning Blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "agentic",
-            "agentcore",
-            "orchestration"
-          ],
-          "direction_note_prefix": "",
-          "why": "Bedrock AgentCore 驱动 agentic 云迁移，企业级 agent 落地范式参考。"
-        },
-        {
-          "title": "Vercel AI Gateway 上线 Microsoft AI（MAI）语音模型",
-          "url": "https://vercel.com/changelog/microsoft-ai-models-are-now-available-on-ai-gateway",
-          "source": "Vercel Changelog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Vercel / Microsoft AI",
-          "labels": [
-            "gateway",
-            "voice",
-            "multimodal"
-          ],
-          "direction_note_prefix": "",
-          "why": "MAI-Voice/Transcribe 上闸道，语音 agent 多一家零加成低延迟供应商。"
-        },
-        {
-          "title": "Vercel AI Gateway 上线 Laya 决策/评估模型（10/31 前免费）",
-          "url": "https://vercel.com/changelog/laya-decision-model-now-available-on-ai-gateway-free-through-october-31",
-          "source": "Vercel Changelog",
-          "category": "API 包装器",
-          "importance": "actionable",
-          "developer": "Convai Innovations / Vercel",
-          "labels": [
-            "evaluation",
-            "routing",
-            "guardrail"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "对 yes/no、路由、护栏问题返回带概率的结构化答案，agent 分流利器。"
-        },
-        {
-          "title": "Weaviate 安全版本 v1.39.3：修复 Google 模块凭据外泄高危漏洞",
-          "url": "https://weaviate.io/blog/weaviate-security-release-googlemodules-2026",
-          "source": "Weaviate Blog",
-          "category": "RAG 工具链",
-          "importance": "strategic",
-          "developer": "Weaviate",
-          "labels": [
-            "security",
-            "rag",
-            "vector-db"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "apiEndpoint 未校验可把 Google 凭据外送到任意主机，自架需升级。"
-        },
-        {
-          "title": "Simon Willison 引 Matthew Green：沙箱挡不住 agent 蠕虫",
-          "url": "https://simonwillison.net/2026/Oct/1/matthew-green/",
-          "source": "simonwillison.net",
-          "category": "其他",
-          "importance": "read-only",
-          "developer": "Matthew Green / Simon Willison",
-          "labels": [
-            "security",
-            "agents",
-            "sandbox"
-          ],
-          "direction_note_prefix": "",
-          "why": "隔离沙箱的 agent 能借共享包缓存互传指令，正是蠕虫的两半。"
-        }
-      ]
-    },
-    {
       "date": "2026-10-03",
       "config_version": 18,
       "items": [
@@ -2747,6 +2651,101 @@
           ],
           "direction_note_prefix": "",
           "why": "无法点不存在的元素、无需维护 selector；CLI/Py/Node/Go SDK + MCP server 齐发"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "config_version": 22,
+      "items": [
+        {
+          "title": "MiniMax 开源 mcode-stack：自家 Coding Agent 团队每天在用的 skills 与工作流",
+          "url": "https://github.com/MiniMax-AI/mcode-stack",
+          "source": "github.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "MiniMax-AI",
+          "labels": [
+            "agent-skills",
+            "coding-agent",
+            "context-engineering"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "可直接 plugin 安装进 Claude Code / Codex / MiniMax Code 的真实生产技能栈"
+        },
+        {
+          "title": "uncut：7 MB 单二进制 Go coding-agent harness，拒绝任何静默上下文截断",
+          "url": "https://github.com/Balanov/uncut",
+          "source": "github.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Balanov",
+          "labels": [
+            "agent-harness",
+            "headless",
+            "local-models"
+          ],
+          "direction_note_prefix": "",
+          "why": "把「上下文被悄悄截断」当显式失败，837 行可 fork 的 CI/Shell 专用基线"
+        },
+        {
+          "title": "stack-diagram：一句话描述技术栈，agent skill 直接产出带官方 logo 的架构图",
+          "url": "https://github.com/caru-ini/stack-diagram",
+          "source": "github.com",
+          "category": "UI/UX 工具",
+          "importance": "actionable",
+          "developer": "caru-ini",
+          "labels": [
+            "agent-skill",
+            "diagram",
+            "artifact"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "skill 当交付物：自包含 HTML/PNG/React 三形态，可直接进 wiki 与 Claude artifact"
+        },
+        {
+          "title": "Anthropic 经 Claude Code 远程下发「禁止复刻现有游戏」提示词，开发者反馈误伤",
+          "url": "https://www.36kr.com/p/4050382051005574",
+          "source": "36kr.com（一手：Addy Osmani / Anthropic 在 X 的确认）",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "policy",
+            "coding-agent",
+            "ip"
+          ],
+          "direction_note_prefix": "",
+          "why": "服务端下发的 prompt 级政策开关成为产品事实——用户侧无法关闭"
+        },
+        {
+          "title": "Grok 订阅接入银联/支付宝，首月半价；xAI 官方公告尚未发布",
+          "url": "https://readhub.cn/topic/8xfnEHnU5CI",
+          "source": "readhub.cn",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "xAI",
+          "labels": [
+            "pricing",
+            "payments"
+          ],
+          "direction_note_prefix": "",
+          "why": "海外模型订阅正式拉中国支付通道，仅二手可核验，待官方口径"
+        },
+        {
+          "title": "Jepsen 报告与 Kyle Kingsbury：LLM 让人怀疑文档、软件与厂商的成熟度信号",
+          "url": "https://simonwillison.net/2026/Nov/1/kyle-kingsbury/",
+          "source": "simonwillison.net（一手：jepsen.io ParticleDB 1.1.4 分析）",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "simonwillison.net",
+          "labels": [
+            "trust",
+            "evals",
+            "documentation"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "「成熟系统标记」被 AI 轻易伪造，评估与溯源会成为新的采购门槛"
         }
       ]
     }
