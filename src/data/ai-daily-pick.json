@@ -1,6 +1,83 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-03",
+      "items": [
+        {
+          "title": "OpenAI 为 Codex 时代重写 Git 后端 Pando",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/scaling-git-at-openai/",
+          "why_picked": "agent 提交量级把源码托管逼到重构，官方一手细节",
+          "so_what": "如果你在做 coding agent 平台：别再假设 git push/fetch 是常数成本——高并发分支会产生海量重复 fetch。参考 Pando 的水平写扩展 + 提高读吞吐思路，给 CI/agent 环境做本地镜像或 shallow clone 缓存。"
+        },
+        {
+          "title": "Anthropic 三季度营收 17 亿美元、净亏损 23 亿美元",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xjYC0dG6S0",
+          "why_picked": "IPO 前首次公开财务，长期成本结构参考",
+          "so_what": "如果你在做 agent 成本预算：供应商亏损扩张意味着定价不可长期假设，把多模型路由（Claude/GPT/DeepSeek）与 token 单价重算写进季度评审。"
+        },
+        {
+          "title": "DeepSeek 完成 1055 亿元第二轮融资",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xjBM69VuRv",
+          "why_picked": "国内大模型最大单笔融资，国资占比 27%",
+          "so_what": "如果你在做模型选型：国资与产业资本入局通常带来 API 稳定性与合规承诺的改善，可把 DeepSeek 列入长期供应商候选并观察 SLA 变化。"
+        },
+        {
+          "title": "OpenAI LifeVal：真实生活任务 agent 评测",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://openai.com/index/lifeval",
+          "why_picked": "一手评测公告，任务分布贴近日常而非行业 benchmark",
+          "so_what": "如果你在做 agent 评测：别只刷 SWE-bench，按你用户真实任务分布抽样 50-100 条自建 set，覆盖多步工具调用与失败恢复。"
+        },
+        {
+          "title": "Circle K 用 Bedrock 把 incident triage 压到 15 分钟内",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-circle-k-accelerated-devops-incident-triage-to-under-15-minutes-with-amazon-bedrock/",
+          "why_picked": "完整生产架构，含从 Bedrock Flows 重构的踩坑",
+          "so_what": "如果你在做运维 agent：先做「读日志 + 关联服务健康」的只读分诊，不改生产；用 Bedrock Flows 起步后迁移到自定义编排，避免流程 DSL 锁定。"
+        },
+        {
+          "title": "Simon Willison 重算美国企业 AI 采用率",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/2/census-bureau-super-intelligence/",
+          "why_picked": "一手数据 + 口径变更提醒",
+          "so_what": "如果你在写 AI 采用率 PPT：注意 2026 年调查口径改为「任一业务环节」，跨年对比必须注明，否则会被质疑数据操纵。"
+        },
+        {
+          "title": "ChatGPT 与 Codex 共用额度",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4051737057088392",
+          "why_picked": "产品计费合并，影响重度 coding 用户",
+          "so_what": "如果你在用 ChatGPT 跑长任务：额度与 Codex 共享后，后台 agent 消耗会挤占对话额度，给自动化任务单独的 API key 和硬预算上限。"
+        },
+        {
+          "title": "kgoedecke/doop — 开源版 Paper.design",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/kgoedecke/doop",
+          "why_picked": "agent 与人类实时协作画布 + 内置 MCP，可自托管",
+          "so_what": "如果你在做 agent UI：MCP 让 agent 直接在共享画布上改真实 HTML 而非吐 markdown，可作为「agent 产出可视化」的参考实现，先接 Claude Code 试 canvas 协作。"
+        },
+        {
+          "title": "vercel-labs/agent-desktop — 用无障碍树操作桌面",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vercel-labs/agent-desktop",
+          "why_picked": "今日 GitHub 榜一，computer-use 走结构化 ref 而非像素坐标",
+          "so_what": "如果你在做 computer-use agent：把截图+坐标重试换成无障碍树 ref ID，可显著降 token 与重试抖动；先在小范围 macOS 任务上 A/B 对比成功率。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-02",
       "items": [
         {
@@ -1608,91 +1685,6 @@
           "url": "https://github.com/DietrichGebert/ponytail",
           "why_picked": "用最懒资深 dev 的策略抑制过度生成，能一行不写两行，Trending 第一梯队。",
           "so_what": "如果你在调 Agent 的代码行为：ponytail 用最懒资深 dev 的 prompt 策略抑制过度生成，适合接入 coding agent 的 system prompt。建议在 review/refactor 任务上对比产出量与原方案。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-03",
-      "items": [
-        {
-          "title": "OpenAI《用 GPT-6 构建应用实践指南》",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://openai.com/index/practical-guide-building-gpt-6",
-          "why_picked": "官方首次系统给出 GPT-6 家族（Astra/Sol/Luna/6.1 Sol）的能力与定价定位，是开发者的选型与成本基线。",
-          "so_what": "如果你在做多模型 Agent 路由：这份官方指南给出 GPT-6 家族的能力与定价定位，可据此把高难推理压给 Astra、批量与低延迟任务交给 Sol。建议按现有 prompt 失败率做 A/B，把成本敏感链路先切到 6.1 Sol。"
-        },
-        {
-          "title": "Vercel AI Gateway 上架 Laya 决策模型（System One），10/31 前免费",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/laya-decision-model-now-available-on-ai-gateway-free-through-october-31",
-          "why_picked": "Jev 的 decision model 可经 Vercel 单 key 调用、10/31 前免费，主打直接产出可执行决策的异构形态。",
-          "so_what": "如果你在做 Agent 决策/工具选择层：决策模型（System One）主打以更低成本直接产出可执行决策，适合放在 routing/planning 热点。10/31 前免费，建议用 Vercel AI Gateway 单 key 把它接到 tool-call 路由器上跑基准。"
-        },
-        {
-          "title": "AWS：用 Bedrock AgentCore Gateway 给 Claude Desktop 加安全 Web Search",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/add-secure-web-search-to-claude-desktop-with-amazon-bedrock-agentcore/",
-          "why_picked": "给桌面 Agent 接联网的完整链路，重点是用 JWT 作用域把搜索工具鉴权收口。",
-          "so_what": "如果你在给桌面/企业 Agent 加联网：这篇给出用 Bedrock AgentCore Gateway + JWT 把 Web Search 接入 Claude Desktop 的完整链路，可作 MCP 工具鉴权参考。建议照搬其 JWT 作用域设计，别把搜索工具直接暴露给终端用户。"
-        },
-        {
-          "title": "AWS：在 SageMaker AI 用多轮 RL 微调搜索 Agent",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/fine-tune-a-search-agent-with-multi-turn-rl-on-amazon-sagemaker-ai/",
-          "why_picked": "用回合级奖励（答案正确 + 命中引文）替代纯 SFT，改善多跳检索 Agent。",
-          "so_what": "如果你在做 RAG/搜索 Agent 的后训练：这篇演示用多轮 RL 以答案正确 + 引文命中为奖励，改善多跳检索。建议复用其 SageMaker 训练脚本，把 reward 显式绑定到最终答案与引用。"
-        },
-        {
-          "title": "HF/ServiceNow：AutoSynthData 为企业 Agent 合成训练数据",
-          "category": "工具",
-          "source": "HuggingFace",
-          "url": "https://huggingface.co/blog/ServiceNow-AI/autosynthdata",
-          "why_picked": "用真实企业流程自动生成 tool-calling / instruction 样本，解决垂直 Agent 冷启动无标注。",
-          "so_what": "如果你在为垂直 Agent 造训练数据：AutoSynthData 用真实企业流程自动合成 instruction / tool-calling 样本，解决冷启动无标注。建议按你要接入的 SaaS 工具 schema 生成工具调用数据集，再走 LoRA 微调。"
-        },
-        {
-          "title": "Weaviate 发布高危安全补丁（Google 模块凭据泄露）",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://weaviate.io/blog/weaviate-security-release-googlemodules-2026",
-          "why_picked": "生产若用 Weaviate 的 Google 模块需立即升级并轮换凭据。",
-          "so_what": "如果你在生产用 Weaviate 的 Google 模块：这是凭据泄露高危修复，必须升级。建议核对版本、轮换相关 API key，并排查日志中该模块的异常出站请求。"
-        },
-        {
-          "title": "pbakaus/impeccable — 让 AI harness 更懂设计的「设计语言」",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/pbakaus/impeccable",
-          "why_picked": "把设计规范变成 agent 可读的设计语言，让 Claude Code 等 harness 产出的 UI 不再土味。",
-          "so_what": "如果你在做 Agent+UI 生成：impeccable 把设计规范封装成 agent 可读的设计语言，可直接喂给 Claude Code 等 harness 提升产 UI 质量。建议把它作为 design skill 接入前端生成流水线做对比。"
-        },
-        {
-          "title": "Panniantong/Agent-Reach — 一个 CLI 让 Agent 读取全网社交平台",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/Panniantong/Agent-Reach",
-          "why_picked": "一个 CLI 让 Agent 读取/搜索 Twitter、Reddit、YouTube、GitHub、B站、小红书，零 API 费。",
-          "so_what": "如果你在给 Agent 接外部数据源：一个 CLI 打通 Twitter/Reddit/YouTube/GitHub/B站/小红书且零 API 费，适合做社交情报采集。建议先小流量测其反爬与稳定性，再决定是否用作生产级抓取层。"
-        },
-        {
-          "title": "HN：AI 首次在隐藏信息博弈 Stratego 击败史上最强人类玩家",
-          "category": "实验",
-          "source": "HN",
-          "url": "https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/",
-          "why_picked": "低成本 AI 在不完全信息博弈上击败人类冠军，引发对对抗决策泛化性的讨论。",
-          "so_what": "如果你在做对抗/不完全信息决策：这个低成本 agent 在隐藏信息博弈上击败人类冠军，说明 RL + 搜索仍有红利。建议借鉴其预算分配思路，用于你的 planning/eval 场景。"
-        },
-        {
-          "title": "HN：Redis 作者 antirez 发布本地 LLM 运行器 ds4",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://dwarfstar.sh/",
-          "why_picked": "antirez 新项目，一行命令跑本地 LLM，对私有 RAG/内网推理有参考价值。",
-          "so_what": "如果你在搭私有化/RAG 推理：antirez 的 ds4 一行命令跑本地 LLM，适合做数据不出内网的实验底座。建议对比 llama.cpp 的吞吐与量化支持，再决定生产选型。"
         }
       ]
     }
