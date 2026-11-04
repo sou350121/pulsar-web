@@ -1,71 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-04",
-      "config_version": 18,
-      "items": [
-        {
-          "title": "Microsoft/HF ThinkingBox：按 agent 留下的数据库终态评分",
-          "url": "https://huggingface.co/blog/microsoft/thinkingbox",
-          "source": "hf-blog",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Microsoft / Hugging Face",
-          "labels": [
-            "evals",
-            "agent",
-            "benchmark"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "不再只看 tool call，而是核对 agent 留下的后端终态与副作用"
-        },
-        {
-          "title": "Simon Willison：agent 时代需要「默认硬预算上限」",
-          "url": "https://simonwillison.net/2026/Oct/3/default-hard-budget-caps/",
-          "source": "blog-simonwillison",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "—",
-          "labels": [
-            "cost",
-            "guardrail",
-            "infra"
-          ],
-          "direction_note_prefix": "",
-          "why": "按量计费缺硬上限，agent 半夜烧钱；AWS/GCP 已上线 spend cap"
-        },
-        {
-          "title": "cloudflare/cloudflare-os — Cloudflare 开源的 agent 工作台",
-          "url": "https://github.com/cloudflare/cloudflare-os",
-          "source": "gh-trending",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "cloudflare",
-          "labels": [
-            "agent-ui",
-            "sandbox",
-            "security"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "含 agent chat UI、沙箱建应用与 Gatekeepers 护栏，今日 Trending"
-        },
-        {
-          "title": "thedotmack/claude-mem — 跨会话持久记忆",
-          "url": "https://github.com/thedotmack/claude-mem",
-          "source": "gh-trending",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "thedotmack",
-          "labels": [
-            "agent-memory",
-            "context"
-          ],
-          "direction_note_prefix": "",
-          "why": "压缩并回注旧 session 上下文，支持 Claude Code/Codex 等，今日 Trending"
-        }
-      ]
-    },
-    {
       "date": "2026-10-05",
       "config_version": 19,
       "items": [
@@ -2790,6 +2725,158 @@
           ],
           "direction_note_prefix": "[RAG]",
           "why": "场景用 topic/scope 控制提取，把记忆注入 prompt 而不是堆全部历史"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-04",
+      "config_version": 22,
+      "items": [
+        {
+          "title": "Mistral 放出 Le Chonk（Mistral Large 4）权重：1T 参数原生多模态，主打 agentic coding 与防御性安全",
+          "url": "https://mistral.ai/news/mistral-large-4-oss/",
+          "source": "mistral.ai",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Mistral AI",
+          "labels": [
+            "open-weight",
+            "coding-agent",
+            "sovereign-ai"
+          ],
+          "direction_note_prefix": "",
+          "why": "1T 开源权重模型自托管可行，FrontierCode 2.0 得 19.7% 领先开放系"
+        },
+        {
+          "title": "Vercel Security Review 公测：每次 push 自动扫漏洞，Vercel Agent 直接开 PR 修复",
+          "url": "https://vercel.com/changelog/vercel-security-review-public-beta",
+          "source": "vercel.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "agent-security",
+            "guardrail",
+            "ci"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "agent 修漏洞闭环进 CI，按 token 计费，11/10 前免费"
+        },
+        {
+          "title": "Vercel MCP 上线首个 MCP App：部署状态/构建日志以交互卡片渲染在 ChatGPT 里",
+          "url": "https://vercel.com/changelog/monitor-vercel-deployments-in-chatgpt",
+          "source": "vercel.com",
+          "category": "UI/UX 工具",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "mcp",
+            "agent-ui",
+            "chatgpt"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "MCP Apps 首个落地：工具返回值为交互 UI 而非纯文本"
+        },
+        {
+          "title": "Vercel MCP 支持 Client ID Metadata Documents：MCP 客户端免预注册即可 OAuth 接入",
+          "url": "https://vercel.com/changelog/vercel-mcp-now-supports-client-id-metadata-documents",
+          "source": "vercel.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "mcp",
+            "oauth",
+            "auth"
+          ],
+          "direction_note_prefix": "",
+          "why": "MCP 授权从逐家 allowlist 走向动态客户端注册，接第三方 agent 的门槛下降"
+        },
+        {
+          "title": "vercel.toml 支持：项目配置可用 TOML + 注释，服务拆分可直接写在配置里",
+          "url": "https://vercel.com/changelog/projects-can-now-be-configured-with-vercel-toml",
+          "source": "vercel.com",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "Vercel",
+          "labels": [
+            "deployment",
+            "config"
+          ],
+          "direction_note_prefix": "",
+          "why": "agent 自动改配置时 TOML 可注释，便于人工审阅 diff"
+        },
+        {
+          "title": "Google DeepMind：Antigravity 配 Cheminformatics Skills，1 小时完成一轮药物分子设计",
+          "url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
+          "source": "deepmind.google",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "Google DeepMind",
+          "labels": [
+            "agent-skills",
+            "science",
+            "vertical"
+          ],
+          "direction_note_prefix": "",
+          "why": "模型做编排、RDKit 做确定性计算，垂直 agent 的分工范式样板"
+        },
+        {
+          "title": "Ai2 StateBench：测长文档里的状态追踪，前沿模型仍随文档变长掉点",
+          "url": "https://huggingface.co/blog/allenai/statebench",
+          "source": "huggingface.co",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "Ai2",
+          "labels": [
+            "evaluation",
+            "long-context"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "长上下文 agent 的\"状态是否更新\"首次被单独量化"
+        },
+        {
+          "title": "CWE-bench v2：漏洞检测基准扩容，附提交级可复现数据与透明度报告",
+          "url": "https://huggingface.co/blog/cwe-bench",
+          "source": "huggingface.co",
+          "category": "其他",
+          "importance": "actionable",
+          "developer": "Collinear AI",
+          "labels": [
+            "evaluation",
+            "security"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "安全 agent 的评测集升级，可直接跑在 Hub 上对比"
+        },
+        {
+          "title": "Simon Willison：Qwen 3.8 27B 在笔记本上也能读权重做 Weight-Space Programming",
+          "url": "https://simonwillison.net/2026/Nov/3/qwen-can-interpret-model-weights/",
+          "source": "simonwillison.net",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "Simon Willison",
+          "labels": [
+            "local-model",
+            "interpretability"
+          ],
+          "direction_note_prefix": "",
+          "why": "前沿能力下沉到本地权重模型，附带可复现实验"
+        },
+        {
+          "title": "AWS：ServiceNow 场景下的 on-behalf-of token exchange 接进 Bedrock AgentCore Gateway",
+          "url": "https://aws.amazon.com/blogs/machine-learning/servicenow-on-behalf-of-token-exchange-with-amazon-bedrock-agentcore-gateway/",
+          "source": "aws.amazon.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "gateway",
+            "auth",
+            "enterprise"
+          ],
+          "direction_note_prefix": "",
+          "why": "agent 代表用户访问企业系统的身份委派有了官方参考实现"
         }
       ]
     }

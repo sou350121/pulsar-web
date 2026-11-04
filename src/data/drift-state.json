@@ -1,90 +1,74 @@
 {
-  "last_check": "2026-11-03",
+  "last_check": "2026-11-04",
   "metrics": {
     "vla_papers_scanned": {
-      "streak": 1,
+      "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 417,
-      "baseline": 1052.86,
-      "ratio": 0.396,
+      "last_value": 1660,
+      "baseline": 915.43,
+      "ratio": 1.813,
       "sustained_degradation": true,
-      "streak_before_day": 0,
-      "evaluated_on": "2026-11-03"
+      "streak_before_day": 1,
+      "evaluated_on": "2026-11-04"
     },
     "vla_final_in_report": {
-      "streak": 1,
+      "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 2,
-      "baseline": 22.29,
-      "ratio": 0.09,
+      "last_value": 30,
+      "baseline": 18.29,
+      "ratio": 1.641,
       "sustained_degradation": false,
-      "streak_before_day": 0,
-      "evaluated_on": "2026-11-03"
+      "streak_before_day": 1,
+      "evaluated_on": "2026-11-04"
     },
     "vla_sources_active": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 12,
-      "baseline": 14.0,
-      "ratio": 0.857,
+      "last_value": 16,
+      "baseline": 13.43,
+      "ratio": 1.191,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-11-03"
+      "evaluated_on": "2026-11-04"
     },
     "aiapp_items_scanned": {
-      "streak": 7,
+      "streak": 0,
       "alerted_at_streak": 0,
       "last_value": 350,
-      "baseline": 1309.43,
-      "ratio": 0.267,
-      "sustained_degradation": false,
-      "streak_before_day": 6,
-      "evaluated_on": "2026-11-03"
+      "baseline": 323.57,
+      "ratio": 1.082,
+      "sustained_degradation": true,
+      "streak_before_day": 7,
+      "evaluated_on": "2026-11-04"
     },
     "aiapp_items_report": {
       "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 8,
-      "baseline": 7.71,
-      "ratio": 1.037,
+      "last_value": 10,
+      "baseline": 7.57,
+      "ratio": 1.321,
       "sustained_degradation": false,
       "streak_before_day": 0,
-      "evaluated_on": "2026-11-03"
+      "evaluated_on": "2026-11-04"
     },
     "vla_upstream_count": {
-      "streak": 3,
+      "streak": 0,
       "alerted_at_streak": 0,
-      "last_value": 39,
-      "baseline": 62.86,
-      "ratio": 0.62,
+      "last_value": 84,
+      "baseline": 53.57,
+      "ratio": 1.568,
       "sustained_degradation": false,
-      "streak_before_day": 2,
-      "evaluated_on": "2026-11-03"
+      "streak_before_day": 3,
+      "evaluated_on": "2026-11-04"
     }
   },
   "last_remediation": {
     "vla_final_in_report": "2026-11-03",
-    "vla_papers_scanned": "2026-11-03",
+    "vla_papers_scanned": "2026-11-04",
     "aiapp_items_report": "2026-08-03",
-    "aiapp_items_scanned": "2026-11-03"
+    "aiapp_items_scanned": "2026-11-04"
   },
   "remediation_log": [
-    {
-      "date": "2026-09-28",
-      "key": "vla_final_in_report",
-      "label": "VLA 評級重跑",
-      "script": "/home/admin/clawd/scripts/rate-vla-daily.py",
-      "ok": false,
-      "detail": "usage: rate-vla-daily.py [-h] --papers-file PAPERS_FILE\n                         [--output-file OUTPUT_FILE] [--date DATE]\nrate-vla-daily.py: error: the following arguments are required: --papers-file"
-    },
-    {
-      "date": "2026-10-01",
-      "key": "aiapp_items_scanned",
-      "label": "AI RSS 重跑",
-      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
-      "ok": true,
-      "detail": "[progress] ai-app-rss-collect start: 2026-10-01\n[progress] already collected, skip"
-    },
     {
       "date": "2026-10-02",
       "key": "aiapp_items_scanned",
@@ -308,7 +292,23 @@
       "script": "/home/admin/clawd/scripts/vla-rss-collect.py",
       "ok": true,
       "detail": ""
+    },
+    {
+      "date": "2026-11-04",
+      "key": "vla_papers_scanned",
+      "label": "VLA RSS 重跑",
+      "script": "/home/admin/clawd/scripts/vla-rss-collect.py",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "date": "2026-11-04",
+      "key": "aiapp_items_scanned",
+      "label": "AI RSS 重跑",
+      "script": "/home/admin/clawd/scripts/ai-app-rss-collect.py",
+      "ok": true,
+      "detail": "[progress] ai-app-rss-collect start: 2026-11-04\n[progress] already collected, skip"
     }
   ],
-  "drift_active": true
+  "drift_active": false
 }
