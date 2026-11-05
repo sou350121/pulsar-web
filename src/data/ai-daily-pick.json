@@ -1,6 +1,51 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-05",
+      "items": [
+        {
+          "title": "OpenAI 将收购 Pierre Computer（Code Storage 团队，Trees/Diffs 库作者）",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/openai-to-acquire-pierre",
+          "why_picked": "Codex 正面冲进 GitHub 的地盘：Pierre 的 Trees/Diffs 已内嵌在 Codex 的代码浏览与 diff 审阅里，收购后要把 Code Storage 并入 Codex；同周 OpenAI 还公开了自研 Git 后端 Pando（push 中位延迟降近 5x、日供近 1PB Git 数据）",
+          "so_what": "如果你在做 coding agent 或代码审阅流水线：现在就可以把 Pierre 的 pierre.trees / pierre.diffs 这类库当独立组件评估（Tree 渲染与 diff 渲染的性能上限就摆在那里），并盯住 Code Storage API 是否走 Git 协议——若沿用 Git 兼容层，日后迁到 Codex 托管几乎零成本；若走私有 API，就要提前抽出存储适配层，避免和 GitHub/GitLab 两边各自写一套。"
+        },
+        {
+          "title": "OpenAI 自动化漏洞挖掘链路：2308 个内核候选 → 1724 个已复现 → 948 个本地提权 exploit",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://openai.com/index/a-thousand-fewer-paths-to-root",
+          "why_picked": "五阶段链路（发现 / 动态复现 / 可利用性评估 / 补丁生成 / 人工复核），单轮 API 成本约 121 万美元换回估算 1890–6630 万美元的漏洞价值——agent 化安全研究第一次算清了投入产出比",
+          "so_what": "如果你在做 agentic 安全审计或红队管线：关键不是让 agent 报漏洞，而是把「动态复现」和「证伪 agent」做成强制关卡——候选数约为确认数的 1.34 倍、且必须有可执行 PoC 才计数；照搬这个比例给你的漏洞报告置信度打标，能把假阳性率压到可交付水平。"
+        },
+        {
+          "title": "【📊趋势】GitHub 周榜前三全是 Agent Skill，「去 AI 味」设计插件与 Cloudflare 安全审计 Skill 领跑",
+          "category": "趋势",
+          "source": "GitHub",
+          "url": "https://news.qiniu.com/archives/1793586030871",
+          "why_picked": "11-02 读取的周榜 16 个项目里 13 个是给 Claude Code / Codex / Cursor 装的 skill；Impeccable 单周 +1.2 万星（62 条确定性规则，不调模型）；Cloudflare 把内部漏洞挖掘系统的起点开源成六阶段 security-audit-skill，单周 +1.0 万星",
+          "so_what": "如果你在做 agent 产品而非 coding agent 本身：这条告诉你竞争焦点已从模型能力转到「手艺层」。最低成本的实验是接一个确定性规则 skill（如 Cloudflare 的 security-audit-skill）进你的 CI 前置，先拿到可复现的审计报告格式，再考虑用 LLM 补内容——别一上来就上几十万 token 的生成式 skill。"
+        },
+        {
+          "title": "【🆕新发布】Weight-Space Programming：模型直接读写权重，Simon Willison 在笔记本上的 Qwen 3.8 27B 复现",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/3/qwen-can-interpret-model-weights/",
+          "why_picked": "GPT-6 Astra 不写训练循环、只改 0.016% 的权重就把 Qwen3.5-0.8B 的 MATH-500 从 7.9% 拉到 48.1%，IFEval 涨 3 倍；27B 量级的本地模型也能做——这是「不训练就后训练」的直接信号，对 MLE 体系有冲击",
+          "so_what": "如果你在做模型后训练或评测：先别把这条当炼丹术。可立即做的最小验证是拿一张小模型权重转成文本喂给你的本地推理栈，让它指出推理循环所在层并做局部改动——如果连 27B 模型都能给出可解释的权重补丁，你对 SFT/RL 的默认依赖就应该重新算账（至少加一组「无梯度基线」）。"
+        },
+        {
+          "title": "【🔧工具】Simon Willison 的 datasette-agent 0.5a0 + datasette-apps 0.3a0 + llm 0.37.1 同期发布",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/4/datasette-agent/",
+          "why_picked": "一套把「数据查询 → agent 可调用 → 可部署为 app」打通的最小栈：datasette-agent 让 agent 直接对 SQLite 发起受控查询，datasette-apps 把 agent 生成的结果直接落成可访问的 app，llm 0.37 系列同步修 CLI/prompt 侧问题",
+          "so_what": "如果你在做 agent 的工具调用层或 RAG 管线：这是便宜得离谱的参照实现——用一个 SQLite + datasette-agent 就能做端到端工具调用评估（权限边界、查询白名单、结果可复现），比在 LangChain 里搭一套脆弱的 tool router 更快拿到对照组；建议先照它把「agent 查数」这条用例的 eval 写出来。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-04",
       "items": [
         {
@@ -1632,67 +1677,6 @@
           "url": "https://www.36kr.com/p/4012179282874240",
           "why_picked": "DevDay 后重度用户抱怨额度收紧、模型变慢、新功能未兑现；Tibo 承诺锁定方向并连续 28 天发布或重置，社区质疑能否兑现。",
           "so_what": "如果你在关键链路上依赖 OpenAI 的 agent 平台：额度与延迟波动会直接影响 SLA。建议对核心路径做多模型路由与降级，避免单点依赖同一供应商的额度政策。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-05",
-      "items": [
-        {
-          "title": "Strata：消费级显卡本地跑 Qwen3.8-Flash-Next 125B",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/Niko1221/Strata",
-          "why_picked": "HN 576 分 / 278 评论登顶，一键在 Windows/Linux 用 12GB 显存跑 125B 模型，并在 localhost 暴露 OpenAI/Anthropic 兼容 API。",
-          "so_what": "如果你在做 Agent 的本地/私有部署：Strata 把 125B 压到 12GB 显存并在 localhost 暴露 OpenAI/Anthropic 兼容端点，可直接替换远程 API 做离线工具调用。建议先用它跑一遍你的 agent loop 验证显存与吞吐（Q2_0 约 94 tok/s），再决定是否把敏感数据链路迁到本地。"
-        },
-        {
-          "title": "DeepSeek Harness v0.2.1-alpha.1 新增实验性 Claude Code Mods 兼容层",
-          "category": "新发布",
-          "source": "GitHub",
-          "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.1-alpha.1",
-          "why_picked": "官方称 Claude Code Mods API 基本是 DeepSeek Harness 插件 API 的子集，编程 Agent 插件生态开始打通。",
-          "so_what": "如果你在做 coding agent 插件/工具生态：官方确认 Claude Code Mods API 基本是 Harness 插件的子集，同一套插件有机会跨 harness 复用。建议现在抽出与 harness 无关的工具/插件接口层，待兼容层稳定后低成本横跨 Claude Code 与 DeepSeek Harness。"
-        },
-        {
-          "title": "earthtojake/text-to-cad：给 Agent 装上 CAD 能力",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/earthtojake/text-to-cad",
-          "why_picked": "把 CAD 建模封装成 agent 可调用工具（⭐16.8k，10-05 仍在推送），垂直专业技能 skill 化的又一案例。",
-          "so_what": "如果你在做 Agent 工具链：text-to-cad 把 CAD 建模暴露成 agent 可调用工具，是「专业技能 skill 化」的又一实例。建议参考它的工具 schema 设计，评估把你领域的垂直能力（如有限元/电路）做成 agent skill 的收益。"
-        },
-        {
-          "title": "michael-denyer/pstack-claude：跨 harness 复用的 agent 工作流",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/michael-denyer/pstack-claude",
-          "why_picked": "把同一套严谨流程移植到 Claude Code / Codex / Gemini / OpenCode，验证 harness 中立的流程资产可行。",
-          "so_what": "如果你在做多 harness 的 agent 工作流：pstack 把同一套流程移植到 Claude Code/Codex/Gemini/OpenCode，说明 harness 无关的 prompt/workflow 资产可行。建议把提示词与流程抽成 harness 中立层，避免绑定单一 CLI。"
-        },
-        {
-          "title": "garrytan/gstack：Garry Tan 的 Claude Code 实战配置（⭐135k）",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/garrytan/gstack",
-          "why_picked": "Trending 仓库，23 个工具按 CEO / 设计 / 工程 / QA 等角色划分，展示角色化的 Claude Code 配置。",
-          "so_what": "如果你在做 Claude Code / agent skills 落地：gstack 展示了一个把 23 个工具按角色（CEO/设计/QA）编排的实战配置。建议对照它的权限与工具边界设计，检查你的 agent 是否缺角色化约束。"
-        },
-        {
-          "title": "calesthio/OpenMontage：开源 agentic 视频生产系统（⭐63k）",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/calesthio/OpenMontage",
-          "why_picked": "12 条流水线、100+ 工具、700+ skill 文件，是「大规模 skill 资产库」的样板。",
-          "so_what": "如果你在做 agentic 应用/多流水线编排：OpenMontage 用 100+ 工具与 700+ skill 文件把视频生产 agent 化，是「大规模 skill 资产库」的样板。建议研究它的 pipeline 与 skill 分层方式，复用到你的垂直 agent 编排。"
-        },
-        {
-          "title": "Show HN: SCM — macOS 本地 AI 搜图 / 逐帧搜视频",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=49952111",
-          "why_picked": "HN 135 分 / 64 评论，本地视觉模型 + Whisper + OCR 对照片与视频逐帧建索引，全程离线。",
-          "so_what": "如果你在评估本地优先的 RAG/多模态检索：SCM 用本地视觉模型 + Whisper + OCR 对照片和视频逐帧建索引，全程离线。建议测试它的场景切分 + 时间码检索思路，用于你自己的视频/截图知识库。"
         }
       ]
     }
