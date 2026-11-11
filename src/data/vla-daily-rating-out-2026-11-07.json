@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "total": 3,
+  "counts": {
+    "⚡": 0,
+    "🔧": 0,
+    "📖": 2,
+    "❌": 1
+  },
+  "parse_error": "",
+  "parse_failed": false,
+  "papers": [
+    {
+      "title": "Kinematic Hypothesis Context: Embodiment-Conditioned Learned Video Coding for Bandwidth-Limited Robot Policy Uplinks",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.07411",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "OpenVLA"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Robots increasingly run large vision-language-action policies on remote servers, making the camera uplink the bottleneck. Existing video codecs spend bits on content the receiver could predict: the robot's own motion. We introduce the kinematic hypothesis context, a zero-rate conditioning signal that both ends build from joint states, the robot model and the camera calibration. Ego-motion homographies, per-link robot reprojections, an end-effector plane and a background memory warp the previous",
+      "pub_date": "2026-11-05",
+      "rating": "📖",
+      "reason": "把机器人自身运动学作为零比特的条件信号注入学习型视频编码，让远端 VLA 推理的相机上行只传「无法预测」的残差，压缩云端部署带宽。属部署层工程优化，无机器人操作实验证据，暂不列入可复用清单。",
+      "affiliation": ""
+    },
+    {
+      "title": "EgoGeneralist: Unifying Egocentric Action-Video Tasks through Video-Native Modeling",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.08477",
+      "source": "hf-papers",
+      "match_level": "B",
+      "keywords_matched": [
+        "egocentric"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Modern video models possess strong visual priors, yet do not natively represent human action in metric 3D space. We present EgoGeneralist, which adapts pretrained video generators to unify action-conditioned egocentric video generation, pose estimation, and joint action-video generation. Our role-adaptive action renderer provides video-native representations for multidirectional action-video learning, making metric motion usable as both a spatial control signal and a recoverable generation targe",
+      "pub_date": "2026-11-05",
+      "rating": "📖",
+      "reason": "把预训练视频生成器改造成统一的第一人称动作-视频模型，同时做动作条件视频生成、位姿估计与联合动作-视频生成，为利用大规模人类自我中心视频提供了一条路线。但摘要仅给出目标与角色分工，缺机器人操作实验与量化对比。",
+      "affiliation": ""
+    },
+    {
+      "title": "A high-dimensional population code in the bat motor cortex during natural dexterous flight",
+      "authors": "Boaz Styr et al.",
+      "url": "https://www.cell.com/cell/fulltext/S0092-8674(26)01131-1?rss=yes",
+      "source": "Cell-InPress",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Bats use their hand-like wings to reproduce natural flights with wingbeat-level precision. Rather than mainly tracking the wingbeat cycle, the wing motor cortex generates sparse, distinct population states with little shared variance across wingbeats, resulting in a high-dimensional code distinct from that typically observed in constrained tasks.",
+      "pub_date": "2026-10-13",
+      "rating": "❌",
+      "reason": "蝙蝠飞行运动皮层的神经群体编码研究，属神经科学，与机器人 VLA 架构、训练、数据、部署均无实质关联。",
+      "affiliation": ""
+    }
+  ]
+}

@@ -1,6 +1,452 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-11",
+      "items": [
+        {
+          "title": "Gemini 4 Carbon 正式开放 + Antigravity /swarm 群体 agent",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/",
+          "why_picked": "CursorBench 4.0/WANDR/AutomationBench 三项第一，成本低于次优 2 倍",
+          "so_what": "如果你在做多 agent 编排：Carbon 的 /swarm 把「深推理模型做架构+审计、快模型并行执行+对抗验证」写成官方模板，可直接照抄角色分工；评测优先看 CursorBench/Zapier AutomationBench 这类真实工作流榜单。"
+        },
+        {
+          "title": "Meta 发布 Muse Ember 轻量 agent 模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://research.meta.ai/blog/muse-ember",
+          "why_picked": "$0.10/$0.50，Artificial Analysis Pareto 前沿",
+          "so_what": "如果你在做 agent 路由或长流程工具调用：Ember 在 ≤200k prompt 档最便宜，超过 200k 涨到 $0.30/$1.50，应按上下文长度做动态路由。"
+        },
+        {
+          "title": "Claude Fable 5.2 发布（$8/$40 per M）",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2",
+          "why_picked": "同日第三款模型，定位长程重推理",
+          "so_what": "如果你在做成本敏感管线：重推理步骤（规划、debug、审计）留给 Fable 5.2，执行层换 Ember/Luna，按任务档位拆分压 per-task cost。"
+        },
+        {
+          "title": "Anthropic：声明代码归属可让模型主动重构",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/10/prompting-claude-fable-52/",
+          "why_picked": "合并重复代码成功率 <10% → ~50%",
+          "so_what": "如果你在做 coding agent 的 system prompt：加一句「This codebase is yours…」显著提升重构意愿，建议做成可开关的 prompt 变量。"
+        },
+        {
+          "title": "REMORY：1.9B 记忆模块挂在 compaction 摘要后",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/fudan-generative-vision/Remory",
+          "why_picked": "ASI-Bench 29.33，超 K2.7/V4-Pro 公开分",
+          "so_what": "如果你在做长会话 agent 的上下文压缩：REMORY 只在 compaction 后追加软记忆 token、基模冻结，可替代自研 summarizer。"
+        },
+        {
+          "title": "OpenAI 上线 Businesses in ChatGPT",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-businesses-chatgpt",
+          "why_picked": "商家侧数据进 ChatGPT 入口",
+          "so_what": "如果你在做面向商家的 agent 应用：商家数据可能成为新工具调用面，评估是否同步业务数据到该入口。"
+        },
+        {
+          "title": "OpenAI Q3 营收 100 亿美元",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xxIMLaSLyw",
+          "why_picked": "单季营收里程碑",
+          "so_what": "如果你在做模型选型与长期依赖规划：价格战与配额政策会继续松动，保持 provider 抽象层。"
+        },
+        {
+          "title": "AWS：LangGraph + AgentCore Web Search 依赖巡检 agent",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/build-a-daily-dependency-watcher-with-langgraph-and-amazon-bedrock-agentcore-web-search/",
+          "why_picked": "官方参考实现，带签名引用",
+          "so_what": "如果你在做联网检索 agent：AgentCore Web Search 用现有 AWS 凭证签名返回带引用结果，可替代自建搜索 provider。"
+        },
+        {
+          "title": "meta/astryx 开源 agent-ready 设计系统",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/meta/astryx",
+          "why_picked": "单日 +3,108 star",
+          "so_what": "如果你在做 Agent UI：astryx 可作为生成式 UI 的组件底座。"
+        },
+        {
+          "title": "homeassistant-ai/ha-mcp",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/homeassistant-ai/ha-mcp",
+          "why_picked": "MCP 落地家用 IoT 控制面",
+          "so_what": "如果你在做 MCP server 设计：可参考其设备库到工具集与权限边界的抽象。"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "items": [
+        {
+          "title": "Anthropic 发布 Fable 5.2 / Mythos 5.2：降价 20%、可协调 1000+ 并发 agent",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://platform.claude.com/docs/zh-CN/release-notes/overview",
+          "why_picked": "前沿模型正式发布，Fable 5.2 主打长周期工程与硬件/机器人任务，价格同步下调",
+          "so_what": "如果你在做长周期 agent 编排：并发 1000+ agent 的能力意味着调度与状态存储会成为新瓶颈，先把线程隔离、失败重放、成本上限做成基础设施；同时按 $8/$40 每百万 token 重算 budget。"
+        },
+        {
+          "title": "Pathways 在 Google Cloud 正式 GA：单控制器训练对客户开放",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://developers.googleblog.com/en/what-is-pathways-single-controller-training-for-large-models/",
+          "why_picked": "Gemini 训练用的分布式运行时开放，SPMD 之外多了一种异构程序重叠执行方案",
+          "so_what": "如果你在搭 RL 训练循环：Pathways 的单控制器图执行正是 sampler/reward/trainer 异构程序重叠所需的，可评估替代自研 orchestration；同时其故障恢复机制对长跑训练的成本影响值得先做小规模对照。"
+        },
+        {
+          "title": "NVIDIA Nemotron 3.5 Super VL（120B）上架 SageMaker JumpStart",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/nvidia-nemotron-3-5-super-vl-is-now-available-in-amazon-sagemaker-jumpstart/",
+          "why_picked": "开源多模态大模型进入托管部署路径，支持 NVFP4 量化",
+          "so_what": "如果你在做视觉 agent：可先用 NVFP4 变体把推理成本压下来做 A/B，再决定是否用自托管替代闭源多模态 API。"
+        },
+        {
+          "title": "OpenAI Control Room：跨基础设施追踪并熔断模型负载",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://openai.com/index/control-room/",
+          "why_picked": "把运行时安全上移到 workload 层，停的是任务不是单次调用",
+          "so_what": "如果你在做 agent 平台的权限与熔断：参考其「任务级 kill switch + 全局追踪」，把每轮工具调用打上 workload 标签，让熔断能沿 tag 精确停掉同一条 agent 链而不误伤其他租户。"
+        },
+        {
+          "title": "CodeRabbit 用 Codex 把交付量拉 20 倍，团队规模不变",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://openai.com/index/coderabbit-codex-daybreak/",
+          "why_picked": "agentic 评审+生成进入生产流水线的真实倍数数据",
+          "so_what": "如果你在做代码评审 agent：可借鉴它「agent 产出先过 agent 评审再进人审」的分层，把人工集中在架构与安全判断上，而不是 diff 级 review。"
+        },
+        {
+          "title": "anthropics/skills 的 Office skill 改为 Apache-2.0",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/anthropics/skills",
+          "why_picked": "Word/Excel/PPT 处理 skill 许可放开，可被商业产品直接复用",
+          "so_what": "如果你在做文档处理 agent：直接基于官方 Office skill 改造，省掉 xlsx 解析与样式保留的坑；注意 Apache-2.0 需保留 NOTICE 与变更声明。"
+        },
+        {
+          "title": "OpenAI 无预警大范围封号，第三方 API 风控收紧",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4059618356089985",
+          "why_picked": "账号风控与 provider 政策变化同步发生，直接影响 API 依赖型产品",
+          "so_what": "如果你在做依赖单一 provider 的 agent 产品：立刻补一个模型路由层（如同 Vercel AI Gateway 的 provider 抽象）与用量告警，避免单账号封禁导致整条链路停摆。"
+        },
+        {
+          "title": "max-sixty/worktrunk — 用 Git worktree 为每个 agent 隔离工作目录",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/max-sixty/worktrunk",
+          "why_picked": "多 agent 并行时代最底层的目录隔离需求，本周 +2,313 星",
+          "so_what": "如果你要同时跑 3-10 个 coding agent：用 worktree 隔离代替复制仓库，能避免同文件冲突且便于按分支 review；注意其许可证为 NOASSERTION，商用前检查仓库 LICENSE。"
+        },
+        {
+          "title": "vercel-labs/agent-browser — agent 专用浏览器自动化 CLI",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vercel-labs/agent-browser",
+          "why_picked": "Rust 实现、自带 MCP server 与 Sandbox 集成，社区热度高",
+          "so_what": "如果你在做 browser-use 类 agent：优先评估 MCP 模式的工具目录而非自带 playwright 封装，v0.41 已统一工具名到 MCP catalog，迁移成本需提前估算。"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-09",
+      "items": [
+        {
+          "title": "OpenAI 完成 110 亿美元融资，投后估值 1.25 万亿美元",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-06/openai-completes-11-billion-portion-of-funding-at-1-25-trillion-value",
+          "why_picked": "首次出现低于目标估值的融资，AI 基建叙事出现定价折扣",
+          "so_what": "如果你在做 Agent 系统的长期成本模型：把模型单价假设从「每年降 30%」改为「降速放缓 + 变体分层计价」两套情景，别再假设推理成本无限下探。"
+        },
+        {
+          "title": "高盛收回交易员与银行家的 Claude Code 权限，只留给工程师",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://www.fastcompany.com/91636500/goldman-sachs-bans-non-engineers-from-using-advanced-ai-tools",
+          "why_picked": "金融机构 agentic coding 从全面实验走向按角色收缩",
+          "so_what": "如果你在做企业内 agent 部署：按角色而非按厂商做准入，给 coding agent 加 repo 级权限边界与审计日志，把「谁能用」做成配置项而不是默认全开。"
+        },
+        {
+          "title": "Claude Code 团队公开 6 层代码审查关卡：PR 翻倍而回滚率降 40%",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://eu.36kr.com/en/p/4060672855757954",
+          "why_picked": "可复用的「人不再逐行读、机器负责门禁」审查架构",
+          "so_what": "如果你在做 coding agent 的 CI 门禁：加一层全新上下文的审稿 sub-agent（不看写码过程只看 diff），再让多个 agent 并行找 bug 交叉投票；finding 未关闭禁止合并。"
+        },
+        {
+          "title": "DeepSeek V4.1 Flash 1017 Ultrafast 上架 Vercel AI Gateway",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/deepseek-v4-1-flash-1017-ultrafast-now-available-on-ai-gateway",
+          "why_picked": "同一 base model 按延迟分档单独计价，网关分层成为常态",
+          "so_what": "如果你在做多模型路由：把「延迟档」提升为路由的一等维度，用 Ultrafast 档承接交互式 tool calling，批处理仍走标准档以控成本。"
+        },
+        {
+          "title": "AWS：Serverless MCP Server on ECS Fargate 打通数据湖访问",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/serverless-mcp-server-for-ai-agent-data-lake-access-on-amazon-ecs-fargate/",
+          "why_picked": "MCP server 无状态化，凭据不再下发到每个 agent 客户端",
+          "so_what": "如果你在做 RAG 的数据接入：把 MCP server 拆成独立无状态容器 + IAM 角色，agent 只持 endpoint 不持凭据，横向扩缩由平台负责。"
+        },
+        {
+          "title": "Simon Willison：Qwen 3.8 27B 本地能解读模型权重",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/3/qwen-3-8-27b/",
+          "why_picked": "把「模型读自己的权重」当作能力指标，而非又一场 benchmark 竞赛",
+          "so_what": "如果你在做模型能力评估：在 eval 里加一类「结构化输入（权重表/张量摘要）→ 解释异常」的任务，检验模型是否真能对齐数值与语义，而不是只答文本题。"
+        },
+        {
+          "title": "vercel-labs/agent-browser",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vercel-labs/agent-browser",
+          "why_picked": "Rust 实现的 agent 浏览器自动化 CLI，仍活跃提交",
+          "so_what": "如果你在做 web agent：用它替代 Playwright 包壳，先测同等任务的 token 与延迟开销，再决定是否接入工具层。"
+        },
+        {
+          "title": "cloudflare/security-audit-skill",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/cloudflare/security-audit-skill",
+          "why_picked": "单日 +2,085 star，可独立复核的机器可读安全审计 skill",
+          "so_what": "如果你在做 Agent 安全评估：把审计输出要求为结构化 findings（文件/行/证据/复核命令），让 agent 自证而非自述『已检查』。"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "items": [
+        {
+          "title": "GPT-6 Cyber 正式发布：OpenAI 首个对齐在先的网络安全专用模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/gpt-6-cyber",
+          "why_picked": "前沿模型开始按安全/视频等场景切出专用 SKU",
+          "so_what": "如果你在做Agent权限控制：专用安全模型的出现意味着可以给 agent 的高危动作单独挂一个受 scope 约束的模型路由，而不是全流程共用一个大模型；建议在 gateway 里按 tool 危险等级做 model routing。"
+        },
+        {
+          "title": "Gemini Omni 1.2 Flash GA：15 秒视频、$0.07/秒",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/products/gemini/gemini-omni-1-2-flash",
+          "why_picked": "视频生成单价继续下探，长片段可用",
+          "so_what": "如果你在做多媒体 Agent：视频生成成本已低到可用于「一步出片」的 agent 工作流，建议把 15s 片段作为默认输出单元，并缓存首帧/尾帧做跨片段接续。"
+        },
+        {
+          "title": "DeepSeek V4.1 Flash 1017 Ultrafast 上架 Vercel AI Gateway",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/deepseek-v4-1-flash-1017-ultrafast-now-available-on-ai-gateway",
+          "why_picked": "网关侧模型变体分层（Ultrafast 档位）成为主流做法",
+          "so_what": "如果你在做Agent系统的成本控制：同一 base model 出现按延迟分档计价的变体，建议在 gateway 里按 task 延迟敏感度做 model variant 选择，而不是只按 token 单价选模型。"
+        },
+        {
+          "title": "AWS：Bedrock AgentCore + Okta Cross App Access 治理 agent 访问 Part 1",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/govern-ai-agent-access-with-okta-cross-app-access-part-1/",
+          "why_picked": "用 OAuth 委托把 agent 身份交给 IdP 管",
+          "so_what": "如果你在做Agent权限控制：可以用 OAuth token exchange 让 agent 以用户身份访问下游 SaaS，而不是自己造 service token；建议先梳理 tool 清单再落到 IdP 的 scope 上，避免 agent 拿全权 token。"
+        },
+        {
+          "title": "AWS：为 AI agent 访问 data lake 搭 Serverless MCP Server",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/serverless-mcp-server-for-ai-agent-data-lake-access-on-amazon-ecs-fargate/",
+          "why_picked": "把 MCP server 无状态化部署，凭据集中托管",
+          "so_what": "如果你在做RAG管线的工具调用：把 MCP server 部署成独立无状态服务，可以让多客户端共享同一套数据湖凭据与审计，建议按 datasource 拆 server 而不是按 app 拆。"
+        },
+        {
+          "title": "Kyle Kingsbury：LLM 正在侵蚀对文档、软件与组织的信任",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/1/quoting-kyle-kingsbury/",
+          "why_picked": "对依赖文档做 tool description 的 agent 是直接威胁",
+          "so_what": "如果你在做工具调用：tool description 与 API 文档都不再可信的假设下，建议给关键 tool 加可执行的自检（schema probe + 真实调用 smoke test），而不是信任文档文本。"
+        },
+        {
+          "title": "DeepSeek Harness 日活 154 万，官方开始给插件作者发 Token",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4057774236652417",
+          "why_picked": "agent 平台从卖 API 转向补贴插件生态",
+          "so_what": "如果你在做Agent平台或插件：插件生态开始有官方额度补贴，建议把扩展点设计成可计费单元，未来可直接对接平台的额度结算。"
+        },
+        {
+          "title": "datasette-agent 0.5a0：agent 聊天可直接开可视化 panel",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://simonwillison.net/2026/Nov/3/datasette-agent/",
+          "why_picked": "agent 输出结构化 UI 而非长文本的实践样例",
+          "so_what": "如果你在做Agent UI：panel 模式提示「agent 产出组件而非文本」的可行路径，建议把 agent 输出契约从 markdown 改成「带 schema 的视图指令」，前端按指令渲染。"
+        },
+        {
+          "title": "OpenAI CFO 称估值较 3 月涨近 50%；Anthropic 投资者下修 IPO 估值",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xqXEinVxZc",
+          "why_picked": "资本市场对 AI 基建放缓定价，两家走向相反",
+          "so_what": "如果你在做Agent基础设施选型：一级市场估值分化会先体现在 API 补贴与降价节奏上，建议今年度预算按「单价持续下降」建模，不要提前锁长周期容量承诺。"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "items": [
+        {
+          "title": "OpenAI GPT-6 Cyber 发布：对齐型安全 agent 首次超过越界诱惑",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-gpt-6-cyber",
+          "why_picked": "ExploitGym 48.5% 对前代 32.1%，实测挖出 Linux 948 个提权漏洞与 Firefox 81 个未知高危漏洞，越界规避率 99.93%→100%",
+          "so_what": "如果你在做 Agent 权限控制：把「越界率」当一级指标，写入授权 scope 的显式 prompt + 评测集，而不是只测成功率。对比 ExploitGym 这类能力基准，你的内部 eval 也应同时报告 in-scope 合规率，两者任一崩塌都不能上线。"
+        },
+        {
+          "title": "Google Gemini Omni 1.2 Flash：15 秒文生视频 + 原生音频，价格再降 30%",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/",
+          "why_picked": "文生视频/图生视频双榜第一，支持 videoId 回溯编辑与最长 30 秒延长，已全量上线",
+          "so_what": "如果你在做多模态 Agent 的输出层：可以把 15 秒带音频的视频作为默认交付物，用 videoId 做增量编辑而非整段重生成。成本下降后，重试/多候选采样终于划算，建议把「生成 N 候选再挑」纳入默认管线。"
+        },
+        {
+          "title": "Claude Code 核心产品负责人跳槽 OpenAI",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4056162615350407",
+          "why_picked": "前一天刚宣布离开 Anthropic，次日入职 OpenAI；两家 coding agent 竞争进入抢核心产品线负责人阶段",
+          "so_what": "如果你在做 coding agent 产品：留意后续 3-6 个月两家产品路线可能出现的功能风格迁移（如审批流、会话持久化取舍）。二手来源不可当事实，建议以官方 changelog 为准追踪，不要基于人事新闻调整技术选型。"
+        },
+        {
+          "title": "AWS：Okta Cross App Access × Bedrock AgentCore，给 agent 做细粒度授权",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/govern-ai-agent-access-with-okta-cross-app-access-and-amazon-bedrock-agentcore-part-1/",
+          "why_picked": "把 agent 代表用户访问第三方 SaaS 的 token 交换与作用域收窄写成可落地方案，Part 1/2 完整覆盖",
+          "so_what": "如果你在做 Agent 权限控制：用 Cross App Access 做 token 交换而不是把用户 OAuth 直接透传给 agent，作用域按单次任务收窄。建议先在 AgentCore 沙箱里跑通一轮最小权限，再迁到生产。"
+        },
+        {
+          "title": "AWS：Serverless MCP server（ECS Fargate）打通 agent 数据湖访问",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/serverless-mcp-server-for-ai-agent-data-lake-access-on-amazon-ecs-fargate/",
+          "why_picked": "把 MCP 服务做成无状态容器，agent 只拿到受控查询能力而不是直连数仓的凭证",
+          "so_what": "如果你在做 RAG 管线或工具调用：把数仓/数据湖访问收敤进一个 MCP server，别让 agent 持长期凭证。无状态容器 + 按请求裁剪 schema，能同时降低越权风险与 prompt 里 schema 的 token 占用。"
+        },
+        {
+          "title": "Together：Compiler + Polymorphic Inference，按负载动态编译推理图",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/polymorphic-inference",
+          "why_picked": "把「连续编译 / 形态切换」作为开放模型推理自调优的核心，而非一次性静态图",
+          "so_what": "如果你在做 LLMOps 推理部署：别再只为平均负载调一份静态配置，按流量形态（长 prompt vs 高并发短请求）注册多套形态并让路由自动切换。先量出你的 TTFT/吞吐拐点，再决定是否值得引入这层复杂度。"
+        },
+        {
+          "title": "紫光展锐：Agent 进生产的「4+1」标准（安全优先 + 稳定/可观测/可度量 + 人机协同）",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xqpSXMrULr",
+          "why_picked": "三类 Agent 已从 Demo 进生产（Camera 内存调查、销售供应链预测、项目风险追踪），配内部 UniMaaS 平台",
+          "so_what": "如果你在把 Agent 从 Demo 推进生产：用这四条验收——安全优先、可观测、可度量、人机协同，逐条给出证据（日志、指标、人工接管率）。缺任何一条就别宣称「已上生产」。"
+        },
+        {
+          "title": "thedotmack/claude-mem",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/thedotmack/claude-mem",
+          "why_picked": "跨 session 的 agent 持久记忆：捕获过程→AI 压缩→按需注入，兼容 Claude Code / Codex / Gemini 等",
+          "so_what": "如果你在做长期运行的 Agent 系统：别把记忆塞进上下文窗口，改成「事件全量落盘 + AI 压缩摘要 + 按任务检索注入」。建议先只做写入与压缩、检索先用关键词，验证压缩后信息损失率再上向量检索。"
+        },
+        {
+          "title": "max-sixty/worktrunk",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/max-sixty/worktrunk",
+          "why_picked": "给并行 agent 用的 git worktree CLI，解决多个 coding agent 抢同一个工作目录",
+          "so_what": "如果你在跑并行 coding agent：用 worktree 一 agent 一目录，避免 stash/冲突互相踩。配一个合并前的固定验收脚本（lint+test），否则并行带来的吞吐会被 merge 冲突吃掉。"
+        },
+        {
+          "title": "Anthropic 收紧中转/代理调用，AI 中转站商业模式受冲击",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4056019887510401",
+          "why_picked": "中转站依赖的调用方式被限制，第三方工具链可能被迫回到官方 SDK",
+          "so_what": "如果你的 Agent 栈依赖第三方中转 API：现在做一次依赖盘点，把 base_url 与鉴权改成可配置，并测一遍官方 SDK 回切。别等到被限流那天才发现 SDK 层有硬编码。"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "items": [
+        {
+          "title": "Claude Code 产品负责人 Cat Wu 离职次日加入 OpenAI",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.infobae.com/tecno/2026/11/05/cat-wu-jefa-de-producto-de-claude-code-dejo-anthropic-y-a-los-pocos-dias-se-sumo-a-openai/",
+          "why_picked": "Anthropic 两周内第三名核心成员出走，coding agent 竞争转入产品负责人层",
+          "so_what": "如果你在做 coding agent：核心产品判断（审批粒度、IDE 集成形态）大概率会跟着人走，别把 roadmap 押在单一 vendor 的路线图上，抽象出你自己的 hook/权限层，换 harness 时只换胶水。"
+        },
+        {
+          "title": "OpenAI 发布 National Community Compact 与 Compute Campus Policy Blueprint",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/setting-new-standard-responsible-ai-infrastructure",
+          "why_picked": "数据中心选址进入牌照与社区治理阶段，承诺自付电力全成本并逐年公开",
+          "so_what": "如果你在做大规模推理部署：算力成本里会多出社区补偿与电力自付项，做容量规划时把 PPA/社区承诺当作固定成本，而不是把 GPU 报价当成唯一变量。"
+        },
+        {
+          "title": "OpenAI Images 2.6：Flare/Sunburst 双档 API + GIF 输出",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-images-2-6",
+          "why_picked": "生成快 50%，分出低质 6 秒档与高一致性档，可直出 GIF",
+          "so_what": "如果你在做多模态 agent：把图片生成按用途路由到 Flare（草稿/预览，6 秒）与 Sunburst（终稿编辑），并利用跨编辑一致性做多轮迭代，能显著降视觉 agent 的延迟与失败重试成本。"
+        },
+        {
+          "title": "Merge 用 GPT-6 Astra + Codex 重构产品与非工程流程",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/index/merge-builds-with-openai",
+          "why_picked": "agent 落地从研发岗扩散到市场、销售、行政等职能岗",
+          "so_what": "如果你在做企业内部 agent：别只做 code review，把 Codex 类工具接进销售周报、活动策划这类高频文书流程，用同一套 MCP/skill 抽象复用，比新建一个垂直应用更快出价值。"
+        },
+        {
+          "title": "NVIDIA AI 内存全栈协同：GB300 NVL72 单位成本吞吐 10x、Vera Rubin 最高 30x",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xoe2dyYhGc",
+          "why_picked": "官方在 HBM 紧张下给出低精度+分层存储+分布式路线，而非堆显存",
+          "so_what": "如果你在做长上下文 agent：把 KV Cache 低精度量化、冷上下文下沉到低成本存储层当作一等设计，否则长会话成本会被 HBM 价格拖死；同时预留多 GPU/多节点分片入口。"
+        },
+        {
+          "title": "AWS：SageMaker AI + VLM + OCR 给商品页批量打质量分",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/how-amazon-marketplace-evaluates-content-quality-with-amazon-sagemaker-ai/",
+          "why_picked": "整页渲染为单张 snapshot 再交 VLM，多信号融合评分的可复制配方",
+          "so_what": "如果你在做 UI/内容质检 agent：用 playwright 整页截图 + VLM 打分，再叠加 OCR 可读性等规则信号做加权，比纯文本检查更接近真实呈现，且评分可解释、可阈值化。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-05",
       "items": [
         {
@@ -1608,75 +2054,6 @@
           "url": "https://micahflee.com/just-say-no-to-openai-and-anthropic/",
           "why_picked": "HN 152 up / 141 comments：拒绝把工作流托管给闭源前沿实验室的号召，引爆平台锁定争论",
           "so_what": "如果你在做技术选型：评估平台锁定与议价权，保留可替换的开源或自托管路径（本地推理、开放权重），别把关键工作流单点绑在闭源前沿实验室。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-06",
-      "items": [
-        {
-          "title": "华尔街启动 600 亿美元 AI 芯片融资，Anthropic 租赁 Google 芯片",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wzXp7oecsG",
-          "why_picked": "迄今最大规模芯片融资交易：约 420 亿美元博通担保的高级贷款 + 180 亿美元次级债，黑石出资 90 亿，用于 Anthropic 2027 年芯片订单。",
-          "so_what": "如果你在做 Agent 平台的成本与算力规划：头部厂商把推理算力当长期资本支出（融资+租赁锁定 2027 产能），中小团队应评估多云/自托管切换成本，并把供应商算力议价能力纳入 agent 平台选型。"
-        },
-        {
-          "title": "OpenAI 在 ChatGPT 上线视觉广告格式，周活达 12 亿",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://openai.com/index/new-chatgpt-ads-format-and-measurement",
-          "why_picked": "官方确认 ChatGPT 周活 12 亿；新视觉广告在图像生成中试点，配套 Hightouch/Tealium/LiveRamp 转化回传与一整套归因伙伴。",
-          "so_what": "如果你在做面向消费者的 agent 应用：ChatGPT 广告生态已提供 Conversions API 与点击/归因方案，AI 界面投放成为新获客渠道。设计 To-C agent 时应预留广告位、埋点与转化回传接口，而非事后补。"
-        },
-        {
-          "title": "Anthropic Cowork 新版全面上云：模型推理与 VM 都搬到云端",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Oct/5/felix-rieseberg/",
-          "why_picked": "每会话独立云沙箱、不共享状态，本地仅保留文件访问 tool call；解决本地 VM 的磁盘/续航开销与关盖即停问题。",
-          "so_what": "如果你在设计 agent 的沙箱与执行环境：主流形态已是云端执行 + 本地能力代理。应采用每会话独立沙箱与显式本地文件 tool call 授权的最小映射模型，而不是把整机暴露给 agent。"
-        },
-        {
-          "title": "AWS GovCloud 上线 Claude Opus/Sonnet 5.5，支持 Claude Code 合规开发",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/supercharge-regulated-workloads-with-claude-code-and-amazon-bedrock/",
-          "why_picked": "Claude Sonnet 5 持 FedRAMP Class D 与 DoD IL4/IL5，Opus/Sonnet 5.5 在 Bedrock GovCloud 支持 ITAR 等受监管场景的 agentic coding。",
-          "so_what": "如果你在做金融/医疗/政企 agent：可直接复用 Bedrock GovCloud + Claude Code 架构过安全评审，避免自建合规推理层；把模型认证状态纳入采购技术选型。"
-        },
-        {
-          "title": "DeepSeek V4.1 Flash 发力，中美顶尖模型 LiveBench 差距缩至 3%",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://m.ithome.com/html/1009751.htm",
-          "why_picked": "彭博行业研究：V4.1 Flash 后中美顶尖模型基准差距从年初约 15%、5 月约 9% 收窄至 3%；V4.1 Flash LiveBench 81.1 vs Anthropic 最高 83.4。",
-          "so_what": "如果你在做模型选型与成本优化：3% 基准差距意味着在多数 agent 任务上国产模型已具备替换顶级闭源模型的性价比。建议对 tool-calling、长链路任务做 A/B，把 V4.1 Flash 纳入降本候选。"
-        },
-        {
-          "title": "OpenAI 将在欧盟为 ChatGPT/Codex 文本输出加隐形水印 textGrain",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8wz86Pjhlsf",
-          "why_picked": "配合欧盟人工智能法案内容透明要求，在选词阶段嵌入可检测统计信号；初期限欧盟，全球 API 客户可选开启。",
-          "so_what": "如果你在做 AI 内容合规或 RAG 收录：水印将成为欧盟文本的可追溯标记，RAG 与审核管线需评估对水印文本的检测/保留策略；面向欧盟发布 agent 生成内容前，提前接入水印检测器。"
-        },
-        {
-          "title": "Rabbit 吕骋：人不该为 Agent 改变思考方式（OS3 个人 Agent）",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/4012726523957380",
-          "why_picked": "OS3 单一持续对话窗口 + 跨最多五台设备执行；吕骋质疑让 Agent 买可乐的需求是否成立，认为门槛与留存才是个人 agent 的真正难题。",
-          "so_what": "如果你在做 agent 的交互设计：单一持续对话窗口（不强制项目/分类）与一次交代、自动找设备执行是降低门槛的关键方向；避免让用户按 agent 的心智模型重组任务。"
-        },
-        {
-          "title": "Tibo 连续 28 天发布或重置，OpenAI 遭遇信任危机",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/4012179282874240",
-          "why_picked": "DevDay 后重度用户抱怨额度收紧、模型变慢、新功能未兑现；Tibo 承诺锁定方向并连续 28 天发布或重置，社区质疑能否兑现。",
-          "so_what": "如果你在关键链路上依赖 OpenAI 的 agent 平台：额度与延迟波动会直接影响 SLA。建议对核心路径做多模型路由与降级，避免单点依赖同一供应商的额度政策。"
         }
       ]
     }

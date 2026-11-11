@@ -1,87 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-06",
-      "config_version": 19,
-      "items": [
-        {
-          "title": "Together Link：把开源模型（GLM 5.3 / Kimi K3）接进现有 coding agent，省 50%+",
-          "url": "https://www.together.ai/blog/together-link-frontier-quality-open-models-in-the-harness-you-already-use",
-          "source": "Together AI Blog",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "Together AI",
-          "labels": [
-            "coding-agent",
-            "routing",
-            "cost"
-          ],
-          "direction_note_prefix": "",
-          "why": "一条命令让 Claude Code/Codex/OpenCode 走开源模型，单 key 路由，账单砍半"
-        },
-        {
-          "title": "GLM 5.3（753B MoE）上线 Amazon Bedrock，主打 coding 与长程 agentic",
-          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-glm-5-3-on-amazon-bedrock/",
-          "source": "AWS Machine Learning Blog",
-          "category": "模型发布",
-          "importance": "strategic",
-          "developer": "Z.ai (Zhipu)",
-          "labels": [
-            "model-release",
-            "agentic",
-            "open-weights"
-          ],
-          "direction_note_prefix": "",
-          "why": "开源权重 MoE 上托管服务，含 prompt caching，企业免运维即可调用"
-        },
-        {
-          "title": "AWS 新 agent skill：给 coding agent 装上 SageMaker 推理优化专家（MCP）",
-          "url": "https://aws.amazon.com/blogs/machine-learning/new-agent-skill-amazon-sagemaker-optimized-generative-ai-inference-for-your-coding-agent/",
-          "source": "AWS Machine Learning Blog",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "mcp",
-            "agent-skill",
-            "inference"
-          ],
-          "direction_note_prefix": "",
-          "why": "aws-ai-ml skill 经 MCP 接入 Kiro/Claude Code/Codex，生成可执行部署代码"
-        },
-        {
-          "title": "OpenAI 为 EU AI Act 上线文本水印 textGrain：API 可选、将开源",
-          "url": "https://openai.com/index/eu-text-provenance",
-          "source": "OpenAI Blog",
-          "category": "其他",
-          "importance": "actionable",
-          "developer": "OpenAI",
-          "labels": [
-            "provenance",
-            "watermark",
-            "api"
-          ],
-          "direction_note_prefix": "",
-          "why": "全球 API 可选开启水印并开放检测器申请，文本溯源开始工程落地"
-        },
-        {
-          "title": "Google：Agentic 隐私与安全开放问题报告（50+ 机构协同）",
-          "url": "https://research.google/blog/open-and-emergent-problems-in-agentic-privacy-and-security-a-contextual-angle/",
-          "source": "Google Research Blog",
-          "category": "其他",
-          "importance": "read-only",
-          "developer": "Google Research",
-          "labels": [
-            "agent-security",
-            "guardrail",
-            "prompt-injection"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "提出 system/model/user/ecosystem 四层防御，给 agent 安全设计定框架"
-        }
-      ]
-    },
-    {
       "date": "2026-10-13",
       "config_version": 19,
       "items": [
@@ -2907,6 +2826,605 @@
           ],
           "direction_note_prefix": "[evaluation]",
           "why": "按风险分级的审批设计，可直接参照到自家 agent 流程"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "config_version": 22,
+      "items": [
+        {
+          "title": "OpenAI 发布 GPT-6 Cyber：安全专用模型，Preparedness 升至 Critical",
+          "url": "https://openai.com/index/introducing-gpt-6-cyber",
+          "source": "openai.com",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "security",
+            "agent",
+            "model-release"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "安全 agent 从辅助转主力：Firefox 81 个新高危漏洞 + 948 个内核 exploit，仅限白名单客户",
+          "extra_note": "System Card 2026-11-05 发布；新增 ExploitGym Honeypot 专门测“会不会越权乱打”"
+        },
+        {
+          "title": "🎯 Gemini Omni 1.2 Flash：15 秒原生视频生成并正式 GA，价格降 30%",
+          "url": "https://deepmind.google/blog/gemini-omni-12-flash-fast-and-cost-effective-with-longer-clips/",
+          "source": "deepmind.google",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Google DeepMind",
+          "labels": [
+            "multimodal",
+            "api",
+            "video"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "多轮改片 + Provisioned Throughput + SynthID，视频生成正式进企业产品线",
+          "extra_note": "同日上线 Gemini app / Flow / Vids / Google Ads；API 与定价见文档"
+        },
+        {
+          "title": "🎯 Bedrock AgentCore 新增 Web Answer：网关侧托管“带引用的回答”工具",
+          "url": "https://aws.amazon.com/blogs/machine-learning/getting-started-with-web-answer-on-amazon-bedrock-agentcore/",
+          "source": "aws.amazon.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "mcp",
+            "rag",
+            "gateway"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "检索管线外包给网关，每条结论自带源 URL，agent 不必自建 search+verify 循环",
+          "extra_note": "与 Web Search 的分界线：要不要自己跑模型做综合。以 MCP tool result 返回"
+        },
+        {
+          "title": "Hugging Face 开源 Phonon TTS 上架：31M 端侧语音模型 Apache 2.0，登顶 Open TTS 榜",
+          "url": "https://huggingface.co/blog/phonon-tts",
+          "source": "huggingface.co",
+          "category": "模型发布",
+          "importance": "actionable",
+          "developer": "Hugging Face / Gradium",
+          "labels": [
+            "on-device",
+            "tts",
+            "multimodal"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "离线语音补上语音 UI 最后一环，商用可免费用；社区已有 44MB WebGPU 115x 实时实现",
+          "extra_note": "31m 权重 Apache 2.0，其余 CC BY-NC；发表于 2026-11-05"
+        },
+        {
+          "title": "DeepSeek Harness 日活 154 万、日耗 92 万亿 token，官宣做官方插件市场",
+          "url": "https://m.ithome.com/html/1023011.htm",
+          "source": "ithome.com",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "DeepSeek",
+          "labels": [
+            "agent-harness",
+            "plugins",
+            "ecosystem"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "agent harness 第一次出现平台级体量与插件市场，生态重心从模型转向 harness",
+          "extra_note": "第三方插件已约 3.5 万个；本条为二手转述，待官方公告核实"
+        },
+        {
+          "title": "Claude 取消 5 小时限额：首批 Max/Ultra 用户已解封",
+          "url": "https://www.woshipm.com/?p=6487179",
+          "source": "woshipm.com",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "Anthropic",
+          "labels": [
+            "pricing",
+            "coding-agent"
+          ],
+          "direction_note_prefix": "",
+          "why": "长会话型 agent 的主要成本约束松动，重度 coding 用户用量模型要重估",
+          "extra_note": "与此前订阅改名（Max 5x→Ultra）为同一政策线；二手来源，未见官方页"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "config_version": 22,
+      "items": [
+        {
+          "title": "Kimi Hosted Agents 发布：把 Agent Harness 做成云端托管服务",
+          "url": "https://www.kimi.com/news/kimi-hosted-agents",
+          "source": "kimi.com",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "Moonshot AI",
+          "labels": [
+            "agent-infra",
+            "sandbox",
+            "hosted"
+          ],
+          "direction_note_prefix": "",
+          "why": "Harness as a Service：自建底座几月工期被抽成托管层，含沙箱/权限/审计/计费"
+        },
+        {
+          "title": "腾讯混元 Hy4 正式版：770B/49B 激活，首次支持 Computer Use，权重近期开源",
+          "url": "https://news.qq.com/rain/a/20261105A03UF800",
+          "source": "news.qq.com（一手：腾讯混元官方发布）",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Tencent Hunyuan",
+          "labels": [
+            "long-running-agent",
+            "computer-use",
+            "open-weights"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "长程 Agent + 电脑操作进开源阵营，WorkBuddy/CodeBuddy 首发接入"
+        },
+        {
+          "title": "ToyBlocks：AI2 首个 FoundationWorlds 受控机器人学习与评测框架",
+          "url": "https://huggingface.co/blog/allenai/toyblocks",
+          "source": "huggingface.co",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AllenAI",
+          "labels": [
+            "simulation",
+            "vla",
+            "evals"
+          ],
+          "direction_note_prefix": "",
+          "why": "自动生成 demo、变化训练数据再复测；数据为 LeRobot 格式，可直接训 VLA"
+        },
+        {
+          "title": "OpenAI BioBasicsBench：100 个湿实验任务测 agent 能否读懂原始实验证据",
+          "url": "https://openai.com/index/measuring-how-ai-agents-handle-wet-lab-science",
+          "source": "openai.com",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "evals",
+            "benchmark",
+            "science"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "评测从论文图表转向失败实验/模糊图像，GPT-6 Astra 仅 66.7% 得分"
+        },
+        {
+          "title": "AWS：Amazon Quick 的 agentic 原语分类学（Trigger / Agent / Capability）",
+          "url": "https://aws.amazon.com/blogs/machine-learning/taxonomy-of-agentic-primitives-in-amazon-quick/",
+          "source": "aws.amazon.com",
+          "category": "Agent 框架",
+          "importance": "read-only",
+          "developer": "AWS",
+          "labels": [
+            "agent-design",
+            "taxonomy"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "把「新建 agent / 定时指令 / workflow / skill」拆成四个可回答的问题"
+        },
+        {
+          "title": "AWS：服务端 MCP server 让 agent 统一读企业数据湖（ECS Fargate）",
+          "url": "https://aws.amazon.com/blogs/machine-learning/serverless-mcp-server-for-ai-agent-data-lake-access-on-amazon-ecs-fargate/",
+          "source": "aws.amazon.com",
+          "category": "RAG 工具链",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "mcp",
+            "gateway",
+            "data-access"
+          ],
+          "direction_note_prefix": "[RAG]",
+          "why": "加数据集只需一个 JSON 元数据文件，权限不再散在每个 agent 里"
+        },
+        {
+          "title": "AWS：Okta Cross App Access + AgentCore Gateway 管住 agent 的凭证路径（Part 2）",
+          "url": "https://aws.amazon.com/blogs/machine-learning/govern-ai-agent-access-with-okta-cross-app-access-and-amazon-bedrock-agentcore-part-2/",
+          "source": "aws.amazon.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "agent-auth",
+            "gateway",
+            "security"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "N agent × M server 的接线矩阵收成一个 Gateway 端点 + 目标注册表"
+        },
+        {
+          "title": "Nilay Patel：agent「不是真的」，产品还不够好到值得它的成本",
+          "url": "https://simonwillison.net/2026/Nov/6/nilay-patel/",
+          "source": "simonwillison.net",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "The Verge",
+          "labels": [
+            "industry-view",
+            "hype-check"
+          ],
+          "direction_note_prefix": "",
+          "why": "主流科技媒体主编公开否定 agent 现状，直接冲 AI 商业叙事的定价基础"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "config_version": 22,
+      "items": [
+        {
+          "title": "Vercel AI Gateway 接入 DeepSeek V4.1 Flash 1017 Ultrafast：>1000 tok/s、1M 上下文",
+          "url": "https://vercel.com/changelog/deepseek-v4-1-flash-1017-ultrafast-now-available-on-ai-gateway",
+          "source": "vercel.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Vercel / DeepSeek / Fireworks",
+          "labels": [
+            "gateway",
+            "inference"
+          ],
+          "direction_note_prefix": "",
+          "why": "超低延迟+1M 上下文的编码/agent 调用入口，网关侧可直接切换试点"
+        },
+        {
+          "title": "DeepSeek Harness 插件生态：154 万 DAU、3.5 万插件，官方筹备插件市场与作者 Token 激励",
+          "url": "https://www.36kr.com/p/4057774236652417",
+          "source": "36kr.com（一手：DeepSeek Harness 官方 GitHub discussions 与发布说明）",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "DeepSeek",
+          "labels": [
+            "agent-harness",
+            "plugins"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "Agent harness 走向插件平台化，接口稳定性与插件治理成为选型变量"
+        },
+        {
+          "title": "METR 对 Anthropic 的独立评估：模型能力提升速度约 2 倍，多数加速来自 AI 自身参与研发",
+          "url": "https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/",
+          "source": "metr.org",
+          "category": "其他",
+          "importance": "strategic",
+          "developer": "METR / Anthropic",
+          "labels": [
+            "evaluation",
+            "safety"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "AI 辅助研发可量化的加速证据，能力评测口径与安全预算都应重估"
+        },
+        {
+          "title": "DeepSeek 网页 / API 服务突发部分中断，约 1.5 小时后恢复",
+          "url": "https://m.ithome.com/html/1023697.htm",
+          "source": "ithome.com（一手：DeepSeek 官方服务状态页）",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "DeepSeek",
+          "labels": [
+            "reliability",
+            "fallback"
+          ],
+          "direction_note_prefix": "",
+          "why": "单点依赖风险实例：agent 生产链路需要多层模型的 failover"
+        },
+        {
+          "title": "OpenAI CFO 确认正在融资谈判，估值较 3 月一轮上涨近 50%",
+          "url": "https://readhub.cn/topic/8xqLSYkRqAF",
+          "source": "readhub.cn（原始一手：OpenAI CFO 公开场合表态）",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "industry"
+          ],
+          "direction_note_prefix": "",
+          "why": "一线厂商资本水位继续抬升，API 定价与供给策略随之偏紧"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-09",
+      "config_version": 23,
+      "items": [
+        {
+          "title": "Goldman Sachs 把 Claude Code / GitHub 收回给工程师专用，交易员与投行岗被停权",
+          "url": "https://www.thestateofai.com/news/goldman-sachs-claude-code-traders-bankers",
+          "source": "The State of AI（转述 Bloomberg）",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "Goldman Sachs",
+          "labels": [
+            "coding-agent",
+            "enterprise",
+            "governance"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "约 12000 名工程师以外的全员 vibe coding 试点被合规与信息隔离叫停"
+        },
+        {
+          "title": "Claude Code 2.1.319：MCP 任务改后台化、denyInsteadOfPrompting、/claude-api latency-optimize",
+          "url": "https://code.claude.com/docs/en/changelog",
+          "source": "Anthropic 官方 CHANGELOG",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "anthropics",
+          "labels": [
+            "mcp",
+            "permissions",
+            "cli"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "MCP 长任务不再堵住回合，非交互场景可把权限询问改成直接拒绝"
+        },
+        {
+          "title": "OpenAI 完成 110 亿美元新融资，投后估值 1.25 万亿美元（低于此前寻求的 1.4 万亿）",
+          "url": "https://forbesmiddleeast.com/innovation/artificial-intelligence-machine-learning/openai-reportedly-raises-$11b-at-$125t-valuation",
+          "source": "Forbes Middle East（转述，官方公告未公开）",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "funding",
+            "market"
+          ],
+          "direction_note_prefix": "",
+          "why": "估值首次低于自我预期，一级市场对 AI 基建的定价开始松动"
+        },
+        {
+          "title": "Simon Willison：用 Opus 5.5 生成同名 SQLite 扩展，C 版压到 16–19 ns/行、体积 14KB",
+          "url": "https://simonwillison.net/2026/Nov/8/sqlite-parse-number-c-vs-rust/",
+          "source": "simonwillison.net",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "simonw",
+          "labels": [
+            "tool-calling",
+            "codegen",
+            "benchmark"
+          ],
+          "direction_note_prefix": "",
+          "why": "自造快路径反超 strtod 两倍，agent 写底层优化代码已可跑通闭环"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-10",
+      "config_version": 23,
+      "items": [
+        {
+          "title": "Claude Fable 5.2 / Mythos 5.2 发布：同底模双 SKU，$8/$40 且输出快 30%",
+          "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "source": "Anthropic",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "model-release",
+            "agentic-coding",
+            "safety"
+          ],
+          "direction_note_prefix": "",
+          "why": "同一底模按安全门槛切 Fable/Mythos 两档，前端模型变体化成常态"
+        },
+        {
+          "title": "Vercel AI Gateway 生产指数：决策模型占 26% 请求，Anthropic 新团队 2:1 取胜",
+          "url": "https://vercel.com/blog/ai-gateway-production-index-november-2026",
+          "source": "Vercel",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "Vercel",
+          "labels": [
+            "gateway",
+            "production-data",
+            "model-routing"
+          ],
+          "direction_note_prefix": "",
+          "why": "真实网关流量显示生成与判断已分流，模型半衰期不到两个月"
+        },
+        {
+          "title": "Workflow SDK 5.2：事件与流写入默认走 WebSocket，agent token 流快 4.2 倍",
+          "url": "https://vercel.com/changelog/workflow-writes-now-use-websockets-on-vercel",
+          "source": "Vercel",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "workflow",
+            "streaming",
+            "latency"
+          ],
+          "direction_note_prefix": "",
+          "why": "升个版本即得低延迟流式编排，无需改代码"
+        },
+        {
+          "title": "Vercel Sandbox 快照中位耗时 4.4s→0.4s，恢复 500ms→250ms",
+          "url": "https://vercel.com/changelog/vercel-sandbox-snapshot-creation-is-now-up-to-10x-faster",
+          "source": "Vercel",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "Vercel",
+          "labels": [
+            "sandbox",
+            "latency"
+          ],
+          "direction_note_prefix": "",
+          "why": "沙箱冷启动跨进亚秒级，agent 并行试验的成本结构变了"
+        },
+        {
+          "title": "Bedrock Managed Knowledge Base 支持单次 RAG 与 retrieval-only 三档检索",
+          "url": "https://aws.amazon.com/blogs/machine-learning/single-shot-and-agentic-retrieval-with-amazon-bedrock-managed-knowledge-base/",
+          "source": "AWS ML Blog",
+          "category": "RAG 工具链",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "rag",
+            "retrieval",
+            "cost"
+          ],
+          "direction_note_prefix": "[RAG]",
+          "why": "同一 API 按问题难度切换检索力度，直接砍掉简单查询成本"
+        },
+        {
+          "title": "Claude Fable 5.2 / Mythos 5.2 在 Amazon Bedrock 上架",
+          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-claude-fable-5-2-on-aws/",
+          "source": "AWS ML Blog",
+          "category": "模型发布",
+          "importance": "actionable",
+          "developer": "AWS / Anthropic",
+          "labels": [
+            "model-release",
+            "bedrock",
+            "fallback"
+          ],
+          "direction_note_prefix": "",
+          "why": "被拒请求带 fallback credit token，拒绝路径变成了可编排逻辑"
+        },
+        {
+          "title": "ChatGPT Enterprise 上架 AWS Marketplace",
+          "url": "https://openai.com/index/chatgpt-enterprise-aws-marketplace",
+          "source": "OpenAI",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "OpenAI",
+          "labels": [
+            "enterprise",
+            "procurement",
+            "marketplace"
+          ],
+          "direction_note_prefix": "",
+          "why": "走 AWS 云承诺额度采购，企业落地从 IT 谈判变账期动作"
+        },
+        {
+          "title": "Simon Willison：把 agent 生成的 PR 描述塞进 <details> 折叠",
+          "url": "https://simonwillison.net/2026/Nov/9/details-summary/",
+          "source": "Simon Willison",
+          "category": "UI/UX 工具",
+          "importance": "read-only",
+          "developer": "Simon Willison",
+          "labels": [
+            "agent-ui",
+            "code-review",
+            "dx"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "agent 输出越准确越像噪声，问题从生成转到呈现层"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-11",
+      "config_version": 23,
+      "items": [
+        {
+          "title": "Gemini 4 Carbon 全面开放：前沿模型 + Antigravity /swarm 多 agent 协作",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/",
+          "source": "Google / DeepMind 官方博客",
+          "category": "模型发布",
+          "importance": "strategic",
+          "developer": "Google DeepMind",
+          "labels": [
+            "model-release",
+            "agent-ui",
+            "multi-agent"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "单 prompt 派生子 agent 团队，agent 编排直接进 IDE"
+        },
+        {
+          "title": "Google DeepMind AlphaProof Code：多 LLM agent 框架形式化验证 Signal 协议代码",
+          "url": "https://deepmind.google/blog/introducing-alphaproof-code/",
+          "source": "Google DeepMind 官方博客",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "Google DeepMind",
+          "labels": [
+            "multi-agent",
+            "verification",
+            "evaluation"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "4 周完成专家数年的密码学形式化验证"
+        },
+        {
+          "title": "Meta Muse Ember 1.0：最小最高效模型，主打 agent 日常重复任务",
+          "url": "https://research.meta.ai/blog/muse-ember",
+          "source": "Meta AI Research（一手；Simon Willison 补充解读）",
+          "category": "模型发布",
+          "importance": "actionable",
+          "developer": "Meta",
+          "labels": [
+            "model-release",
+            "tool-calling",
+            "routing"
+          ],
+          "direction_note_prefix": "",
+          "why": "$0.10/M 输入落在效率前沿，适合 agent 路由与工具调用"
+        },
+        {
+          "title": "Anthropic 文档：Fable 5.2 代码归属提示词影响结构改进（约 5 倍差距）",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2#say-who-owns-the-code",
+          "source": "Anthropic 官方文档",
+          "category": "其他",
+          "importance": "actionable",
+          "developer": "Anthropic",
+          "labels": [
+            "prompt-engineering",
+            "coding-agent"
+          ],
+          "direction_note_prefix": "",
+          "why": "一句「代码是你的」可把去重合并率从 <10% 提到约 50%"
+        },
+        {
+          "title": "AWS：AgentCore Evaluations 评测手册 —— Built-in / DeepEval / AutoEval 三源评测器",
+          "url": "https://aws.amazon.com/blogs/machine-learning/the-agent-evaluation-playbook-built-in-deepeval-and-autoeval-on-agentcore/",
+          "source": "AWS Machine Learning Blog",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "AWS",
+          "labels": [
+            "evals",
+            "observability",
+            "agent"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "从业务结果反推 trace/session 两级评测，给出可落地骨架"
+        },
+        {
+          "title": "OpenAI 上线 ChatGPT 内 Businesses + Business Agents（beta）",
+          "url": "https://openai.com/index/introducing-businesses-chatgpt/",
+          "source": "OpenAI 官方博客",
+          "category": "垂直应用",
+          "importance": "strategic",
+          "developer": "OpenAI",
+          "labels": [
+            "business-agents",
+            "platform",
+            "commerce"
+          ],
+          "direction_note_prefix": "",
+          "why": "ChatGPT 变成企业可认领的入口，agent 直接对终端商机"
+        },
+        {
+          "title": "llm-gemini 0.36 发布：CLI/库侧跟进 Gemini 4 Carbon",
+          "url": "https://simonwillison.net/2026/Nov/10/llm-gemini/",
+          "source": "Simon Willison",
+          "category": "API 包装器",
+          "importance": "read-only",
+          "developer": "simonw",
+          "labels": [
+            "sdk",
+            "llm-cli"
+          ],
+          "direction_note_prefix": "",
+          "why": "开源 LLM CLI 第一时间支持新模型，本地可切换实验"
         }
       ]
     }
