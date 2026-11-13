@@ -430,7 +430,7 @@ export function loadVLADailyPicks(n: number = 7): DailyPickDay[] {
   try {
     files = fs
       .readdirSync(DATA_DIR)
-      .filter(f => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+      .filter(f => /^vla-daily-rating-out-\d{4}-\d{2}-\d{2}\.json$/.test(f))
       .sort()
       .reverse()
       .slice(0, n);
@@ -502,7 +502,7 @@ export function loadVLADailyPicksV2(n: number = 7): VLAPickDay[] {
   try {
     files = fs
       .readdirSync(DATA_DIR)
-      .filter(f => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+      .filter(f => /^vla-daily-rating-out-\d{4}-\d{2}-\d{2}\.json$/.test(f))
       .sort()
       .reverse()
       .slice(0, n);
@@ -1108,7 +1108,7 @@ export function loadVLATagDistribution(n: number = 7): VLATagDay[] {
   try {
     files = fs
       .readdirSync(DATA_DIR)
-      .filter(f => f.startsWith('vla-daily-rating-out-') && f.endsWith('.json'))
+      .filter(f => /^vla-daily-rating-out-\d{4}-\d{2}-\d{2}\.json$/.test(f))
       .sort()
       .reverse()
       .slice(0, n);
