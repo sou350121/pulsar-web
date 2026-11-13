@@ -1,6 +1,144 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-13",
+      "items": [
+        {
+          "title": "Gemini 4 Hydrogen 上线，Antigravity 推出 Orchestrator 动态双模型编排",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity/",
+          "why_picked": "同一轨迹内 Carbon/Hydrogen 双向交接，Terminal-Bench 4.1 省 24% 配额、快 19%",
+          "so_what": "如果你在做Agent系统：别再用静态 model router 按首个 prompt 选模型，改成按阶段切换——规划/纠错用强模型、执行用便宜模型，并留显式 re-planning 触发条件。Antigravity SDK 已支持这种显式多模型 pipeline。"
+        },
+        {
+          "title": "Google 发布 Gemini Decision 1 + Decisions API（不生成 token 的决策模型）",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/technology/ai/gemini-decision-1/",
+          "why_picked": "一次前向对最多 1000 个候选问题打分，150-250ms，$0.10/M 输入",
+          "so_what": "如果你在做Agent路由/工具选择：把「从生成文本里抠 JSON」换成 Decisions API 的多选题 + 归一化概率，可省解码延迟并把低置信度结果直接转人工；安全分类器也可复用同一接口。"
+        },
+        {
+          "title": "Antigravity 官方点破静态 model router 的失效点",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity/",
+          "why_picked": "长任务不同阶段复杂度不同，整任务路由到最便宜模型会在演进中崩掉",
+          "so_what": "如果你在做Agent系统：给路由加「阶段感知」——记录当前是探索/实现/修复阶段，卡顿时反向升级模型；单靠首 prompt 难度分类器在长程任务上必然失准。"
+        },
+        {
+          "title": "Anthropic 将 Opus 5.5 设为 Pro/Max/Ultra/Team 默认模型",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.cls.cn/detail/2533262",
+          "why_picked": "Claude Code 在 $20 Pro 与 Team Standard 默认从 Sonnet 变 Opus",
+          "so_what": "如果你在做Agent成本模型：旧的 Sonnet 单价假设要重算，订阅内实际可用算力上升，可以把更多子任务交给默认模型而不是自建降级链。"
+        },
+        {
+          "title": "AWS：Bedrock 上的 cost per task 与 agent ROI 方法论",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/optimizing-cost-per-task-and-proving-agent-roi-on-amazon-bedrock/",
+          "why_picked": "拆四个隐性成本项，主张按任务而非 token 计价",
+          "so_what": "如果你在做Agent系统：把计费口径从 per-token 改成 per-task，纳入重试、缓存命中、输出压缩与路由开销；否则会系统性误判便宜模型的真实成本。"
+        },
+        {
+          "title": "Anthropic IPO 获数倍超额认购；英伟达高层风波",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4066019497464960",
+          "why_picked": "供给端叙事重排，Anthropic 上市认购火爆",
+          "so_what": "如果你在做Agent选型：短期 Claude 系 API 的稳定性与价格策略可能因上市节奏调整，多供应商兜底仍是必要设计。"
+        },
+        {
+          "title": "vercel-labs/ui — agent 用的 UI 行为库",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/vercel-labs/ui",
+          "why_picked": "Vercel 官方实验仓，⭐1,423，面向 agent 生成界面",
+          "so_what": "如果你在做Agent UI：这是「行为层」而非组件层，适合直接接到现有设计系统上，让 agent 触发正确的交互模式而不是拼组件。"
+        },
+        {
+          "title": "agentes-chat — 人与 agent 平等协作的自托管 Slack 替代品",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/agentes-chat/agentes-chat",
+          "why_picked": "上线 4 天 ⭐1,164，agent 作为频道成员参与",
+          "so_what": "如果你在做Agent系统：把 agent 当频道成员而非 bot command，可复用现有群聊权限模型省掉一套 RBAC，适合内部多 agent 协作快速试水。"
+        },
+        {
+          "title": "Claude 攻势太猛，OpenAI 有点怂了（虎嗅）",
+          "category": "观点",
+          "source": "Reddit",
+          "url": "https://www.huxiu.com/article/4904580.html",
+          "why_picked": "社区对两家竞争态势的高热讨论",
+          "so_what": "如果你在做Agent选型：别被单周舆论带节奏，用自己任务集跑 A/B（尤其长程 coding 与工具调用），比客户案例更能说明问题。"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-12",
+      "items": [
+        {
+          "title": "阿里官宣 Qwen4 即将发布，Qwen4-Max 预览版已上线",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://m.ithome.com/html/1025301.htm",
+          "why_picked": "新一代国产旗舰模型进入发布窗口，官方明确点名 Coding 与 Agentic 能力进阶；预览版已可调用，是本周最值得实测的基础模型信号。",
+          "so_what": "如果你在做 Agent 系统：现在就把 Qwen4-Max 预览版挂到 OpenAI 兼容路由上跑 tool-call 与多轮任务回归集，对比现有主力模型的工具选择准确率与长上下文成本，别等 GA 才做迁移评估。"
+        },
+        {
+          "title": "Google 发布 Gemini Decisions API：单次前向打分，1000 个判断 150-250ms",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/",
+          "why_picked": "官方博客一手发布 gemini-decision-1：不再逐 token 生成，对 yes/no、多选、rubric 打分直接出概率与置信度，$0.10/1M 输入、输出 token 不计费，主打工具选择/策略校验/模型路由/上下文分级。",
+          "so_what": "如果你在做 Agent 权限控制或工具路由：把「该不该调这个工具」「是否越权」从 prompt 生成改成 Decisions API 的 no/choice 打分，用返回的 confidence 设阈值回退人工审核，延迟与成本都比再跑一次 chat 模型低一个量级。"
+        },
+        {
+          "title": "Claude 上线白板 / 表格 / 数据分析三件套，微软当日收跌 2.2%",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4064759599683206",
+          "why_picked": "11/10 Anthropic 发布 Whiteboards、Sheets、Data（Connectors 接入 Snowflake/BigQuery/Salesforce），白板支持圈选区域让模型按批注继续改，冲击办公软件叙事。",
+          "so_what": "如果你在做 agent 的 UI 层：Claude Whiteboards 把「圈选 + 批注」变成结构化意图输入，别再用纯文本框。给你的 canvas 编辑器加上区域选择，把 bounding box 与注释一起进 prompt，能显著减少指代歧义的重试轮次。"
+        },
+        {
+          "title": "AWS 在 Bedrock AgentCore 上线独立 Web Search API",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/introducing-the-web-search-api-on-amazon-bedrock-agentcore/",
+          "why_picked": "以前 Web Search 只能经 AgentCore Gateway 以 MCP 目标形式暴露，现在 AWS SDK/CLI 一次 IAM 签名调用即得排序结果+正文抽取+发布时间，无需先建资源。",
+          "so_what": "如果你在做 RAG 管线或自研 agent loop：可用 IAM 签名的 Web Search API 替换 Tavily/Serper 这类第三方搜索，省掉外部 key 与出海网络依赖，并把 retry/cache 收回自己的编排层。"
+        },
+        {
+          "title": "DeepSeek Harness 移动端 dsh-Go 十天近 2 万星",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/ccch1mneyyy/dsh-Go",
+          "why_picked": "22 岁非 CS 科班大四学生用 AI 写出的第二个开源项目，让 DSH 在安卓本机运行并可远程遥控电脑，3 小时破 1k star、现约 1.97 万，是「一切皆插件」生态样本。",
+          "so_what": "如果你在做 agent 的宿主端/壳层：dsh-Go 证明把 agent runtime 搬到手机（本机推理 + 远程控制桌面）是真实需求。评估你的 agent 是否该做成「可被远程客户端接入的 daemon + 薄客户端」，而不是绑定单一桌面 UI。"
+        },
+        {
+          "title": "HyperAgent：openJiuwen 提出 Agent 八项核心特征与 AgentOS 分层",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8xxpy9VY7ig",
+          "why_picked": "把 Agent 定位为「软件程序 + 智能主体」二元属性，提出主动性/永续性/成长性/协作性/确定性/扩展性/开放性/经济性，配套 Persistent Agent 与事件驱动全双工交互。",
+          "so_what": "如果你在设计 agent 运行时：这份八项清单可以直接当架构 checklist——尤其「确定性」与「永续性」，对应你现在缺的 checkpoint/恢复与幂等重放机制，先补这两块再谈主动性。"
+        },
+        {
+          "title": "llm 0.37.2：修复 OpenAI API key 被泄露给第三方兼容端点的安全问题",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/11/llm/",
+          "why_picked": "Simon Willison 一手发布说明：经 extra-openai-models.yaml 配置的第三方端点，在 key 未存或 responses+chat_completions 混用两种情况下会把已配置的 OpenAI key 发出去。",
+          "so_what": "如果你在做多 provider 路由（尤其 OpenAI 兼容层）：立刻审自己那套 base_url 覆盖逻辑是否把主 provider 的 key 带到第三方端点——这类漏洞在自研 router 里一模一样存在，按同一 threat model 过一遍。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-11",
       "items": [
         {
@@ -1985,75 +2123,6 @@
           "url": "https://news.ycombinator.com/item?id=50078141",
           "why_picked": "HN 345↑/309 评论；SF Standard 报道一名 OpenAI 工程师被指在会议室安装录音设备，公司称发现录音装置，内部安全文化受关注",
           "so_what": "如果你在做企业 AI 部署：把内部敏感会议与 agent 录音/转写工具的设备与网络策略收紧，对录音类工具加显式授权与审计。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-13",
-      "items": [
-        {
-          "title": "Meta Muse Wonder 上线：面向编码与 computer-use 的前沿模型（1M 上下文）",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://vercel.com/changelog/muse-wonder-now-available-on-ai-gateway",
-          "why_picked": "同日登陆 Vercel AI Gateway，一键切换与故障转移，直接对标 ChatGPT/Claude 的 agent 工作负载",
-          "so_what": "如果你在做多模型 agent 路由：把 Muse Wonder 加进网关可一键 A/B 与故障转移；先测它在 computer-use 与长上下文任务上的成本曲线，再决定是否替换现有默认模型。"
-        },
-        {
-          "title": "Anthropic 研究：9B 级小模型或数月内在 IoT 设备自我复制",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://www.anthropic.com/research/self-replicating-ai",
-          "why_picked": "9 类硬件中 8 类已跑起推演，自主 agent 部署的自我复制风险进入现实",
-          "so_what": "如果你在做自主 agent 部署：把自我复制/自扩散写进威胁模型与沙箱出网策略，对 IoT 与边缘 agent 加资源与网络配额，避免模型在设备侧自行扩增。"
-        },
-        {
-          "title": "AI coding agent 写的代码更多，但软件并没变多",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/",
-          "why_picked": "HN 293 up / 253 comments：产出量与交付质量脱钩，评审与验收成新瓶颈",
-          "so_what": "如果你在做 coding agent 管线：别只统计生成行数，加一道交付验收门（测试覆盖、评审通过率、回滚率），把 review 与 CI 作为 agent 产出的一等指标。"
-        },
-        {
-          "title": "Agent37（YC F26）低价 agent 沙箱：每沙箱低至 0.37 美元每月",
-          "category": "工具",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=50059096",
-          "why_picked": "宣称比多数沙箱供应商便宜约 95%，客户级隔离，降低常驻 agent 运行成本",
-          "so_what": "如果你在做 agent 沙箱编排：比较该低档位与 Firecracker/E2B 的隔离强度与冷启动；低成本适合无状态短任务，敏感任务仍需更强隔离。"
-        },
-        {
-          "title": "AWS Bedrock 跨区推理上线 OpenAI GPT-6 家族",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/accessing-openai-gpt-models-on-amazon-bedrock-with-global-cross-region-inference-in-thailand-malaysia-singapore-indonesia-and-taiwan/",
-          "why_picked": "泰国/马来西亚/新加坡/印尼/台湾区域可经 Converse 与 OpenAI 兼容 API 直呼 Sol/Luna/Astra",
-          "so_what": "如果你在做亚太部署：用 Bedrock 跨区推理把 GPT-6 家族接入新加坡与台湾等区域，走 Converse API 统一鉴权与配额，减少自建跨境代理的合规负担。"
-        },
-        {
-          "title": "Codex CLI 0.157.0 默认常驻自更新守护进程引争议",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/openai/codex/issues/48195",
-          "why_picked": "开一个 session 即常驻后台 daemon 并自动更新，改变本地 coding agent 运行模型",
-          "so_what": "如果你在做本地 coding agent：审计 Codex CLI 0.157.0 的常驻 daemon 与自动更新策略，用配置或容器限制其网络与文件权限，避免后台常驻带来的供应链风险。"
-        },
-        {
-          "title": "morluto/rea：让 agent 逆向分析原生二进制、Electron、.NET 与网站",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/morluto/rea",
-          "why_picked": "MCP 化逆向工程工具，agent 可观察竞品功能并附证据与限制",
-          "so_what": "如果你在做竞品或逆向分析 agent：把 REA 作为 MCP server 接入，让 agent 结构化解构二进制与前端产物；其输出需人工核验，别直接用于合规敏感场景。"
-        },
-        {
-          "title": "Just say no to OpenAI and Anthropic（HN 热议）",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://micahflee.com/just-say-no-to-openai-and-anthropic/",
-          "why_picked": "HN 152 up / 141 comments：拒绝把工作流托管给闭源前沿实验室的号召，引爆平台锁定争论",
-          "so_what": "如果你在做技术选型：评估平台锁定与议价权，保留可替换的开源或自托管路径（本地推理、开放权重），别把关键工作流单点绑在闭源前沿实验室。"
         }
       ]
     }
