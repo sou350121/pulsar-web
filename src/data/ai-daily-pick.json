@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-14",
+      "items": [
+        {
+          "title": "Gemini 4 Hydrogen 发布：轻量档 AA 指数反超 Carbon/Argon，1M 上下文 $1.5/$7.5 每百万 token",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://deepmind.google/blog/introducing-gemini-4-hydrogen/",
+          "why_picked": "一手 DeepMind 官方博客（Nov 12，updated Nov 13）；正式基础模型发布，默认 high 思考 51 分超 Argon 50，xhigh 54",
+          "so_what": "如果你在做 agent 系统的模型路由：不要再按「旗舰=推理/小模型=闲聊」的旧假设分工，先把高频执行槽（写代码、跑测试、校验 diff）切到 Hydrogen，把长链路架构判断留给 Carbon/Argon；同时把 1M 上下文的输入成本假设改成 $1.5/1M 才能算对预算。"
+        },
+        {
+          "title": "OpenAI 上线 ChatGPT Wallet：agent 可代付，但每笔交易需生物识别确认",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-chatgpt-wallet",
+          "why_picked": "OpenAI 官方公告（Nov 13）+ Reuters 交叉验证；含 Visa/Mastercard/Amex 合作与 payment token 机制",
+          "so_what": "如果你在做 agent 权限控制或 tool calling 的支付类工具：别再自己存卡号，改用网络侧 payment token + 每笔人工确认（Face ID/指纹）的模式设计 HITL 闸门，并把「金额上限/品类/时间窗」做成可委派参数——这是 OpenAI 给出的最小可行授权模型。"
+        },
+        {
+          "title": "llama.cpp 与 ggml 同时发布 v1.0.0：API/ABI 破坏性改动今后走 major bump",
+          "category": "新发布",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ggml-org/llama-cpp-v1",
+          "why_picked": "ggml-org 官方博客（Nov 13）；3.5 年首次 1.0，明确语义化版本规则，直接影响所有本地推理下游",
+          "so_what": "如果你在做本地推理或私有化 agent 部署：现在可以按 libllama/libggml 的 1.x 契约锁版本升级，别再用 pin commit 的方式跟上游；把 quantization 与 backend 兼容矩阵纳入 CI，major bump 到来时才不会被 ABI 打穿。"
+        },
+        {
+          "title": "DeepMind AlphaProof Code：多 LLM agent 四周形式化验证 Signal 协议真实代码",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://deepmind.google/blog/introducing-alphaproof-code/",
+          "why_picked": "DeepMind 官方博客（Nov 10/11）；首个被形式化验证的广泛部署加密协议实现，含回插漏洞的反向验证",
+          "so_what": "如果你在做 agent 系统的可信性设计：这是「多 agent 分工 + 机器校验器裁决」的范本——生成归 agent，判断归 Lean 这类确定性检查器，人类只复核 1% 高风险区域；把它套到你的代码审查/迁移流水线，比纯 LLM 评审多一层不可篡改的通过条件。"
+        },
+        {
+          "title": "Claude Meetings 内测：Claude 作为可见参会者进视频会议，边开会边写文档/白板",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://claude.com/resources/articles/claude-meetings",
+          "why_picked": "Anthropic 官方产品页（Nov 13，HN 同日热帖）；agent 从「异步助手」进入实时会话场景",
+          "so_what": "如果你在做 agent 的工具调用与权限模型：这条给了「会议上下文 + 按需授权调用已连接工具」的具体交互范式——默认只读输出、调用前要用户批准；设计你的 agent 时把「提议→授权→执行」拆成三步，而不是一次性下发全部凭据。"
+        },
+        {
+          "title": "a16z 提出 B2A 经济：Agent 成为互联网主要用户，Shopify 来自 AI 的订单同比近 13 倍",
+          "category": "趋势",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4066736981316486",
+          "why_picked": "a16z 原文《Welcome to the B2A Economy》经智东西/36氪转述（Nov 13）并给出可核验数据点；方向判断具备一手出处",
+          "so_what": "如果你在做 agent 产品的分发或埋点：把「可被 agent 发现并调用」当成新渠道，补 machine-readable 的定价/能力清单与幂等调用接口；同时区分人类与 agent 流量做归因，否则你的转化数据会被 agent 采买整段污染。"
+        },
+        {
+          "title": "腾讯混元 Hy Realtime：实时语音模型新增 Agentic 工具调用与唱歌能力",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8y2NUw9E4zK",
+          "why_picked": "腾讯混元官方发布，Readhub 收录（Nov 14，1 小时前）；已在元宝语音通话/腾讯客服上线，属于产品化而非论文",
+          "so_what": "如果你在做语音 agent 或客服自动化：把「实时语音」从 TTS 管道升级为带工具调用的全双工会话，重点测三件事——不完整输入的意图补全、自主决定是否联网搜索的触发阈值、以及工具调用延迟对打断（barge-in）体验的影响。"
+        },
+        {
+          "title": "虎嗅复盘 Codex 收缩：Tibo 淡出、额度重置补贴终结、11 月起封禁共享号",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://www.huxiu.com/article/4904580.html",
+          "why_picked": "虎嗅科技组署名长文（Nov 11），引用 JetBrains 使用率数据（Claude Code 39% vs Codex 16%）；属观点/行业分析，核心事实指向 OpenAI 官方额度政策变更",
+          "so_what": "如果你在给团队做 coding agent 选型或成本模型：不要按补贴期单价做预算，按 token 计量后的真实调用成本重算 TCO，并把「额度互通的账号共享」写进合规风险项——这类政策风险比模型能力差异更容易一夜改变你的成本结构。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-13",
       "items": [
         {
@@ -2070,59 +2139,6 @@
           "url": "https://github.com/mastra-ai/mastra/releases/tag/%40mastra%2Fcore%401.77.0",
           "why_picked": "引入 FactorySandbox 契约（Docker/E2B/Platform）+ 跨存储后端的 run fencing，直接针对分布式 agent 的崩溃恢复正确性问题。",
           "so_what": "如果你在做多 agent/durable execution：mastra 的 run fencing 解决『崩溃恢复后旧执行覆盖新 run 状态』这类隐蔽 bug，若你用 DynamoDB/Redis/Postgres 等做 agent 状态存储，建议参考其 ownership fencing 设计而非自己造。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-14",
-      "items": [
-        {
-          "title": "Gemini 4 Argon 全面开放，同步发布安全与安全报告",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://blog.google/innovation-and-ai/technology/safety-security/gemini-4-model-safety-security/",
-          "why_picked": "谷歌官方：Wiz 用 Argon 发现其他模型漏掉的医院软件关键漏洞；端到端模拟网络攻击场景 12/12（上代 5），Argon 开始广泛开放",
-          "so_what": "如果你在做 agent 安全/红队管线：把 Argon 纳入漏洞扫描与补丁验证的模型候选，先用小样本对比它相对 Astra/Opus 的误报率与修复质量，再决定是否进生产。"
-        },
-        {
-          "title": "Geoffrey Huntley：用 pre-commit hook 逼 agent 用对可观测库",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Oct/13/geoffrey-huntley/",
-          "why_picked": "与其改 AGENTS.md 期望 agent 遵守，不如加 pre-commit hook 检查 git diff 是否绕过 diagnostics 模块，命中即拒绝提交并注入纠正 prompt",
-          "so_what": "如果你在做 coding agent 管线：把关键规范（可观测、日志、鉴权）做成 pre-commit/CI 的机器检查而非文档，违规提交直接失败并回灌 prompt，比改提示词更稳定、不漂移。"
-        },
-        {
-          "title": "web-edit 0.1a1：本地网页编辑工具新版",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://simonwillison.net/2026/Oct/13/web-edit/",
-          "why_picked": "Simon Willison 的本地 HTML 编辑工具，性能优化由 Claude Opus 5.5 依据 GPT-6 Astra 生成的 Python 3.15 profiling 报告完成——多模型协作实操样本",
-          "so_what": "如果你在做多模型 agent 工作流：让「一个模型跑 profiling、另一个模型写优化」串成流水线是可行路径，可先在性能优化类任务里试两个异构模型分工。"
-        },
-        {
-          "title": "AWS：Orca Security 用 Bedrock 做自然语言安全查询",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/natural-language-security-queries-at-orca-security-using-amazon-bedrock/",
-          "why_picked": "Discovery AI 把英文问题转成 Sonar 查询，多阶段架构，官方称查询成本降低约 90%",
-          "so_what": "如果你在做 NL→结构化查询 agent：参考其多阶段（意图/校验/生成）拆解，把 schema 约束放在生成后做校验层，兼顾成本与准确率，避免大模型直出查询。"
-        },
-        {
-          "title": "ShipStation 用 Bedrock AgentCore 搭 AI IT 帮助台（Deckhand）",
-          "category": "工具",
-          "source": "Web",
-          "url": "https://aws.amazon.com/blogs/machine-learning/how-shipstation-global-built-an-ai-it-help-desk-on-amazon-bedrock-agentcore/",
-          "why_picked": "Slack 内 IT 帮助台 agent：读报错截图、查知识库、自动开单，AgentCore 承载工具调用与权限",
-          "so_what": "如果你在做企业内 agent：可复用其「知识库 RAG + 截图理解 + 工单工具调用」三段式，重点拷问 AgentCore 的身份/权限边界与审计日志是否满足合规。"
-        },
-        {
-          "title": "OpenAI 工程师涉嫌在高层会议室装窃听装置被捕",
-          "category": "行业",
-          "source": "HN",
-          "url": "https://news.ycombinator.com/item?id=50078141",
-          "why_picked": "HN 345↑/309 评论；SF Standard 报道一名 OpenAI 工程师被指在会议室安装录音设备，公司称发现录音装置，内部安全文化受关注",
-          "so_what": "如果你在做企业 AI 部署：把内部敏感会议与 agent 录音/转写工具的设备与网络策略收紧，对录音类工具加显式授权与审计。"
         }
       ]
     }

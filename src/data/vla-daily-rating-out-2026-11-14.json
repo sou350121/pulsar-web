@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "total": 3,
+  "counts": {
+    "⚡": 0,
+    "🔧": 2,
+    "📖": 0,
+    "❌": 1
+  },
+  "parse_error": "",
+  "parse_failed": false,
+  "papers": [
+    {
+      "title": "What Can a VLA Learn from the Agent That Calls It? Task-Level Experience Distillation for Embodied Navigation",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.16246",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Navigation agents use a large language model (LLM) planner to call a vision-language-action (VLA) model. Each episode needs the LLM, adding cost and delay. We distill successful agent experience into the VLA instead of distilling the planner. The VLA then navigates alone at test time. Agent sessions are not VLA demonstrations. They include motions driven by planner tools and sub-instructions, along with detours. We present H2E, a task-level experience distillation method that converts these sess",
+      "pub_date": "2026-11-12",
+      "rating": "🔧",
+      "reason": "把上层 LLM planner 在成功 episode 中的任务级经验蒸馏进 VLA 本体，使测试时不再需要调用 planner，直接单模型导航，降低开销与延迟。可复用点是这套「planner→VLA 经验蒸馏」流程，适合任何分层 VLA 系统做推理期裁剪。",
+      "affiliation": ""
+    },
+    {
+      "title": "EgoX: Egocentric Cross-Embodiment Manipulation with Embodiment Dreaming",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.16728",
+      "source": "hf-papers",
+      "match_level": "B",
+      "keywords_matched": [
+        "egocentric"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Generalist manipulation policies can benefit from the complementary experience of humans, real robots, and simulated agents. However, differences in morphology, sensing, and control interfaces make it difficult to learn effectively from their combined demonstrations. We introduce EgoX, an egocentric cross-embodiment learning framework that organizes heterogeneous demonstrations through semantically corresponding observation and action modalities. EgoX pretrains a Modularized Cross-Embodiment Tra",
+      "pub_date": "2026-11-12",
+      "rating": "🔧",
+      "reason": "针对人类视频、真机与仿真演示在形态/传感/控制接口上的差异，用第一人称视角统一表示加「embodiment dreaming」做跨本体数据联合训练，缓解异构演示难以共用的问题。可复用点是其跨本体数据对齐与幻构训练策略，直接用于扩 VLA 预训练数据池。",
+      "affiliation": ""
+    },
+    {
+      "title": "A high-dimensional population code in the bat motor cortex during natural dexterous flight",
+      "authors": "Boaz Styr et al.",
+      "url": "https://www.cell.com/cell/fulltext/S0092-8674(26)01131-1?rss=yes",
+      "source": "Cell-InPress",
+      "match_level": "B",
+      "keywords_matched": [
+        "dexterous"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Bats use their hand-like wings to reproduce natural flights with wingbeat-level precision. Rather than mainly tracking the wingbeat cycle, the wing motor cortex generates sparse, distinct population states with little shared variance across wingbeats, resulting in a high-dimensional code distinct from that typically observed in constrained tasks.",
+      "pub_date": "2026-10-13",
+      "rating": "❌",
+      "reason": "蝙蝠飞行运动皮层的神经群体编码研究，属神经科学电生理，与机器人操作/VLA 无实质关联。",
+      "affiliation": ""
+    }
+  ]
+}
