@@ -1,6 +1,75 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-15",
+      "items": [
+        {
+          "title": "llama.cpp / ggml 同时发布 v1.0.0：稳定 API 契约",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/ggml-org/llama.cpp/releases/tag/v1.0.0",
+          "why_picked": "3.5 年来首个 major 版，改 ABI 就 bump major；NextN 投机解码进 llama.h，FP8 KV cache + MoE CPU 专家缓存，server 修 SSRF/CORS/DNS rebinding/MCP 取消",
+          "so_what": "如果你在做私有化部署或自建 inference gateway：现在可以按 semver pin libllama，把 35 个废弃 API 的迁移排进本季；MoE 场景先试 --moe-cache-size 配 CPU share 观察显存溢出率。"
+        },
+        {
+          "title": "OpenAI 上线 ChatGPT Wallet：agent 代付但拿不到卡号",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://openai.com/index/introducing-chatgpt-wallet",
+          "why_picked": "与三大卡组织共建，每笔生物验证 + 支付 token 替代真实卡号，首发 dots",
+          "so_what": "如果你在做 agent 下单/付费流程：别再让 agent 持有原始支付凭证，改为「用户批准 → 换取单次 payment token」的两段式；同时检查你的风控是否会把 agent UA/IP 当机器人直接拒付。"
+        },
+        {
+          "title": "AgentCore runtime V2：快照预热把冷启动压到 2 秒",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/architecture-patterns-for-fast-session-startup-on-amazon-bedrock-agentcore-runtime/",
+          "why_picked": "启动一次 → 冻结 microVM 快照 → 每 session restore，冷启动不再随镜像体积增长",
+          "so_what": "如果你在做 serverless agent 宿主：把 init 全部搬到 app.run() 之前，重资源（大文件/CLI/浏览器）用 build hook 在快照期预热，聊天场景在用户打开窗口时预建 session。"
+        },
+        {
+          "title": "NeMo Switchyard 路由 coding agent，验收 cost per solved task",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://aws.amazon.com/blogs/machine-learning/route-coding-agent-requests-to-the-right-model-on-amazon-bedrock-with-nvidia-nemo-switchyard/",
+          "why_picked": "按任务而非按 token 计成本，stage routing 读工具调用历史在两模型间切换",
+          "so_what": "如果你在做多模型成本优化：把评测指标从 $/1M tokens 换成「总成本 / 测试通过数」，先用 LiteLLM + Switchyard 插件做随机分流 A/B，再切 stage routing。"
+        },
+        {
+          "title": "Claude Meetings beta：Claude 作为可见参会者进入 Google Meet",
+          "category": "新发布",
+          "source": "Web",
+          "url": "https://support.claude.com/en/articles/12138966-release-notes",
+          "why_picked": "通话中实时记笔记并直接产出 doc/白板/幻灯片，Team+Enterprise 先开",
+          "so_what": "如果你在做会议/协作类 agent：这是「实时会议中产出 artifact」的现成范式，可参考其可见参与者 + 会后 artifact 的两段结构，而不是只做会后摘要。"
+        },
+        {
+          "title": "pydantic-ai v2.68.0：审批与反问回到 run 内",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/pydantic/pydantic-ai/releases/tag/v2.68.0",
+          "why_picked": "RequestInput 让 human-in-the-loop 成为 run 内一等公民；max_tokens 截断触发 ModelFallback 降级",
+          "so_what": "如果你在做需要人工审批的 agent：用 RequestInput 替代外部回调拼装审批流，按 answered_by 审计；把 fallback 链配在输出截断场景，避免 tool call JSON 被切坏后 silent 失败。"
+        },
+        {
+          "title": "AWS 开源 aws-emulator：本地跑云服务集成测试",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/aws/aws-emulator",
+          "why_picked": "官方 Rust 实现本地模拟器，前三周由 agent 集群写出 29,684 次 commit",
+          "so_what": "如果你在做依赖 S3/DynamoDB 的 pipeline 测试：可把集成测试切到本地 emulator，省 token 费和配额；同时留意 agent 大规模产码后的一致性风险，重点看错误路径测试。"
+        },
+        {
+          "title": "Anthropic IPO 路演启动，视频首次披露算力与商业模型",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/11/anthropic-ipo-roadshow/",
+          "why_picked": "与同周「Claude 攻势猛、OpenAI 收缩」形成对照，定价与算力策略直接影响选型成本",
+          "so_what": "如果你在做季度模型选型：把 Claude 与 OpenAI 的价格弹性风险写进成本模型，避免把单 provider 写死在 agent 核心链路，保留一层可切换的 gateway。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-14",
       "items": [
         {
