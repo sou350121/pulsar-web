@@ -10,19 +10,17 @@ on:
 
 permissions:
   contents: read
-  pages:    write
-  id-token: write
 
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      artifact_id: ${{ steps.pages_artifact.outputs.artifact_id }}
+      artifact_name: github-pages-${{ github.run_attempt }}
 
     steps:
       - name: Checkout repository
@@ -128,10 +126,47 @@ jobs:
         run: pnpm build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        id: pages_artifact
+        uses: actions/upload-pages-artifact@v4
         with:
+          name: github-pages-${{ github.run_attempt }}
           path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Verify uploaded Pages artifact is visible
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.build.outputs.artifact_id }}
+          ARTIFACT_NAME: ${{ needs.build.outputs.artifact_name }}
+        run: |
+          [[ "$ARTIFACT_ID" =~ ^[1-9][0-9]*$ && "$ARTIFACT_NAME" =~ ^github-pages-[1-9][0-9]*$ ]]
+          for attempt in {1..6}; do
+            if timeout 10s gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" |
+              jq -e --arg name "$ARTIFACT_NAME" --arg id "$ARTIFACT_ID" --arg run "$GITHUB_RUN_ID" --arg sha "$GITHUB_SHA" '
+                (.id | tostring) == $id and .name == $name and .expired == false and .size_in_bytes > 0
+                and (.workflow_run.id | tostring) == $run and .workflow_run.head_sha == $sha
+              ' >/dev/null; then
+              exit 0
+            fi
+            if (( attempt < 6 )); then sleep 5; fi
+          done
+          echo "::error::The uploaded Pages artifact is not visible for this run and commit"
+          exit 1
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ needs.build.outputs.artifact_name }}
