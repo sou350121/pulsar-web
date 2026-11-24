@@ -1,0 +1,391 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "total": 23,
+  "counts": {
+    "⚡": 0,
+    "🔧": 4,
+    "📖": 9,
+    "❌": 10
+  },
+  "parse_error": "",
+  "parse_failed": false,
+  "papers": [
+    {
+      "title": "One Prior, Two Dynamics: Repurposing Video Diffusion Transformers for Self-Supervised Latent Action Learning",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.26617",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Videos reveal how the world changes, but rarely the actions that cause those changes. Latent action learning recovers such supervision from visual transitions, yet often learns the underlying dynamics largely from scratch. We ask whether a pretrained video generator can instead provide the prior for both inverse and forward dynamics. We introduce O$^{2}$LaF, built on a simple principle: one prior, two dynamics. We initialize both models from the same pretrained video DiT and adapt them to their",
+      "pub_date": "2026-11-19",
+      "rating": "📖",
+      "reason": "把预训练视频扩散 Transformer 当作先验，从纯视觉变化中自监督恢复隐动作，避免动力学从零学起，属于 VLA 预训练数据侧的思路；但摘要未给机器人策略实验结果，价值待正文验证。",
+      "affiliation": ""
+    },
+    {
+      "title": "Demonstration-Free Skill Composition for Navigation and Manipulation",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.25462",
+      "source": "hf-papers",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "Hierarchical reinforcement learning enables sequential tasks to be represented as compositions of separately trained skills. This paper evaluates demonstration-free hierarchical pipelines for MiniGrid navigation and robotic manipulation, comparing their training requirements and task performance with flat reinforcement learning baselines. The evaluation concerns complete pipelines with task-specific observation, reward and control structures. In navigation, two parameterised skills are reused ac",
+      "pub_date": "2026-11-19",
+      "rating": "📖",
+      "reason": "系统评测无示范的分层 RL 技能组合流程在 MiniGrid 导航与操作任务上的训练需求与表现，属仿真玩具环境下的方法对比，与 VLA 训练/部署无直接接口。",
+      "affiliation": ""
+    },
+    {
+      "title": "ActMem: From Latent Memory Reasoning to Grounded Robotic Action",
+      "authors": "Linfeng Dong, Jianwei Niu, Jiuyi Zhao, Ruibing Feng, Xinghao Wu, Wu Yang",
+      "url": "https://arxiv.org/abs/2611.25461",
+      "source": "cs.LG",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.25461v1 Announce Type: cross Abstract: Vision-Language-Action (VLA) models have shown promising results in real-world long-horizon manipulation, where memory plays a crucial role. However, existing memory-augmented VLAs either retrieve past observations without reasoning about what they imply, or reason over the full history in a shared context where it crowds out current perception. Cognitive science treats them as distinct systems: memory reconstructs past experience to decide what",
+      "pub_date": "2026-11-21",
+      "rating": "🔧",
+      "reason": "针对现有记忆增强 VLA 只检索历史观测却不推理其含义的问题，提出在潜在空间对记忆做推理再生成落地动作，面向长程操作；记忆模块可作为插件接入现有 VLA 主干，本周即可复用。",
+      "affiliation": "[Beihang University]"
+    },
+    {
+      "title": "Full Rank and Stable Sampling of $\\tanh$ Networks",
+      "authors": "Philipp Grohs, Matěj Trödler",
+      "url": "https://arxiv.org/abs/2611.25867",
+      "source": "cs.LG",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.25867v1 Announce Type: cross Abstract: We study the recovery of feedforward $\\tanh$ networks of fixed architecture with $P$ parameters from finitely many point evaluations. First, we characterize the set of parameters where the differential of the realization map has full rank and show that it coincides with the regular parameters in the sense of Vla{\\v{c}}i{\\'c} and B{\\\"o}lcskei (2021). Second, we make use of this characterization to prove that almost every tuple of $2P+1$ sampling p",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "纯数学论文，研究 tanh 前馈网络参数恢复的可辨识性与采样稳定性，与机器人操作/embodied AI 无任何关联。",
+      "affiliation": "[University of Vienna]"
+    },
+    {
+      "title": "SimVLA: Attributing Gains in VLA Models Through Controlled Ablation",
+      "authors": "Yuankai Luo, Woping Chen, Tong Liang, Zhenguo Li",
+      "url": "https://arxiv.org/abs/2602.18224",
+      "source": "cs.LG",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2602.18224v2 Announce Type: replace-cross Abstract: Vision-Language-Action (VLA) models often bundle architectural changes with different pretraining data, backbone scales, and optimization recipes, obscuring what actually drives progress. We introduce SimVLA, a deliberately minimal VLA, a standard vision-language backbone with a lightweight continuous-action head, as a controlled testbed for this attribution problem; our contribution is methodological and empirical (a controlled attributi",
+      "pub_date": "2026-11-21",
+      "rating": "🔧",
+      "reason": "刻意构造最小化 VLA，用受控消融把架构改动与预训练数据、主干规模、优化配方解耦，回答 VLA 进步究竟来自哪一项；可直接作为团队新方法的干净对照基线使用。",
+      "affiliation": "[Frontier Robotics]"
+    },
+    {
+      "title": "GroundingPI: A Grounding Foundation Model towards Physical Intelligence with Visual Primitives",
+      "authors": "Qize Yu, Lianrui Fan, Boyu Chen, Jiaqi Liang, Xini Ding, Yue Chen",
+      "url": "https://arxiv.org/abs/2609.39601",
+      "source": "cs.LG",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation",
+        "physical intelligence"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2609.39601v3 Announce Type: replace-cross Abstract: Precise grounding matters. It specifies which object is the target and where that object is, even in clutter and for tiny objects, and it has to be fast enough for closed-loop control. Yet vision-language-action (VLA) and world-action models (WAMs) take perception from general-purpose vision-language and video-generation backbones, which still fail in these settings. We introduce GroundingPI, a 4B grounding foundation model that generates",
+      "pub_date": "2026-11-21",
+      "rating": "🔧",
+      "reason": "以视觉基元为接口构建 grounding 基础模型，针对杂乱场景与小目标给出快速精确的目标指代与定位，满足闭环控制延迟要求，可作为 VLA/世界动作模型的前端感知模块复用。（此处 physical intelligence 为概念，非 π 公司）",
+      "affiliation": "[Physical Intelligence]"
+    },
+    {
+      "title": "On Agentic Manipulation Policies",
+      "authors": "Chen Chen, Omid Bagherieh, Naveen Nikamanth Appiah Balaji, Jesse T. Gonzalez, Negin Heravi, Fahad Islam",
+      "url": "https://arxiv.org/abs/2611.09892",
+      "source": "cs.LG",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2611.09892v3 Announce Type: replace-cross Abstract: Recent work on robot manipulation has focused on specialist policies trained on demonstrations. We show that generalist AI models can control manipulators more reliably than specialist policies such as vision-language-action models (VLAs) and world-action models (WAMs). We systematically analyze agentic manipulation policies (AMPs), in which a generalist AI model commands the manipulator directly, adapting its actions as the task unfolds.",
+      "pub_date": "2026-11-21",
+      "rating": "🔧",
+      "reason": "论证通用 AI 模型驱动的 agentic 策略在机械臂操控上比专门训练的 VLA/专用策略更可靠，并给出专用策略的失效分析；对'继续堆 VLA 专用数据'路线是重要反例，值得本周精读其对比设置。",
+      "affiliation": "[DeepMind]"
+    },
+    {
+      "title": "Vision-Language-Action Models: A Life-Cycle Survey of Design, Training and Deployment",
+      "authors": "Suvarna Kadam, Soran Parsa | Witsense AI, University of Huddersfield",
+      "url": "https://arxiv.org/abs/2611.18372",
+      "source": "cs.LG",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": true,
+      "abstract_snippet": "arXiv:2611.18372v2 Announce Type: replace-cross Abstract: Vision-language-action (VLA) models adapt web-pretrained vision-language models to output robot actions, so that web knowledge carries over to physical control. In under four years the field has grown from RT-2, the first VLA, to open models that fine-tune on a single consumer GPU and proprietary generalists that clean unseen homes. VLA research joins robotics, computer vision and language modelling, so this survey is written for research",
+      "pub_date": "2026-11-21",
+      "rating": "📖",
+      "reason": "按设计—训练—部署全生命周期梳理 VLA 从 RT-2 到开源模型谱系的综述，适合新人建立框架认知，但无新方法或新实验。",
+      "affiliation": "[Witsense AI]"
+    },
+    {
+      "title": "SteerTrace: Tracing How Target Attacks Steer World Action Models",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.25719",
+      "source": "hf-papers",
+      "match_level": "B",
+      "keywords_matched": [
+        "world action model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "World action models (WAMs) predict future videos and actions with one backbone, and their imagined future is often seen as a safety signal. We introduce SteerTrace, a targeted universal attack on WAMs that also traces its effect inside the model. One $\\ell_\\infty$-bounded (4/255) perturbation per model, shared across frames, tasks, and camera views, pushes the executed action toward an attacker-chosen target. On eight WAMs from four families (FastWAM, Faster-WAM, OpenWAM and LingBot-VA) on LIBER",
+      "pub_date": "2026-11-19",
+      "rating": "📖",
+      "reason": "对世界动作模型（同时预测未来视频与动作）施加单帧 ℓ∞ 4/255 的目标通用扰动，并追踪扰动在模型内部如何改变想象未来，揭示'想象未来=安全信号'的假设不成立。",
+      "affiliation": ""
+    },
+    {
+      "title": "EgoCaptioner: Towards Comprehensive and Fine-Grained Egocentric Video Captioning",
+      "authors": "",
+      "url": "https://tldr.takara.ai/p/2611.26380",
+      "source": "hf-papers",
+      "match_level": "B",
+      "keywords_matched": [
+        "egocentric"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "Egocentric video captioning requires fine-grained detail and accurate timing, yet current multimodal large language models (MLLMs) often miss brief actions, confuse their order, or misinterpret the wearer's motion. Existing caption formats also offer limited support for combining detailed narration with precise timing. We present EgoCaptioner, which pairs a video-level overview of the setting, participants, and the wearer's overall activity with timed steps whose narration adapts to varying perc",
+      "pub_date": "2026-11-19",
+      "rating": "📖",
+      "reason": "面向第一视角视频的细粒度带时序标注生成，改善 MLLM 漏掉短动作、顺序错乱的问题；可作 ego 数据标注工具，但本身是视频-语言任务，无机器人策略验证。",
+      "affiliation": ""
+    },
+    {
+      "title": "PsyWorld: Profile-Conditioned World Modeling for Human Behavior Prediction",
+      "authors": "Ziyuan Qin, Yang Qiao, Summer B. Frandsen, Michael T. Treadway, Liang Zhao",
+      "url": "https://arxiv.org/abs/2611.24999",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.24999v1 Announce Type: new Abstract: Understanding how stable psychometric traits and time-varying states jointly inform behavior is an important problem in computational behavioral science. Existing personalized agents commonly condition actions directly on a static profile, leaving realized state transitions unused as an explicit source of supervision. We introduce a profile-conditioned state world model that uses observed environment--behavior state transitions to learn transition-",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "用心理测量特质与时变状态条件化建模人类行为预测，属计算行为科学，与机器人操作策略无关。",
+      "affiliation": "[Emory University]"
+    },
+    {
+      "title": "Bradley-Terry Training Can Distort Outcome Probabilities of Initially Accurate Language World Models",
+      "authors": "Xinze Shi, Litian Zhang, Zhenjie Su, Zelong Yu, Yuting Zhang, Qihua Feng",
+      "url": "https://arxiv.org/abs/2611.25594",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.25594v1 Announce Type: new Abstract: Comparative feedback, in which a judge says which of two candidate outcomes is closer to what happened, is a practical way to train language world models that assign probabilities to an action's outcomes. We show that, fitted with a Bradley-Terry objective, it need not teach the true outcome probabilities and can distort accurate ones. On a simulated robot push with enumerated outcome distributions, this objective takes a model that is accurate on",
+      "pub_date": "2026-11-21",
+      "rating": "📖",
+      "reason": "指出用 Bradley-Terry 比较反馈训练语言世界模型会系统性扭曲其本已准确的结果概率估计，对偏好式训练世界模型有警示意义，但实验限于语言模型、无机器人闭环验证。",
+      "affiliation": "[Beijing University of Posts and Telecommunications]"
+    },
+    {
+      "title": "LIFT: Latent Flow Matching for Probabilistic Cell Fate Dynamics with Single Cell Snapshots",
+      "authors": "Bowen Yang, Junda Ying, Yuxuan Wang, Peijie Zhou, Lei Zhang",
+      "url": "https://arxiv.org/abs/2611.25917",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.25917v1 Announce Type: new Abstract: Lineage tracing links cell states through clonal ancestry, but does not generally identify unique source-descendant pairings. Learning from such data therefore requires a model of conditional outcomes, rather than only the terminal population distribution. We introduce LIFT, a latent flow framework for probabilistic cell-state generation from lineage-informed couplings. Variational inference encodes alternative outcomes in a latent space, while a c",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "单细胞谱系示踪下的细胞命运概率建模，属计算生物学，与 embodied AI 无关。",
+      "affiliation": "[Peking University]"
+    },
+    {
+      "title": "Mamba Flow Matching Neural Processes: Linear-Time Inference for Irregularly Observed Spatial Fields",
+      "authors": "Cosmo Santoni, Giovanni Charles, Timothy James Hitge, Oliver Watson, Elizaveta Semenova",
+      "url": "https://arxiv.org/abs/2611.26355",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.26355v1 Announce Type: new Abstract: Interpolating a spatial field, such as daily maximum temperature, from sparse, irregularly located observations recurs across the environmental and health sciences. Standard Gaussian-process kriging refits hyperparameters and solves an $O(N^3)$ system for every new field. When many related fields are observed, such as daily maps from one sensor network, neural processes (NPs) instead learn the interpolation map from past fields and predict a new fi",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "面向稀疏不规则观测空间场插值的地学/健康统计方法，与机器人操作无关。",
+      "affiliation": "[Imperial College London]"
+    },
+    {
+      "title": "FEA solver integration of a composite World Model with a Spiking Neural Network memory Block for computationally efficient modelling of defects and variabilities",
+      "authors": "Bassam El Said, Adam Sobey",
+      "url": "https://arxiv.org/abs/2611.26419",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.26419v1 Announce Type: new Abstract: Each fibre-reinforced composite structure has a unique material architecture. The manufacturing methods used and the presence of defects lead to local variations which require material-scale models that can resolve the response in real time at every location in the structure. Concurrent multi-scale schemes provide this capability, but at a prohibitive computational cost for large structures as the number of integration points and time increments sc",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "纤维增强复合材料缺陷仿真的有限元+SNN 代理模型，属工程力学计算，与机器人学习无关。",
+      "affiliation": "[University of Bristol]"
+    },
+    {
+      "title": "Hierarchical Spatiotemporal World Modeling with Content-Adaptive Spatial Addressing",
+      "authors": "Tiantian Li, Junfeng Lu, Yifei Wang, Zhaoyang Zhang, Lei Wang, Tianyi Qian",
+      "url": "https://arxiv.org/abs/2611.25610",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.25610v1 Announce Type: cross Abstract: Long-horizon world modeling in partially observable environments requires compact memories that preserve spatial structure despite accumulated localization drift. Inspired by hippocampal episodic and spatial memory and the multi-periodic coding of entorhinal grid cells, we propose HiSTFormer, a hierarchical spatiotemporal world model, which adopts a layer-wise organization of local temporal RoPE and multi-periodic spatial RoPE, together with cont",
+      "pub_date": "2026-11-21",
+      "rating": "📖",
+      "reason": "借鉴海马体情景/空间记忆与多周期编码，构建内容自适应空间寻址的分层时空世界模型以抑制定位漂移，偏导航类部分可观测环境建模，未见操作任务验证。",
+      "affiliation": "[QiYuanLab]"
+    },
+    {
+      "title": "Physical Laws without Physics Loss? Probing Learned Dynamics in Video World Models through Forced Response",
+      "authors": "Yutao Li, Chen Wang, Wangmeng Zuo, Hui Li",
+      "url": "https://arxiv.org/abs/2611.25626",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.25626v1 Announce Type: cross Abstract: Do video world models learn physical laws without a physics loss, or merely imitate motion? Overall motion and appearance scores cannot settle it. We investigate this through nonlinear forced response: an excitation shakes the support of a suspended object. We introduce dual visual-numeric conditioning and adapt six image-to-video backbones to predict this motion using only the flow-matching loss. Wan predicts motion accurately and generalizes to",
+      "pub_date": "2026-11-21",
+      "rating": "📖",
+      "reason": "用非线性受迫响应实验检验视频世界模型是否真学到物理规律还是仅模仿运动，为世界模型的动力学保真度提供新的诊断手段，属评测方法而非 VLA 策略本身。",
+      "affiliation": "[Harbin Institute of Technology]"
+    },
+    {
+      "title": "Fixing the Twin, Not the Detector: Sim-to-Real Roadside LiDAR Detection from Digital-Twin Data",
+      "authors": "KuanLin Chen, Feng-jui Kuo",
+      "url": "https://arxiv.org/abs/2611.26035",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "sim-to-real"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.26035v1 Announce Type: cross Abstract: Roadside LiDAR detectors are expensive to train on real labels, and digital twins promise to replace these labels, but a detector trained on a twin meets a different sensor, different objects and different annotation conventions on the real site. We describe the pipeline that placed first in the LUMPI track of the UrbanTwin Sim2Real LiDAR Challenge (IEEE BigData 2026 Cup, 0.5541 combined score) and fifth on its V2X-Real track (0.8102). Every dete",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "路侧激光雷达检测器的数字孪生数据 sim-to-real，属自动驾驶感知基础设施，非机器人操作。",
+      "affiliation": ""
+    },
+    {
+      "title": "Flow Matching from Non-Gaussian Sources: A Theory of Efficient Sampling",
+      "authors": "Yuchen Zhou, Lili Zheng, Yuxin Chen, Gen Li",
+      "url": "https://arxiv.org/abs/2611.26407",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.26407v1 Announce Type: cross Abstract: Flow matching is a versatile framework for generative modeling that transports a source distribution to a target data distribution. A key advantage is its flexibility in the choice of source distribution, such as heavy-tailed and multimodal sources. Yet finite-step sampling guarantees for non-Gaussian sources remain limited. We establish a nonasymptotic convergence theory for Euler discretization of flow matching with linear interpolation. Suppos",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "流匹配在非高斯源分布下的采样效率理论分析，属生成模型基础理论，无机器人应用。",
+      "affiliation": "[University of Illinois Urbana-Champaign]"
+    },
+    {
+      "title": "Forecasting Patient Trajectories from the Electronic Health Records with Action-Conditioned World Models",
+      "authors": "Simon A. Lee, Jiahang Hank Sha, Soomin Chung, Kai Akamatsu, Eran Halperin, Jeffrey N. Chiang",
+      "url": "https://arxiv.org/abs/2610.23862",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "world model"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.23862v2 Announce Type: replace Abstract: We introduce a predictive world model for electronic health records (EHR) that represents patient histories as action conditioned latent trajectories. Rather than modeling clinical events solely through autoregressive token prediction, our framework explicitly separates patient states from observed clinical actions and learns their evolution through a state and action conditioned transition operator. At its core is a state dependent linearizati",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "把电子病历建模为动作条件潜在轨迹的临床预测世界模型，属医疗时序预测，与机器人操作无关。",
+      "affiliation": ""
+    },
+    {
+      "title": "Every Measurement, Every Direction, All at Once: Multimodal Flow Matching for Molecules and Spectra",
+      "authors": "Thorben Prein, Elton Pan, Rafael Gómez-Bombarelli, Santiago Miret",
+      "url": "https://arxiv.org/abs/2611.22098",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.22098v2 Announce Type: replace Abstract: Generative modeling in science is often data-limited, where experiments are expensive. However, each experiment may yield several coupled measurements of the same physical entity. Standard generative models often train only on a single direction, discarding supervision from the rest. We argue that each experiment contains more training signal than this asymmetry allows the model to exploit: random masking enables measurements to serve as either",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "分子与光谱多向耦合测量的多模态流匹配生成建模，属科学机器学习，与 embodied AI 无关。",
+      "affiliation": "[Lila Sciences]"
+    },
+    {
+      "title": "FlowDrive: moderated flow matching with data balancing for trajectory planning",
+      "authors": "Lingguang Wang, Ömer Şahin Taş, Marlon Steiner, Nick Le Large, Christoph Stiller",
+      "url": "https://arxiv.org/abs/2509.21961",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "flow matching"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2509.21961v4 Announce Type: replace-cross Abstract: Learning-based planners are sensitive to the long-tailed distribution of driving data. Common maneuvers dominate datasets, while dangerous or rare scenarios are sparse. This imbalance can bias models toward the frequent cases and degrade performance on critical scenarios. To tackle this problem, we compare balancing strategies for sampling training data and find reweighting by trajectory pattern an effective approach. We then present Flow",
+      "pub_date": "2026-11-21",
+      "rating": "❌",
+      "reason": "针对驾驶数据长尾分布做数据平衡与调制流匹配的轨迹规划，属自动驾驶规划，非机器人操作。",
+      "affiliation": "[Karlsruhe Institute of Technology]"
+    },
+    {
+      "title": "EgoHand: Monocular 3D Hand Reconstruction from Egocentric Video",
+      "authors": "Chao-Yeh Chen, Tiffany Chen, Lin Duan, Tianyi Hu, Yu-Hsiang Huang, Umar Iqbal",
+      "url": "https://arxiv.org/abs/2610.30293",
+      "source": "cs.LG",
+      "match_level": "B",
+      "keywords_matched": [
+        "egocentric"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2610.30293v3 Announce Type: replace-cross Abstract: We introduce EgoHand, a monocular 3D hand reconstruction model that achieves state-of-the-art performance on egocentric video. Central to our approach is the curation of a high-quality training corpus of 14 million images, combining synthetic data, in-the-wild video, and multi-camera motion capture to balance scene diversity and supervision quality. The model adopts SOMA-Hand as its parametric representation and processes 2D hand crops wi",
+      "pub_date": "2026-11-21",
+      "rating": "📖",
+      "reason": "基于 1400 万张图像语料的第一视角单目 3D 手部重建 SOTA 模型，可服务 ego 视频里的手-物交互标注与遥操作数据提取，但本身是视觉重建任务，无 VLA/机器人实验。",
+      "affiliation": "[Meta|Iqbal]"
+    }
+  ]
+}
