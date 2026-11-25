@@ -1,0 +1,517 @@
+{
+  "ok": true,
+  "model": "deepseek-flash",
+  "total": 30,
+  "counts": {
+    "⚡": 0,
+    "🔧": 5,
+    "📖": 25,
+    "❌": 0
+  },
+  "parse_error": "",
+  "parse_failed": false,
+  "papers": [
+    {
+      "title": "Embodied Neuro-symbolic AI: Making Robot Behavior Auditable, Safe, and Scalable",
+      "authors": "Ruwan Wickramarachchi, Jonathan Francis, Alessandro Oltramari",
+      "url": "https://arxiv.org/abs/2611.31488",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31488v1 Announce Type: new Abstract: Current Vision-Language-Action (VLA) end-to-end systems have driven major progress in robot learning, yet they still face persistent barriers to dependable real-world deployment. In practice, these models often exhibit brittle generalization under distribution shift (i.e., novel objects, layouts, lighting, or contact conditions), limited physical and causal reasoning, and inconsistent fine-grained motor control. Critically, many VLA pipelines offer",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "提出神经符号具身 AI 框架，为 VLA 加一层可审计的符号推理以提升安全性与可扩展性；属立场或框架性论述，未见量化的机器人实验与基线对比。",
+      "affiliation": "[Bosch Center for Artificial Intelligence]"
+    },
+    {
+      "title": "Hi3R-VLA: Grounding Semantics and Actions in 3D",
+      "authors": "Shizhe Chen, Paul Pacaud, Cordelia Schmid",
+      "url": "https://arxiv.org/abs/2611.31535",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31535v1 Announce Type: new Abstract: While recent vision-language-action (VLA) models increasingly incorporate 3D geometry, how to effectively exploit it for precise and generalizable action prediction remains a central challenge. We introduce Hi3R-VLA, a 3D policy that grounds heterogeneous modalities - vision, language, and action - in explicit 3D geometry for robotic manipulation. Our model integrates spatially-aligned visual features and language conditioning into point cloud repr",
+      "pub_date": "2026-11-25",
+      "rating": "🔧",
+      "reason": "Hi3R-VLA 把 3D 几何与语义分层锚定到动作预测，构建 3D 感知 VLA 策略以提升精度和跨场景泛化；其 3D 表征与动作 grounding 结构可直接迁移到空间精确操作任务。",
+      "affiliation": "[Inria|Schmid]"
+    },
+    {
+      "title": "FabricBench: A Standardized Policy Benchmark for Bimanual Fabric Manipulation with a Contact-Driven Deformable Simulator",
+      "authors": "Wenkang Hu, Haoran Wang, Liu Liu, Wenchao Huang, Yiji Chen, Mengao Zhao",
+      "url": "https://arxiv.org/abs/2611.31577",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31577v1 Announce Type: new Abstract: Fabric manipulation challenges robot policies with changing geometry, self-occlusion, and contact, yet standardized evaluation remains focused on rigid objects. We introduce FabricBench, a benchmark for bimanual fabric manipulation with six tasks spanning garments, silk, and bags, 10,000 simulation-ready assets, and controlled tests of configuration and appearance generalization. Built on an open-source solver in Newton, our simulator enables stabl",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "首个面向双臂布料操作的标准 benchmark，含 6 个任务与接触驱动可形变仿真器，补齐可形变物体策略评测空白；本身不是 VLA 方法贡献。",
+      "affiliation": "[Shanghai Jiao Tong University]"
+    },
+    {
+      "title": "Sparks of Weight-Space Programming for Robot Foundation Models",
+      "authors": "Kyle Coelho, Eugen Solowjow",
+      "url": "https://arxiv.org/abs/2611.31715",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action",
+        "pi0"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31715v1 Announce Type: new Abstract: This paper demonstrates an approach for correcting failures of robot foundation models (RFMs) without additional data collection, demonstrations, or training. We apply weight-space programming (WSP), in which a language-model agent directly reads and writes a neural network's parameters, to a large, pre-trained vision-language-action policy. The idea is simple: many policy failures are not random but repeatedly land in the same recognizable stuck s",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "演示由语言模型 agent 直接读写机器人基础模型权重来纠正失败，无需数据采集、示教或训练；为已部署 VLA 的现场修错提供免微调思路，但目前只是概念验证。",
+      "affiliation": ""
+    },
+    {
+      "title": "Co-DRIS: Physics-Informed Predictive Belief and Variable-Impedance Learning for Reactive Catching under Coupled Uncertainty",
+      "authors": "Yonglong Zhang",
+      "url": "https://arxiv.org/abs/2611.31843",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31843v1 Announce Type: new Abstract: Reactive robotic manipulation is acutely sensitive to simultaneous sensing noise, measurement dropouts, joint execution errors, and contact parameter variations. While single-frame frameworks like Domain-Randomized Instance Set (DRIS) achieve strong robustness under isolated uncertainties (86.4%), they degrade severely when perception and actuation uncertainties co-occur (27.6% across 10 coupled stress scenarios) due to memoryless encoding and fixe",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "面向反应式抓取与接取，把物理先验的预测信念与变阻抗控制结合，应对传感噪声、丢帧与接触参数变化；单作者、纯仿真验证，不涉及视觉语言动作建模。",
+      "affiliation": "[Harbin Institute of Technology]"
+    },
+    {
+      "title": "RESET: One Demonstration, One Verified World, Self-Improved Skills Across Embodiments",
+      "authors": "Zheng Sun, Zhuo Li, Zhihao Li, Hengyi Sim, Ge Wang, Ziyue Zhu",
+      "url": "https://arxiv.org/abs/2611.31894",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "diffusion policy",
+        "robot manipulation",
+        "pi0"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31894v1 Announce Type: new Abstract: Large language model (LLM) coding agents can iteratively self-improve robot manipulation skills in simulation benchmarks, yet real-world tasks provide neither ground-truth success scorers nor resettable practice environments. Our key observation is that a single real demonstration simultaneously specifies scene geometry, defines the terminal success criterion, and serves as a physical reference trajectory for verifying world fidelity---all decouple",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "让 LLM 编程 agent 用单条示教自动构建可验证的仿真世界并自我迭代改进操作技能；核心是仿真自进化闭环，真机缺乏成功判定器这一瓶颈仍待解。",
+      "affiliation": ""
+    },
+    {
+      "title": "PreWAM: Exploring the Design of Latent Future Prediction for World-Action Modeling",
+      "authors": "Wan Chi, Sen Li, Zihang Cui, Chuqin Huang, Yunlong Wang, Nanshan Deng",
+      "url": "https://arxiv.org/abs/2611.31901",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.31901v1 Announce Type: new Abstract: World-action models combine action generation with future prediction, allowing visual transitions to serve as supervision for policy learning. Our controlled study of prediction spaces shows that spatially structured semantic features support better overall generalization under visual perturbations and make motion information more readily recoverable from learned predictive representations. Building on these observations, we introduce PreWAM, a wor",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "系统对比 world-action model 中未来预测空间的选择，发现空间结构化的语义特征优于像素级预测；为 WAM 设计提供消融性结论，但只是对现有架构的设计选择研究。",
+      "affiliation": "[Tongji University]"
+    },
+    {
+      "title": "RoboHarness-RL: Agentic Reinforcement Learning for VLM-Based Robot Manipulation",
+      "authors": "Liyang Li, Mingyu Liu, Xiaoman Li, Zhiyue Zhao, Jin-Chuan Shi, Canyu Zhao",
+      "url": "https://arxiv.org/abs/2611.32016",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32016v1 Announce Type: new Abstract: Agentic harnesses enable frontier vision-language models (VLMs) to manipulate robots through perception, planning, and control tools, yet achieving comparable performance with compact open-weight VLMs remains challenging. We present RoboHarness-RL, an agentic reinforcement learning framework for improving VLM-based robot manipulation through tool calls. Starting from supervised fine-tuning on successful teacher demonstrations, the VLM further impro",
+      "pub_date": "2026-11-25",
+      "rating": "🔧",
+      "reason": "RoboHarness-RL 用 agentic 强化学习把小型开源 VLM 训练成会调用感知、规划、控制工具的机器人 agent，缩小与前沿闭源模型的差距；可直接复用到 agentic 操作流水线搭建。",
+      "affiliation": "[Zhejiang University]"
+    },
+    {
+      "title": "KeyMemVLA: Subtask-Guided Key Memory for Long-Horizon Robotic Manipulation",
+      "authors": "Yongwei Zhang, Tao Chen, Sicheng Ma, Yuanzhe Xing, Pengwei Zhang, Yongen Zhao",
+      "url": "https://arxiv.org/abs/2611.32081",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32081v1 Announce Type: new Abstract: Memory-dependent long-horizon manipulation requires vision-language-action (VLA) policies to infer task progress and recall evidence absent from current observations. Under a limited memory budget, the challenge is to retain history that resolves stage ambiguity and supports subsequent decisions. We present KeyMemVLA, a subtask-guided key memory framework based on progress indication and decision-evidence retention. A two-level annotation process s",
+      "pub_date": "2026-11-25",
+      "rating": "🔧",
+      "reason": "KeyMemVLA 用子任务引导的关键记忆，在有限预算下保留长程操作真正需要的历史证据并推断任务进度；记忆模块可插入现有 VLA 主干，直接解决长程召回瓶颈。",
+      "affiliation": "[Beihang University]"
+    },
+    {
+      "title": "Reading Geometric Anchors: Viewpoint Generalization in Imitation Learning for Robotic Manipulation with RGB-Only Deployment",
+      "authors": "Chengyu Tao, Chunxi Huang",
+      "url": "https://arxiv.org/abs/2611.32162",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32162v1 Announce Type: new Abstract: Moving the camera changes where objects appear in an image, challenging RGB-based imitation learning. A common strategy pairs synthesized views with the same demonstrated action, but ignores supporting physical correspondence across views. By predicting depth with camera calibrations, 3D policies may handle it yet suffer the issue of varied observed point sets. To address these limitations, we propose ReGeoAnch, a geometry-anchored imitation learni",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "通过预测几何锚点约束跨视角的动作一致性，缓解相机移动导致的 RGB 模仿学习错配；部署时只需 RGB，但停留在单任务模仿学习层面，未涉及 VLA 预训练。",
+      "affiliation": "[Hunan University]"
+    },
+    {
+      "title": "Roboclock: A Unified Benchmark for Time-Aware Robotic Intelligence",
+      "authors": "Yujie Zhao, Anthony L. Hu, Zimeng Huang, Zhijing Wu, Luobin Wang, Richard Li",
+      "url": "https://arxiv.org/abs/2611.32233",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32233v1 Announce Type: new Abstract: Time is a fundamental dimension of robotic intelligence: a robot may fail despite physically correct actions if it acts outside a valid time window, responds too slowly to an event, or fails to meet required throughput. Yet existing robotic benchmarks primarily emphasize spatial correctness and logical task completion, largely overlooking the temporal constraints of real-world applications. We present RoboClock, a unified benchmark for time-aware r",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "提出时间感知机器人 benchmark，考察动作是否落在有效时间窗、响应延迟与吞吐达标情况；为时序维度评测补空白，与 VLA 策略学习本身关系间接。",
+      "affiliation": "[University of California, San Diego]"
+    },
+    {
+      "title": "Boundary-Aware Policy Learning for Agent-Orchestrated Robot Manipulation",
+      "authors": "Kaipeng Fang, Yuhao Wang, Ji Zhang, Yunsong Zhou, Jingkuan Song, Lianli Gao",
+      "url": "https://arxiv.org/abs/2611.32238",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation",
+        "visuomotor"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32238v1 Announce Type: new Abstract: Agent-orchestrated robot systems combine the general reasoning capability of multimodal agents with the precise physical control of learned visuomotor policies. Yet such systems often fail at the moment of handoff: a policy is reliable only from a limited set of start states, while the agent may invoke it outside this region. We call this region the policy's handoff boundary. Existing whole-task policies typically have handoff boundaries that are n",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "针对 agent 与底层 visuomotor 策略交接瞬间的失效，学习边界感知策略界定各技能的可靠域；对 agentic 长程系统有参考价值，实验规模偏小。",
+      "affiliation": "[University of Electronic Science and Technology of China]"
+    },
+    {
+      "title": "Motion Chain of Thought: Disentangling Motion Semantics from Visual Appearance for Robotic Manipulation",
+      "authors": "Xiangkai Ma, Xinyi Wang, Junjie Wang, Sheng Xu, Mingyang Li, Yue Ma",
+      "url": "https://arxiv.org/abs/2611.32241",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32241v1 Announce Type: new Abstract: World Action Models (WAMs) aim to construct a unified architecture capable of understanding world state evolution and guiding action generation. However, existing visual branches focus on predicting static visual observation, rather than reflecting potential transition information that captures the evolution of world states under motion interactions. This leads to representational entanglement between high-level physical condition evolution and low",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "提出运动链式思考，把运动语义从视觉外观中解耦，作为 world action model 的预测目标而非静态观测；思路清晰，属 WAM 分支的预测目标改进。",
+      "affiliation": "[Nanjing University]"
+    },
+    {
+      "title": "VLAs Execute, Code Recovers: 3D Skill Envelopes Bridge the Compositional Gap in Agentic Manipulation",
+      "authors": "Jiajie Zhang, Yankai Xiang, Changhao Chen",
+      "url": "https://arxiv.org/abs/2611.32245",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32245v1 Announce Type: new Abstract: Composing frozen Vision-Language-Action (VLA) skills under an agentic planner promises scalable long-horizon manipulation without long-horizon demonstrations, yet strong atomic skills routinely fail at seams even under a correct plan. Standard remedies reset the robot's pose or draft entry conditions in language, missing the physical cause we uncover via causal interventions: even after re-homing, a frozen VLA rigidly retraces its habitual trajecto",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "用 3D 技能包络刻画冻结 VLA 原子技能的可靠执行域，接缝处失败时由代码层回退恢复；为 agentic 组合长程任务提供具体工程方案。",
+      "affiliation": "[Hong Kong University of Science and Technology (Guangzhou)]"
+    },
+    {
+      "title": "RoboDemo: Reconciling Demonstration Intent and Execution Progress for Long-Horizon Manipulation",
+      "authors": "Xiangkai Ma, Zhihao Yuan, Linbo Zhai, Xinyi Wang, Junjie Wang, Sheng Xu",
+      "url": "https://arxiv.org/abs/2611.32256",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32256v1 Announce Type: new Abstract: Long-horizon robot manipulation requires more than predicting the next action from the current observation. The policy must maintain a global procedural prior that specifies the expected progress of each subtask stage, while also tracking the realized progress produced by its interactions. To this end, we propose RoboDemo, a demonstration-augmented manipulation framework built on Dual-Cascaded Test-Time-Training. RoboDemo accepts either a task-rele",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "RoboDemo 同时建模示教的全局程序先验与实际执行进度，用于长程操作的阶段跟踪与偏差纠正；与现有进度建模类工作重叠较多。",
+      "affiliation": "[Nanjing University]"
+    },
+    {
+      "title": "EgoLoAF: Learning Humanoid Loco-Manipulation from Egocentric Demonstrations with Hand-Object Affordances",
+      "authors": "Yiming Zeng, Jiangyuxuan Dai, Yuheng Na, Tan Zhu Xuan, Zihan Lin, Xinfang Qi",
+      "url": "https://arxiv.org/abs/2611.32260",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32260v1 Announce Type: new Abstract: Training humanoid vision-language-action (VLA) models relies heavily on costly real-robot teleoperation. Recent efforts convert egocentric human demonstrations into humanoid training data. However, most methods still require wearable motion trackers and leave important hand-object interaction cues implicit. Many also mix in real-robot teleoperation data for VLA post-training. These dependencies limit scalable data collection, while implicit interac",
+      "pub_date": "2026-11-25",
+      "rating": "🔧",
+      "reason": "EgoLoAF 仅靠带手物可供性的第一视角人类视频生成人形 VLA 训练数据，摆脱穿戴式动捕与真机遥操作；为 humanoid loco-manipulation 提供低成本数据配方。",
+      "affiliation": "[Xi’an Jiaotong University]"
+    },
+    {
+      "title": "Any2Act: Scaling In-Context Robot Learning from Heterogeneous Demonstrations",
+      "authors": "Ziang Ren, Zifan Wang, Zhuoyang Li, Benhao Qin, Haoyang Li, Qingtao Liu",
+      "url": "https://arxiv.org/abs/2611.32353",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32353v1 Announce Type: new Abstract: Robot in-context learning (ICL) enables a policy to perform unseen tasks by following contextual demonstrations, without task-specific fine-tuning. This is increasingly valuable as large language models reasoning at low frequency can specify tasks through demonstrations and delegate high-frequency execution to such a policy. However, methods conditioned on human videos are bounded by scarce human-robot pairs, while those conditioned on robot demons",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "Any2Act 研究从异构示教中扩展机器人上下文学习，使策略按上下文演示完成新任务而无需任务微调；异构数据处理有参考价值。",
+      "affiliation": "[The University of Hong Kong]"
+    },
+    {
+      "title": "ViTacLab: Physically Consistent Visuo-Tactile Simulation, Benchmarking, and Representation Learning for Robotic Manipulation",
+      "authors": "Linjing You, Zeming Yang, Zhenhao Shen, Shengqiang Xu, Guanda Li, Wenxuan Li",
+      "url": "https://arxiv.org/abs/2611.32476",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32476v1 Announce Type: new Abstract: Tactile sensing is essential for contact-rich robotic manipulation, but existing visuo-tactile simulators trade physical fidelity for scalability, and benchmarks largely focus on two-finger grippers. We present ViTacLab, a framework comprising ViTacSim, ViTacBench, and ViTacPolicy. ViTacSim uses a tri-modal tactile primitive: a global sparse contact-force lattice, a local dense force array, and tactile images. Anchored to PhysX contact-solver outpu",
+      "pub_date": "2026-11-25",
+      "rating": "🔧",
+      "reason": "ViTacLab 给出物理一致的视触觉仿真器 ViTacSim，并配套多指灵巧手 benchmark 与触觉表征学习；触觉 VLA 可直接复用其仿真数据生成与评测协议。",
+      "affiliation": "[The University of Hong Kong]"
+    },
+    {
+      "title": "Next-Manip: On-Demand Agent-Policy Collaboration for Robotic Manipulation",
+      "authors": "Jiayi Liu, Ke Ye, Jiaming Zhou, Yufei Huang, Haotian Liang, Kun-Yu Lin",
+      "url": "https://arxiv.org/abs/2611.32533",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32533v1 Announce Type: new Abstract: General-purpose robotic manipulation requires task reasoning, failure recovery, and precise control, yet limited manipulation data make these abilities difficult to obtain from a single policy. Recent multimodal agents show promise in task reasoning and recovery but lack reliable fine-grained control and incur high inference cost, whereas learned policies provide efficient fine-grained execution but struggle beyond their learned skills. Although th",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "Next-Manip 按需调度多模态 agent 与底层操作策略，agent 管推理纠错、策略管精确控制，缓解操作数据稀缺；属 agent-policy 协作的又一工程方案。",
+      "affiliation": "[HKUST (Guangzhou)]"
+    },
+    {
+      "title": "MXI-MemICL: Towards In-Context Robot Manipulation through Self-Retrieved Interaction Memory",
+      "authors": "Jialong Peng, Shihao Zhou, Feng Yan, Wen Xiao, Haozheng Wang, Wenqi Ren",
+      "url": "https://arxiv.org/abs/2611.32564",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32564v1 Announce Type: new Abstract: In-context learning (ICL) offers robots a way to acquire new skills from a single demonstration without parameter updates. However, existing robotic ICL methods either rely on large-scale pretraining constrained by scarce, costly robot interaction data or require additional annotations yet struggle to generalize across tasks. To bridge this gap, we propose MXI-MemICL, a framework for memory-guided ICL in vision-language-action (VLA) models. By trea",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "MXI-MemICL 用自检索的交互记忆实现单演示上下文操作，降低对大规模机器人预训练的依赖；记忆检索与复用机制有一定借鉴性。",
+      "affiliation": "[1011.ai]"
+    },
+    {
+      "title": "ReFocus: Progress-Guided Adaptive Practice for Long-Horizon Robotic Manipulation Reinforcement Learning",
+      "authors": "Haoyuan Li, Wei Huang, Jiehong Lin, Shengrong Zhang, Chenzhi Liu, Shengchao Zhou",
+      "url": "https://arxiv.org/abs/2611.32639",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32639v1 Announce Type: new Abstract: Online reinforcement learning (RL) enables vision-language-action policies to improve through environmental interaction. However, in long-horizon manipulation, sparse success/failure feedback provides little information about where policies encounter bottlenecks. Moreover, repeated full-task rollouts also leave these bottlenecks weakly analyzed and insufficiently practiced. To this end, we introduce ReFocus, a progress-guided multi-round RL framewo",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "ReFocus 用进度信号引导在线 RL，在稀疏反馈的长程任务中自适应重练易失败片段；面向 VLA 的 RL 精调，但验证任务有限。",
+      "affiliation": "[Zhejiang University]"
+    },
+    {
+      "title": "DexWAC: A Unified World-Actor-Critic Model for Dexterous Robot Manipulation",
+      "authors": "Hongjia Liu, Dacheng Zhou, Minghao Fu, Chuanjun Guo, Tianze Wang, Qingtao Liu",
+      "url": "https://arxiv.org/abs/2611.32654",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action",
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32654v1 Announce Type: new Abstract: Robot demonstrations provide more than actions to imitate: they reveal how actions change the world and how those changes contribute to task success. Recent world-action models (WAMs) extend vision-language-action (VLA) models with the first signal by jointly predicting actions and future observations, yet this predictive ability serves only as an auxiliary loss for policy learning. Meanwhile, most policy improvement methods learn dynamics and valu",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "DexWAC 把世界模型、actor 与 critic 统一进灵巧操作框架，用动作引起的世界变化同时监督策略与价值估计；是 world-action model 路线的一次整合。",
+      "affiliation": "[University of California, San Diego]"
+    },
+    {
+      "title": "DiffGR00T: Execution-Aware Differentiable Training for Humanoid Whole-Body Vision-Language-Action Models",
+      "authors": "Sichen Wu, Qian Sun, Mengfan Liu, Weikai Qin, Bike Zhu, Hesheng Wang",
+      "url": "https://arxiv.org/abs/2611.32665",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "VLA",
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32665v1 Announce Type: new Abstract: Vision-language-action (VLA) models have achieved strong results in arm-centric manipulation, yet humanoid whole-body control (WBC) requires dynamic balance and tightly coupled full-body coordination. Existing hierarchical humanoid VLAs typically decouple motion generation from physical execution, leaving tracking and balance errors unable to directly optimize the VLA generator. We propose DiffGR00T, an end-to-end differentiable training framework",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "DiffGR00T 把人形全身 VLA 的分层结构改为执行感知的可微训练，缓解高层规划与底层全身控制的脱节；面向人形全身控制，摘要未给出量化结果。",
+      "affiliation": "[上交|Wang]"
+    },
+    {
+      "title": "AG-WAM: Attention-Guided World Action Model for Accurate and Efficient Robot Manipulation",
+      "authors": "Hongcheng Zhang, Lei Sun, Songxuan Liu, Tengteng Pan, Yuqiang Zhai, Xianglong Xu",
+      "url": "https://arxiv.org/abs/2611.32722",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation",
+        "robotic manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32722v1 Announce Type: new Abstract: Recently developed World Action Models (WAMs) jointly predict future observations and robot actions, providing predictive context for control. However, existing WAMs typically learn implicit attention allocation with limited explicit action-relevant attention guidance, leading to limited performance. To unleash strong capabilities of WAMs, we introduce explicit attention guidance as a unifying principle and propose our Attention-Guided WAM (AG-WAM)",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "AG-WAM 在 world action model 中引入显式注意力引导，对齐动作相关区域以提升未来预测与效率；属 WAM 的注意力模块改进。",
+      "affiliation": "[SenseTime Research]"
+    },
+    {
+      "title": "Simulator-as-Proxy World Model for Robot Manipulation",
+      "authors": "Tingting Liao, Mingjia Huo, Hao Li, Zhengzhong Liu, Eric P. Xing, Guangyi Liu",
+      "url": "https://arxiv.org/abs/2611.32786",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32786v1 Announce Type: new Abstract: Video world models for robots are increasingly conditioned on a simulated or rendered proxy of the scene, on the assumption that the video will show what the proxy shows. Testing this assumption requires a proxy whose state is explicit and can be perturbed. We present SimPWM (Simulator-as-Proxy World Model): given a calibrated camera, it represents, from the first frame alone, the robot by its 3D model and the objects the gripper may touch as 3D po",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "检验视频世界模型是否真能跟随仿真代理这一被广泛默认的假设，用状态可扰动的代理系统定位偏差来源；对 world model 用于规划的立论前提提出质疑。",
+      "affiliation": "[CMU|Xing]"
+    },
+    {
+      "title": "Keypose or Dense? A Controlled Comparison of Action Representations for Stage-Structured Manipulation",
+      "authors": "Haizhou Ge, Mengshuo Wang, Zhixing Chen, Lei Han, Chen Wang, Lu Shi",
+      "url": "https://arxiv.org/abs/2611.32788",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot learning"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32788v1 Announce Type: new Abstract: Most imitation policies that predict chunks of future actions use the dense action representation, in which the chunk holds one control target per step. In stage-structured manipulation, where a task can be divided into stages with definable endpoints, the keypose action representation instead sets each step of the chunk to the endpoint of the stage that step belongs to, and a speed-capped servo supplies the motion. We compare the two in several si",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "控制实验对比关键姿态与稠密动作块两种动作表示在阶段化操作中的表现，给出何时该用哪种的依据；对动作分块设计有直接参考价值。",
+      "affiliation": "[Tsinghua University]"
+    },
+    {
+      "title": "Supply Geometry, Learn Execution: Screw Attention for Zero-Shot Policy Transfer in Robot Manipulation",
+      "authors": "Aly Magassouba",
+      "url": "https://arxiv.org/abs/2611.32797",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32797v1 Announce Type: new Abstract: We present the Screw Attention Policy, a geometry-centric manipulation framework that supplies task geometry explicitly and learns only execution. The policy operates on object poses, relative SE(3) transforms, and joint screw axes provided by perception and robot models. The policy requires only 30K learned parameters. Trained entirely in simulation on a single robot arm, the policy generalises to new scene layouts, transfers zero-shot across robo",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "显式提供物体位姿、相对 SE(3) 变换与关节螺旋轴几何，只学习执行部分以实现零样本策略迁移；几何中心路线，与主流数据驱动 VLA 范式取向不同。",
+      "affiliation": "[University of Nottingham]"
+    },
+    {
+      "title": "MRBench: Benchmarking Physical Necessity Reasoning in Heterogeneous Multi-Robot Manipulation",
+      "authors": "Yanzhe Chen, Zhijun Cao, Ruihe An, Chang Gong, Mike Zheng Shou",
+      "url": "https://arxiv.org/abs/2611.32803",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "robot manipulation"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32803v1 Announce Type: new Abstract: Recent advances in multi-robot manipulation have shown how robots can collaborate to accomplish complex tasks. However, successful coordination does not reveal which robots are actually needed. The same task may require different teams as robot capabilities change, resources become unavailable, or objects replace robotic support. We argue that reliable multi-robot manipulation requires physical necessity reasoning: understanding what a task demands",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "MRBench 评测多机器人操作中的物理必要性推理，判断任务究竟需要哪几台机器人而非只看协调成功；为异构多机协作评测补空白。",
+      "affiliation": "[National University of Singapore]"
+    },
+    {
+      "title": "Atomic Policy: Composing Atomic Manipulation Skills with Agentic Reasoning",
+      "authors": "Kaidi Zhang, Pengyuan Guo, Zhengtong Xu, Caiyi Zhang, Huayi Gou, Guanlin Huang",
+      "url": "https://arxiv.org/abs/2611.32813",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "visuomotor"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32813v1 Announce Type: new Abstract: Long-horizon manipulation requires robots to translate task intent into physical interactions as the scene changes. Vision-language models (VLMs) offer semantic and spatial reasoning, while visuomotor policies provide fine-grained control. Yet ambiguous goals and dependencies between actions make their integration challenging. We introduce Atomic Policy, a framework that composes learned manipulation skills through grounded steering and execution f",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "Atomic Policy 用 agentic 推理组合原子操作技能，VLM 负责语义与空间推理、策略负责细粒度执行；与今日多篇 agent+技能组合工作高度同质。",
+      "affiliation": "[Purdue University]"
+    },
+    {
+      "title": "What Does a Skill Vocabulary Cost? A Closed-Loop Decomposition over Demonstrated Motions",
+      "authors": "Maximilian Xiling Li, Nils Blank, Paul Mattes, Pankhuri Vanjani, Rudolf Lioutikov",
+      "url": "https://arxiv.org/abs/2611.32858",
+      "source": "cs.RO",
+      "match_level": "A",
+      "keywords_matched": [
+        "vision-language-action"
+      ],
+      "already_covered": false,
+      "abstract_snippet": "arXiv:2611.32858v1 Announce Type: new Abstract: Discrete skill policies execute motions drawn from a finite vocabulary. In most current methods, this vocabulary is a latent codebook learned jointly with a selector and a decoder. When such a policy fails in closed loop, the failure cannot be traced to the vocabulary, to the choice of skill or to its execution. We present Movement Prototype Quantization (MPQ), which places a library of demonstrated motions after a trained policy instead of inside",
+      "pub_date": "2026-11-25",
+      "rating": "📖",
+      "reason": "分析离散技能词表的代价，用闭环分解在示教动作上得到可追溯的技能切分，替代与选择器联合学习的隐式 codebook；提升技能抽象的可解释性。",
+      "affiliation": "[Karlsruhe Institute of Technology (KIT)]"
+    }
+  ]
+}

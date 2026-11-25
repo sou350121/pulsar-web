@@ -1,101 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-25",
-      "config_version": 20,
-      "items": [
-        {
-          "title": "NVIDIA OpenShell v0.1.5：内核级沙箱给 agent 舰队上政策",
-          "url": "https://github.com/NVIDIA/OpenShell",
-          "source": "gh-trending",
-          "category": "基础设施",
-          "importance": "strategic",
-          "developer": "NVIDIA",
-          "labels": [
-            "sandbox",
-            "security",
-            "policy"
-          ],
-          "direction_note_prefix": "",
-          "why": "内核拦截文件/系统调用/网络，策略变更先形式化验证再放行"
-        },
-        {
-          "title": "AWS Agent Toolkit：官方 MCP servers + skills + plugins 一次接全",
-          "url": "https://github.com/aws/agent-toolkit-for-aws",
-          "source": "gh-trending",
-          "category": "Agent 框架",
-          "importance": "actionable",
-          "developer": "aws",
-          "labels": [
-            "mcp",
-            "skills",
-            "devops"
-          ],
-          "direction_note_prefix": "",
-          "why": "aws-core/aws-agents/aws-data-analytics/aws-devsecops 官方插件进 Claude Code 市场"
-        },
-        {
-          "title": "Nutlope/hallmark：给 Claude Code / Cursor / Codex 的「反 AI slop」设计 skill",
-          "url": "https://github.com/Nutlope/hallmark",
-          "source": "gh-trending",
-          "category": "UI/UX 工具",
-          "importance": "actionable",
-          "developer": "Nutlope",
-          "labels": [
-            "agent-ui",
-            "skills",
-            "design"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "把审美规范蒸馏成 skill，补上 agent 生成 UI 最大的短板"
-        },
-        {
-          "title": "AtMem 2.3.10：持久 agent 记忆的「有界证据发现」",
-          "url": "https://huggingface.co/blog/javadtaghia/atmem-2310-bounded-evidence-discovery-for-persiste",
-          "source": "hf-blog",
-          "category": "RAG 工具链",
-          "importance": "read-only",
-          "developer": "javadtaghia",
-          "labels": [
-            "agent-memory",
-            "retrieval",
-            "RAG"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "把相关性/适用性/充分性拆开，发现通道不再悄悄灌进上下文"
-        },
-        {
-          "title": "OpenAI 再度表态前沿模型短期不开源，理由是网络安全体系",
-          "url": "https://readhub.cn/topic/8xSlPGQoO8P",
-          "source": "tophub-readhub",
-          "category": "模型发布",
-          "importance": "read-only",
-          "developer": "OpenAI",
-          "labels": [
-            "open-weights",
-            "policy"
-          ],
-          "direction_note_prefix": "",
-          "why": "承认同级开源模型差距不大，开源/闭源叙事继续升温"
-        },
-        {
-          "title": "Claude 大更新：Dashboards 实时看板 + Motion 动画，Docs/Slides/Design 转正",
-          "url": "https://readhub.cn/topic/8xUpzA0VaMu",
-          "source": "tophub-readhub",
-          "category": "UI/UX 工具",
-          "importance": "actionable",
-          "developer": "Anthropic",
-          "labels": [
-            "agent-ui",
-            "dashboard",
-            "multimodal"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "自然语言查询直接生成可溯源实时看板，产出从文本走向成品"
-        }
-      ]
-    },
-    {
       "date": "2026-10-26",
       "config_version": 21,
       "items": [
@@ -3578,6 +3483,102 @@
           ],
           "direction_note_prefix": "[evaluation]",
           "why": "把 eval 从「答案对不对」推到「轨迹与多 agent 产出」，附八步流程"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-25",
+      "config_version": 25,
+      "items": [
+        {
+          "title": "pydantic-ai v2.74.0：把 computer tool 契约并入核心，ComputerTool 成为原生工具",
+          "url": "https://github.com/pydantic/pydantic-ai/releases/tag/v2.74.0",
+          "source": "github.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "pydantic",
+          "labels": [
+            "agent",
+            "computer-use",
+            "sdk"
+          ],
+          "direction_note_prefix": "",
+          "why": "computer_use 进核心，agent 的屏幕操作工具不再各自造轮子"
+        },
+        {
+          "title": "OpenAI Agents SDK v0.26.0 与 v1.0.0-alpha.2：跨 worker 恢复中断会话与待审批",
+          "url": "https://github.com/openai/openai-agents-python/releases/tag/v1.0.0-alpha.2",
+          "source": "github.com",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "openai",
+          "labels": [
+            "agent",
+            "checkpoint",
+            "sdk"
+          ],
+          "direction_note_prefix": "",
+          "why": "长跑 agent 的检查点格式已改，读端必须先升级"
+        },
+        {
+          "title": "Microsoft Foundry Ignite 2026：Insights 直连 Agent Optimizer，多轮评估 GA",
+          "url": "https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-ignite-2026/",
+          "source": "devblogs.microsoft.com",
+          "category": "基础设施",
+          "importance": "strategic",
+          "developer": "microsoft",
+          "labels": [
+            "evals",
+            "agent",
+            "observability"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "trace 里的失败样本自动变成可测优化项"
+        },
+        {
+          "title": "Vercel Sandbox 全部切换 Managed Images：universal 镜像内置 Claude Code 与 Pi",
+          "url": "https://vercel.com/changelog/all-sandbox-runtimes-now-use-vercel-managed-images",
+          "source": "vercel.com",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "vercel",
+          "labels": [
+            "sandbox",
+            "runtime",
+            "agent"
+          ],
+          "direction_note_prefix": "",
+          "why": "沙箱镜像 nightly 滚动含 coding agent，可复现需 pin digest"
+        },
+        {
+          "title": "Anthropic 66 家客户访谈：coding agent 正把软件能力带给非技术岗",
+          "url": "https://www.anthropic.com/research/working-with-ai",
+          "source": "anthropic.com",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "anthropic",
+          "labels": [
+            "agent",
+            "enterprise",
+            "economics"
+          ],
+          "direction_note_prefix": "",
+          "why": "企业侧瓶颈从写码转到 code review 与审批"
+        },
+        {
+          "title": "iFood 用编码 agent 铺 15000 个仓库：单次推理 0.04 美元，漏洞修复翻倍",
+          "url": "https://openai.com/business/customer-stories/ifood",
+          "source": "openai.com",
+          "category": "垂直应用",
+          "importance": "actionable",
+          "developer": "openai",
+          "labels": [
+            "coding-agent",
+            "cost",
+            "platform"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "异步 agent 平台化的成本与验收口径可直接照抄"
         }
       ]
     }
