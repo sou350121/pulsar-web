@@ -1,85 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-26",
-      "config_version": 21,
-      "items": [
-        {
-          "title": "Google Data Agent Kit 正式 GA：MCP 工具 + 37 个开源 skill，护栏拆成「技能软约束 / IAM 硬拒绝」",
-          "url": "https://cloud.google.com/blog/topics/developers-practitioners/data-agent-kit-is-now-ga-bring-google-data-cloud-to-any-coding-agent/",
-          "source": "cloud.google.com",
-          "category": "RAG 工具链",
-          "importance": "strategic",
-          "developer": "GoogleCloudPlatform",
-          "labels": [
-            "mcp",
-            "agent-skills",
-            "guardrails"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "把 MCP+skills 送进别人家的 coding agent，护栏分层成为落地范式"
-        },
-        {
-          "title": "OpenAI/Anthropic 数月内 LLM 价格最多砍 80%：真实 token 成本正在被路由与缓存重算（续报）",
-          "url": "https://minimaxir.com/2026/10/cheap-llms/",
-          "source": "blog.minimaxir",
-          "category": "模型发布",
-          "importance": "strategic",
-          "developer": "—",
-          "labels": [
-            "pricing",
-            "model-routing",
-            "prompt-caching"
-          ],
-          "direction_note_prefix": "",
-          "why": "Vercel 网关 token 单价降到 4 月 43%，但总支出仍在涨——单位经济学变了"
-        },
-        {
-          "title": "OpenAI 联手数学家攻破 Siegel 零点难题，证明从 8 页压到 5 页",
-          "url": "https://readhub.cn/topic/8xVwETb1i6L",
-          "source": "tophub-readhub",
-          "category": "垂直应用",
-          "importance": "read-only",
-          "developer": "OpenAI",
-          "labels": [
-            "research-automation",
-            "math"
-          ],
-          "direction_note_prefix": "",
-          "why": "AI 先破题、人机接力优化证明，科研长任务 agent 的可核验样本"
-        },
-        {
-          "title": "pandacode：Tauri 2 + Rust 写的本地桌面，一个窗口统管 Claude Code / Codex / Kimi Code",
-          "url": "https://juejin.cn/post/7699072089819414538",
-          "source": "tophub-juejin-b",
-          "category": "UI/UX 工具",
-          "importance": "actionable",
-          "developer": "—",
-          "labels": [
-            "coding-agent",
-            "desktop-app",
-            "agent-ui"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "多 CLI agent 的统一外壳需求正在自下而上长成客户端"
-        },
-        {
-          "title": "Cognition 创始人 Steven Hao 以 58 亿美元身家成福布斯 400 最年轻成员，Devin 年化营收破 10 亿美元",
-          "url": "https://readhub.cn/topic/8xVt1IvfPBt",
-          "source": "tophub-readhub",
-          "category": "垂直应用",
-          "importance": "read-only",
-          "developer": "Cognition",
-          "labels": [
-            "coding-agent",
-            "business"
-          ],
-          "direction_note_prefix": "",
-          "why": "coding agent 的商业天花板被打成 480 亿美元估值，赛道估值锚变了"
-        }
-      ]
-    },
-    {
       "date": "2026-10-27",
       "config_version": 21,
       "items": [
@@ -3579,6 +3500,146 @@
           ],
           "direction_note_prefix": "🎯 agent-ui",
           "why": "异步 agent 平台化的成本与验收口径可直接照抄"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-26",
+      "config_version": 25,
+      "items": [
+        {
+          "title": "MCP servers can now ship skills, run tasks, and more with Claude",
+          "url": "https://claude.com/resources/articles/skills-over-mcp-tasks-and-more",
+          "source": "claude.com",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "mcp",
+            "agent-skills",
+            "tool-calling"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "MCP 从「调工具」升级为「发技能+派任务+要确认」，server 变成可协作 agent"
+        },
+        {
+          "title": "Claude Code v2.1.332: Skills from MCP servers (beta) + PreSkillShellCommand hook",
+          "url": "https://github.com/anthropics/claude-code/releases",
+          "source": "github.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "Anthropic",
+          "labels": [
+            "claude-code",
+            "mcp",
+            "hooks"
+          ],
+          "direction_note_prefix": "🎯 agent-ui",
+          "why": "远程 server 可把内联 shell 命令带进会话，务必配 PreSkillShellCommand 白名单"
+        },
+        {
+          "title": "OpenAI Agents SDK v0.26.0: guardrail rejection now stops queued tools",
+          "url": "https://github.com/openai/openai-agents-python/releases/tag/v0.26.0",
+          "source": "github.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "openai",
+          "labels": [
+            "agents-sdk",
+            "guardrails",
+            "sandbox"
+          ],
+          "direction_note_prefix": "",
+          "why": "此前已排队工具可在输入护栏拒绝后继续执行，安全边界型护栏要复核副作用"
+        },
+        {
+          "title": "Introducing Hurdle: Run agent evals on your API, skills, and docs",
+          "url": "https://www.together.ai/blog/introducing-hurdle-run-agent-evals-on-your-api-skills-and-docs",
+          "source": "together.ai",
+          "category": "RAG 工具链",
+          "importance": "actionable",
+          "developer": "Together AI",
+          "labels": [
+            "evals",
+            "agent-runtime",
+            "guardrails"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "护栏在运行中拦真实扣费请求，跑完再用代码检查+LLM judge 判定"
+        },
+        {
+          "title": "Google ADK Python v2.15.1",
+          "url": "https://github.com/google/adk-python/releases/tag/v2.15.1",
+          "source": "github.com",
+          "category": "Agent 框架",
+          "importance": "actionable",
+          "developer": "google",
+          "labels": [
+            "adk",
+            "a2a",
+            "migration"
+          ],
+          "direction_note_prefix": "",
+          "why": "回滚 A2A 流式落盘改动，Claude sampling 兼容 1.x/2.x，升级前先看 A2A 行为"
+        },
+        {
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "source": "research.google",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "Google Research",
+          "labels": [
+            "evals",
+            "benchmark",
+            "alignment"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "助手比旁观者更易被用户框架带偏，开源 20K 数据可做社交推理评测"
+        },
+        {
+          "title": "Where scientists draw the line on AI agents",
+          "url": "https://huggingface.co/blog/allenai/where-scientists-draw-the-line-on-ai-agents",
+          "source": "huggingface.co",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "Ai2",
+          "labels": [
+            "agent-safety",
+            "research"
+          ],
+          "direction_note_prefix": "",
+          "why": "17 位科学家访谈：科研 agent 的披露与复核规范，比准确率更早成刚需"
+        },
+        {
+          "title": "An Indic Voice Agent with CUGA",
+          "url": "https://huggingface.co/blog/ibm-research/an-indic-voice-agent-with-cuga",
+          "source": "huggingface.co",
+          "category": "垂直应用",
+          "importance": "read-only",
+          "developer": "IBM Research",
+          "labels": [
+            "voice-agent",
+            "multilingual",
+            "agent"
+          ],
+          "direction_note_prefix": "",
+          "why": "多语言语音 agent 的可复现搭建路径，覆盖印度语系低资源场景"
+        },
+        {
+          "title": "DAGGER: Deployment-Free Quality Estimation for Generative AI Workflows",
+          "url": "https://arxiv.org/abs/2611.31252",
+          "source": "arxiv",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "—",
+          "labels": [
+            "evals",
+            "workflow",
+            "quality-estimation"
+          ],
+          "direction_note_prefix": "[evaluation]",
+          "why": "上线前预判工作流质量，省掉部署一轮才能测的成本（arXiv）"
         }
       ]
     }

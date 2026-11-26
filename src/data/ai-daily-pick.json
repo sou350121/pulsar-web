@@ -1,6 +1,83 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-26",
+      "items": [
+        {
+          "title": "Anthropic 上市一周跌破 83 美元发行价，两位创始人合计套现 5.6 亿美元",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8yL0g75nHKy",
+          "why_picked": "史上最大 IPO（约 935 亿美元募资）进入二级市场检验期，定价逻辑被现实打脸",
+          "so_what": "如果你在做 Agent 系统的长期成本模型：把 Claude API/订阅单价改成「有下行空间但有涨价风险」双档，别按 IPO 前低价锁定 12 个月预算；谈判时可把 Anthropic 的资本市场压力当筹码。"
+        },
+        {
+          "title": "Scott Aaronson：AI 在复杂度理论上带来一整块新大陆的数学真理",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/25/scott-aaronson/",
+          "why_picked": "一线理论计算机科学家公开承认 AI 证出了人类长期卡住的复杂度问题，HN 同时在传「疑似破解 P 类因子分解」",
+          "so_what": "如果你在做 agent 的可验证推理链：把「结论 + 形式化证明/可执行检查」写进 pipeline（Lean/Coq 导出），而非只让模型给结论；数学能力一旦外溢到定理证明，护城河就在验证层。"
+        },
+        {
+          "title": "Simon Willison 复盘十二个月三个 LLM 拐点",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://simonwillison.net/2026/Nov/24/llm-inflection-points/",
+          "why_picked": "把 Claude Opus 4.5（2025-11-24）定义为 coding agent 第一次默认就对的拐点，给出可校准的时间标尺",
+          "so_what": "如果你在选 coding agent 的默认模型：用它列的三个拐点核对你的工具在不在当前台阶——很多团队还停在拐点一之前的 prompt 工程思路，改法是给 agent 完整任务边界而非切碎成 step-by-step。"
+        },
+        {
+          "title": "OpenAI 推出「雅典娜」数据工具，主打让智能体更精准",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8yLf8wGqDdC",
+          "why_picked": "同日 ChatGPT 对话错误率上升（Team/Business/Pro 受影响），说明精度瓶颈已从模型挪到数据层",
+          "so_what": "如果你在做 RAG/工具调用的准确率优化：别只换更贵的模型，先把「失败样本 → 数据修正」做成闭环；雅典娜这类工具的价值是给你官方口径去修 agent 的事实性错误。"
+        },
+        {
+          "title": "Cursor 发布开源插件规范与官方插件集",
+          "category": "新发布",
+          "source": "GitHub",
+          "url": "https://github.com/cursor/plugins",
+          "why_picked": "把 Cursor agent 的扩展面从 IDE 配置变成可分发、可版本化的插件生态（TypeScript，仍在密集合并 PR）",
+          "so_what": "如果你在做 agent builder / IDE 集成：按它的插件规范拆你的工具封装，未来一份定义可同时进 Cursor、Claude Code 和 pi 系 harness；现在改造成本最低。"
+        },
+        {
+          "title": "CLI-Anything 冲到 65.7k stars：让所有软件都 agent-native",
+          "category": "趋势",
+          "source": "GitHub",
+          "url": "https://github.com/HKUDS/CLI-Anything",
+          "why_picked": "用 agent-harness 把 QGIS/3MF 等传统 GUI 软件包成 CLI 交给 agent，是与 MCP「把 API 变工具」互补的另一条路",
+          "so_what": "如果你要接一堆只有 GUI、没有 API 的内部软件：先给每个软件包一层 CLI + 结构化 JSON 输出再接进 agent，比 UI 自动化稳定得多；代价是为每个软件维护 harness。"
+        },
+        {
+          "title": "elementalsouls/Claude-BugHunter",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/elementalsouls/Claude-BugHunter",
+          "why_picked": "85 个 skill + 681 条已披露漏洞报告模式，是 skill 包从玩具走向专业领域的最新样本",
+          "so_what": "如果你在做 agent 的安全/红队能力：把它当 skill 打包的参考实现——领域知识以 case 库 + slash command 注入，比塞 system prompt 更可维护；但先按 SkillSpector 那类工具扫一遍来源。"
+        },
+        {
+          "title": "mvanhorn/last30days-skill",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/mvanhorn/last30days-skill",
+          "why_picked": "跨 Reddit / X / YouTube / HN / Polymarket / Web 调研任意话题并合成带出处摘要，昨日仍在推送",
+          "so_what": "如果你在做 agent 的前置调研环节：把它当 research 子例程嵌进情报 pipeline，输出强制带 URL 出处，能替掉你自己写的多源抓取胶水代码。"
+        },
+        {
+          "title": "1Password 披露安全事件（HN 1,036 分）",
+          "category": "行业",
+          "source": "HN",
+          "url": "https://1password.com/blog/update-on-nov-2026-security-incident",
+          "why_picked": "头部凭据管理厂商出事，agent 持有长期 token 的架构风险被重新摆上桌",
+          "so_what": "如果你在做 agent 权限控制：把长期 API key 换成短期、按任务签发并绑 scope 的凭据（或走网关代理 + 审计日志），agent 不再直连长期密钥；这波之后客户审架构一定会问。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-25",
       "items": [
         {
@@ -2083,67 +2160,6 @@
           "url": "https://www.v2ex.com/t/1251785",
           "why_picked": "社区争论 agent 写码后的评审与回滚成本由谁承担",
           "so_what": "如果你在做 coding agent 生产落地：社区共识是约束层（lint、测试闸门、小步提交）比模型选择更决定成败，先把回滚路径和测试闸门做成硬约束，再谈换更强模型。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-26",
-      "items": [
-        {
-          "title": "OpenAI Decisions API 正式 GA：基于 GPT-6 Luna，决策延迟压到 100-180ms、比走 Responses API 快最多 10x",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://openai.com/index/decisions-api/",
-          "why_picked": "把「每一步该走哪个分支」从大模型推理降级成超快分类器，是 agent 单步延迟的最大可压缩项；Box/Datadog/Ramp/Speak 已在生产切换",
-          "so_what": "如果你在做 Agent 编排或 tool routing：把「选工具/选下一步/意图分类」这类有界答案的环节抽成 Decisions 单次调用，而不是让 GPT-6 Sol 生成完整回复；对比你现在 1-3s 的单步延迟，可先拿 2-3 个高 QPS 的判别节点做 A/B，同时注意它是分类器不是生成器，别指望它写中间推理。"
-        },
-        {
-          "title": "Kimi K3.1 Pro 限流事故致歉：全体订阅会员补偿月度额度 25%，根因是不必要的子 Agent 调用",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8xWsTqXBVSg",
-          "why_picked": "罕见的官方事故复盘：字节点名「过多子 Agent 调用 + 输出过长」吃掉额度，等于把多智能体编排的真实成本公开",
-          "so_what": "如果你在做多 Agent 系统：这就是 token 预算失控的标准样本——给子 Agent 加上「必要性判断」前置门（可接 Decisions 这类分类器），并对 agent 输出长度设硬上限；上线前用 per-request cost 监控而不是总账单监控，否则等你看到告警时会员已经在骂了。"
-        },
-        {
-          "title": "JetBrains 开源 ThinkRail：围绕 pi coding agent 重建的 IDE，git worktree 隔离工作区 + 自生长 skills",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/JetBrains/thinkrail",
-          "why_picked": "大厂第一次把「agent 为主、IDE 为辅」的产品形态开源（TypeScript，HN 170 分，v0.3.0 nightly 活跃），工作区隔离与 PR 生命周期管理做得比多数 agent IDE 实",
-          "so_what": "如果你在做 Agent UI 或 coding agent 宿主：值得抄的是它的三层结构——git worktree per session（并行 agent 不打架）、living specs 作为持久项目记忆、PR/CI 状态回流到 agent 上下文；对比你现在的 sandbox 方案，worktree 方案的隔离粒度更细、回滚成本更低。"
-        },
-        {
-          "title": "五实例共享文件系统自编排：Qwen3.8-27B 从 66.8% 拉到 92.4% LiveCodeBench-Hard（单 GPU 可跑）",
-          "category": "实验",
-          "source": "GitHub",
-          "url": "https://github.com/slee-persis/GVS5H",
-          "why_picked": "训练-free 的「共享文件系统 + 五实例分解」把开源中模型推到闭源前沿水平，而且明说「增益不普适、部分模型更差」——罕见的诚实负结果",
-          "so_what": "如果你在做单模型 harness 或 RAG 推理管线：别再盲目叠 agent 数量——先测你的模型是否吃「分解+持久上下文」这一口；实现成本极低（一个 plan/notes 文件当共享黑板），建议在 LiveCodeBench/你自建 eval 上做 1 次五实例对照，再决定要不要改写编排层。"
-        },
-        {
-          "title": "HN 热议：OpenAI 与 Anthropic 数月内把 LLM 价格砍到最高 -80%，降价战逻辑拆解",
-          "category": "观点",
-          "source": "HN",
-          "url": "https://minimaxir.com/2026/10/cheap-llms/",
-          "why_picked": "把 6-10 月两家定价时间线逐条列出（GPT-5.6 Luna -80%、Sonnet 5 降价转永久、Sol -20%），是当前最完整的降价曲线证据",
-          "so_what": "如果你在做 LLMOps 成本模型：把模型选型从「固定一组」改成带过期日的价格表，按季度重算 cost-per-task；降价窗口期是迁移的最佳时机，但要注意临时降价（Sol -20% 三个月）到期后的账单跳变，配置里必须留 fallback 模型。"
-        },
-        {
-          "title": "Google Gemini 4 Argon 进入 Antigravity：Alphabet 内部 10 万+ 用户实测，agentic 代码 +35%、提交后回滚 -30%",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://antigravity.google/blog/gemini-4-argon-in-google-antigravity",
-          "why_picked": "少数带内部量化指标的 agent 落地数据：agentic code 占比是比 pass@1 更贴近生产的指标",
-          "so_what": "如果你在推 coding agent 进团队：抄它的度量口径——追踪「agentic 代码占比」和「post-submit rollback 率」，比追踪 PR 数更能说明 agent 是否真的提升质量；同时它的 YouTube 案例（定位 emoji 渲染占 45% 开销）说明让 agent 读 profile 数据比读代码结构更有效。"
-        },
-        {
-          "title": "MakeCindy/cindy：开箱即用的开源 AI Agent（TypeScript，4.8k⭐，昨日仍在发版）",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/makecindy/cindy",
-          "why_picked": "「开箱即用」定位 + 高频 release（v0.1.115）说明它在快速迭代真实用户需求，适合当轻量 agent 壳对照",
-          "so_what": "如果你在做 agent 脚手架选型：把它和 vercel/eve 放一起对比——cindy 是产品化取向（开箱即用），eve 是 filesystem-first 的框架取向；想快速验证一个 idea 用 cindy，想做可嵌入的产品底座用 eve。"
         }
       ]
     }
