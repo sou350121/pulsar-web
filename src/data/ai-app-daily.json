@@ -1,146 +1,6 @@
 {
   "ai_app_daily": [
     {
-      "date": "2026-10-27",
-      "config_version": 21,
-      "items": [
-        {
-          "title": "Google 开源 Elephant-Goldfish Model：写代码前先写设计文档，再让零上下文 subagent 攻击它",
-          "url": "https://github.com/google/elephant-goldfish-model",
-          "source": "github/google",
-          "category": "Agent 框架",
-          "importance": "strategic",
-          "developer": "google",
-          "labels": [
-            "spec-driven",
-            "coding-agent",
-            "multi-agent"
-          ],
-          "direction_note_prefix": "🎯 agent-ui",
-          "why": "把 spec-driven 开发做成可安装 skill：大象写规格、金鱼盲审，Google 官方开源（10-26）"
-        },
-        {
-          "title": "OpenAI GPT-6.1 Terra 发布：computer use 对标 Astra，价格再降一半",
-          "url": "https://openai.com/index/introducing-gpt-6-1-terra",
-          "source": "openai.com",
-          "category": "模型发布",
-          "importance": "strategic",
-          "developer": "OpenAI",
-          "labels": [
-            "computer-use",
-            "model-release",
-            "cost"
-          ],
-          "direction_note_prefix": "",
-          "why": "标准 API 价格比 Sol 低 50%，最大 effort 下 token 效率是 Opus 5.5 的 3 倍"
-        },
-        {
-          "title": "Cloudflare 与 SGLang 联合披露 GLM-5.3 跨租户 KV cache 泄漏：155 条响应串了别人的上下文",
-          "url": "https://blog.cloudflare.com/kv-cache-exposure-remediation/",
-          "source": "blog.cloudflare.com",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Cloudflare / LMSYS",
-          "labels": [
-            "inference-security",
-            "sglang",
-            "isolation"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "自托管推理要核对「KV pool 容量 vs 配置上下文长度」，超限请求必须前置拒绝"
-        },
-        {
-          "title": "Scale AI AgentEnv 接入 Vercel Sandbox：agent 与任务环境各跑各的沙箱",
-          "url": "https://vercel.com/changelog/run-scale-ais-agentenv-evals-on-vercel-sandbox",
-          "source": "vercel.com",
-          "category": "其他",
-          "importance": "actionable",
-          "developer": "Vercel / Scale AI",
-          "labels": [
-            "evals",
-            "sandbox",
-            "agent-testing"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "AgentEnv 0.9.1334+ 内置 Vercel provider，评测环境与 agent 隔离成两个 Sandbox"
-        },
-        {
-          "title": "Vercel Connect CLI 上线服务发现：1000+ 服务（含 MCP/OAuth 接入方式）终端可搜",
-          "url": "https://vercel.com/changelog/discover-1000-services-on-vercel-connect-from-the-cli",
-          "source": "vercel.com",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Vercel",
-          "labels": [
-            "connectors",
-            "mcp",
-            "cli"
-          ],
-          "direction_note_prefix": "",
-          "why": "vercel connect discover 可按 mcp/oauth、webhook 能力过滤，--format=json 直接喂给 agent"
-        },
-        {
-          "title": "AWS：Managed Bedrock Knowledge Base + CDK 搭 agentic retrieval（双知识库路由 + 七层可观测）",
-          "url": "https://aws.amazon.com/blogs/machine-learning/build-agentic-retrieval-on-a-managed-amazon-bedrock-knowledge-base-with-cdk/",
-          "source": "aws.amazon.com",
-          "category": "RAG 工具链",
-          "importance": "actionable",
-          "developer": "AWS",
-          "labels": [
-            "rag",
-            "agentic-retrieval",
-            "bedrock"
-          ],
-          "direction_note_prefix": "[RAG]",
-          "why": "给出单索引 RAG 三类失败（跨库/择库/二次检索）的标准工程解法与 CDK 模板"
-        },
-        {
-          "title": "Supabase PAT 默认改为 scoped：给 coding agent 只开单项目只读权限",
-          "url": "https://supabase.com/blog/scope-your-personal-access-tokens",
-          "source": "supabase.com",
-          "category": "基础设施",
-          "importance": "actionable",
-          "developer": "Supabase",
-          "labels": [
-            "auth",
-            "agent-safety",
-            "permissions"
-          ],
-          "direction_note_prefix": "",
-          "why": "Dashboard 新建 token 现在默认限权，上线后近九成 token 都是 scoped"
-        },
-        {
-          "title": "CRM-Agent-Bench：首个在有状态企业环境里跑工具调用 agent 的基准",
-          "url": "https://arxiv.org/abs/2610.32004",
-          "source": "arxiv.org",
-          "category": "其他",
-          "importance": "read-only",
-          "developer": "—",
-          "labels": [
-            "evals",
-            "tool-use",
-            "benchmark"
-          ],
-          "direction_note_prefix": "[evaluation]",
-          "why": "把「多步业务流程 + 域规则」当评测对象，补上无状态 benchmark 的盲区（arXiv）"
-        },
-        {
-          "title": "Knowing When to Stop：coding agent 的「证据—行动」断层",
-          "url": "https://arxiv.org/abs/2610.31895",
-          "source": "arxiv.org",
-          "category": "其他",
-          "importance": "read-only",
-          "developer": "—",
-          "labels": [
-            "agent-behavior",
-            "coding-agent"
-          ],
-          "direction_note_prefix": "",
-          "why": "环境已不可能完成时 agent 仍继续硬试，直指「该停不停」的成本浪费（arXiv）"
-        }
-      ]
-    },
-    {
       "date": "2026-10-28",
       "config_version": 21,
       "items": [
@@ -3640,6 +3500,95 @@
           ],
           "direction_note_prefix": "[evaluation]",
           "why": "上线前预判工作流质量，省掉部署一轮才能测的成本（arXiv）"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-27",
+      "config_version": 25,
+      "items": [
+        {
+          "title": "Claude 新增「Install as App」：对话里直接生成并安装桌面应用",
+          "url": "https://36kr.com/p/4085949016746627",
+          "source": "36kr.com",
+          "category": "UI/UX 工具",
+          "importance": "strategic",
+          "developer": "Anthropic",
+          "labels": [
+            "agent-ui",
+            "desktop-app"
+          ],
+          "why": "🎯 agent-ui：聊天框只是过渡，装成 App 才是交互新形态"
+        },
+        {
+          "title": "Swarms, Flocks, Gangs: How to build, train, and evaluate multi-agent systems",
+          "url": "https://huggingface.co/blog/training-swarms",
+          "source": "huggingface.co",
+          "category": "Agent 框架",
+          "importance": "strategic",
+          "developer": "huggingface",
+          "labels": [
+            "multi-agent",
+            "trl",
+            "evals"
+          ],
+          "why": "多智能体不会自动变强：协作能力必须靠 TRL 训练，附可复现实验"
+        },
+        {
+          "title": "Distilling Kimi-K3.1-Pro into Qwen3.8-27B: Teaching a model a new language",
+          "url": "https://www.together.ai/blog/distilling-kimi-into-qwen",
+          "source": "together.ai",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "together-ai",
+          "labels": [
+            "post-training",
+            "distillation",
+            "lora"
+          ],
+          "why": "260 美元训 LoRA 把大模型能力灌进 27B，cookbook 可直接复现"
+        },
+        {
+          "title": "Introducing the llama.cpp benchmark dashboard for AMD Ryzen and Radeon",
+          "url": "https://huggingface.co/blog/ggml-org/llamacpp-amd-bench",
+          "source": "huggingface.co",
+          "category": "基础设施",
+          "importance": "read-only",
+          "developer": "ggml-org",
+          "labels": [
+            "local-inference",
+            "amd",
+            "benchmark"
+          ],
+          "why": "本地推理选型有了公开可比数据：量化×构建×上下文的 AMD 实测曲线"
+        },
+        {
+          "title": "sqlite3_rsync: Database Remote-Copy Tool For SQLite",
+          "url": "https://simonwillison.net/2026/Nov/26/sqlite3-rsync/",
+          "source": "simonwillison.net",
+          "category": "基础设施",
+          "importance": "actionable",
+          "developer": "sqlite",
+          "labels": [
+            "sqlite",
+            "backup",
+            "ops"
+          ],
+          "why": "不用先造完整本地副本就能跨机同步 SQLite，小磁盘实例的备份解法"
+        },
+        {
+          "title": "MCP Turns Two, and Servers Now Send Instructions With Their Tools",
+          "url": "https://blog.pebblous.ai/blog/mcp-turns-two-skills-over-mcp/en/",
+          "source": "blog.pebblous.ai",
+          "category": "其他",
+          "importance": "read-only",
+          "developer": "—",
+          "labels": [
+            "mcp",
+            "skills",
+            "protocol"
+          ],
+          "why": "MCP 两周年：server 随工具下发使用说明，与 Claude Skills 路线合流"
         }
       ]
     }
