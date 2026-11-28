@@ -1,6 +1,91 @@
 {
   "daily_picks": [
     {
+      "date": "2026-11-28",
+      "items": [
+        {
+          "title": "OpenAI 起诉苹果窃取商业秘密",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://readhub.cn/topic/8yPKHvylsvk",
+          "why_picked": "OpenAI 与苹果从 ChatGPT 入 iPhone 合作走到诉讼，硬件+模型层关系重构",
+          "so_what": "如果你在做 agent 硬件的供应链与 SDK 集成：假设任何平台方都可能切断分发通道，把模型侧 invocation 层抽象成自有网关（如 MCP/OpenAI-compatible proxy），并在合同里写清供应商接口的不可阻断条款，别把 agent 产品绑死在单一设备平台。"
+        },
+        {
+          "title": "Vercel Workflow SDK 5.8 新执行引擎：agent 循环开销降至 0.9s",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://vercel.com/changelog/workflows-speculative-execution",
+          "why_picked": "step 间 p75 开销 85ms→7ms，256 并行 fan-out 函数耗时省 14x，可重试 step 投机执行",
+          "so_what": "如果你在做长链 agent 编排：升级到 workflow@5.8.0 前先审计每个 step 的幂等性，把 stepId 当 idempotency key 传给下游（如 Stripe 扣款），不可重试的加 maxRetries=0 opt-out，才能吃到投机执���带来的 12x 延迟收益。"
+        },
+        {
+          "title": "Together 开源 Hurdle：面向 API/文档/skills 的 agent 评测库",
+          "category": "工具",
+          "source": "GitHub",
+          "url": "https://github.com/togethercomputer/hurdle",
+          "why_picked": "npm 库直接跑 Claude Code / Codex 真实任务，code check+guard+LLM judge 三层评分，可比 MCP 开关前后",
+          "so_what": "如果你在做 MCP server 或开发者平台：用 `npx hurdle init` 写 10-20 个任务，跑「装/不装 MCP」两组条件，用 guard 规则（如禁止开 GPU 集群）挡越权，得到 pass rate 后再决定 skill 文案怎么改，而不是靠手感。"
+        },
+        {
+          "title": "iFood 用 Remote Agents Platform 管理 15,000 个仓库的编码 agent",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://openai.com/business/customer-stories/ifood",
+          "why_picked": "REST API 提交提示+环境→隔离沙箱 runner 执行→返回 merge request，安全平台修复漏洞数翻倍",
+          "so_what": "如果你在做企业内部 coding agent：别用长驻 agent 进程，照 iFood 做「API 提交 + 一次性沙箱 runner + MR 回传」三段式，让 agent 产物走 code review 而不直推主干，天然获得审计与回滚。"
+        },
+        {
+          "title": "Pax by Pydantic 上线：Pydantic 类型约束进 agent 输出",
+          "category": "工具",
+          "source": "Web",
+          "url": "https://www.producthunt.com/products/pydantic",
+          "why_picked": "Schema 即接口契约，替代手写 JSON 修补",
+          "so_what": "如果你在做 tool calling / 结构化输出：把 agent 的 response schema 收口到 Pydantic 模型并用 Pax 校验，失败时把 ValidationError 结构化回灌给模型重试，比正则修补 prompt 更稳。"
+        },
+        {
+          "title": "llama.cpp 推出 AMD Ryzen / Radeon 官方 benchmark dashboard",
+          "category": "趋势",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/ggml-org/llamacpp-amd-bench",
+          "why_picked": "PP512/TG128/上下文扩展三曲线可跨 build、量化对比，本地推理有公开基线",
+          "so_what": "如果你在做本地 agent 推理部署：用该 dashboard 选定底层硬件+量化组合后再定 SLA，重点盯 Context scaling 曲线——长上下文 agent 的 throughput 衰减常在 8k 之后骤降。"
+        },
+        {
+          "title": "Claude Code 核心人物反思 Vibe Coding 的未来",
+          "category": "观点",
+          "source": "Web",
+          "url": "https://www.36kr.com/p/4087449994181000",
+          "why_picked": "从「连改到对」转向可控可审计的协作方式，呼应 harness/评测工具潮",
+          "so_what": "如果你在做 coding agent 的工作流：把 vibe 迭代升级为「计划 diff → 人工确认 → 执行 → 回归测试」四段，并用 harness 记录每次 session 的写操作以便回滚。"
+        },
+        {
+          "title": "HF 博文 Swarms, Flocks, Gangs：如何训练 agent 群沟通",
+          "category": "实验",
+          "source": "HuggingFace",
+          "url": "https://huggingface.co/blog/training-swarms",
+          "why_picked": "两卡 H200 5 小时约 $50 可复现；核心结论：拼上下文不等于性能增益，沟通要训练",
+          "so_what": "如果你在做 multi-agent 编排：先别加 agent，用一个 agent + 更好的工具描述做 A/B；真要扩，就选小模型并做通信训练（监督消息格式），否则纯 prompt 拼上下文往往更慢更贵。"
+        },
+        {
+          "title": "Together 把 Kimi-K3.1-Pro 蒸馏进 Qwen3.8-27B 教新语言",
+          "category": "实验",
+          "source": "Web",
+          "url": "https://www.together.ai/blog/distilling-kimi-into-qwen",
+          "why_picked": "小模型继承大模型目标语言能力，低成本多语 agent 路径",
+          "so_what": "如果你在做多语 agent：别直接上线大模型做翻译层，先用大模型生成目标语数据蒸馏进 27B，再让 27B 承担日常对话路由，大模型只兜底长尾。"
+        },
+        {
+          "title": "DeepSeek 灰度「消耗额度」可视化展示对话成本",
+          "category": "行业",
+          "source": "Web",
+          "url": "https://m.ithome.com/html/1033157.htm",
+          "why_picked": "额度可见+此前已限额，预算门控开始产品化",
+          "so_what": "如果你在做 agent 产品的成本控制：抄这个思路，在 UI 上实时展示 token 消耗与剩余额度，并在长链任务里设「预估成本 > 阈值 → 请求确认」的硬闸门。"
+        }
+      ]
+    },
+    {
       "date": "2026-11-27",
       "items": [
         {
@@ -2099,75 +2184,6 @@
           "url": "https://github.com/morganlinton/BeautifulRust",
           "why_picked": "⭐1,365，展示用 skill+test 约束代码质量的可复制范式",
           "so_what": "如果你在做代码生成质量约束：它的 skills + 测试脚手架组合比单纯 prompt 规则可靠，可迁移到你团队的 TS/Python 代码规约。"
-        }
-      ]
-    },
-    {
-      "date": "2026-10-28",
-      "items": [
-        {
-          "title": "GPT-6.1 Terra 发布：Agent 时代的「打工模型」，价格砍半",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://aws.amazon.com/cn/about-aws/whats-new/2026/10/openai-gpt-6-1-terra-on-amazon-bedrock/",
-          "why_picked": "OpenAI 新模型正式 GA（AWS Bedrock 官宣）；Agents' Last Exam 比 GPT-5.6 Terra 高 15 分、追平 Astra，任务耗时不到 Astra/6.1 Sol 的三分之一；价格比 6.1 Sol 和 5.6 Terra 低至少 50%，1M 上下文，支持文本+图像。",
-          "so_what": "如果你在做 Agent 系统：把电脑操作/多步工作流的批量执行迁到 Terra，单任务成本可降到 Opus 5.5 的约 1/9——但先跑自己的 eval，验证长链任务在 1M 上下文下的稳定性，再决定是否替换主力模型。"
-        },
-        {
-          "title": "Anthropic 正式递交 IPO 申请，或成史上最大 IPO",
-          "category": "行业",
-          "source": "Web",
-          "url": "https://apnews.com/article/anthropic-ipo-shares-public-ca2f4c282bef3201a392e59e3df2300c",
-          "why_picked": "Claude 母公司向 SEC 提交招股书，拟以 ANT 在纳斯达克上市，市场传募资规模可达千亿美元级。",
-          "so_what": "如果你在做 Agent 产品的供应商选型：上市后 Anthropic 的定价和稳定性受资本市场约束变强，建议现在就把 Claude 与 GPT-6.1 Terra 做成可切换的双供应商抽象层，避免单一 API 依赖。"
-        },
-        {
-          "title": "Anthropic 七位创始人：Claude 将坚持无广告模式",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://readhub.cn/topic/8xZHvaSeu7g",
-          "why_picked": "与计划把广告做成重要收入来源的 OpenAI 形成鲜明对比，直接影响 Claude 的 API 定位与企业采购判断。",
-          "so_what": "如果你在做 RAG/Agent 的回答质量评估：无广告意味着 Claude 输出干扰项更少，但其商业化靠 API 与订阅，价格弹性更小——预算模型里不要假设 Claude 会持续降价。"
-        },
-        {
-          "title": "蚂蚁灵光 2.0：Personal Agent 从「办事」到「管事」",
-          "category": "新发布",
-          "source": "Web",
-          "url": "https://www.stdaily.com/web/gdxw/2026-10/27/content_603557.html",
-          "why_picked": "国内首批落地的 Personal Agent：跨会话记忆 + 长程任务调度 + 工具连接，可主动盯票价、比价、梳理账单并主动汇报进展。",
-          "so_what": "如果你在做长程 Agent：灵光展示的是「持久记忆 + 定时调度 + 主动汇报」三件套，可作为自建任务代理的参考架构——尤其看它如何处理跨会话记忆的失效与纠错。"
-        },
-        {
-          "title": "AI 改完代码，人却不知道它改了什么：架构漂移才是真正的成本",
-          "category": "观点",
-          "source": "Web",
-          "url": "https://juejin.cn/post/7700846756351180810",
-          "why_picked": "真实工程复盘：Agent 为一个小需求改了十几个文件、测试全过，但 diff 读了 20 分钟仍无法确认架构被改成什么样。",
-          "so_what": "如果你在用 coding agent：把「diff 可审阅性」当成验收标准——限制单次改动文件数、要求先出改动计划再执行，并在 CI 加架构依赖检查，别只靠测试绿灯。"
-        },
-        {
-          "title": "NVIDIA/SkillSpector：装 Agent 技能前先扫一遍后门",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/NVIDIA/SkillSpector",
-          "why_picked": "专门扫描 agent skill 的提示注入、数据外泄、危险调用与供应链风险，可接 MCP 做安装门禁。技能生态扩张后这是刚需品类。",
-          "so_what": "如果你在做 Agent 权限控制：把 SkillSpector 接到 skill 安装流程（CI 或 MCP gateway）做准入扫描，配合最小权限白名单，防止第三方 skill 静默外联。"
-        },
-        {
-          "title": "JetBrains/thinkrail：Git worktree 隔离并行 Agent 的轻量 IDE",
-          "category": "工具",
-          "source": "GitHub",
-          "url": "https://github.com/JetBrains/thinkrail",
-          "why_picked": "JetBrains 亲自下场做 parallel-agent IDE，用 git worktree 隔离任务，集成编辑器/终端/会话，与 Cursor 并行 agent 思路正面竞争。",
-          "so_what": "如果你在跑多 Agent 并行改代码：worktree 隔离是目前最省事的冲突避免方案，可直接借鉴到 harness；但合并阶段冲突仍需人工 review 兜底。"
-        },
-        {
-          "title": "Anthropic 科学家宣言：全球博士生职业生涯一夜清零？",
-          "category": "趋势",
-          "source": "Web",
-          "url": "https://www.36kr.com/p/4042952793805952",
-          "why_picked": "引发广泛讨论的观点，反映 AI 在科研生产力上的跃迁与学术共同体的焦虑。",
-          "so_what": "如果你在做研究型 agent（文献综述、实验自动化）：这类叙事会推动更多团队把科研工作流交给 agent，选题时应关注可验证性与可复现性，而不是只追求跑得快。"
         }
       ]
     }
